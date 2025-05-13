@@ -1,0 +1,35 @@
+import{_ as s,c as n,o as e,ag as p}from"./chunks/framework.Ds6Eueu6.js";const g=JSON.parse('{"title":"Loading Data with gpload","description":"","frontmatter":{},"headers":[],"relativePath":"docs/7x/admin_guide/load/topics/g-loading-data-with-gpload.md","filePath":"docs/7x/admin_guide/load/topics/g-loading-data-with-gpload.md"}'),t={name:"docs/7x/admin_guide/load/topics/g-loading-data-with-gpload.md"};function l(o,a,i,d,c,r){return e(),n("div",null,a[0]||(a[0]=[p(`<h1 id="loading-data-with-gpload" tabindex="-1">Loading Data with gpload <a class="header-anchor" href="#loading-data-with-gpload" aria-label="Permalink to &quot;Loading Data with gpload&quot;">​</a></h1><hr><p>The WarehousePG <code>gpload</code> utility loads data using readable external tables and the WarehousePG parallel file server (gpfdist or <code>gpfdists</code>). It handles parallel file-based external table setup and allows users to configure their data format, external table definition, and gpfdist or <code>gpfdists</code> setup in a single configuration file.</p><blockquote><p><strong>Note</strong> <code>gpfdist</code> and <code>gpload</code> are compatible only with the WarehousePG major version in which they are shipped. For example, a <code>gpfdist</code> utility that is installed with WarehousePG 6.x cannot be used with WarehousePG 7.x.</p></blockquote><blockquote><p><strong>Note</strong> <code>MERGE</code> and <code>UPDATE</code> operations are not supported if the target table column name is a reserved keyword, has capital letters, or includes any character that requires quotes (&quot; &quot;) to identify the column.</p></blockquote><h2 id="to-use-gpload" tabindex="-1"><a id="du168147"></a>To use gpload <a class="header-anchor" href="#to-use-gpload" aria-label="Permalink to &quot;&lt;a id=&quot;du168147&quot;&gt;&lt;/a&gt;To use gpload&quot;">​</a></h2><ol><li><p>Ensure that your environment is set up to run <code>gpload</code>. Some dependent files from your WarehousePG installation are required, such as gpfdist and Python 3, as well as network access to the WarehousePG segment hosts. On Windows clients, <code>gpload</code> also requires that you install the following packages:</p><div class="language- vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>pip install psycopg2 pyyaml</span></span></code></pre></div></li><li><p>Create your load control file. This is a YAML-formatted file that specifies the WarehousePG connection information, gpfdist configuration information, external table options, and data format.</p><p>See the <em>WarehousePG Reference Guide</em> for details.</p><p>For example:</p><div class="language- vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>---</span></span>
+<span class="line"><span>VERSION: 1.0.0.1</span></span>
+<span class="line"><span>DATABASE: ops</span></span>
+<span class="line"><span>USER: gpadmin</span></span>
+<span class="line"><span>HOST: cdw-1</span></span>
+<span class="line"><span>PORT: 5432</span></span>
+<span class="line"><span>GPLOAD:</span></span>
+<span class="line"><span>   INPUT:</span></span>
+<span class="line"><span>    - SOURCE:</span></span>
+<span class="line"><span>         LOCAL_HOSTNAME:</span></span>
+<span class="line"><span>           - etl1-1</span></span>
+<span class="line"><span>           - etl1-2</span></span>
+<span class="line"><span>           - etl1-3</span></span>
+<span class="line"><span>           - etl1-4</span></span>
+<span class="line"><span>         PORT: 8081</span></span>
+<span class="line"><span>         FILE: </span></span>
+<span class="line"><span>           - /var/load/data/*</span></span>
+<span class="line"><span>    - COLUMNS:</span></span>
+<span class="line"><span>           - name: text</span></span>
+<span class="line"><span>           - amount: float4</span></span>
+<span class="line"><span>           - category: text</span></span>
+<span class="line"><span>           - descr: text</span></span>
+<span class="line"><span>           - date: date</span></span>
+<span class="line"><span>    - FORMAT: text</span></span>
+<span class="line"><span>    - DELIMITER: &#39;|&#39;</span></span>
+<span class="line"><span>    - ERROR_LIMIT: 25</span></span>
+<span class="line"><span>    - LOG_ERRORS: true</span></span>
+<span class="line"><span>   OUTPUT:</span></span>
+<span class="line"><span>    - TABLE: payables.expenses</span></span>
+<span class="line"><span>    - MODE: INSERT</span></span>
+<span class="line"><span>   PRELOAD:</span></span>
+<span class="line"><span>    - REUSE_TABLES: true </span></span>
+<span class="line"><span>SQL:</span></span>
+<span class="line"><span>   - BEFORE: &quot;INSERT INTO audit VALUES(&#39;start&#39;, current_timestamp)&quot;</span></span>
+<span class="line"><span>   - AFTER: &quot;INSERT INTO audit VALUES(&#39;end&#39;, current_timestamp)&quot;</span></span></code></pre></div></li><li><p>Run <code>gpload</code>, passing in the load control file. For example:</p><div class="language- vp-adaptive-theme"><button title="Copy Code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark vp-code" tabindex="0"><code><span class="line"><span>gpload -f my_load.yml</span></span></code></pre></div></li></ol><p><strong>Parent topic:</strong> <a href="./../../load/topics/g-loading-and-unloading-data.html">Loading and Unloading Data</a></p>`,8)]))}const h=s(t,[["render",l]]);export{g as __pageData,h as default};
