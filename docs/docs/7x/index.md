@@ -2,7 +2,7 @@
 ---
 
 
-7x
+## 7.x Docs
 
 
 ![WarehousePG](../../public/dark_gray_logo_no_text.png "words here")

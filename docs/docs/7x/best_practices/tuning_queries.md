@@ -29,7 +29,7 @@ An explain plan is a report detailing the steps the WarehousePG optimizer has de
 
 Following is an explain plan for a simple query. This query finds the number of rows in the contributions table stored at each segment.
 
-```language-sql
+```
 gpadmin=# EXPLAIN SELECT gp_segment_id, count(*)
                   FROM contributions 
                   GROUP BY gp_segment_id;

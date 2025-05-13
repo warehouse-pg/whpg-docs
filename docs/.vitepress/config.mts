@@ -1,7 +1,14 @@
 import { defineConfig } from 'vitepress'
 
+
+
+
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+
+  ignoreDeadLinks: true,
+  outDir: 'public_html',
   title: "WarehousePG",
 
 
@@ -236,4 +243,7 @@ export default defineConfig({
       { icon: 'slack', link: 'https://warehouse-pg.slack.com' }
     ]
   }
+  
 })
+
+

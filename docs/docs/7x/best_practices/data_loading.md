@@ -49,7 +49,7 @@ It is important to keep the work even across all these resources. The load is as
 
 The `gp_external_max_segs` configuration parameter controls the number of segments each `gpfdist` process serves. The default is 64. You can set a different value in the `postgresql.conf` configuration file on the coordinator. Always keep `gp_external_max_segs` and the number of `gpfdist` processes an even factor; that is, the `gp_external_max_segs` value should be a multiple of the number of `gpfdist` processes. For example, if there are 12 segments and 4 `gpfdist` processes, the planner round robins the segment connections as follows:
 
-```screen
+```
 Segment 1  - gpfdist 1 
 Segment 2  - gpfdist 2 
 Segment 3  - gpfdist 3 
@@ -98,7 +98,7 @@ The load is accomplished in a single transaction.
 -   After you load data into a table, run `VACUUM` on heap tables, including system catalogs, and `ANALYZE` on all tables. It is not necessary to run `VACUUM` on append-optimized tables. If the table is partitioned, you can vacuum and analyze just the partitions affected by the data load. These steps clean up any rows from prematurely ended loads, deletes, or updates and update statistics for the table.
 -   Recheck for segment skew in the table after loading a large amount of data. You can use a query like the following to check for skew:
 
-    ```language-sql
+    ```
     SELECT gp_segment_id, count(*) 
     FROM schema.table 
     GROUP BY gp_segment_id ORDER BY 2;
