@@ -14,7 +14,7 @@ hero:
   actions:
     - theme: brand
       text: Docs
-      link: /api-examples 
+      link: /docs/7x/
     - theme: brand
       text: GitHub
       link: "https://github.com/warehouse-pg"
@@ -69,10 +69,10 @@ SELECT * FROM foo;
 Clone Warehous ePG Today
 
 ```sh
-git clone https://github.com/EnterpriseDB/WarehousePG.git
+git clone https://github.com/warehouse-pg/warehouse-pg.git
 ```
 
 
 
 
- ![WarehousePG with MADlib](text_transparent_nobuffer.png "WarehousePG MADlib Analytics Architecture")
+ ![WarehousePG with MADlib](public/text_transparent_nobuffer.png "WarehousePG MADlib Analytics Architecture")
