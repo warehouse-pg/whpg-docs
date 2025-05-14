@@ -1,0 +1,25 @@
+name: Delete Preview Environment
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  delete-environment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete Preview Environment
+        env:
+          ENVIRONMENT_NAME: preview-${{ github.event.pull_request.number }}
+        run: |
+          echo "Deleting environment: $ENVIRONMENT_NAME"
+          gh api \
+            -X DELETE \
+            repos/${{ github.repository }}/environments/$ENVIRONMENT_NAME \
+            --silent || echo "Environment $ENVIRONMENT_NAME not found or already deleted."
