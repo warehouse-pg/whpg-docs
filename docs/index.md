@@ -25,30 +25,33 @@ hero:
 
 
 features:
+  - title: Open Source
+    details: Evaluate, inspect, contribute.   Rest assured, the WarehousePG project will always remain free and open source
+    icon: 🔍
   - title: Postgres DNA
     details: WarehousePG is many (dozens or even hundreds) of Postgres instances working in a massively parralel manner
     icon: 🐘🧬️
+  - title: Platform Extension Framework
+    details: Powerful extensibility, allowing for unified querying across diverse external data sources such as S3, HDFS, JSON, Parquet and AVRO amongst others
+    icon: 🪜
+
 
   - title: PolyMorphic Storage
-    details: Not just a great way to query GraphQL APIs. Execute documents against in-memory schemas just as easily with the same interface.
+    details: Storage options to handle a variety of use cases including hot, warm cold storage, columnar, partitioned and external data 
     icon: 📦
-  - title: Platform Extension Framework
-    details: Powerful type-safe extension system. Intercept and manipulate inputs, outputs, and core with hooks; Add new methods; And more.
-    icon: 🪜
+
   - title: Partner Ecosystem
-    details: Unlock a large partner ecosystem already supporting Posgres
+    details: Unlock a large AI, BI and Analtyics partner ecosystem already supporting Postgres
     icon: 🧰️
   - title: Proven tech, not a new mousestrap
-    details: Easily add client-side codecs for custom scalars in the schema to enable automatic encoding of arguments and decoding of data on every request.
+    details: Trusted by governments and enterprises across the globe for the most mission critical systems
     icon: 🪤
   - title: MADlib
-    details: Optional TypeScript alternative to GQL syntax for building type-safe documents including tailored methods for root fields, batch method for multiple root fields, an a document method for 1:1 with GraphQL.
+    details: Scalable in-database machine learning (ML) and advanced analytics (AA) library, including Regression, Classification, Clustering and Time Series algorithms.
     icon: 🧲️
-  - title: Open Source
-    details: Evaluate, inspect the code, always know that this project will remain FOSS
-    icon: 🔍
-
-
+  - title: Geospatial Analtyics
+    details: Supports spatial data types, indexing, functions and Geosptical querying 
+    icon: 🚀
 
 
 
@@ -59,20 +62,12 @@ features:
 
 
 
-```sql
-SELECT * FROM foo;
+## Clone WarehousePG today
+
+
+
 ```
-
-
-## Getting Started
-
-Clone Warehous ePG Today
-
-```sh
 git clone https://github.com/warehouse-pg/warehouse-pg.git
 ```
 
-
-
-
- ![WarehousePG with MADlib](public/text_transparent_nobuffer.png "WarehousePG MADlib Analytics Architecture")
+ ![WarehousePG with MADlib](public/fulllogo_transparent_small_buffer.png "WarehousePG, an open source alternative to Greenplum")

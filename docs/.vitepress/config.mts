@@ -8,7 +8,6 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
 
   ignoreDeadLinks: true,
-  outDir: 'public_html',
   title: "WarehousePG",
 
 
