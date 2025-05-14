@@ -59,7 +59,7 @@ jobs:
   # Deployment job
   deploy:
     environment:
-      name: ${{ github.event_name == 'pull_request' && 'preview-${{ github.event.pull_request.number }}' || 'github-pages' }}
+      name: ${{ github.event_name == 'pull_request' && format('preview-{0}', github.event.pull_request.number) || 'github-pages' }}
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
