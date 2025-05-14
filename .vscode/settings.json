@@ -1,0 +1,8 @@
+{
+  "explorer.excludeGitIgnore": false,
+  "search.exclude": {
+    "**/.vitepress/cache": true,
+    "**/.vitepress/dist": true
+  },
+  "search.useParentIgnoreFiles": true
+}
