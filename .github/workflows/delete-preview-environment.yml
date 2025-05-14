@@ -16,6 +16,7 @@ jobs:
     steps:
       - name: Delete Preview Environment
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ENVIRONMENT_NAME: preview-${{ github.event.pull_request.number }}
         run: |
           echo "Deleting environment: $ENVIRONMENT_NAME"
