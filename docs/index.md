@@ -2,12 +2,10 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
-
-
 hero:
   name: "WarehousePG"
   text: "WarehousePG "
-  tagline: An Open Source alternative to<br>Greenplum Database® 
+  tagline: An Open Source alternative to<br>Greenplum Database®
   image:
     src: dark_gray_logo_no_text.png
     alt: WarehousePG
@@ -23,7 +21,6 @@ hero:
       text: Slack
       link: "https://warehouse-pg.slack.com"
 
-
 features:
   - title: Open Source
     details: Evaluate, inspect, contribute.   Rest assured, the WarehousePG project will always remain free and open source
@@ -35,9 +32,8 @@ features:
     details: Powerful extensibility, allowing for unified querying across diverse external data sources such as S3, HDFS, JSON, Parquet and AVRO amongst others
     icon: 🪜
 
-
   - title: PolyMorphic Storage
-    details: Storage options to handle a variety of use cases including hot, warm cold storage, columnar, partitioned and external data 
+    details: Storage options to handle a variety of use cases including hot, warm cold storage, columnar, partitioned and external data
     icon: 📦
 
   - title: Partner Ecosystem
@@ -50,24 +46,14 @@ features:
     details: Scalable in-database machine learning (ML) and advanced analytics (AA) library, including Regression, Classification, Clustering and Time Series algorithms.
     icon: 🧲️
   - title: Geospatial Analtyics
-    details: Supports spatial data types, indexing, functions and Geosptical querying 
+    details: Supports spatial data types, indexing, functions and Geosptical querying
     icon: 🚀
-
-
-
-
-
-
 ---
 
-
-
 ## Clone WarehousePG today
-
-
 
 ```
 git clone https://github.com/warehouse-pg/warehouse-pg.git
 ```
 
- ![WarehousePG with MADlib](public/fulllogo_transparent_small_buffer.png "WarehousePG, an open source alternative to Greenplum")
+![WarehousePG with MADlib](/fulllogo_transparent_small_buffer.png "WarehousePG, an open source alternative to Greenplum")
