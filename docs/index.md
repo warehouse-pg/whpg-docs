@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "WarehousePG"
   text: "WarehousePG "
-  tagline: An Open Source alternative to<br>Greenplum Database®
+  tagline: A Great Open Source alternative to<br>Greenplum Database®
   image:
     src: dark_gray_logo_no_text.png
     alt: WarehousePG
