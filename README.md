@@ -23,7 +23,7 @@ words, open a PR to the `deploy` branch with the changes on `main` that do not
 already exist in `deploy` (i.e., the changes that have been pushed to `main`
 since the last deployment).
 
-🚀 [Click Here to Start a Deployment](https://github.com/warehouse-pg/whpg-docs/compare/deploy...bsmith-testing?expand=1&title=Publish%20changes%20from%20main%20branch%20to%20the%20live%20website%20on%20GitHub%20pages&labels=deploy&body=This%20pull%20request%20contains%20changes%20to%20be%20published%20to%20the%20live%20GitHub%20pages%20site%20powering%20whpg.io.%20When%20you%20merge%20the%20pull%20request,%20it%20will%20trigger%20a%20workflow%20to%20publish%20the%20changes%20to%20the%20site.)
+🚀 [Click Here to Start a Deployment](https://github.com/warehouse-pg/whpg-docs/compare/deploy...main?expand=1&title=Publish%20changes%20from%20main%20branch%20to%20the%20live%20website%20on%20GitHub%20pages&labels=deploy&body=This%20pull%20request%20contains%20changes%20to%20be%20published%20to%20the%20live%20GitHub%20pages%20site%20powering%20whpg.io.%20When%20you%20merge%20the%20pull%20request,%20it%20will%20trigger%20a%20workflow%20to%20publish%20the%20changes%20to%20the%20site.)
 
 Clicking that link will open the Pull Request editor where you can review the
 changes that will be deployed. Create the pull request. When you're ready to
