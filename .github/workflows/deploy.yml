@@ -3,17 +3,15 @@
 name: Deploy VitePress site to Pages
 
 on:
-  # Runs on pushes targeting the `main` branch. Change this to `master` if you're
-  # using the `master` branch as the default branch.
+  # Runs on pushes targeting the `deploy` branch.
+  # In other words: The deployed site will always match the `deploy` branch,
+  # so we can continue to push to `main` as often as we'd like. When we're
+  # ready to deploy, we should open a PR from `main` to `deploy`.
   push:
-    branches: [main]
+    branches: [deploy]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-  # Runs on pull requests targeting the `main` branch
-  pull_request:
-    branches: [main]
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -59,7 +57,7 @@ jobs:
   # Deployment job
   deploy:
     environment:
-      name: ${{ github.event_name == 'pull_request' && format('preview-{0}', github.event.pull_request.number) || 'github-pages' }}
+      name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
