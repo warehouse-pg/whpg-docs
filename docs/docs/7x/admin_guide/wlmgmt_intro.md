@@ -13,7 +13,7 @@ On a WarehousePG segment host, the available host memory is shared among all the
 
 The following figure illustrates how memory is consumed on a WarehousePG segment host when resource queue-based resource management is active.
 
-![WarehousePG Segment Host Memory](graphics/memory.png "WarehousePG Segment Host Memory")
+![WarehousePG Segment Host Memory](/segment_memory.png "WarehousePG Segment Host Memory")
 
 Beginning at the bottom of the illustration, the line labeled *A* represents the total host memory. The line directly above line *A* shows that the total host memory comprises both physical RAM and swap space.
 

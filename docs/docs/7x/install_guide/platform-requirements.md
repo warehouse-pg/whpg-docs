@@ -356,7 +356,7 @@ Standard (HDD) and SSD disks are available in GCP.  SSD is slightly faster in te
 
 The biggest obstacle to maximizing storage performance is the throughput limit placed on every virtual machine.  Unlike AWS and Azure, the storage throughput limit is relatively low, consistent across all instance types, and only a single disk is needed to reach the VM limit.  
 
-![GCP disk read/write rates](./graphics/gcp-disk-rates.png)
+
 
 
 #### <a id="gcp-recommend"></a>GCP Recommendations

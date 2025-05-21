@@ -19,7 +19,7 @@ Two standard mirroring configurations are available when you initialize or expan
 
 This figure shows how table data is distributed across segments when spread mirroring is configured.
 
-![Spread Mirroring in WarehousePG](../graphics/spread-mirroring.png "Spread Mirroring in WarehousePG")
+![Spread Mirroring in WarehousePG](/spread_mirroring.png "Spread Mirroring in WarehousePG")
 
 ## <a id="segment_failover"></a>Segment Failover and Recovery
 
@@ -37,7 +37,7 @@ If the primary coordinator fails, the log replication process stops, and the sta
 
 Since the coordinator does not contain any user data, only the system catalog tables need to be synchronized between the primary and backup copies. When these tables are updated, changes are automatically copied over to the standby coordinator to ensure synchronization with the primary coordinator.
 
-![Coordinator Mirroring in WarehousePG](../graphics/standby_coordinator.jpg "Coordinator Mirroring in WarehousePG")
+![Coordinator Mirroring in WarehousePG](/standby_coordinator.png "Coordinator Mirroring in WarehousePG")
 
 ## <a id="interconnect_redundancy"></a>About Interconnect Redundancy
 

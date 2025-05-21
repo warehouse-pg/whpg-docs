@@ -63,26 +63,86 @@
   --vp-c-brand-1: #1868A0;
   --vp-c-brand-2: #A5A6A5;
   --vp-c-brand-3:  #545454;
-  --vp-c-brand-soft: var(--vp-c-indigo-soft)
+  --vp-c-brand-soft: #A5A6A5;
 
 
 
 
-  --vp-c-tip-1: var(--vp-c-brand-1);
-  --vp-c-tip-2: var(--vp-c-brand-2);
-  --vp-c-tip-3: var(--vp-c-brand-3);
-  --vp-c-tip-soft: var(--vp-c-brand-soft);
 
-  --vp-c-warning-1: var(--vp-c-yellow-1);
-  --vp-c-warning-2: var(--vp-c-yellow-2);
-  --vp-c-warning-3: var(--vp-c-yellow-3);
-  --vp-c-warning-soft: var(--vp-c-yellow-soft);
 
-  --vp-c-danger-1: var(--vp-c-red-1);
-  --vp-c-danger-2: var(--vp-c-red-2);
-  --vp-c-danger-3: var(--vp-c-red-3);
-  --vp-c-danger-soft: var(--vp-c-red-soft);
+  --vp-code-block-color: rgba(24, 103, 160, 0.95);
+  --vp-code-block-bg:  rgba(165, 166, 165 , 0.20);
+
+
+  --vp-c-warning-soft:  rgba(234, 179, 8, 0.20);
+  --vp-c-danger-soft: rgba(244, 63, 94, 0.22);
+
+ --vp-custom-block-info-border:  rgba(165, 166, 165 , 0.75);
+ --vp-custom-block-info-text: var(--vp-c-text-1);
+  --vp-custom-block-info-bg: rgba(165, 166, 165 , 0.25);
+  --vp-custom-block-info-code-bg:  rgba(24, 103, 160, 0.10);
+
+  --vp-custom-block-tip-border: rgba(165, 166, 165 , 0.75);
+  --vp-custom-block-tip-text: var(--vp-c-text-1);
+  --vp-custom-block-tip-bg:  rgba(24, 103, 160, 0.20);
+  --vp-custom-block-tip-code-bg: rgba(24, 103, 160, 0.10);
+
+
+
+
+
+
+
+
+
+  --vp-custom-block-info-text: var(--vp-c-text-1);
+
+
+
+  --vp-custom-block-note-border: transparent;
+  --vp-custom-block-note-text: var(--vp-c-text-1);
+  --vp-custom-block-note-bg: var(--vp-c-default-soft);
+  --vp-custom-block-note-code-bg: var(--vp-c-default-soft);
+
+
+  --vp-custom-block-tip-text: var(--vp-c-text-1);
+
+
+
+  --vp-custom-block-important-border: transparent;
+  --vp-custom-block-important-text: var(--vp-c-text-1);
+  --vp-custom-block-important-bg: var(--vp-c-important-soft);
+  --vp-custom-block-important-code-bg: var(--vp-c-important-soft);
+
+  --vp-custom-block-warning-border: transparent;
+  --vp-custom-block-warning-text: var(--vp-c-text-1);
+  --vp-custom-block-warning-bg: var(--vp-c-warning-soft);
+  --vp-custom-block-warning-code-bg: var(--vp-c-warning-soft);
+
+  --vp-custom-block-danger-border: transparent;
+  --vp-custom-block-danger-text: var(--vp-c-text-1);
+  --vp-custom-block-danger-bg: var(--vp-c-danger-soft);
+  --vp-custom-block-danger-code-bg: var(--vp-c-danger-soft);
+
+  --vp-custom-block-caution-border: transparent;
+  --vp-custom-block-caution-text: var(--vp-c-text-1);
+  --vp-custom-block-caution-bg: var(--vp-c-caution-soft);
+  --vp-custom-block-caution-code-bg: var(--vp-c-caution-soft);
+
+  --vp-custom-block-details-border: var(--vp-custom-block-info-border);
+  --vp-custom-block-details-text: var(--vp-custom-block-info-text);
+  --vp-custom-block-details-bg: var(--vp-custom-block-info-bg);
+  --vp-custom-block-details-code-bg: var(--vp-custom-block-info-code-bg);
 }
+
+
+
+
+
+
+
+  
+
 
 
 :root {
@@ -195,17 +255,6 @@
   }
 }
 
-/**
- * Component: Custom Block
- * -------------------------------------------------------------------------- */
-
-:root {
-  --vp-custom-block-tip-border: transparent;
-  --vp-custom-block-tip-text: var(--vp-c-text-1);
-  --vp-custom-block-tip-bg: #545454;
-  --vp-custom-block-tip-code-bg: var(--vp-c-brand-soft);
-  --vp-code-block-bg: #A5A6A5;
-}
 
 /**
  * Component: Algolia

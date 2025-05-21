@@ -9,13 +9,18 @@ Users issue queries to WarehousePG as they would to any database management syst
 
 ## <a id="topic2"></a>Understanding Query Planning and Dispatch
 
-The coordinator receives, parses, and optimizes the query. The resulting query plan is either parallel or targeted. The coordinator dispatches parallel query plans to all segments. 
+The coordinator receives, parses, and optimizes the query. The resulting query plan is either parallel or targeted. The coordinator dispatches parallel query plans to all data segments. 
 
-![Dispatching the Parallel Query Plan](../../graphics/parallel_plan.jpg "Dispatching the Parallel Query Plan")
+### Dispatched Parallel Query Plan
+
+![Dispatching the Parallel Query Plan](/parallel_dispatch.png "Dispatching the Parallel Query Plan")
 
 The coordinator dispatches targeted query plans to a single segment. Each segment is responsible for running local database operations on its own set of data. Most database operations—such as table scans, joins, aggregations, and sorts—run across all segments in parallel. Each operation is performed on a segment database independent of the data stored in the other segment databases.
 
-![Dispatching a Targeted Query Plan](../../graphics/targeted_dispatch.jpg "Dispatching a Targeted Query Plan")
+
+### Dispatched Targeted Query Plan
+
+![Dispatching a Targeted Query Plan](/targeted_dispatch.png "Dispatching a Targeted Query Plan")
 
 Certain queries may access only data on a single segment, such as single-row `INSERT`, `UPDATE`, `DELETE`, or `SELECT` operations or queries that filter on the table distribution key column\(s\). In queries such as these, the query plan is not dispatched to all segments, but is targeted at the segment that contains the affected or relevant row\(s\).
 
@@ -32,14 +37,14 @@ For example, consider the following simple query involving a join between two ta
 
 ```
 SELECT customer, amount
-FROM sales JOIN customer USING (cust_id)
-WHERE dateCol = '04-30-2016';
+FROM ww_sales JOIN customer USING (cust_id)
+WHERE dateCol = '04-30-2025';
 
 ```
 
 The following figure shows the query plan. Each segment receives a copy of the query plan and works on it in parallel.
 
-![Query Slice Plan](../../graphics/slice_plan.jpg "Query Slice Plan")
+![Query Slice Plan](/slice_plan.png "Query Slice Plan")
 
 The query plan for this example has a *redistribute motion* that moves tuples between the segments to complete the join. The redistribute motion is necessary because the customer table is distributed across the segments by `cust_id`, but the sales table is distributed across the segments by `sale_id`. To perform the join, the `sales` tuples must be redistributed by `cust_id`. The plan is sliced on either side of the redistribute motion, creating *slice 1* and *slice 2*.
 
@@ -55,5 +60,5 @@ Related processes that are working on the same slice of the query plan but on di
 
 The following figure shows the query worker processes on the coordinator and two segment instances for previous query plan.
 
-![Query Worker Processes](../../graphics/gangs.jpg "Query Worker Processes")
+![Query Worker Processes](/gangs.png "Query Worker Processes")
 
