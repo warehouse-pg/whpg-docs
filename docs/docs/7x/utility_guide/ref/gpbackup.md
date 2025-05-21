@@ -3,62 +3,6 @@
 Create backup metadata and data files of a WarehousePG cluster compatible with the `gprestore` utility
 
 
-::: info
-This is an info box.
-:::
-
-::: tip
-This is a tip.
-:::
-
-
-::: tip CUSTOM TITLE
-Danger zone, do not proceed
-`try this out`
-:::
-
-
-
-::: warning
-This is a warning.
-:::
-
-::: danger
-This is a dangerous warning.
-:::
-
-::: details
-This is a details block.
-:::
-
-
-::: caution
-This is an info box.
-:::
-
-
-
-
-> [!NOTE]
-> Highlights information that users should take into account, even when skimming.<br>
-> asdfasdf
-
-
-> [!TIP]
-> Optional information to help a user be more successful.
-
-> [!IMPORTANT]
-> Crucial information necessary for users to succeed.
-
-> [!WARNING]
-> Critical content demanding immediate user attention due to potential risks.
-
-> [!CAUTION]
-> Negative potential consequences of an action.
-
-
-
-
 
 ## <a id="section2"></a>Synopsis 
 
@@ -178,9 +122,13 @@ Optional. Displays verbose debug messages during operation.
 `--exclude-schema <schema_name>`<br>
 Optional. Specifies a database schema to exclude from the backup. You can specify this option multiple times to exclude multiple schemas. You cannot combine this option with the option `--include-schema`, `--include-schema-file`, or a table filtering option such as `--include-table`.
 
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
 
 
-__See Filtering the Contents of a Backup or Restore for more information.__
+
+
+
+
 
 
 
@@ -191,7 +139,7 @@ __See Requirements and Limitations for limitations when leaf partitions of a par
 `--exclude-schema-file <file_name>`<br>
 Optional. Specifies a text file containing a list of schemas to exclude from the backup. Each line in the text file must define a single schema. The file must not include trailing lines. If a schema name uses any character other than a lowercase letter, number, or an underscore character, then you must include that name in double quotes. You cannot combine this option with the option `--include-schema` or `--include-schema-file`, or a table filtering option such as `--include-table`.
 
-__See Filtering the Contents of a Backup or Restore for more information.__
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
 
 
 
@@ -204,7 +152,7 @@ Optional. Specifies a table to exclude from the backup. The table must be in the
 
 If you specify a leaf partition name, `gpbackup` ignores the partition names. The leaf partition is not excluded.
 
-__See Filtering the Contents of a Backup or Restore for more information.__
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
 
 
 `--exclude-table-file <file_name>`<br>
@@ -212,7 +160,7 @@ Optional. Specifies a text file containing a list of tables to exclude from the 
 
 If you specify leaf partition names in a file that is used with --exclude-table-file, `gpbackup` ignores the partition names. The leaf partitions are not excluded.
 
-__See Filtering the Contents of a Backup or Restore for more information.__
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
 
 
 `--include-schema <schema_name>`<br>
@@ -222,7 +170,7 @@ Optional. Specifies a database schema to include in the backup. You can specify 
 `--include-schema-file <file_name>`<br>
 Optional. Specifies a text file containing a list of schemas to back up. Each line in the text file must define a single schema. The file must not include trailing lines. If a schema name uses any character other than a lowercase letter, number, or an underscore character, then you must include that name in double quotes. 
 
-__See Filtering the Contents of a Backup or Restore for more information.__
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
 
 
 `--include-table <schema.table>`<br>

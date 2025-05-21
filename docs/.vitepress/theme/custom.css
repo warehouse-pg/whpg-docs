@@ -47,6 +47,15 @@
  * --vp-c-brand-2: var(--vp-c-indigo-2);
  * --vp-c-brand-3: var(--vp-c-indigo-3);
  * --vp-c-brand-soft: var(--vp-c-indigo-soft);
+
+
+   --vp-c-default-1: var(--vp-c-gray-1);
+  --vp-c-default-2: var(--vp-c-gray-2);
+  --vp-c-default-3: var(--vp-c-gray-3);
+  --vp-c-default-soft: var(--vp-c-gray-soft);
+
+
+
  * -------------------------------------------------------------------------- */
 
 
@@ -55,10 +64,14 @@
 
 
 :root {
-  --vp-c-default-1: var(--vp-c-gray-1);
+   --vp-c-default-1: var(--vp-c-gray-1);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
-  --vp-c-default-soft: var(--vp-c-gray-soft);
+/* code lines background color */
+
+  --vp-c-default-soft: rgba(165, 166, 165 , 0.15);
+
+
 
   --vp-c-brand-1: #1868A0;
   --vp-c-brand-2: #A5A6A5;
