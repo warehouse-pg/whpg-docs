@@ -24,7 +24,7 @@ For additional documenation, visit the `gpbackup` and `gprestore` cluster utilit
 
 - [Backup and Restore Workflow](#workflow)
 
-- [Using the --include and --exclude Filters](#filters)
+- [Using the --include and --exclude filters](#filter)
 
 - [Setting Up Email Alerts](#email)
 
@@ -377,7 +377,7 @@ Restore Status: Success
 
 
 
-### Backup History Database
+## <a id="history"></a>Backup History Database
 `gpbackup` stores details of each backup operation in a SQLite database found in `$COORDINATOR_DATA_DIRECTORY/gpbackup_history.db`.  Details such as timestamps, command line options, incremental backup details and status are stored in this database.  `gpbackup_history.db` is not backed up my `gpbackup`, but can be copied to a secondary location if a backup copy is desired. 
 
 `gpbackup` uses the metadata in `gpbackup_history.db` to create the backup/restore plan for an incremental backup sets when you run `gpbackup` with the `--incremental` option and do not specify the `--from-timesamp` option to indicate the backup that you want to use as the base backup of the incremental backup set. For information about incremental backups, refer to [Incremental Backups with `gpbackup` and `gprestore`](#incrementa). 
@@ -385,15 +385,14 @@ Restore Status: Success
 
 
 
-### Return Codes
+## <a id="filter"></a>Return Codes
 One of these codes is returned after `gpbackup` or `gprestore` completes.
 
 0 – Backup or restore completed with no problems  
 1 – Backup or restore completed with non-fatal errors. See log file for more information.  
 2 – Backup or restore failed with a fatal error. See log file for more information.     
 
-
-### Filtering the Contents of a Backup or Restore
+## <a id="filter"></a>Filtering the Contents of a Backup or Restore
 `gpbackup` backs up all schemas and tables in the specified database, unless you exclude or include individual schema or table objects with schema level or table level filter options.
 
 The schema level options are 
