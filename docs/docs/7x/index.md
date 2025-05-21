@@ -2,6 +2,6 @@
 
 ---
 
-## 7.x Docs
+## 7.2.1-WHPG Docs
 
-![WarehousePG](../../public/dark_gray_logo_no_text.png "words here")
+![WarehousePG](../../public/dark_gray_logo_no_text.png "WarehousePG"){width=300px}

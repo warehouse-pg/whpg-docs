@@ -17,7 +17,7 @@ This chapter contains the following information:
 
 Graphs represent the interconnections between objects \(vertices\) and their relationships \(edges\). Example objects could be people, locations, cities, computers, or components on a circuit board. Example connections could be roads, circuits, cables, or interpersonal relationships. Edges can have directions and weights, for example the distance between towns.
 
-![Graph connection example](graphics/graph_example.png)
+![Graph connection example](/graph_example.png)
 
 Graphs can be small and easily traversed - as with a small group of friends - or extremely large and complex, similar to contacts in a modern-day social network.
 
@@ -52,8 +52,6 @@ Graph modules on MADlib support many algorithms.
 **Creating a Graph in WarehousePG**
 
 To represent a graph in WarehousePG, create tables that represent the vertices, edges, and their properties.
-
-![Vertex edge table](graphics/vertex_edge_table.png)
 
 Using SQL, create the relevant tables in the database you want to use. This example uses `testdb`:
 

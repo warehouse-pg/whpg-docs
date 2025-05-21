@@ -18,17 +18,10 @@ export default defineConfig({
       {
         text: 'Docs',
         items: [
-          { text: '6.x', link: '/docs/6x' },
           { text: '7.x', link: '/docs/7x' },
-          { text: 'Security Guide', link: '/docs/7x/security_guide' },
-          { text: 'Utility Guide', link: '/docs/7x/utility_guide' },
-          { text: 'Performance Guide', link: '/docs/7x/performance_guide' },
-          { text: 'Reference Guide', link: '/docs/7x/reference_guide' }
+          { text: '6.x', link: '/docs/6x' }
         ]
       },
-      { text: 'Blog', link: '/markdown-examples' },
-      { text: 'Code', link: '/markdown-examples' },
-      { text: 'About', link: '/markdown-examples' },
       { text: 'GitHub', link: 'https://github.com/warehouse-pg/warehouse-pg' },
 
     ],
@@ -47,11 +40,7 @@ export default defineConfig({
       {
         text: '',
         items: [
-          { text: 'GitHub', link: 'https://github.com/warehouse-pg/warehouse-pg' },
-          { text: 'Runtime API Examples', link: '/api-examples' },
-          { text: 'Contribute', link: 'docs' },   
-          { text: 'Another', link: 'https://github.com/warehouse-pg/warehouse-pg' }
-
+          { text: 'Documentation' },
         ]
       },
       {
@@ -175,18 +164,7 @@ export default defineConfig({
           { text: "Additional Utilities", link: "/docs/7x/utility_guide/additional.md" }
         ],
       } ,
-      {
-        text: "Analytics Guide",
-        collapsed: true,
-        items: [
-          { text: "Install Guide", link: "/docs/7x" },
-          { text: "Getting Started", link: "/docs/7x/admin_guide/getting_started" },
-          { text: "Getting Started", link: "/docs/7x" },
-          { text: "Getting Started", link: "/docs/7x" },
-          { text: "Getting Started", link: "/docs/7x" },
-          { text: "Getting Started", link: "/docs/7x" }
-        ],
-      },
+
 
       {
         text: "Analytics Guide",
@@ -200,22 +178,21 @@ export default defineConfig({
         ],
       } ,
 
-
-
-
-
-
       {
         text: "Reference Guide",
         link: "/docs/7x/ref_guide" ,
         collapsed: true,
         items: [
-          { text: "SQL Reference", link: "/docs/7x" },
-          { text: "Command Reference", link: "/docs/7x/admin_guide/getting_started" },
-          { text: "Getting Started", link: "/docs/7x" },
-          { text: "Getting Started", link: "/docs/7x" },
-          { text: "Getting Started", link: "/docs/7x" },
-          { text: "Getting Started", link: "/docs/7x" }
+          { text: "SQL Reference", link: "/docs/7x/ref_guide/sql_commands/sql_ref.html" },
+          { text: "Data Types", link: "/docs/7x/ref_guide/function-summary.html" },
+          { text: "Built In Functions", link: "/docs/7x/ref_guide/function-summary.html" },
+          { text: "Additional Modules", link: "/docs/7x/ref_guide/modules/intro.html" },
+          { text: "Character Set Support", link: "/docs/7x/ref_guide/character_sets.html" },
+          { text: "Server Configuration Parameters", link: "/docs/7x/ref_guide/config_params/guc_config.html" },
+          { text: "Database Utilities", link: "/docs/7x/utility_guide/" },
+          { text: "System Catalog", link: "/docs/7x/ref_guide/system_catalogs/catalog_ref.html" },
+          { text: "gp_toolkit schema", link: "/docs/7x/ref_guide/gp_toolkit.html" },
+          { text: "Reserved Words", link: "/docs/7x/ref_guide/misc.html"},
         ],
       }  
       ,

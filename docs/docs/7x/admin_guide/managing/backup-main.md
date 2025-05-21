@@ -11,6 +11,10 @@ WarehousePG supports parallel and non-parallel methods for backing up and restor
 
 `gpbackup`, `gprestore`, and related utilities are provided as a separate download, [WarehousePG® Backup and Restore](https://network.pivotal.io/products/pivotal-gpdb-backup-restore). Follow the instructions in the [WarehousePG Backup and Restore Documentation](https://docs.vmware.com/en/VMware-WarehousePG-Backup-and-Restore/index.html) to install and use these utilities.
 
+
+![Parallel Restore Using Parallel Backup Files](/parallel_backup_restore.png "Parallel Restore Using Parallel Backup Files")
+
+
 ## <a id="nparback"></a>Non-Parallel Backup with pg\_dump
 
 The PostgreSQL `pg_dump` and `pg_dumpall` non-parallel backup utilities can be used to create a single dump file on the coordinator host that contains all data from all active segments.
@@ -19,7 +23,7 @@ The PostgreSQL non-parallel utilities should be used only for special cases. The
 
 The `pg_restore` utility requires compressed dump files created by `pg_dump` or `pg_dumpall`. To perform a non-parallel restore using parallel backup files, you can copy the backup files from each segment host to the coordinator host, and then load them through the coordinator.
 
-![Non-parallel Restore Using Parallel Backup Files](../graphics/nonpar_restore.jpg "Non-parallel Restore Using Parallel Backup Files")
+![Non-parallel Restore Using Parallel Backup Files](/nonparallel_backup_restore.png "Non-parallel Restore Using Parallel Backup Files")
 
 Another non-parallel method for backing up WarehousePG data is to use the `COPY TO` SQL command to copy all or a portion of a table out of the database to a delimited text file on the coordinator host.
 

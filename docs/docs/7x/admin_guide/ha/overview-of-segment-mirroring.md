@@ -20,13 +20,13 @@ These WarehousePG cluster catalog tables contain mirroring and replication infor
 
 Mirror segment instances can be placed on hosts in the cluster in different configurations. As a best practice, a primary segment and the corresponding mirror are placed on different hosts. Each host must have the same number of primary and mirror segments. When you create segment mirrors with the WarehousePG utilities [gpinitsystem](../../utility_guide/ref/gpinitsystem.html) or [gpaddmirrors](../../utility_guide/ref/gpaddmirrors.html) you can specify the segment mirror configuration, group mirroring \(the default\) or spread mirroring. With `gpaddmirrors`, you can create custom mirroring configurations with a `gpaddmirrors` configuration file and specify the file on the command line.
 
-*Group mirroring* is the default mirroring configuration when you enable mirroring during system initialization. The mirror segments for each host's primary segments are placed on one other host. If a single host fails, the number of active primary segments doubles on the host that backs the failed host. The following figure illustrates a group mirroring configuration.
+__Group mirroring__ is the default mirroring configuration when you enable mirroring during system initialization. The mirror segments for each host's primary segments are placed on one other host. If a single host fails, the number of active primary segments doubles on the host that backs the failed host. The following figure illustrates a group mirroring configuration.
 
-![Group Segment Mirroring in WarehousePG](../graphics/group-mirroring.png "Group Segment Mirroring in WarehousePG")
+![Group Segment Mirroring in WarehousePG](/group_mirroring.png "Group Segment Mirroring in WarehousePG")
 
-*Spread mirroring* can be specified during system initialization. This configuration spreads each host's mirrors over multiple hosts so that if any single host fails, no other host will have more than one mirror promoted to an active primary segment. Spread mirroring is possible only if there are more hosts than segments per host. The following figure illustrates the placement of mirrors in a spread segment mirroring configuration.
+__Spread mirroring__ can be specified during system initialization. This configuration spreads each host's mirrors over multiple hosts so that if any single host fails, no other host will have more than one mirror promoted to an active primary segment. Spread mirroring is possible only if there are more hosts than segments per host. The following figure illustrates the placement of mirrors in a spread segment mirroring configuration.
 
-![Spread Segment Mirroring in WarehousePG](../graphics/spread-mirroring.png "Spread Segment Mirroring in WarehousePG")
+![Spread Segment Mirroring in WarehousePG](/spread_mirroring.png "Spread Segment Mirroring in WarehousePG")
 
 > **Note** You must ensure you have the appropriate number of host systems for your mirroring configuration when you create a system or when you expand a system. For example, to create a system that is configured with spread mirroring requires more hosts than segment instances per host, and a system that is configured with group mirroring requires at least two new hosts when expanding the system. For information about segment mirroring configurations, see [Segment Mirroring Configurations](../../best_practices/ha.html#topic_ngz_qf4_tt). For information about expanding systems with segment mirroring enabled, see [Planning Mirror Segments](../expand/expand-planning.html).
 

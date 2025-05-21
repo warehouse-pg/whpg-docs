@@ -13,7 +13,7 @@ In WarehousePG, GPORCA co-exists with the Postgres-based planner. By default, Wa
 
 The following figure shows how GPORCA fits into the query planning architecture.
 
-![Query planning architecture with GPORCA](../../graphics/piv-opt.png)
+![Query planning architecture with GPORCA](/gporca.png)
 
 > **Note** All Postgres-based planner server configuration parameters are ignored by GPORCA. However, if WarehousePG falls back to the Postgres-based planner, the planner server configuration parameters will impact the query plan generation. For a list of Postgres-based planner server configuration parameters, see [Query Tuning Parameters](../../../ref_guide/config_params/guc_category-list.html).
 
