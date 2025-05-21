@@ -27,7 +27,7 @@ If you want to load the external data into a table in the WarehousePG, you can u
 
 Accessing data in external XML files from within the database is a common example requiring transformation. The following diagram shows *gpfdist* performing a transformation on XML files on an ETL server.
 
-![External Tables using XML Transformations](../../graphics/ext-tables-xml.png "External Tables using XML Transformations")
+![External Tables using XML Transformations](/external_tables_xml.png "External Tables using XML Transformations")
 
 Following are the high-level steps to set up a `gpfdist` transformation for external data files. The process is illustrated with an XML example.
 
@@ -172,7 +172,7 @@ java \
 
 The `input_transform.sh` file uses the Joost STX engine with the AWK interpreter. The following diagram shows the process flow as gpfdist runs the transformation.
 
-![gpfdist process flow](../../graphics/02-pipeline.png)
+![gpfdist process flow](/transformation_flow.png)
 
 ## <a id="topic80"></a>Transfer the Data
 
@@ -229,7 +229,7 @@ In the `gpload` control file, the optional parameter `MAX_LINE_LENGTH` specifies
 
 The following diagram shows the relationships between the `gpload` control file, the gpfdist configuration file, and the XML data file.
 
-![Relationships between gpload files](../../graphics/03-gpload-files.jpg)
+![Relationships between gpload files](/gpload_files.png)
 
 ### <a id="topic82"></a>Transforming with gpfdist and INSERT INTO SELECT FROM
 

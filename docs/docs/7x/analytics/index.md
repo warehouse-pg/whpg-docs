@@ -5,7 +5,8 @@ WarehousePG offers a unique combination of a powerful, massively parallel proces
 
 ## <a id="gp_ecosystem"></a>The WarehousePG Integrated Analytics Ecosystem
 
-![WarehousePG integrated analytics](graphics/gp_integrated_analyticsv3.png)
+
+![WarehousePG integrated analytics](/whpg_integrated_analytics.png)
 
 The following WarehousePG analytics extensions are explored in different documentation sections, with installation and usage instructions:
 
@@ -50,3 +51,4 @@ The WarehousePG analytics capabilities allow you to:
 -   Use containers capable of isolating executors from the host OS. WarehousePG PL/Container implements a trusted language execution engine which permits customized data science workloads or environments created for different end user workloads.
 -   Use procedural languages to customize your analytics. WarehousePG supports development in R, Python, Java, and other standard languages allowing you to distribute execution across the entire cluster to take advantage of the scale and parallelism.
 
+<sub>Vector images provided by SVG Repo under the CC0 License</sub>

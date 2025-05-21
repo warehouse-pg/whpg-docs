@@ -21,7 +21,7 @@ WarehousePG provides the following utility programs. Superscripts identify those
 - [dropuser](ref/dropuser.html)<sup>1</sup>
 - [gpactivatestandby](ref/gpactivatestandby.html)
 - [gpaddmirrors](ref/gpaddmirrors.html)
-- [gpbackup](https://docs.vmware.com/en/VMware-WarehousePG-Backup-and-Restore/index.html)<sup>2</sup>
+- [gpbackup](ref/gpbackup.md)<sup>2</sup>
 - [gpcheckcat](ref/gpcheckcat.html)
 - [gpcheckperf](ref/gpcheckperf.html)
 - [gpconfig](ref/gpconfig.html)

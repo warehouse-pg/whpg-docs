@@ -35,7 +35,10 @@ The following figure illustrates a multi-level partition design utilizing both d
 
 <a id="#im207241"></a>
 
-![Example Multi-level Partition Design](../graphics/partitions.jpg "Example Multi-level Partition Design")
+
+### Multi-Level Partitioning
+
+![Example Multi-level Partition Design](/partitions.png "Example Multi-level Partition Design")
 
 ## <a id="topic64"></a>About Table Partitioning in WarehousePG
 
