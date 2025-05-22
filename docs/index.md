@@ -22,9 +22,6 @@ hero:
       text: Docs
       link: /docs/7x/
 
-    - theme: brand
-      text: About
-      link: /docs/about/
 
 
 features:
@@ -38,9 +35,6 @@ features:
   - title: PXF Extension Framework
     details: Powerful extensibility, allowing for unified querying across diverse external data sources 
     icon: 🪜
-
-
-
 
 
   - title: Geospatial Analtyics
