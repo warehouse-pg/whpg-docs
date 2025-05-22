@@ -59,21 +59,27 @@
  * -------------------------------------------------------------------------- */
 
 :root {
-   --vp-c-default-1: var(--vp-c-gray-1);
+   --vp-c-default-1:rgba(218, 19, 132, 0.15);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
-/* code lines background color */
 
-  --vp-c-default-soft: rgba(165, 166, 165 , 0.15);
+
+
+/* code lines background color, and outlines for emojis on homepage */
+
+  --vp-c-default-soft: rgba(165, 166, 165 , .22);
+
+
+  
 
 
 
   --vp-c-brand-1: #1868A0;
   --vp-c-brand-2: #A5A6A5;
   --vp-c-brand-3:  #545454;
-  --vp-c-brand-soft: #A5A6A5;
+  --vp-c-brand-soft:: rgba(165, 166, 165 , 0815);
 
-  --vp-code-block-color: rgba(24, 103, 160, 0.95);
+  --vp-code-block-color: rgba(7, 8, 9, 0.95);
   --vp-code-block-bg:  rgba(165, 166, 165 , 0.20);
 
 
