@@ -142,4 +142,4 @@ The `gpfdist` program can serve data to the segment instances at an average rate
 ![External Tables Using Multiple gpfdist Instances with Multiple NICs](/external_tables.png "External Tables Using Multiple gpfdist Instances with Multiple NICs")
 
 **Parent topic:** [Introduction to WarehousePG](preinstall_concepts.html)
-\
+
