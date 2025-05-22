@@ -14,20 +14,23 @@ hero:
     alt: WarehousePG
   actions:
 
-    - theme: brand
-      text: GitHub
-      link: "https://github.com/warehouse-pg"
 
     - theme: brand
       text: Docs
       link: /docs/7x/
+
+    - theme: brand
+      text: GitHub
+      link: "https://github.com/warehouse-pg"
+
+
 
 features:
   - title: Open Source
     details: Evaluate, inspect, contribute. WarehousePG project will always remain free and open source
     icon: 🔍
   - title: Postgres DNA
-    details: WarehousePG is many (dozens / hundreds) of Postgres instances working parralel
+    details: WarehousePG scales to hundreds of Postgres massively parallel processing instances
     icon: 🧬️
 
   - title: PXF Extension Framework
@@ -56,11 +59,14 @@ features:
 
 
 ---
-
+ 
 ## Clone WarehousePG today
+
+
+
+
 
 ```
 git clone https://github.com/warehouse-pg/warehouse-pg.git
 ```
-
-![WarehousePG with MADlib](/fulllogo_transparent_small_buffer.png "WarehousePG, an open source alternative to Greenplum"){width=500px}
+![WarehousePG with MADlib](/fulllogo_transparent_small_buffer.png "WarehousePG, an open source alternative to Greenplum"){width=250}
