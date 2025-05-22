@@ -2,14 +2,13 @@ import { defineConfig } from 'vitepress'
 
 
 
-
+ 
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
 
   ignoreDeadLinks: true,
   title: "WarehousePG",
-
 
   description: "WarehousePG, an Open Source alternative to Greenplum Database",
   themeConfig: {
@@ -157,9 +156,6 @@ export default defineConfig({
       
             
             ]},
-
-
-
 
           { text: "Additional Utilities", link: "/docs/7x/utility_guide/additional.md" }
         ],

@@ -58,11 +58,6 @@
 
  * -------------------------------------------------------------------------- */
 
-
-
-
-
-
 :root {
    --vp-c-default-1: var(--vp-c-gray-1);
   --vp-c-default-2: var(--vp-c-gray-2);
@@ -77,11 +72,6 @@
   --vp-c-brand-2: #A5A6A5;
   --vp-c-brand-3:  #545454;
   --vp-c-brand-soft: #A5A6A5;
-
-
-
-
-
 
   --vp-code-block-color: rgba(24, 103, 160, 0.95);
   --vp-code-block-bg:  rgba(165, 166, 165 , 0.20);
@@ -101,13 +91,6 @@
   --vp-custom-block-tip-code-bg: rgba(24, 103, 160, 0.10);
 
 
-
-
-
-
-
-
-
   --vp-custom-block-info-text: var(--vp-c-text-1);
 
 
@@ -119,7 +102,6 @@
 
 
   --vp-custom-block-tip-text: var(--vp-c-text-1);
-
 
 
   --vp-custom-block-important-border: transparent;
@@ -149,12 +131,6 @@
 }
 
 
-
-
-
-
-
-  
 
 
 

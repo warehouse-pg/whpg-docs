@@ -22,11 +22,6 @@ hero:
       text: Docs
       link: /docs/7x/
 
-    - theme: brand
-      text: About
-      link: /docs/about/
-
-
 features:
   - title: Open Source
     details: Evaluate, inspect, contribute. WarehousePG project will always remain free and open source
@@ -38,10 +33,6 @@ features:
   - title: PXF Extension Framework
     details: Powerful extensibility, allowing for unified querying across diverse external data sources 
     icon: 🪜
-
-
-
-
 
   - title: Geospatial Analtyics
     details: Supports spatial data types, indexing, functions and Geosptical querying
@@ -62,8 +53,6 @@ features:
   - title: Not a new mousestrap
     details: Proven tech, trusted by governments and enterprises around the globe
     icon: 🪤
-
-
 
 
 ---
