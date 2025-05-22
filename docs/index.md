@@ -22,7 +22,6 @@ hero:
       text: Docs
       link: /docs/7x/
 
-
 features:
   - title: Open Source
     details: Evaluate, inspect, contribute. WarehousePG project will always remain free and open source
@@ -54,8 +53,6 @@ features:
   - title: Not a new mousestrap
     details: Proven tech, trusted by governments and enterprises around the globe
     icon: 🪤
-
-
 
 
 ---
