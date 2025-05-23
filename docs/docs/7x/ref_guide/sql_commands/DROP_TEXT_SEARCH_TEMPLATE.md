@@ -19,16 +19,16 @@ You must be a superuser to use `ALTER TEXT SEARCH TEMPLATE`.
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the text search template does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the text search template does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name \(optionally schema-qualified\) of an existing text search template.
+The name \(optionally schema-qualified\) of an existing text search template.
 
 CASCADE
-:   Automatically drop objects that depend on the text search template, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the text search template, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the text search template if any objects depend on it. This is the default.
+Refuse to drop the text search template if any objects depend on it. This is the default.
 
 ## <a id="section6"></a>Examples
 

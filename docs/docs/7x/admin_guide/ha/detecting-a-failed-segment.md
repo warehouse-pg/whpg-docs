@@ -24,19 +24,19 @@ When there is only an active primary segment and the corresponding mirror is dow
 There is a set of server configuration parameters that affect FTS behavior:
 
 gp\_fts\_probe\_interval
-:   How often, in seconds, to begin a new FTS loop. For example if the setting is 60 and the probe loop takes 10 seconds, the FTS process sleeps 50 seconds. If the setting is 60 and probe loop takes 75 seconds, the process sleeps 0 seconds. The default is 60, and the maximum is 3600.
+How often, in seconds, to begin a new FTS loop. For example if the setting is 60 and the probe loop takes 10 seconds, the FTS process sleeps 50 seconds. If the setting is 60 and probe loop takes 75 seconds, the process sleeps 0 seconds. The default is 60, and the maximum is 3600.
 
 gp\_fts\_probe\_timeout
-:   Probe timeout between coordinator and segment, in seconds. The default is 20, and the maximum is 3600.
+Probe timeout between coordinator and segment, in seconds. The default is 20, and the maximum is 3600.
 
 gp\_fts\_probe\_retries
-:   The number of attempts to probe a segment. For example if the setting is 5 there will be 4 retries after the first attempt fails. Default: 5
+The number of attempts to probe a segment. For example if the setting is 5 there will be 4 retries after the first attempt fails. Default: 5
 
 gp\_log\_fts
-:   Logging level for FTS. The value may be "off", "terse", "verbose", or "debug". The "verbose" setting can be used in production to provide useful data for troubleshooting. The "debug" setting should not be used in production. Default: "terse"
+Logging level for FTS. The value may be "off", "terse", "verbose", or "debug". The "verbose" setting can be used in production to provide useful data for troubleshooting. The "debug" setting should not be used in production. Default: "terse"
 
 gp\_segment\_connect\_timeout
-:   The maximum time \(in seconds\) allowed for a mirror to respond. Default: 180 \(3 minutes\)
+The maximum time \(in seconds\) allowed for a mirror to respond. Default: 180 \(3 minutes\)
 
 In addition to the fault checking performed by the FTS, a primary segment that is unable to send data to its mirror can change the status of the mirror to down. The primary queues up the data and after `gp_segment_connect_timeout` seconds pass, indicates a mirror failure, causing the mirror to be marked down and the primary to go into `Not In Sync` mode.
 

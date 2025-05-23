@@ -28,20 +28,20 @@ Superusers automatically satisfy all of these criteria.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of an existing server.
+The name of an existing server.
 
 new\_version
-:   The new server version.
+The new server version.
 
 OPTIONS \( \[ ADD \| SET \| DROP \] option \['value'\] \[, ... \] \)
-:   Change the server's options. `ADD`, `SET`, and `DROP` specify the action to perform. Option names must be unique. WarehousePG validates names and values using the server's foreign-data wrapper library.
-:   Use `ADD` to define an option that is not currently set. Use `SET` to change the value of an option that you previously defined. If you do not explicitly specify an action, the default operation is `ADD`.
+Change the server's options. `ADD`, `SET`, and `DROP` specify the action to perform. Option names must be unique. WarehousePG validates names and values using the server's foreign-data wrapper library.
+Use `ADD` to define an option that is not currently set. Use `SET` to change the value of an option that you previously defined. If you do not explicitly specify an action, the default operation is `ADD`.
 
 new\_owner
-:   Specifies the new owner of the foreign server.
+Specifies the new owner of the foreign server.
 
 new\_name
-:   Specifies the new name of the foreign server.
+Specifies the new name of the foreign server.
 
 ## <a id="section6"></a>Examples 
 

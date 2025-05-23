@@ -35,7 +35,7 @@ WarehousePG provides the following utility programs. Superscripts identify those
 - [gpmovemirrors](ref/gpmovemirrors.html)
 - [gprecoverseg](ref/gprecoverseg.html)
 - [gpreload](ref/gpreload.html)
-- [gprestore](https://docs.vmware.com/en/VMware-WarehousePG-Backup-and-Restore/index.html)<sup>1</sup>
+- [gprestore](ref/gprestore.md)<sup>2</sup>
 - [gpssh](ref/gpssh.html)
 - [gpssh-exkeys](ref/gpssh-exkeys.html)
 - [gpstart](ref/gpstart.html)
@@ -52,8 +52,8 @@ WarehousePG provides the following utility programs. Superscripts identify those
 - [plcontainer](ref/plcontainer.html)
 - [plcontainer Configuration File](ref/plcontainer-configuration.html)
 - [psql](ref/psql.html)<sup>1</sup>
-- [pxf](https://docs.vmware.com/en/VMware-WarehousePG-Platform-Extension-Framework/6.6/greenplum-platform-extension-framework/ref-pxf.html)
-- [pxf cluster](https://docs.vmware.com/en/VMware-WarehousePG-Platform-Extension-Framework/6.6/greenplum-platform-extension-framework/ref-pxf-cluster.html)
+- [pxf](ref/pxf.html)
+- [pxf cluster](ref/ref-pxf-cluster.html)
 - [reindexdb](ref/reindexdb.html)
 - [vacuumdb](ref/vacuumdb.html)
 
@@ -64,7 +64,7 @@ WarehousePG provides the following utility programs. Superscripts identify those
 
 ><sup>2</sup> The utility program can be obtained from the **WarehousePG Backup and Restore** 
 
-Additional utilities may be found at [Warehouse PG Github Repo](https://github.com/warehouse-pg)
+Additional utilities may be found at [Warehouse PG Github Org Repo](https://github.com/warehouse-pg)
 
 
 **Parent topic:** [WarehousePG Utility Guide](../utility_guide/)

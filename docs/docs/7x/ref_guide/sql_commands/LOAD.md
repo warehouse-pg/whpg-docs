@@ -21,7 +21,7 @@ Non-superusers can only apply `LOAD` to library files located in `$libdir/plugin
 ## <a id="section4"></a>Parameters 
 
 filename
-:   The path and file name of a shared library file. This file must exist in the same location on all hosts in your WarehousePG cluster.
+The path and file name of a shared library file. This file must exist in the same location on all hosts in your WarehousePG cluster.
 
 ## <a id="section5"></a>Examples 
 

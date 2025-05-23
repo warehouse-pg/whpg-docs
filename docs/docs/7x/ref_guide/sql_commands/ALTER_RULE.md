@@ -17,13 +17,13 @@ To use `ALTER RULE`, you must own the table or view that the rule applies to.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of an existing rule to alter.
+The name of an existing rule to alter.
 
 table\_name
-:   The name \(optionally schema-qualified\) of the table or view that the rule applies to.
+The name \(optionally schema-qualified\) of the table or view that the rule applies to.
 
 new\_name
-:   The new name for the rule.
+The new name for the rule.
 
 ## <a id="section6"></a>Examples
 

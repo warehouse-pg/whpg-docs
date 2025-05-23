@@ -24,22 +24,22 @@ In the second form of `ALTER POLICY`, the role list, using\_expression, and chec
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of an existing policy to alter.
+The name of an existing policy to alter.
 
 table\_name
-:   The name \(optionally schema-qualified\) of the table that the policy is on.
+The name \(optionally schema-qualified\) of the table that the policy is on.
 
 new\_name
-:   The new name for the policy.
+The new name for the policy.
 
 role\_name
-:   The role\(s\) to which the policy applies. Multiple roles can be specified at one time. To apply the policy to all roles, use `PUBLIC`.
+The role\(s\) to which the policy applies. Multiple roles can be specified at one time. To apply the policy to all roles, use `PUBLIC`.
 
 using\_expression
-:   The `USING` expression for the policy. See [CREATE POLICY](CREATE_POLICY.html) for details.
+The `USING` expression for the policy. See [CREATE POLICY](CREATE_POLICY.html) for details.
 
 check\_expression
-:   The `WITH CHECK` expression for the policy. See [CREATE POLICY](CREATE_POLICY.html) for details.
+The `WITH CHECK` expression for the policy. See [CREATE POLICY](CREATE_POLICY.html) for details.
 
 ## <a id="section6"></a>Compatibility 
 

@@ -20,13 +20,13 @@ You must be a superuser to use `ALTER TEXT SEARCH TEMPLATE`.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing text search template.
+The name \(optionally schema-qualified\) of an existing text search template.
 
 new\_name
-:   The new name of the text search template.
+The new name of the text search template.
 
 new\_schema
-:   The new schema for the text search template.
+The new schema for the text search template.
 
 ## <a id="section7"></a>Compatibility 
 

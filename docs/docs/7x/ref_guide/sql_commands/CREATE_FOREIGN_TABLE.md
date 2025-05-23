@@ -60,59 +60,59 @@ To create a foreign table, you must have `USAGE` privilege on the foreign server
 ## <a id="section4"></a>Parameters 
 
 IF NOT EXISTS
-:   Do not throw an error if a relation with the same name already exists. WarehousePG issues a notice in this case. Note that there is no guarantee that the existing relation is anything like the one that would have been created.
+Do not throw an error if a relation with the same name already exists. WarehousePG issues a notice in this case. Note that there is no guarantee that the existing relation is anything like the one that would have been created.
 
 table\_name
-:   The name \(optionally schema-qualified\) of the foreign table to create.
+The name \(optionally schema-qualified\) of the foreign table to create.
 
 column\_name
-:   The name of a column to create in the new foreign table.
+The name of a column to create in the new foreign table.
 
 data\_type
-:   The data type of the column, including array specifiers.
+The data type of the column, including array specifiers.
 
 COLLATE collation
-:   The `COLLATE` clause assigns a collation to the column \(which must be of a collatable data type\). If not specified, the column data type's default collation is used.
+The `COLLATE` clause assigns a collation to the column \(which must be of a collatable data type\). If not specified, the column data type's default collation is used.
 
 INHERITS \( parent\_table [, ... ] \)
-:   The optional `INHERITS` clause specifies a list of tables from which the new foreign table automatically inherits all columns. Parent tables can be plain tables or foreign tables. See the similar form of [CREATE TABLE](CREATE_TABLE.html) for more details.
+The optional `INHERITS` clause specifies a list of tables from which the new foreign table automatically inherits all columns. Parent tables can be plain tables or foreign tables. See the similar form of [CREATE TABLE](CREATE_TABLE.html) for more details.
 
 PARTITION OF parent\_table { FOR VALUES partition\_bound\_spec | DEFAULT }
-:   This form can be used to create the foreign table as partition of the given parent table with specified partition bound values. See the similar form of [CREATE TABLE](CREATE_TABLE.html) for more details. Note that it is currently not allowed to create the foreign table as a partition of the parent table if there are `UNIQUE` indexes on the parent table. \(See also [ALTER TABLE ATTACH PARTITION](ALTER_TABLE.html).\)
+This form can be used to create the foreign table as partition of the given parent table with specified partition bound values. See the similar form of [CREATE TABLE](CREATE_TABLE.html) for more details. Note that it is currently not allowed to create the foreign table as a partition of the parent table if there are `UNIQUE` indexes on the parent table. \(See also [ALTER TABLE ATTACH PARTITION](ALTER_TABLE.html).\)
 
 CONSTRAINT constraint\_name
-:   An optional name for a column or table constraint. If the constraint is violated, the constraint name is present in error messages, so constraint names like `col must be positive` can be used to communicate helpful constraint information to client applications. \(Double-quotes are needed to specify constraint names that contain spaces.\) If a constraint name is not specified, the system generates a name.
+An optional name for a column or table constraint. If the constraint is violated, the constraint name is present in error messages, so constraint names like `col must be positive` can be used to communicate helpful constraint information to client applications. \(Double-quotes are needed to specify constraint names that contain spaces.\) If a constraint name is not specified, the system generates a name.
 
 NOT NULL
-:   The column is not allowed to contain null values.
+The column is not allowed to contain null values.
 
 NULL
-:   The column is allowed to contain null values. This is the default.
+The column is allowed to contain null values. This is the default.
 
     This clause is provided only for compatibility with non-standard SQL databases. Its use is discouraged in new applications.
 
 CHECK ( expression ) [ NO INHERIT ]
-:   The `CHECK` clause specifies an expression producing a Boolean result which each row in the foreign table is expected to satisfy; that is, the expression should produce TRUE or UNKNOWN, never FALSE, for all rows in the foreign table. A check constraint specified as a column constraint should reference that column's value only, while an expression appearing in a table constraint can reference multiple columns.
-:   Currently, `CHECK` expressions cannot contain subqueries nor refer to variables other than columns of the current row. The system column `tableoid` may be referenced, but not any other system column.
-:   A constraint marked with `NO INHERIT` will not propagate to child tables.
+The `CHECK` clause specifies an expression producing a Boolean result which each row in the foreign table is expected to satisfy; that is, the expression should produce TRUE or UNKNOWN, never FALSE, for all rows in the foreign table. A check constraint specified as a column constraint should reference that column's value only, while an expression appearing in a table constraint can reference multiple columns.
+Currently, `CHECK` expressions cannot contain subqueries nor refer to variables other than columns of the current row. The system column `tableoid` may be referenced, but not any other system column.
+A constraint marked with `NO INHERIT` will not propagate to child tables.
 
 DEFAULT default\_expr
-:   The `DEFAULT` clause assigns a default value for the column whose definition it appears within. The value is any variable-free expression; WarehousePG does not allow subqueries and cross-references to other columns in the current table. The data type of the default expression must match the data type of the column.
-:   WarehousePG uses the default expression in any insert operation that does not specify a value for the column. If there is no default for a column, then the default is null.
+The `DEFAULT` clause assigns a default value for the column whose definition it appears within. The value is any variable-free expression; WarehousePG does not allow subqueries and cross-references to other columns in the current table. The data type of the default expression must match the data type of the column.
+WarehousePG uses the default expression in any insert operation that does not specify a value for the column. If there is no default for a column, then the default is null.
 
 GENERATED ALWAYS AS \( generation\_expr \) STORED
-:   This clause creates the column as a generated column. The column cannot be written to, and when read the result of the specified expression will be returned.
-:   The keyword `STORED` is required to signify that the column will be computed on write. \(The computed value will be presented to the foreign-data wrapper for storage and must be returned on reading.\)
-:   The generation expression can refer to other columns in the table, but not other generated columns. Any functions and operators used must be immutable. References to other tables are not allowed.
+This clause creates the column as a generated column. The column cannot be written to, and when read the result of the specified expression will be returned.
+The keyword `STORED` is required to signify that the column will be computed on write. \(The computed value will be presented to the foreign-data wrapper for storage and must be returned on reading.\)
+The generation expression can refer to other columns in the table, but not other generated columns. Any functions and operators used must be immutable. References to other tables are not allowed.
 
 server\_name
-:   The name of an existing server to use for the foreign table. For details on defining a server, see [CREATE SERVER](CREATE_SERVER.html).
+The name of an existing server to use for the foreign table. For details on defining a server, see [CREATE SERVER](CREATE_SERVER.html).
 
 OPTIONS \( option 'value' \[, ... \] \)
-:   The options for the new foreign table or one of its columns. While option names must be unique, a table option and a column option may have the same name. The option names and values are foreign-data wrapper-specific. WarehousePG validates the options and values using the foreign-data wrapper's validator\_function.
+The options for the new foreign table or one of its columns. While option names must be unique, a table option and a column option may have the same name. The option names and values are foreign-data wrapper-specific. WarehousePG validates the options and values using the foreign-data wrapper's validator\_function.
 
 mpp\_execute \{ 'coordinator' \| 'any' \| 'all segments' \}
-:   A WarehousePG-specific option that identifies the host from which the foreign-data wrapper reads or writes data:
+A WarehousePG-specific option that identifies the host from which the foreign-data wrapper reads or writes data:
 
     -   `coordinator` \(the default\)—Read or write data from the coordinator host.
     -   `any`—Read data from either the coordinator host or any one segment, depending on which path costs less.

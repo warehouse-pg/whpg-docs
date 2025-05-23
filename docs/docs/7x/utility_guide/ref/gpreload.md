@@ -42,30 +42,30 @@ For a partitioned table, you can reload the data of a leaf partition. However, d
 ## <a id="section5"></a>Options 
 
 -a \(do not prompt\)
-:   Optional. If specified, the `gpreload` utility does not prompt the user for confirmation.
+Optional. If specified, the `gpreload` utility does not prompt the user for confirmation.
 
 -d database
-:   The database that contains the tables to be reloaded. The `gpreload` utility connects to the database as the user running the utility.
+The database that contains the tables to be reloaded. The `gpreload` utility connects to the database as the user running the utility.
 
 -p port
-:   The WarehousePG coordinator port. If not specified, the value of the `PGPORT` environment variable is used. If the value is not available, an error is returned.
+The WarehousePG coordinator port. If not specified, the value of the `PGPORT` environment variable is used. If the value is not available, an error is returned.
 
 \{-t \| --table-file \} path\_to\_file
-:   The location and name of file containing list of schema qualified table names to reload and the column names to reorder from the WarehousePG. Only user defined tables are supported. Views or system catalog tables are not supported.
+The location and name of file containing list of schema qualified table names to reload and the column names to reorder from the WarehousePG. Only user defined tables are supported. Views or system catalog tables are not supported.
 
-:   If indexes are defined on table listed in the file, `gpreload` prompts to continue.
+If indexes are defined on table listed in the file, `gpreload` prompts to continue.
 
-:   Each line specifies a table name and the list of columns to sort. This is the format of each line in the file:
+Each line specifies a table name and the list of columns to sort. This is the format of each line in the file:
 
-:   `schema.table_name: column [desc] [, column2 [desc] ... ]`
+`schema.table_name: column [desc] [, column2 [desc] ... ]`
 
-:   The table name is followed by a colon \( : \) and then at least one column name. If you specify more than one column, separate the column names with a comma. The columns are sorted in ascending order. Specify the keyword `desc` after the column name to sort the column in descending order.
+The table name is followed by a colon \( : \) and then at least one column name. If you specify more than one column, separate the column names with a comma. The columns are sorted in ascending order. Specify the keyword `desc` after the column name to sort the column in descending order.
 
-:   Wildcard characters are not supported.
+Wildcard characters are not supported.
 
-:   If there are errors in the file, `gpreload` reports the first error and exits. No data is reloaded.
+If there are errors in the file, `gpreload` reports the first error and exits. No data is reloaded.
 
-:   The following example reloads three tables:
+The following example reloads three tables:
 
     ```
     public.clients: region, state, rep_id desc
@@ -73,13 +73,13 @@ For a partitioned table, you can reload the data of a leaf partition. However, d
     test.lineitem: group, assy, whse 
     ```
 
-:   In the first table `public.clients`, the data in the `rep_id` column is sorted in descending order. The data in the other columns are sorted in ascending order.
+In the first table `public.clients`, the data in the `rep_id` column is sorted in descending order. The data in the other columns are sorted in ascending order.
 
 --version \(show utility version\)
-:   Displays the version of this utility.
+Displays the version of this utility.
 
 -? \(help\)
-:   Displays the online help.
+Displays the online help.
 
 ## <a id="section6"></a>Example 
 

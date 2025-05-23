@@ -21,13 +21,13 @@ Prepared statements have the largest performance advantage when a single session
 ## <a id="section4"></a>Parameters 
 
 name
-:   An arbitrary name given to this particular prepared statement. It must be unique within a single session and is subsequently used to run or deallocate a previously prepared statement.
+An arbitrary name given to this particular prepared statement. It must be unique within a single session and is subsequently used to run or deallocate a previously prepared statement.
 
 data\_type
-:   The data type of a parameter to the prepared statement. If the data type of a particular parameter is unspecified or is specified as `unknown`, it will be inferred from the context in which the parameter is first referenced. To refer to the parameters in the prepared statement itself, use `$1`, `$2`, etc.
+The data type of a parameter to the prepared statement. If the data type of a particular parameter is unspecified or is specified as `unknown`, it will be inferred from the context in which the parameter is first referenced. To refer to the parameters in the prepared statement itself, use `$1`, `$2`, etc.
 
 statement
-:   Any `SELECT`, `INSERT`, `UPDATE`, `DELETE`, or `VALUES` statement.
+Any `SELECT`, `INSERT`, `UPDATE`, `DELETE`, or `VALUES` statement.
 
 ## <a id="section5"></a>Notes 
 

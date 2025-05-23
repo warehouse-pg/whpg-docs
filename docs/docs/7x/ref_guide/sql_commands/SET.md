@@ -27,36 +27,36 @@ See [Server Configuration Parameters](../config_params/guc_config.html) for info
 ## <a id="section4"></a>Parameters 
 
 SESSION
-:   Specifies that the command takes effect for the current session. This is the default if neither `SESSION` nor `LOCAL` appears.
+Specifies that the command takes effect for the current session. This is the default if neither `SESSION` nor `LOCAL` appears.
 
 LOCAL
-:   Specifies that the command takes effect for only the current transaction. After `COMMIT` or `ROLLBACK`, the session-level setting takes effect again. Issuing this outside of a transaction block emits a warning and otherwise has no effect.
+Specifies that the command takes effect for only the current transaction. After `COMMIT` or `ROLLBACK`, the session-level setting takes effect again. Issuing this outside of a transaction block emits a warning and otherwise has no effect.
 
 configuration\_parameter
-:   The name of a settable WarehousePG run-time configuration parameter. Only parameters classified as *session* can be changed with `SET`. See [Server Configuration Parameters](../config_params/guc_config.html) for details.
+The name of a settable WarehousePG run-time configuration parameter. Only parameters classified as *session* can be changed with `SET`. See [Server Configuration Parameters](../config_params/guc_config.html) for details.
 
 value
-:   New value of the parameter. Values can be specified as string constants, identifiers, numbers, or comma-separated lists of these, as appropriate for the particular parameter. `DEFAULT` can be used to specify resetting the parameter to its default value (that is, whatever value it would have had if no `SET` had been issued in the current session). If specifying memory sizing or time units, enclose the value in single quotes.
+New value of the parameter. Values can be specified as string constants, identifiers, numbers, or comma-separated lists of these, as appropriate for the particular parameter. `DEFAULT` can be used to specify resetting the parameter to its default value (that is, whatever value it would have had if no `SET` had been issued in the current session). If specifying memory sizing or time units, enclose the value in single quotes.
 
 There are a few configuration parameters that can only be adjusted using the `SET` command or that have a special syntax:
 
 SCHEMA
-:   `SET SCHEMA '<value>'` is an alias for `SET <search_path> TO <value>`. Only one schema may be specified using this syntax.
+`SET SCHEMA '<value>'` is an alias for `SET <search_path> TO <value>`. Only one schema may be specified using this syntax.
 
 NAMES
-:   `SET NAMES <value>` is an alias for `SET client_encoding TO <value>`.
+`SET NAMES <value>` is an alias for `SET client_encoding TO <value>`.
 
 SEED
-:   Sets the internal seed for the random number generator (the function `random()`). Allowed values are floating-point numbers between -1 and 1 inclusive.
+Sets the internal seed for the random number generator (the function `random()`). Allowed values are floating-point numbers between -1 and 1 inclusive.
 
-:   You can also set the seed by invoking the `setseed()` function:
+You can also set the seed by invoking the `setseed()` function:
 
     ```
     SELECT setseed(value);
     ```
 
 TIME ZONE
-:   `SET TIME ZONE <value>` is an alias for `SET timezone TO <value>`. The syntax `SET TIME ZONE` allows special syntax for the time zone specification. Examples of valid values follow:
+`SET TIME ZONE <value>` is an alias for `SET timezone TO <value>`. The syntax `SET TIME ZONE` allows special syntax for the time zone specification. Examples of valid values follow:
 
     - `'PST8PDT'`
     - `'Europe/Rome'`
@@ -65,7 +65,7 @@ TIME ZONE
 
     LOCAL
     DEFAULT
-    :   Set the time zone to your local time zone \(that is, server's default value of timezone\).
+    Set the time zone to your local time zone \(that is, server's default value of timezone\).
 
     See the [Time Zones](https://www.postgresql.org/docs/12/datatype-datetime.html#DATATYPE-TIMEZONES) section of the PostgreSQL documentation for more information about time zones in WarehousePG.
 

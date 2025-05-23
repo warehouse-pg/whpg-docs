@@ -19,17 +19,17 @@ You must own the extension to use `DROP EXTENSION`.
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the extension does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the extension does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name of an installed extension.
+The name of an installed extension.
 
 CASCADE
-:   Automatically drop objects that depend on the extension, and in turn all objects that depend on those objects. Refer to the PostgreSQL [Dependency Tracking](https://www.postgresql.org/docs/12/ddl-depend.html) documentation for more information.
+Automatically drop objects that depend on the extension, and in turn all objects that depend on those objects. Refer to the PostgreSQL [Dependency Tracking](https://www.postgresql.org/docs/12/ddl-depend.html) documentation for more information.
 > **Important** Before issuing a `DROP EXTENSION` with the `CASCADE` keyword, you should be aware of all object that depend on the extension to avoid unintended consequences.
 
 RESTRICT
-:   Refuse to drop an extension if any objects depend on it \(other than its own member objects and other extensions listed in the same `DROP` command\). This is the default.
+Refuse to drop an extension if any objects depend on it \(other than its own member objects and other extensions listed in the same `DROP` command\). This is the default.
 
 ## <a id="section5"></a>Examples
 

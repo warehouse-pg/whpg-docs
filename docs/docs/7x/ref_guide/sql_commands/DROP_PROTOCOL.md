@@ -19,10 +19,10 @@ You must be a superuser or the protocol owner to drop a protocol.
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the protocol does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the protocol does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name of an existing data access protocol.
+The name of an existing data access protocol.
 
 ## <a id="section5"></a>Notes 
 

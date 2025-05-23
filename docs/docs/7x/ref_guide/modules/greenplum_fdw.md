@@ -132,19 +132,19 @@ For more information about `greenplum_fdw` remote execution, updatability, impor
 By default, only `WHERE` clauses using built-in operators and functions are considered for execution on the remote server. `greenplum_fdw` locally checks clauses that involve non-built-in functions after rows are fetched. If such functions are available on the remote server and can be relied on to produce the same results as they do locally, you can improve performance by sending such `WHERE` clauses for remote execution. This behavior can be controlled using the following option:
 
 extensions
-:    This option is a comma-separated list of names of WarehousePG extensions that are installed, in compatible versions, on both the local and remote servers. Functions and operators that are immutable and belong to a listed extension are considered shippable to the remote server. You can specify this option only for foreign servers, not per-table.
+ This option is a comma-separated list of names of WarehousePG extensions that are installed, in compatible versions, on both the local and remote servers. Functions and operators that are immutable and belong to a listed extension are considered shippable to the remote server. You can specify this option only for foreign servers, not per-table.
 
-:    When using the `extensions` option, you must ensure that the listed extensions exist and behave identically on both the local and remote servers. Otherwise, remote queries may fail or behave unexpectedly.
+ When using the `extensions` option, you must ensure that the listed extensions exist and behave identically on both the local and remote servers. Otherwise, remote queries may fail or behave unexpectedly.
 
 fetch_size
-:    This option specifies the number of rows `greenplum_fdw` should retrieve in each fetch operation. You can specify this option for a foreign table or a foreign server. The option specified on a table overrides an option specified for the server. The default is `100`.
+ This option specifies the number of rows `greenplum_fdw` should retrieve in each fetch operation. You can specify this option for a foreign table or a foreign server. The option specified on a table overrides an option specified for the server. The default is `100`.
 
 ### <a id="topic_update"></a>About the Updatability Option
 
 By default, all foreign tables created with `greenplum_fdw` are assumed to be updatable. You can override this for a foreign server or a foreign table using the following option:
 
 `updatable`
-:   Controls whether `greenplum_fdw` allows foreign tables to be modified using the `INSERT` command. The default is true.
+Controls whether `greenplum_fdw` allows foreign tables to be modified using the `INSERT` command. The default is true.
 
 Setting this option at the foreign table-level overrides a foreign server-level option setting.
 

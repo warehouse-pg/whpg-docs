@@ -65,35 +65,35 @@ To be able to create a cast, you must own the source or the target data type and
 ## <a id="section4"></a>Parameters 
 
 sourcetype
-:   The name of the source data type of the cast.
+The name of the source data type of the cast.
 
 targettype
-:   The name of the target data type of the cast.
+The name of the target data type of the cast.
 
 funcname\(argtype \[, ...\]\)
-:   The function used to perform the cast. The function name may be schema-qualified. If it is not, WarehousePG looks for the function in the schema search path. The function's result data type must match the target type of the cast.
+The function used to perform the cast. The function name may be schema-qualified. If it is not, WarehousePG looks for the function in the schema search path. The function's result data type must match the target type of the cast.
 
-:   Cast implementation functions may have one to three arguments. The first argument type must be identical to or binary-coercible from the cast's source type. The second argument, if present, must be type `integer`; it receives the type modifier associated with the destination type, or `-1` if there is none. The third argument, if present, must be type `boolean`; it receives `true` if the cast is an explicit cast, `false` otherwise. The SQL specification demands different behaviors for explicit and implicit casts in some cases. This argument is supplied for functions that must implement such casts. It is not recommended that you design your own data types this way.
+Cast implementation functions may have one to three arguments. The first argument type must be identical to or binary-coercible from the cast's source type. The second argument, if present, must be type `integer`; it receives the type modifier associated with the destination type, or `-1` if there is none. The third argument, if present, must be type `boolean`; it receives `true` if the cast is an explicit cast, `false` otherwise. The SQL specification demands different behaviors for explicit and implicit casts in some cases. This argument is supplied for functions that must implement such casts. It is not recommended that you design your own data types this way.
 
-:   The return type of a cast function must be identical to or binary-coercible to the cast's target type.
+The return type of a cast function must be identical to or binary-coercible to the cast's target type.
 
-:   Ordinarily a cast must have different source and target data types. However, you are permitted to declare a cast with identical source and target types if it has a cast implementation function that takes more than one argument. This is used to represent type-specific length coercion functions in the system catalogs. The named function is used to coerce a value of the type to the type modifier value given by its second argument.
+Ordinarily a cast must have different source and target data types. However, you are permitted to declare a cast with identical source and target types if it has a cast implementation function that takes more than one argument. This is used to represent type-specific length coercion functions in the system catalogs. The named function is used to coerce a value of the type to the type modifier value given by its second argument.
 
-:   When a cast has different source and target types and a function that takes more than one argument, the cast converts from one type to another and applies a length coercion in a single step. When no such entry is available, coercion to a type that uses a type modifier involves two steps, one to convert between data types and a second to apply the modifier.
+When a cast has different source and target types and a function that takes more than one argument, the cast converts from one type to another and applies a length coercion in a single step. When no such entry is available, coercion to a type that uses a type modifier involves two steps, one to convert between data types and a second to apply the modifier.
 
-:   A cast to or from a domain type currently has no effect. Casting to or from a domain uses the casts associated with its underlying type.
+A cast to or from a domain type currently has no effect. Casting to or from a domain uses the casts associated with its underlying type.
 
 WITHOUT FUNCTION
-:   Indicates that the source type is binary-coercible to the target type, so no function is required to perform the cast.
+Indicates that the source type is binary-coercible to the target type, so no function is required to perform the cast.
 
 WITH INOUT
-:   Indicates that the cast is an I/O conversion cast, performed by invoking the output function of the source data type, and passing the resulting string to the input function of the target data type.
+Indicates that the cast is an I/O conversion cast, performed by invoking the output function of the source data type, and passing the resulting string to the input function of the target data type.
 
 AS ASSIGNMENT
-:   Indicates that the cast may be invoked implicitly in assignment contexts.
+Indicates that the cast may be invoked implicitly in assignment contexts.
 
 AS IMPLICIT
-:   Indicates that the cast may be invoked implicitly in any context.
+Indicates that the cast may be invoked implicitly in any context.
 
 ## <a id="section5"></a>Notes 
 

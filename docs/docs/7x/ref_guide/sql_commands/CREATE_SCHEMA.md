@@ -32,18 +32,18 @@ Optionally, `CREATE SCHEMA` can include subcommands to create objects within the
 ## <a id="section4"></a>Parameters 
 
 schema\_name
-:   The name of a schema to be created. If this is omitted, the user\_name is used as the schema name. The name cannot begin with `pg_`, as such names are reserved for system catalog schemas.
+The name of a schema to be created. If this is omitted, the user\_name is used as the schema name. The name cannot begin with `pg_`, as such names are reserved for system catalog schemas.
 
 user\_name
-:   The role name of the user who will own the new schema. If omitted, defaults to the user running the command. To create a schema owned by another role, you must be a direct or indirect member of that role, or be a superuser.
+The role name of the user who will own the new schema. If omitted, defaults to the user running the command. To create a schema owned by another role, you must be a direct or indirect member of that role, or be a superuser.
 
 schema\_element
-:   An SQL statement defining an object to be created within the schema. Currently, only `CREATE TABLE`, `CREATE VIEW`, `CREATE INDEX`, `CREATE SEQUENCE`, `CREATE TRIGGER`, and `GRANT` are accepted as clauses within `CREATE SCHEMA`. Other kinds of objects may be created in separate commands after the schema is created.
+An SQL statement defining an object to be created within the schema. Currently, only `CREATE TABLE`, `CREATE VIEW`, `CREATE INDEX`, `CREATE SEQUENCE`, `CREATE TRIGGER`, and `GRANT` are accepted as clauses within `CREATE SCHEMA`. Other kinds of objects may be created in separate commands after the schema is created.
 
     > **Note** WarehousePG does not support triggers.
 
 `IF NOT EXISTS`
-:   Do nothing \(except issuing a notice\) if a schema with the same name already exists. schema\_element subcommands cannot be included when this option is used.
+Do nothing \(except issuing a notice\) if a schema with the same name already exists. schema\_element subcommands cannot be included when this option is used.
 
 ## <a id="section5"></a>Notes 
 

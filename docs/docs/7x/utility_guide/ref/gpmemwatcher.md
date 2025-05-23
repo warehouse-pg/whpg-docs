@@ -23,7 +23,7 @@ You may use this utility if WarehousePG is reporting `Out of memory` errors and 
 ## <a id="section4"></a>Options 
 
 -f \| --host\_file hostfile
-:   Indicates the hostfile input file that lists the hosts from which the utility should collect memory usage information. The file must include the hostnames and a working directory that exists on each one of the hosts. For example:
+Indicates the hostfile input file that lists the hosts from which the utility should collect memory usage information. The file must include the hostnames and a working directory that exists on each one of the hosts. For example:
 
     ```
     cdw:/home/gpadmin/gpmemwatcher_dir/working
@@ -34,13 +34,13 @@ You may use this utility if WarehousePG is reporting `Out of memory` errors and 
     ```
 
 --stop
-:   Stops all the `gpmemwatcher` processes, generates `.gz` data files in the current directory, and removes all the work files from all the hosts.
+Stops all the `gpmemwatcher` processes, generates `.gz` data files in the current directory, and removes all the work files from all the hosts.
 
 --version
-:   Displays the version of this utility.
+Displays the version of this utility.
 
 -h \| --help
-:   Displays the online help.
+Displays the online help.
 
 ## <a id="section5"></a>Examples 
 

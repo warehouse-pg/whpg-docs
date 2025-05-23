@@ -15,19 +15,19 @@ DROP RULE [IF EXISTS] <name> ON <table_name> [CASCADE | RESTRICT]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the rule does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the rule does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name of the rule to remove.
+The name of the rule to remove.
 
 table\_name
-:   The name \(optionally schema-qualified\) of the table or view that the rule applies to.
+The name \(optionally schema-qualified\) of the table or view that the rule applies to.
 
 CASCADE
-:   Automatically drop objects that depend on the rule, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the rule, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the rule if any objects depend on it. This is the default.
+Refuse to drop the rule if any objects depend on it. This is the default.
 
 ## <a id="section5"></a>Examples 
 

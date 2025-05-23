@@ -161,22 +161,22 @@ Running the command executes a PL/Container function that displays configuration
 
 ```
 INFO:  plcontainer: Container 'plc_py_test' configuration
- INFO:  plcontainer:     image = 'pivotaldata/plcontainer_python_shared:devel'
- INFO:  plcontainer:     memory_mb = '1024'
- INFO:  plcontainer:     use container network = 'no'
- INFO:  plcontainer:     use container logging  = 'no'
- INFO:  plcontainer:     shared directory from host '/usr/local/greenplum-db/./bin/plcontainer_clients' to container '/clientdir'
- INFO:  plcontainer:     access = readonly
+ INFO:  plcontainer  image = 'pivotaldata/plcontainer_python_shared:devel'
+ INFO:  plcontainer  memory_mb = '1024'
+ INFO:  plcontainer  use container network = 'no'
+ INFO:  plcontainer  use container logging  = 'no'
+ INFO:  plcontainer  shared directory from host '/usr/local/greenplum-db/./bin/plcontainer_clients' to container '/clientdir'
+ INFO:  plcontainer  access = readonly
                 
  ...
                 
  INFO:  plcontainer: Container 'plc_r_example' configuration  (seg0 slice3 192.168.180.45:40000 pid=3304)
- INFO:  plcontainer:     image = 'pivotaldata/plcontainer_r_without_clients:0.2'  (seg0 slice3 192.168.180.45:40000 pid=3304)
- INFO:  plcontainer:     memory_mb = '1024'  (seg0 slice3 192.168.180.45:40000 pid=3304)
- INFO:  plcontainer:     use container network = 'no'  (seg0 slice3 192.168.180.45:40000 pid=3304)
- INFO:  plcontainer:     use container logging  = 'yes'  (seg0 slice3 192.168.180.45:40000 pid=3304)
- INFO:  plcontainer:     shared directory from host '/usr/local/greenplum-db/bin/plcontainer_clients' to container '/clientdir'  (seg0 slice3 192.168.180.45:40000 pid=3304)
- INFO:  plcontainer:         access = readonly  (seg0 slice3 192.168.180.45:40000 pid=3304)
+ INFO:  plcontainer  image = 'pivotaldata/plcontainer_r_without_clients:0.2'  (seg0 slice3 192.168.180.45:40000 pid=3304)
+ INFO:  plcontainer  memory_mb = '1024'  (seg0 slice3 192.168.180.45:40000 pid=3304)
+ INFO:  plcontainer  use container network = 'no'  (seg0 slice3 192.168.180.45:40000 pid=3304)
+ INFO:  plcontainer  use container logging  = 'yes'  (seg0 slice3 192.168.180.45:40000 pid=3304)
+ INFO:  plcontainer  shared directory from host '/usr/local/greenplum-db/bin/plcontainer_clients' to container '/clientdir'  (seg0 slice3 192.168.180.45:40000 pid=3304)
+ INFO:  plcontainer      access = readonly  (seg0 slice3 192.168.180.45:40000 pid=3304)
  gp_segment_id | plcontainer_show_local_config
  ---------------+-------------------------------
   0 | ok

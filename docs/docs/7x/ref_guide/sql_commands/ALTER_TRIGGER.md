@@ -15,13 +15,13 @@ ALTER TRIGGER <name> ON <table> RENAME TO <newname>
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of an existing trigger to alter.
+The name of an existing trigger to alter.
 
 table
-:   The name of the table on which this trigger acts.
+The name of the table on which this trigger acts.
 
 newname
-:   The new name for the trigger.
+The new name for the trigger.
 
 ## <a id="section5"></a>Notes 
 

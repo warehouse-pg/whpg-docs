@@ -15,16 +15,16 @@ DROP FOREIGN DATA WRAPPER [ IF EXISTS ] <name> [ CASCADE | RESTRICT ]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the foreign-data wrapper does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the foreign-data wrapper does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name of an existing foreign-data wrapper.
+The name of an existing foreign-data wrapper.
 
 CASCADE
-:   Automatically drop objects that depend on the foreign-data wrapper \(such as foreign tables and servers\), and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the foreign-data wrapper \(such as foreign tables and servers\), and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the foreign-data wrapper if any object depends on it. This is the default.
+Refuse to drop the foreign-data wrapper if any object depends on it. This is the default.
 
 ## <a id="section6"></a>Examples 
 

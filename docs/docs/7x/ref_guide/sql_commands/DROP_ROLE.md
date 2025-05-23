@@ -19,10 +19,10 @@ However, it is not necessary to remove role memberships involving the role; `DRO
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the role does not exist. A notice is issued in this case.
+Do not throw an error if the role does not exist. A notice is issued in this case.
 
 name
-:   The name of the role to remove.
+The name of the role to remove.
 
 ## <a id="section5"></a>Examples 
 

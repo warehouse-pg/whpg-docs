@@ -20,13 +20,13 @@ You must be a superuser to use `ALTER TEXT SEARCH PARSER`.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing text search parser.
+The name \(optionally schema-qualified\) of an existing text search parser.
 
 new\_name
-:   The new name of the text search parser.
+The new name of the text search parser.
 
 new\_schema
-:   The new schema for the text search parser.
+The new schema for the text search parser.
 
 ## <a id="section7"></a>Compatibility 
 

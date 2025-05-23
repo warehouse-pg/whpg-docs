@@ -82,13 +82,13 @@ Default privileges that are specified per-schema are added to whatever the globa
 ## <a id="parms"></a>Parameters 
 
 target\_role
-:   The name of an existing role of which the current role is a member. If `FOR ROLE` is omitted, the current role is assumed.
+The name of an existing role of which the current role is a member. If `FOR ROLE` is omitted, the current role is assumed.
 
 schema\_name
-:   The name of an existing schema. If specified, the default privileges are altered for objects later created in that schema. If `IN SCHEMA` is omitted, the global default privileges are altered. `IN SCHEMA` is not allowed when setting privileges for schemas, since schemas can't be nested.
+The name of an existing schema. If specified, the default privileges are altered for objects later created in that schema. If `IN SCHEMA` is omitted, the global default privileges are altered. `IN SCHEMA` is not allowed when setting privileges for schemas, since schemas can't be nested.
 
 role\_name
-:   The name of an existing role to grant or revoke privileges for. This parameter, and all the other parameters in abbreviated\_grant\_or\_revoke, act as described under [GRANT](GRANT.html) or [REVOKE](REVOKE.html), except that one is setting permissions for a whole class of objects rather than specific named objects.
+The name of an existing role to grant or revoke privileges for. This parameter, and all the other parameters in abbreviated\_grant\_or\_revoke, act as described under [GRANT](GRANT.html) or [REVOKE](REVOKE.html), except that one is setting permissions for a whole class of objects rather than specific named objects.
 
 ## <a id="sql-alterdefaultprivileges-notes"></a>Notes 
 

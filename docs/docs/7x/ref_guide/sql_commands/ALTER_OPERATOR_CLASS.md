@@ -21,19 +21,19 @@ You must own the operator class to use `ALTER OPERATOR CLASS`. To alter the owne
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing operator class.
+The name \(optionally schema-qualified\) of an existing operator class.
 
 index\_method
-:   The name of the index method this operator class is for.
+The name of the index method this operator class is for.
 
 new\_name
-:   The new name of the operator class.
+The new name of the operator class.
 
 new\_owner
-:   The new owner of the operator class
+The new owner of the operator class
 
 new\_schema
-:   The new schema for the operator class.
+The new schema for the operator class.
 
 ## <a id="section5"></a>Compatibility 
 

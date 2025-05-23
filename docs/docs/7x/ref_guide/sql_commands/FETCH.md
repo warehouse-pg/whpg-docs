@@ -45,37 +45,37 @@ The forms using `FORWARD` retrieve the indicated number of rows moving in the fo
 ## <a id="section5"></a>Parameters 
 
 forward\_direction
-:   Defines the fetch direction and number of rows to fetch. Only forward fetches are allowed in WarehousePG. It can be one of the following:
+Defines the fetch direction and number of rows to fetch. Only forward fetches are allowed in WarehousePG. It can be one of the following:
 
 NEXT
-:   Fetch the next row. This is the default if direction is omitted.
+Fetch the next row. This is the default if direction is omitted.
 
 FIRST
-:   Fetch the first row of the query \(same as `ABSOLUTE 1`\). Only allowed if it is the first `FETCH` operation using this cursor.
+Fetch the first row of the query \(same as `ABSOLUTE 1`\). Only allowed if it is the first `FETCH` operation using this cursor.
 
 ABSOLUTE count
-:   Fetch the specified row of the query. Position after last row if count is out of range. Only allowed if the row specified by count moves the cursor position forward.
+Fetch the specified row of the query. Position after last row if count is out of range. Only allowed if the row specified by count moves the cursor position forward.
 
 RELATIVE count
-:   Fetch the specified row of the query count rows ahead of the current cursor position. `RELATIVE 0` re-fetches the current row, if any. Only allowed if count moves the cursor position forward.
+Fetch the specified row of the query count rows ahead of the current cursor position. `RELATIVE 0` re-fetches the current row, if any. Only allowed if count moves the cursor position forward.
 
 count
-:   Fetch the next count number of rows \(same as `FORWARD count`\).
+Fetch the next count number of rows \(same as `FORWARD count`\).
 
 ALL
-:   Fetch all remaining rows \(same as `FORWARD ALL`\).
+Fetch all remaining rows \(same as `FORWARD ALL`\).
 
 FORWARD
-:   Fetch the next row \(same as `NEXT`\).
+Fetch the next row \(same as `NEXT`\).
 
 FORWARD count
-:   Fetch the next count number of rows. `FORWARD 0` re-fetches the current row.
+Fetch the next count number of rows. `FORWARD 0` re-fetches the current row.
 
 FORWARD ALL
-:   Fetch all remaining rows.
+Fetch all remaining rows.
 
 cursor\_name
-:   The name of an open cursor.
+The name of an open cursor.
 
 ## <a id="section5a"></a>Outputs
 

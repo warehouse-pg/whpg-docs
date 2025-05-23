@@ -17,10 +17,10 @@ If the procedure has any output parameters, then a result row will be returned, 
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of the procedure.
+The name \(optionally schema-qualified\) of the procedure.
 
 argument
-:   An input argument for the procedure call.
+An input argument for the procedure call.
 
 ## <a id="section4"></a>Notes
 

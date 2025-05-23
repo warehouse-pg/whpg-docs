@@ -17,10 +17,10 @@ A tablespace can only be dropped by its owner or a superuser. The tablespace mus
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the tablespace does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the tablespace does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name of the tablespace to remove.
+The name of the tablespace to remove.
 
 ## <a id="Notes"></a>Notes 
 

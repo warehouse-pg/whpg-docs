@@ -23,32 +23,32 @@ Only superusers can alter foreign-data wrappers. Additionally, only superusers c
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of an existing foreign-data wrapper.
+The name of an existing foreign-data wrapper.
 
 HANDLER handler\_function
-:   Specifies a new handler function for the foreign-data wrapper.
+Specifies a new handler function for the foreign-data wrapper.
 
 NO HANDLER
-:   Specifies that the foreign-data wrapper should no longer have a handler function.
+Specifies that the foreign-data wrapper should no longer have a handler function.
 
     > **Note** You cannot access a foreign table that uses a foreign-data wrapper with no handler.
 
 VALIDATOR validator\_function
-:   Specifies a new validator function for the foreign-data wrapper.
+Specifies a new validator function for the foreign-data wrapper.
 
-:   Note that it is possible that pre-existing options of the foreign-data wrapper, or of dependent servers, user mappings, or foreign tables, may become invalid when you change the validator function. WarehousePG does not check for this. You must make sure that these options are correct before using the modified foreign-data wrapper. However, WarehousePG will check any options specified in this `ALTER FOREIGN DATA WRAPPER` command using the new validator.
+Note that it is possible that pre-existing options of the foreign-data wrapper, or of dependent servers, user mappings, or foreign tables, may become invalid when you change the validator function. WarehousePG does not check for this. You must make sure that these options are correct before using the modified foreign-data wrapper. However, WarehousePG will check any options specified in this `ALTER FOREIGN DATA WRAPPER` command using the new validator.
 
 NO VALIDATOR
-:   Specifies that the foreign-data wrapper should no longer have a validator function.
+Specifies that the foreign-data wrapper should no longer have a validator function.
 
 OPTIONS \( \[ ADD \| SET \| DROP \] option \['value'\] \[, ... \] \)
-:   Change the foreign-data wrapper's options. `ADD`, `SET`, and `DROP` specify the action to perform. If no operation is explicitly specified, the default operation is `ADD`. Option names must be unique. WarehousePG validates names and values using the foreign-data wrapper's validator function, if any.
+Change the foreign-data wrapper's options. `ADD`, `SET`, and `DROP` specify the action to perform. If no operation is explicitly specified, the default operation is `ADD`. Option names must be unique. WarehousePG validates names and values using the foreign-data wrapper's validator function, if any.
 
 OWNER TO new\_owner
-:   Specifies the user name of the new owner of the foreign-data wrapper. Only superusers can own foreign-data wrappers.
+Specifies the user name of the new owner of the foreign-data wrapper. Only superusers can own foreign-data wrappers.
 
 RENAME TO new\_name
-:   Specifies the new name of the foreign-data wrapper.
+Specifies the new name of the foreign-data wrapper.
 
 ## <a id="section6"></a>Examples 
 

@@ -30,13 +30,13 @@ SELECT [ALL | DISTINCT [ON ( <expression> [, ...] )]]
 
 TEMPORARY
 TEMP
-:   If specified, the table is created as a temporary table. Refer to [CREATE TABLE](CREATE_TABLE.html) for details.
+If specified, the table is created as a temporary table. Refer to [CREATE TABLE](CREATE_TABLE.html) for details.
 
 UNLOGGED
-:   If specified, the table is created as an unlogged table. Refer to [CREATE TABLE](CREATE_TABLE.html) for details.
+If specified, the table is created as an unlogged table. Refer to [CREATE TABLE](CREATE_TABLE.html) for details.
 
 new\_table
-:   The name \(optionally schema-qualified\) of the table to be created.
+The name \(optionally schema-qualified\) of the table to be created.
 
 All other parameters for `SELECT INTO` are described in detail on the [SELECT](SELECT.html) reference page.
 

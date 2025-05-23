@@ -41,61 +41,61 @@ Where <command\> is one of the following.
 ## <a id="cmds"></a>plcontainer Commands and Options 
 
 image-add location
-:   Install a Docker image on the WarehousePG hosts. Specify either the location of the Docker image file on the host or the URL to the Docker image. These are the supported location options:
+Install a Docker image on the WarehousePG hosts. Specify either the location of the Docker image file on the host or the URL to the Docker image. These are the supported location options:
 
     -   \{**-f** \| **--file**\} image\_file Specify the file system location of the Docker image tar archive file on the local host. This example specifies an image file in the `gpadmin` user's home directory: `/home/gpadmin/test_image.tar.gz`
     -   \{**-u** \| **--URL**\} image\_URL Specify the URL of the Docker repository and image. This example URL points to a local Docker repository `192.168.0.1:5000/images/mytest_plc_r:devel`
 
-:   By default, the `image-add` command copies the image to each WarehousePG segment and standby coordinator host, and installs the image. When you specify an image\_file and provide the \[**-ulc** \| **--use\_local\_copy**\] option, `plcontainer` installs the image only on the host on which you run the command.
+By default, the `image-add` command copies the image to each WarehousePG segment and standby coordinator host, and installs the image. When you specify an image\_file and provide the \[**-ulc** \| **--use\_local\_copy**\] option, `plcontainer` installs the image only on the host on which you run the command.
 
-:   After installing the Docker image, use the [runtime-add](#runtime_add) command to configure PL/Container to use the Docker image.
+After installing the Docker image, use the [runtime-add](#runtime_add) command to configure PL/Container to use the Docker image.
 
 image-delete \{**-i** \| **--image**\} image\_name
-:   Remove an installed Docker image from all WarehousePG hosts. Specify the full Docker image name including the tag for example `pivotaldata/plcontainer_python_shared:1.0.0`
+Remove an installed Docker image from all WarehousePG hosts. Specify the full Docker image name including the tag for example `pivotaldata/plcontainer_python_shared:1.0.0`
 
 image-list
-:   List the Docker images installed on the host. The command list only the images on the local host, not remote hosts. The command lists all installed Docker images, including images installed with Docker commands.
+List the Docker images installed on the host. The command list only the images on the local host, not remote hosts. The command lists all installed Docker images, including images installed with Docker commands.
 
 runtime-add options
-:   Add configuration information to the PL/Container configuration file on all WarehousePG hosts. If the specified runtime\_id exists, the utility returns an error and the configuration information is not added.
+Add configuration information to the PL/Container configuration file on all WarehousePG hosts. If the specified runtime\_id exists, the utility returns an error and the configuration information is not added.
 
-:   These are the supported options:
+These are the supported options:
 
-:   \{**-i** \| **--image**\} docker-image
-:   Required. Specify the full Docker image name, including the tag, that is installed on the WarehousePG hosts. For example `pivotaldata/plcontainer_python:1.0.0`.
+\{**-i** \| **--image**\} docker-image
+Required. Specify the full Docker image name, including the tag, that is installed on the WarehousePG hosts. For example `pivotaldata/plcontainer_python:1.0.0`.
 
-:   The utility returns a warning if the specified Docker image is not installed.
+The utility returns a warning if the specified Docker image is not installed.
 
-:   The `plcontainer image-list` command displays installed image information including the name and tag \(the Repository and Tag columns\).
+The `plcontainer image-list` command displays installed image information including the name and tag \(the Repository and Tag columns\).
 
 \{**-l** \| **--language**\} python \| python3 \| r
-:   Required. Specify the PL/Container language type, supported values are `python` \(PL/Python using Python 2\), `python3` \(PL/Python using Python 3\) and `r` \(PL/R\). When adding configuration information for a new runtime, the utility adds a startup command to the configuration based on the language you specify.
+Required. Specify the PL/Container language type, supported values are `python` \(PL/Python using Python 2\), `python3` \(PL/Python using Python 3\) and `r` \(PL/R\). When adding configuration information for a new runtime, the utility adds a startup command to the configuration based on the language you specify.
 
-:   Startup command for the Python 2 language.
+Startup command for the Python 2 language.
 
     ```
     /clientdir/pyclient.sh
     ```
 
-:   Startup command for the Python 3 language.
+Startup command for the Python 3 language.
 
     ```
     /clientdir/pyclient3.sh
     ```
 
-:   Startup command for the R language.
+Startup command for the R language.
 
     ```
     /clientdir/rclient.sh
     ```
 
 \{**-r** \| **--runtime**\} runtime\_id
-:   Required. Add the runtime ID. When adding a `runtime` element in the PL/Container configuration file, this is the value of the `id` element in the PL/Container configuration file. Maximum length is 63 Bytes.
+Required. Add the runtime ID. When adding a `runtime` element in the PL/Container configuration file, this is the value of the `id` element in the PL/Container configuration file. Maximum length is 63 Bytes.
 
-:   You specify the name in the WarehousePG UDF on the `# container` line.
+You specify the name in the WarehousePG UDF on the `# container` line.
 
 \{**-s** \| **--setting**\} param=value
-:   Optional. Specify a setting to add to the runtime configuration information. You can specify this option multiple times. The setting applies to the runtime configuration specified by the runtime\_id. The parameter is the XML attribute of the [settings](#plc_settings) element in the PL/Container configuration file. These are valid parameters.
+Optional. Specify a setting to add to the runtime configuration information. You can specify this option multiple times. The setting applies to the runtime configuration specified by the runtime\_id. The parameter is the XML attribute of the [settings](#plc_settings) element in the PL/Container configuration file. These are valid parameters.
 
     -   `cpu_share` - Set the CPU limit for each container in the runtime configuration. The default value is 1024. The value is a relative weighting of CPU usage compared to other containers.
     -   `memory_mb` - Set the memory limit for each container in the runtime configuration. The default value is 1024. The value is an integer that specifies the amount of memory in MB.
@@ -106,19 +106,19 @@ runtime-add options
 
 
 \{**-v** \| **--volume**\} shared-volume
-:   Optional. Specify a Docker volume to bind mount. You can specify this option multiple times to define multiple volumes.
+Optional. Specify a Docker volume to bind mount. You can specify this option multiple times to define multiple volumes.
 
-:   The format for a shared volume: `host-dir:container-dir:[rw|ro]`. The information is stored as attributes in the `shared_directory` element of the `runtime` element in the PL/Container configuration file.
+The format for a shared volume: `host-dir:container-dir:[rw|ro]`. The information is stored as attributes in the `shared_directory` element of the `runtime` element in the PL/Container configuration file.
 
     -   host-dir - absolute path to a directory on the host system. The WarehousePG administrator user \(gpadmin\) must have appropriate access to the directory.
     -   container-dir - absolute path to a directory in the Docker container.
     -   `[rw|ro]` - read-write or read-only access to the host directory from the container.
 
-:   When adding configuration information for a new runtime, the utility adds this read-only shared volume information.
+When adding configuration information for a new runtime, the utility adds this read-only shared volume information.
 
-:   `<greenplum-home>/bin/plcontainer_clients:/clientdir:ro`
+`<greenplum-home>/bin/plcontainer_clients:/clientdir:ro`
 
-:   If needed, you can specify other shared directories. The utility returns an error if the specified container-dir is the same as the one that is added by the utility, or if you specify multiple shared volumes with the same container-dir.
+If needed, you can specify other shared directories. The utility returns an error if the specified container-dir is the same as the one that is added by the utility, or if you specify multiple shared volumes with the same container-dir.
 
     > **Caution** Allowing read-write access to a host directory requires special considerations.
 
@@ -126,35 +126,35 @@ runtime-add options
     -   When running PL/Container user-defined functions, multiple concurrent Docker containers that are running on a host could change data in the host directory. Ensure that the functions support multiple concurrent access to the data in the host directory.
 
 runtime-backup \{**-f** \| **--file**\} config\_file
-:   Copies the PL/Container configuration file to the specified file on the local host.
+Copies the PL/Container configuration file to the specified file on the local host.
 
 runtime-delete \{**-r** \| **--runtime**\} runtime\_id
-:   Removes runtime configuration information in the PL/Container configuration file on all WarehousePG instances. The utility returns a message if the specified runtime\_id does not exist in the file.
+Removes runtime configuration information in the PL/Container configuration file on all WarehousePG instances. The utility returns a message if the specified runtime\_id does not exist in the file.
 
 runtime-edit \[\{**-e** \| **--editor**\} editor\]
-:   Edit the XML file `plcontainer_configuration.xml` with the specified editor. The default editor is `vi`.
+Edit the XML file `plcontainer_configuration.xml` with the specified editor. The default editor is `vi`.
 
     Saving the file updates the configuration file on all WarehousePG hosts. If errors exist in the updated file, the utility returns an error and does not update the file.
 
 runtime-replace options
-:   Replaces runtime configuration information in the PL/Container configuration file on all WarehousePG instances. If the runtime\_id does not exist, the information is added to the configuration file. The utility adds a startup command and shared directory to the configuration.
+Replaces runtime configuration information in the PL/Container configuration file on all WarehousePG instances. If the runtime\_id does not exist, the information is added to the configuration file. The utility adds a startup command and shared directory to the configuration.
 
     See [runtime-add](#runtime_add) for command options and information added to the configuration.
 
 runtime-restore \{**-f** \| **--file**\} config\_file
-:   Replaces information in the PL/Container configuration file `plcontainer_configuration.xml` on all WarehousePG instances with the information from the specified file on the local host.
+Replaces information in the PL/Container configuration file `plcontainer_configuration.xml` on all WarehousePG instances with the information from the specified file on the local host.
 
 runtime-show \[\{**-r** \| **--runtime**\} runtime\_id\]
-:   Displays formatted PL/Container runtime configuration information. If a runtime\_id is not specified, the configuration for all runtime IDs are displayed.
+Displays formatted PL/Container runtime configuration information. If a runtime\_id is not specified, the configuration for all runtime IDs are displayed.
 
 runtime-verify
-:   Checks the PL/Container configuration information on the WarehousePG instances with the configuration information on the coordinator. If the utility finds inconsistencies, you are prompted to replace the remote copy with the local copy. The utility also performs XML validation.
+Checks the PL/Container configuration information on the WarehousePG instances with the configuration information on the coordinator. If the utility finds inconsistencies, you are prompted to replace the remote copy with the local copy. The utility also performs XML validation.
 
 **-h** \| **--help**
-:   Display help text. If specified without a command, displays help for all `plcontainer` commands. If specified with a command, displays help for the command.
+Display help text. If specified without a command, displays help for all `plcontainer` commands. If specified with a command, displays help for the command.
 
 **--verbose**
-:   Enable verbose logging for the command.
+Enable verbose logging for the command.
 
 ## <a id="exs"></a>Examples 
 

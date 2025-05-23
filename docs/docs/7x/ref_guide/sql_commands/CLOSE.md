@@ -17,10 +17,10 @@ Every non-holdable open cursor is implicitly closed when a transaction is termin
 ## <a id="section4"></a>Parameters 
 
 cursor\_name
-:   The name of an open cursor to close.
+The name of an open cursor to close.
 
 ALL
-:   Close all open cursors.
+Close all open cursors.
 
 ## <a id="section5"></a>Notes 
 

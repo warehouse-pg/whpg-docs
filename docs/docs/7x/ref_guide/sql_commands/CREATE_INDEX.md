@@ -32,104 +32,104 @@ All functions and operators used in an index definition must be immutable. Their
 ## <a id="section4"></a>Parameters 
 
 UNIQUE
-:   Checks for duplicate values in the table when the index is created \(if data already exist\) and each time data is added. Duplicate entries will generate an error. Unique indexes only apply to B-tree indexes.
-:   Additional restrictions apply when unique indexes are applied to partitioned tables; see [CREATE TABLE](CREATE_TABLE.html).
+Checks for duplicate values in the table when the index is created \(if data already exist\) and each time data is added. Duplicate entries will generate an error. Unique indexes only apply to B-tree indexes.
+Additional restrictions apply when unique indexes are applied to partitioned tables; see [CREATE TABLE](CREATE_TABLE.html).
 
 IF NOT EXISTS
-:   Do not throw an error if a relation with the same name already exists. A notice is issued in this case. Note that there is no guarantee that the existing index is anything like the one that would have been created. Index name is required when `IF NOT EXISTS` is specified.
+Do not throw an error if a relation with the same name already exists. A notice is issued in this case. Note that there is no guarantee that the existing index is anything like the one that would have been created. Index name is required when `IF NOT EXISTS` is specified.
 
 INCLUDE
-:   The optional `INCLUDE` clause specifies a list of columns which will be included in the index as non-key columns. A non-key column cannot be used in an index scan search qualification, and it is disregarded for purposes of any uniqueness or exclusion constraint enforced by the index. However, an index-only scan can return the contents of non-key columns without having to visit the index's table, since they are available directly from the index entry. Thus, addition of non-key columns allows index-only scans to be used for queries that otherwise could not use them.
+The optional `INCLUDE` clause specifies a list of columns which will be included in the index as non-key columns. A non-key column cannot be used in an index scan search qualification, and it is disregarded for purposes of any uniqueness or exclusion constraint enforced by the index. However, an index-only scan can return the contents of non-key columns without having to visit the index's table, since they are available directly from the index entry. Thus, addition of non-key columns allows index-only scans to be used for queries that otherwise could not use them.
 
-:   Be conservative about adding non-key columns to an index, especially wide columns. If an index tuple exceeds the maximum size allowed for the index type, data insertion fails. In any case, non-key columns duplicate data from the index's table and bloat the size of the index, thus potentially slowing searches.
+Be conservative about adding non-key columns to an index, especially wide columns. If an index tuple exceeds the maximum size allowed for the index type, data insertion fails. In any case, non-key columns duplicate data from the index's table and bloat the size of the index, thus potentially slowing searches.
 
-:   Columns listed in the `INCLUDE` clause don't need appropriate operator classes; the clause can include columns whose data types don't have operator classes defined for a given access method.
+Columns listed in the `INCLUDE` clause don't need appropriate operator classes; the clause can include columns whose data types don't have operator classes defined for a given access method.
 
-:   Expressions are not supported as included columns since they cannot be used in index-only scans.
+Expressions are not supported as included columns since they cannot be used in index-only scans.
 
-:   Currently, the B-tree and the GiST index access methods support `INCLUDE`. In B-tree and the GiST indexes, the values of columns listed in the `INCLUDE` clause are included in leaf tuples which correspond to heap tuples, but are not included in upper-level index entries used for tree navigation.
+Currently, the B-tree and the GiST index access methods support `INCLUDE`. In B-tree and the GiST indexes, the values of columns listed in the `INCLUDE` clause are included in leaf tuples which correspond to heap tuples, but are not included in upper-level index entries used for tree navigation.
 
 name
-:   The name of the index to be created. The index is always created in the same schema as its parent table. If the name is omitted, WarehousePG chooses a suitable name based on the parent table's name and the indexed column name\(s\).
+The name of the index to be created. The index is always created in the same schema as its parent table. If the name is omitted, WarehousePG chooses a suitable name based on the parent table's name and the indexed column name\(s\).
 
 ONLY
-:   Indicates not to recurse creating indexes on partitions, if the table is partitioned. The default is to recurse.
+Indicates not to recurse creating indexes on partitions, if the table is partitioned. The default is to recurse.
 
 table\_name
-:   The name \(optionally schema-qualified\) of the table to be indexed.
+The name \(optionally schema-qualified\) of the table to be indexed.
 
 method
-:   The name of the index method to be used. Choices are `btree`, `bitmap`, `hash`, `gist`, `spgist`, `gin`, and `brin`. The default method is `btree`.
+The name of the index method to be used. Choices are `btree`, `bitmap`, `hash`, `gist`, `spgist`, `gin`, and `brin`. The default method is `btree`.
 
-:   GPORCA supports only B-tree, bitmap, GiST, GIN, and BRIN indexes. GPORCA ignores indexes created with unsupported indexing methods.
+GPORCA supports only B-tree, bitmap, GiST, GIN, and BRIN indexes. GPORCA ignores indexes created with unsupported indexing methods.
 
 column\_name
-:   The name of a column of the table on which to create the index.
+The name of a column of the table on which to create the index.
 
 expression
-:   An expression based on one or more columns of the table. The expression usually must be written with surrounding parentheses, as shown in the syntax. However, the parentheses may be omitted if the expression has the form of a function call.
+An expression based on one or more columns of the table. The expression usually must be written with surrounding parentheses, as shown in the syntax. However, the parentheses may be omitted if the expression has the form of a function call.
 
 collation
-:   The name of the collation to use for the index. By default, the index uses the collation declared for the column to be indexed or the result collation of the expression to be indexed. Indexes with non-default collations can be useful for queries that involve expressions using non-default collations.
+The name of the collation to use for the index. By default, the index uses the collation declared for the column to be indexed or the result collation of the expression to be indexed. Indexes with non-default collations can be useful for queries that involve expressions using non-default collations.
 
 opclass
-:   The name of an operator class.
+The name of an operator class.
 
 ASC
-:   Specifies ascending sort order \(which is the default\).
+Specifies ascending sort order \(which is the default\).
 
 DESC
-:   Specifies descending sort order.
+Specifies descending sort order.
 
 NULLS FIRST
-:   Specifies that nulls sort before non-nulls. This is the default when `DESC` is specified.
+Specifies that nulls sort before non-nulls. This is the default when `DESC` is specified.
 
 NULLS LAST
-:   Specifies that nulls sort after non-nulls. This is the default when `DESC` is not specified.
+Specifies that nulls sort after non-nulls. This is the default when `DESC` is not specified.
 
 storage\_parameter
-:   The name of an index-method-specific storage parameter. Each index method has its own set of allowed storage parameters. See [Index Storage Parameters](#section4isp) for details.
+The name of an index-method-specific storage parameter. Each index method has its own set of allowed storage parameters. See [Index Storage Parameters](#section4isp) for details.
 
 tablespace\_name
-	:   The tablespace in which to create the index. If not specified, [default\_tablespace](../config_params/guc-list.html) is consulted, or [temp\_tablespaces](../config_params/guc-list.html) for indexes on temporary tables.
+	The tablespace in which to create the index. If not specified, [default\_tablespace](../config_params/guc-list.html) is consulted, or [temp\_tablespaces](../config_params/guc-list.html) for indexes on temporary tables.
 
 predicate
-:   The constraint expression for a partial index.
+The constraint expression for a partial index.
 
 ## <a id="section4isp"></a>Index Storage Parameters
 
 The optional `WITH` clause specifies *storage parameters* for the index. Each index method has its own set of allowed storage parameters. The B-tree, bitmap, hash, GiST, and SP-GiST index methods all accept this parameter:
 
 `fillfactor`
-:    The `fillfactor` for an index is a percentage that determines how full the index method will try to pack index pages. For B-trees, leaf pages are filled to this percentage during initial index build, and also when extending the index at the right \(adding new largest key values\). If pages subsequently become completely full, they will be split, leading to gradual degradation in the index's efficiency. B-trees use a default fillfactor of 90, but any integer value from 10 to 100 can be selected. If the table is static then fillfactor 100 is best to minimize the index's physical size, but for heavily updated tables a smaller fillfactor is better to minimize the need for page splits. The other index methods use fillfactor in different but roughly analogous ways; the default fillfactor varies between methods.
+ The `fillfactor` for an index is a percentage that determines how full the index method will try to pack index pages. For B-trees, leaf pages are filled to this percentage during initial index build, and also when extending the index at the right \(adding new largest key values\). If pages subsequently become completely full, they will be split, leading to gradual degradation in the index's efficiency. B-trees use a default fillfactor of 90, but any integer value from 10 to 100 can be selected. If the table is static then fillfactor 100 is best to minimize the index's physical size, but for heavily updated tables a smaller fillfactor is better to minimize the need for page splits. The other index methods use fillfactor in different but roughly analogous ways; the default fillfactor varies between methods.
 
 B-tree indexes additionally accept this parameter:
 
 vacuum_cleanup_index_scale_factor
-:   Per-index value for `vacuum_cleanup_index_scale_factor`.
+Per-index value for `vacuum_cleanup_index_scale_factor`.
 
 GiST indexes additionally accept this parameter:
 
 `buffering`
-:   Determines whether WarehousePG builds the index using the buffering build technique described in [GiST buffering build](https://www.postgresql.org/docs/12/gist-implementation.html) in the PostgreSQL documentation. With `OFF` it is deactivated, with `ON` it is activated, and with `AUTO` it is initially deactivated, but turned on on-the-fly once the index size reaches [effective\_cache\_size](../config_params/guc-list.html). The default is `AUTO`.
+Determines whether WarehousePG builds the index using the buffering build technique described in [GiST buffering build](https://www.postgresql.org/docs/12/gist-implementation.html) in the PostgreSQL documentation. With `OFF` it is deactivated, with `ON` it is activated, and with `AUTO` it is initially deactivated, but turned on on-the-fly once the index size reaches [effective\_cache\_size](../config_params/guc-list.html). The default is `AUTO`.
 
 GIN indexes accept different parameters:
 
 `fastupdate`
-:   This setting controls usage of the fast update technique described in [GIN Fast Update Technique](https://www.postgresql.org/docs/12/gin-implementation.html#GIN-FAST-UPDATE) in the PostgreSQL documentation. It is a Boolean parameter that deactivates or activates the GIN index fast update technique. A value of `ON` activates fast update \(the default\), and `OFF` deactivates it.
+This setting controls usage of the fast update technique described in [GIN Fast Update Technique](https://www.postgresql.org/docs/12/gin-implementation.html#GIN-FAST-UPDATE) in the PostgreSQL documentation. It is a Boolean parameter that deactivates or activates the GIN index fast update technique. A value of `ON` activates fast update \(the default\), and `OFF` deactivates it.
 
-:   **Note:** Turning `fastupdate` off via `ALTER INDEX` prevents future insertions from going into the list of pending index entries, but does not in itself flush previous entries. You might want to `VACUUM` the table or call `gin_clean_pending_list()` function afterward to ensure the pending list is emptied.
+**Note:** Turning `fastupdate` off via `ALTER INDEX` prevents future insertions from going into the list of pending index entries, but does not in itself flush previous entries. You might want to `VACUUM` the table or call `gin_clean_pending_list()` function afterward to ensure the pending list is emptied.
 
 gin_pending_list_limit
-:   Custom `gin_pending_list_limit` parameter. This value is specified in kilobytes.
+Custom `gin_pending_list_limit` parameter. This value is specified in kilobytes.
 
 BRIN indexes accept different parameters:
 
 pages_per_range
-:   Defines the number of table blocks that make up one block range for each entry of a BRIN index (see the [BRIN Index Introduction](https://www.postgresql.org/docs/12/brin-intro.html) in the PostgreSQL documentation for details). The default is 128.
+Defines the number of table blocks that make up one block range for each entry of a BRIN index (see the [BRIN Index Introduction](https://www.postgresql.org/docs/12/brin-intro.html) in the PostgreSQL documentation for details). The default is 128.
 
 autosummarize
-:   Defines whether a summarization run is queued for the previous page range whenever an insertion is detected on the next one. See [BRIN Index Maintenance] (https://www.postgresql.org/docs/12/brin-intro.html#BRIN-OPERATION) in the PostgreSQL documentation for more information. The default is `off`.
+Defines whether a summarization run is queued for the previous page range whenever an insertion is detected on the next one. See [BRIN Index Maintenance] (https://www.postgresql.org/docs/12/brin-intro.html#BRIN-OPERATION) in the PostgreSQL documentation for more information. The default is `off`.
 
 ## <a id="section5"></a>Notes 
 Refer to the [Indexes](https://www.postgresql.org/docs/12/indexes.html) topics in the PostgreSQL documentation for information about when indexes can be used, when they are not used, and in which particular situations they can be useful.
