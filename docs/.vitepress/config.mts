@@ -38,7 +38,9 @@ export default defineConfig(
 
     ],
     socialLinks: [
+
       { icon: 'github', link: 'https://github.com/warehouse-pg/warehouse-pg' }
+
     ],
 
     sidebar: [
