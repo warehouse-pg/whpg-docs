@@ -27,10 +27,10 @@ The transactional behavior of `RESET` is the same as `SET`: its effects will be 
 ## <a id="section4"></a>Parameters 
 
 configuration\_parameter
-:   The name of a settable run-time system configuration parameter. See [Server Configuration Parameters](../config_params/guc_config.html) for details.
+The name of a settable run-time system configuration parameter. See [Server Configuration Parameters](../config_params/guc_config.html) for details.
 
 ALL
-:   Resets all settable run-time configuration parameters to their default values.
+Resets all settable run-time configuration parameters to their default values.
 
 ## <a id="section5"></a>Examples 
 

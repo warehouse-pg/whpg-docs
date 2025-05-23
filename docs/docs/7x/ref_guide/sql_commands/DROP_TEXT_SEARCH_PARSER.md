@@ -17,16 +17,16 @@ DROP TEXT SEARCH PARSER [ IF EXISTS ] <name> [ CASCADE | RESTRICT ]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the text search parser does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the text search parser does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name \(optionally schema-qualified\) of an existing text search parser.
+The name \(optionally schema-qualified\) of an existing text search parser.
 
 CASCADE
-:   Automatically drop objects that depend on the text search parser, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the text search parser, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the text search parser if any objects depend on it. This is the default.
+Refuse to drop the text search parser if any objects depend on it. This is the default.
 
 ## <a id="Examples"></a>Examples 
 

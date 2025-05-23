@@ -23,17 +23,17 @@ The `NONE` and `RESET` forms reset the current role identifier to be the current
 ## <a id="section4"></a>Parameters 
 
 SESSION
-:   Specifies that the command takes effect for the current session. This is the default.
+Specifies that the command takes effect for the current session. This is the default.
 
 LOCAL
-:   Specifies that the command takes effect for only the current transaction. After `COMMIT` or `ROLLBACK`, the session-level setting takes effect again. Note that `SET LOCAL` will appear to have no effect if it is run outside of a transaction.
+Specifies that the command takes effect for only the current transaction. After `COMMIT` or `ROLLBACK`, the session-level setting takes effect again. Note that `SET LOCAL` will appear to have no effect if it is run outside of a transaction.
 
 rolename
-:   The name of a role to use for permissions checking in this session.
+The name of a role to use for permissions checking in this session.
 
 NONE
 RESET
-:   Reset the current role identifier to be the current session role identifier \(that of the role used to log in\).
+Reset the current role identifier to be the current session role identifier \(that of the role used to log in\).
 
 ## <a id="section5"></a>Notes 
 

@@ -65,7 +65,6 @@ The PL/R extension is available as a package.
 Before you install the PL/R extension, make sure that your WarehousePG is running, you have sourced `greenplum_path.sh`, and that the `$COORDINATOR_DATA_DIRECTORY` and `$GPHOME` variables are set.
 
 1.  Download the PL/R extension package.
-2.  Follow the instructions in [Verifying the WarehousePG Software Download](../install_guide/verify_sw.html) to verify the integrity of the **WarehousePG Procedural Languages PL/R** software.
 3.  Copy the PL/R package to the WarehousePG coordinator host.
 4.  Install the software extension package
 

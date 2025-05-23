@@ -20,19 +20,19 @@ You must have the `TRUNCATE` privilege on the table to truncate it.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of a table to truncate. If `ONLY` is specified before the table name, only that table is truncated. If `ONLY` is not specified, the table and all its descendant tables \(if any\) are truncated. Optionally, you can specify `*` after the table name to explicitly indicate that descendant tables are included.
+The name \(optionally schema-qualified\) of a table to truncate. If `ONLY` is specified before the table name, only that table is truncated. If `ONLY` is not specified, the table and all its descendant tables \(if any\) are truncated. Optionally, you can specify `*` after the table name to explicitly indicate that descendant tables are included.
 
 RESTART IDENTITY
-:   Automatically restart sequences owned by columns of the truncated table\(s\).
+Automatically restart sequences owned by columns of the truncated table\(s\).
 
 CONTINUE IDENTITY
-:   Do not change the values of sequences. This is the default.
+Do not change the values of sequences. This is the default.
 
 CASCADE
-:   Because this key word applies to foreign key references \(which are not supported in WarehousePG\) it has no effect.
+Because this key word applies to foreign key references \(which are not supported in WarehousePG\) it has no effect.
 
 RESTRICT
-:   Because this key word applies to foreign key references \(which are not supported in WarehousePG\) it has no effect.
+Because this key word applies to foreign key references \(which are not supported in WarehousePG\) it has no effect.
 
 ## <a id="section5"></a>Notes 
 

@@ -26,7 +26,7 @@ If the isolation level, read/write mode, or deferrable mode is specified, the ne
 
 WORK
 TRANSACTION
-:   Optional key words. They have no effect.
+Optional key words. They have no effect.
 
 Refer to [SET TRANSACTION](SET_TRANSACTION.html) for information on the meaning of the other parameters to this statement.
 

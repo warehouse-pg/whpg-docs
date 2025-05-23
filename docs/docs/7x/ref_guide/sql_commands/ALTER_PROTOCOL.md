@@ -21,13 +21,13 @@ These restrictions are in place to ensure that altering the owner only makes cha
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing protocol.
+The name \(optionally schema-qualified\) of an existing protocol.
 
 newname
-:   The new name of the protocol.
+The new name of the protocol.
 
 newowner
-:   The new owner of the protocol.
+The new owner of the protocol.
 
 ## <a id="section5"></a>Examples 
 

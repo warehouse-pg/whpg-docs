@@ -18,10 +18,10 @@ This command rolls back all commands that were run after the savepoint was estab
 
 WORK
 TRANSACTION
-:   Optional key words. They have no effect.
+Optional key words. They have no effect.
 
 savepoint\_name
-:   The name of the savepoint to roll back to.
+The name of the savepoint to roll back to.
 
 ## <a id="section5"></a>Notes 
 

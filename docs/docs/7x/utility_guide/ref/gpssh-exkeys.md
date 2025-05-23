@@ -45,22 +45,22 @@ The `gpssh-exkeys` utility performs key exchange using the following steps:
 ## <a id="section4"></a>Options 
 
 -e hostfile\_exkeys
-:   When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses \(interface names\) for each host in your current WarehousePG cluster \(coordinator, standby coordinator, and segments\), one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-x`.
+When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses \(interface names\) for each host in your current WarehousePG cluster \(coordinator, standby coordinator, and segments\), one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-x`.
 
 -f hostfile\_exkeys
-:   Specifies the name and location of a file containing all configured host names and host addresses \(interface names\) for each host in your WarehousePG cluster \(coordinator, standby coordinator and segments\), one name per line without blank lines or extra spaces.
+Specifies the name and location of a file containing all configured host names and host addresses \(interface names\) for each host in your WarehousePG cluster \(coordinator, standby coordinator and segments\), one name per line without blank lines or extra spaces.
 
 -h hostname
-:   Specifies a single host name \(or host address\) that will participate in the SSH key exchange. You can use the `-h` option multiple times to specify multiple host names and host addresses.
+Specifies a single host name \(or host address\) that will participate in the SSH key exchange. You can use the `-h` option multiple times to specify multiple host names and host addresses.
 
 --version
-:   Displays the version of this utility.
+Displays the version of this utility.
 
 -x hostfile\_gpexpand
-:   When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses \(interface names\) for each new segment host you are adding to your WarehousePG cluster, one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-e`.
+When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses \(interface names\) for each new segment host you are adding to your WarehousePG cluster, one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-e`.
 
 -? \(help\)
-:   Displays the online help.
+Displays the online help.
 
 ## <a id="section5"></a>Examples 
 

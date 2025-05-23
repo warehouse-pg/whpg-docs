@@ -32,34 +32,34 @@ When a `REINDEX` command finishes recreating an index, the `relpages` and `reltu
 The `pg_statistic` system table holds the results of the last `ANALYZE` operation on each database table. There is a row for each column of every table. It has the following columns:
 
 starelid
-:   The object ID of the table or index the column belongs to.
+The object ID of the table or index the column belongs to.
 
 staattnum
-:   The number of the described column, beginning with 1.
+The number of the described column, beginning with 1.
 
 stainherit
-:   If true, the statistics include inheritance child columns, not just the values in the specified relation.
+If true, the statistics include inheritance child columns, not just the values in the specified relation.
 
 stanullfrac
-:   The fraction of the column's entries that are null.
+The fraction of the column's entries that are null.
 
 stawidth
-:   The average stored width, in bytes, of non-null entries.
+The average stored width, in bytes, of non-null entries.
 
 stadistinct
-:   A positive number is an estimate of the number of distinct values in the column; the number is not expected to vary with the number of rows. A negative value is the number of distinct values divided by the number of rows, that is, the ratio of rows with distinct values for the column, negated. This form is used when the number of distinct values increases with the number of rows. A unique column, for example, has an `n_distinct` value of -1.0. Columns with an average width greater than 1024 are considered unique.
+A positive number is an estimate of the number of distinct values in the column; the number is not expected to vary with the number of rows. A negative value is the number of distinct values divided by the number of rows, that is, the ratio of rows with distinct values for the column, negated. This form is used when the number of distinct values increases with the number of rows. A unique column, for example, has an `n_distinct` value of -1.0. Columns with an average width greater than 1024 are considered unique.
 
 stakind<i>N</i>
-:   A code number indicating the kind of statistics stored in the <i>N</i>th slot of the `pg_statistic` row.
+A code number indicating the kind of statistics stored in the <i>N</i>th slot of the `pg_statistic` row.
 
 staop<i>N</i>
-:   An operator used to derive the statistics stored in the <i>N</i>th slot. For example, a histogram slot would show the < operator that defines the sort order of the data.
+An operator used to derive the statistics stored in the <i>N</i>th slot. For example, a histogram slot would show the < operator that defines the sort order of the data.
 
 stanumbers<i>N</i>
-:   float4 array containing numerical statistics of the appropriate kind for the <i>N</i>th slot, or `NULL` if the slot kind does not involve numerical values.
+float4 array containing numerical statistics of the appropriate kind for the <i>N</i>th slot, or `NULL` if the slot kind does not involve numerical values.
 
 stavalues<i>N</i>
-:   Column data values of the appropriate kind for the <i>N</i>th slot, or `NULL` if the slot kind does not store any data values. Each array's element values are actually of the specific column's data type, so there is no way to define these columns' types more specifically than <i>anyarray</i>.
+Column data values of the appropriate kind for the <i>N</i>th slot, or `NULL` if the slot kind does not store any data values. Each array's element values are actually of the specific column's data type, so there is no way to define these columns' types more specifically than <i>anyarray</i>.
 
 The statistics collected for a column vary for different data types, so the `pg_statistic` table stores statistics that are appropriate for the data type in four <i>slots</i>, consisting of four columns per slot. For example, the first slot, which normally contains the most common values for a column, consists of the columns `stakind1`, `staop1`, `stanumbers1`, and `stavalues1`.
 
@@ -177,46 +177,46 @@ The `stakindN` columns each contain a numeric code to describe the type of stati
 The `pg_stats` view presents the contents of `pg_statistic` in a friendlier format. The `pg_stats` view has the following columns:
 
 schemaname
-:   The name of the schema containing the table.
+The name of the schema containing the table.
 
 tablename
-:   The name of the table.
+The name of the table.
 
 attname
-:   The name of the column this row describes.
+The name of the column this row describes.
 
 inherited
-:   If true, the statistics include inheritance child columns.
+If true, the statistics include inheritance child columns.
 
 null\_frac
-:   The fraction of column entries that are null.
+The fraction of column entries that are null.
 
 avg\_width
-:   The average storage width in bytes of the column's entries, calculated as `avg(pg_column_size(column_name))`.
+The average storage width in bytes of the column's entries, calculated as `avg(pg_column_size(column_name))`.
 
 n\_distinct
-:   A positive number is an estimate of the number of distinct values in the column; the number is not expected to vary with the number of rows. A negative value is the number of distinct values divided by the number of rows, that is, the ratio of rows with distinct values for the column, negated. This form is used when the number of distinct values increases with the number of rows. A unique column, for example, has an `n_distinct` value of -1.0. Columns with an average width greater than 1024 are considered unique.
+A positive number is an estimate of the number of distinct values in the column; the number is not expected to vary with the number of rows. A negative value is the number of distinct values divided by the number of rows, that is, the ratio of rows with distinct values for the column, negated. This form is used when the number of distinct values increases with the number of rows. A unique column, for example, has an `n_distinct` value of -1.0. Columns with an average width greater than 1024 are considered unique.
 
 most\_common\_vals
-:   An array containing the most common values in the column, or null if no values seem to be more common. If the `n_distinct` column is -1, `most_common_vals` is null. The length of the array is the lesser of the number of actual distinct column values or the value of the `default_statistics_target` configuration parameter. The number of values can be overridden for a column using `ALTER TABLE table SET COLUMN column SET STATISTICS N`.
+An array containing the most common values in the column, or null if no values seem to be more common. If the `n_distinct` column is -1, `most_common_vals` is null. The length of the array is the lesser of the number of actual distinct column values or the value of the `default_statistics_target` configuration parameter. The number of values can be overridden for a column using `ALTER TABLE table SET COLUMN column SET STATISTICS N`.
 
 most\_common\_freqs
-:   An array containing the frequencies of the values in the `most_common_vals` array. This is the number of occurrences of the value divided by the total number of rows. The array is the same length as the `most_common_vals` array. It is null if `most_common_vals` is null.
+An array containing the frequencies of the values in the `most_common_vals` array. This is the number of occurrences of the value divided by the total number of rows. The array is the same length as the `most_common_vals` array. It is null if `most_common_vals` is null.
 
 histogram\_bounds
-:   An array of values that divide the column values into groups of approximately the same size. A histogram can be defined only if there is a `max()` aggregate function for the column. The number of groups in the histogram is the same as the `most_common_vals` array size.
+An array of values that divide the column values into groups of approximately the same size. A histogram can be defined only if there is a `max()` aggregate function for the column. The number of groups in the histogram is the same as the `most_common_vals` array size.
 
 correlation
-:   WarehousePG computes correlation statistics for both heap and AO/AOCO tables, but the Postgres-based planner uses these statistics only for heap tables.
+WarehousePG computes correlation statistics for both heap and AO/AOCO tables, but the Postgres-based planner uses these statistics only for heap tables.
 
 most\_common\_elems
-:   An array that contains the most common element values.
+An array that contains the most common element values.
 
 most\_common\_elem\_freqs
-:   An array that contains common element frequencies.
+An array that contains common element frequencies.
 
 elem\_count\_histogram
-:   An array that describes the distribution of the number of distinct element values present in each row of an array-type column.
+An array that describes the distribution of the number of distinct element values present in each row of an array-type column.
 
 Newly created tables and indexes have no statistics. You can check for tables with missing statistics using the `gp_stats_missing` view, which is in the `gp_toolkit` schema:
 

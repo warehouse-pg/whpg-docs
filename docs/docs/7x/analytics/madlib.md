@@ -64,7 +64,6 @@ Before you install the MADlib package, make sure that your WarehousePG is runnin
 
 1.  Download the MADlib extension package.
 2.  Copy the MADlib package to the WarehousePG coordinator host.
-3.  Follow the instructions in [Verifying the WarehousePG Software Download](../install_guide/verify_sw.html) to verify the integrity of the **WarehousePG Advanced Analytics MADlib** software.
 4.  Unpack the MADlib distribution package. For example:
 
     ```

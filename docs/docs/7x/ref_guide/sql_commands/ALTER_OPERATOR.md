@@ -26,25 +26,25 @@ You must own the operator to use `ALTER OPERATOR`. To alter the owner, you must 
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing operator.
+The name \(optionally schema-qualified\) of an existing operator.
 
 left\_type
-:   The data type of the operator's left operand; write `NONE` if the operator has no left operand.
+The data type of the operator's left operand; write `NONE` if the operator has no left operand.
 
 right\_type
-:   The data type of the operator's right operand; write `NONE` if the operator has no right operand.
+The data type of the operator's right operand; write `NONE` if the operator has no right operand.
 
 new\_owner
-:   The new owner of the operator.
+The new owner of the operator.
 
 new\_schema
-:   The new schema for the operator.
+The new schema for the operator.
 
 res\_proc
-:   The restriction selectivity estimator function for this operator; write `NONE` to remove the existing selectivity estimator.
+The restriction selectivity estimator function for this operator; write `NONE` to remove the existing selectivity estimator.
 
 join\_proc
-:   The join selectivity estimator function for this operator; write `NONE` to remove the existing selectivity estimator.
+The join selectivity estimator function for this operator; write `NONE` to remove the existing selectivity estimator.
 
 ## <a id="section5"></a>Examples 
 

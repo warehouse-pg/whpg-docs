@@ -14,8 +14,7 @@ WarehousePG can read from and write to several types of external data sources, i
 -   The `gpload` utility automates the steps of a load task using `gpfdist` and a YAML-formatted control file.
 -   You can create readable and writable external tables with the WarehousePG Platform Extension Framework \(PXF\), and use these tables to load data into, or offload data from, WarehousePG. For information about using PXF, refer to [Accessing External Data with PXF](../../external/pxf-overview.html).
 
--   The WarehousePG Connector for Apache Spark provides high speed, parallel data transfer between WarehousePG and Apache Spark. For information about using the Connector, refer to the documentation at [https://docs.vmware.com/en/VMware-WarehousePG-Connector-for-Apache-Spark/index.html](https://docs.vmware.com/en/VMware-WarehousePG-Connector-for-Apache-Spark/index.html).
--   The WarehousePG Connector for Apache NiFi enables you to create data ingestion pipelines that load record-oriented data into WarehousePG. For information about using this Connector, refer to the [Connector documentation](https://docs.vmware.com/en/VMware-WarehousePG-Connector-for-Apache-NiFi/index.html).
+
 
 The method you choose to load data depends on the characteristics of the source data—its location, size, format, and any transformations required.
 

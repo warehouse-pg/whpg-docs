@@ -41,44 +41,44 @@ If an initialization failure occurs, a summary report file is generated in the s
 ## <a id="section4"></a>Options 
 
 -a \(do not prompt\)
-:   Do not prompt the user for confirmation.
+Do not prompt the user for confirmation.
 
 -D \(debug\)
-:   Sets logging level to debug.
+Sets logging level to debug.
 
 --hba-hostnames boolean
-:   Optional. Controls whether this utility uses IP addresses or host names in the `pg_hba.conf` file when updating this file with addresses that can connect to WarehousePG. When set to 0 -- the default value -- this utility uses IP addresses when updating this file. When set to 1, this utility uses host names when updating this file. For consistency, use the same value that was specified for `HBA_HOSTNAMES` when the WarehousePG cluster was initialized. For information about how WarehousePG resolves host names in the `pg_hba.conf` file, see [Configuring Client Authentication](../../admin_guide/client_auth.html).
+Optional. Controls whether this utility uses IP addresses or host names in the `pg_hba.conf` file when updating this file with addresses that can connect to WarehousePG. When set to 0 -- the default value -- this utility uses IP addresses when updating this file. When set to 1, this utility uses host names when updating this file. For consistency, use the same value that was specified for `HBA_HOSTNAMES` when the WarehousePG cluster was initialized. For information about how WarehousePG resolves host names in the `pg_hba.conf` file, see [Configuring Client Authentication](../../admin_guide/client_auth.html).
 
 -l logfile\_directory
-:   The directory to write the log file. Defaults to `~/gpAdminLogs`.
+The directory to write the log file. Defaults to `~/gpAdminLogs`.
 
 -n \(restart standby coordinator\)
-:   Specify this option to start a WarehousePG standby coordinator that has been configured but has stopped for some reason.
+Specify this option to start a WarehousePG standby coordinator that has been configured but has stopped for some reason.
 
 -P port
-:   This option specifies the port that is used by the WarehousePG standby coordinator. The default is the same port used by the active WarehousePG coordinator.
+This option specifies the port that is used by the WarehousePG standby coordinator. The default is the same port used by the active WarehousePG coordinator.
 
-:   If the WarehousePG standby coordinator is on the same host as the active coordinator, the ports must be different. If the ports are the same for the active and standby coordinator and the host is the same, the utility returns an error.
+If the WarehousePG standby coordinator is on the same host as the active coordinator, the ports must be different. If the ports are the same for the active and standby coordinator and the host is the same, the utility returns an error.
 
 -q \(no screen output\)
-:   Run in quiet mode. Command output is not displayed on the screen, but is still written to the log file.
+Run in quiet mode. Command output is not displayed on the screen, but is still written to the log file.
 
 -r \(remove standby coordinator\)
-:   Removes the currently configured standby coordinator instance from your WarehousePG cluster.
+Removes the currently configured standby coordinator instance from your WarehousePG cluster.
 
 -s standby\_hostname
-:   The host name of the standby coordinator host.
+The host name of the standby coordinator host.
 
 -S standby\_data\_directory
-:   The data directory to use for a new standby coordinator. The default is the same directory used by the active coordinator.
+The data directory to use for a new standby coordinator. The default is the same directory used by the active coordinator.
 
-:   If the standby coordinator is on the same host as the active coordinator, a different directory must be specified using this option.
+If the standby coordinator is on the same host as the active coordinator, a different directory must be specified using this option.
 
 -v \(show utility version\)
-:   Displays the version, status, last updated date, and checksum of this utility.
+Displays the version, status, last updated date, and checksum of this utility.
 
 -? \(help\)
-:   Displays the online help.
+Displays the online help.
 
 ## <a id="section5"></a>Examples 
 

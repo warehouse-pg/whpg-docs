@@ -24,16 +24,16 @@ Refer to [Using Full Text Search](../../admin_guide/textsearch/full-text-search.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of the text search dictionary to be created. The name can be schema-qualified.
+The name of the text search dictionary to be created. The name can be schema-qualified.
 
 template
-:   The name of the text search template that will define the basic behavior of this dictionary.
+The name of the text search template that will define the basic behavior of this dictionary.
 
 option
-:   The name of a template-specific option to be set for this dictionary.
+The name of a template-specific option to be set for this dictionary.
 
 value
-:   The value to use for a template-specific option. If the value is not a simple identifier or number, it must be quoted \(but you can always quote it, if you wish\).
+The value to use for a template-specific option. If the value is not a simple identifier or number, it must be quoted \(but you can always quote it, if you wish\).
 
 The options can appear in any order.
 

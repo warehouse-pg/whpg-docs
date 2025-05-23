@@ -17,13 +17,13 @@ For more information on prepared statements, see [PREPARE](PREPARE.html).
 ## <a id="section4"></a>Parameters 
 
 PREPARE
-:   Optional key word which is ignored.
+Optional key word which is ignored.
 
 name
-:   The name of the prepared statement to deallocate.
+The name of the prepared statement to deallocate.
 
 ALL
-:   Deallocate all prepared statements
+Deallocate all prepared statements
 
 ## <a id="section5"></a>Examples 
 

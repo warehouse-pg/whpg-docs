@@ -3495,7 +3495,7 @@ Enables a test that validates the free tuple ID \(TID\) list. The list is mainta
 
 If WarehousePG detects a corruption in the free TID list, the free TID list is rebuilt, a warning is logged, and a warning is returned by queries for which the check failed. WarehousePG attempts to run the queries.
 
-> **Note** If a warning is returned, please contact VMware Support.
+> **Note** If a warning is returned, please contact Support.
 
 |Value Range|Default|Set Classifications|
 |-----------|-------|-------------------|

@@ -19,10 +19,10 @@ For more information on the creation and usage of prepared statements, see [PREP
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of the prepared statement to run.
+The name of the prepared statement to run.
 
 parameter
-:   The actual value of a parameter to the prepared statement. This must be an expression yielding a value that is compatible with the data type of this parameter, as was determined when the prepared statement was created.
+The actual value of a parameter to the prepared statement. This must be an expression yielding a value that is compatible with the data type of this parameter, as was determined when the prepared statement was created.
 
 ## <a id="section4b"></a>Outputs
 

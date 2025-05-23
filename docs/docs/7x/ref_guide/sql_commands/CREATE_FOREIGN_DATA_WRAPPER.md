@@ -22,22 +22,22 @@ Only superusers can create foreign-data wrappers.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of the foreign-data wrapper to create. The name must be unique within the database.
+The name of the foreign-data wrapper to create. The name must be unique within the database.
 
 HANDLER handler\_function
-:   The name of a previously registered function that WarehousePG calls to retrieve the execution functions for foreign tables. hander\_function must take no arguments, and its return type must be `fdw_handler`.
-:   It is possible to create a foreign-data wrapper with no handler function, but you can only declare, not access, foreign tables using such a wrapper.
+The name of a previously registered function that WarehousePG calls to retrieve the execution functions for foreign tables. hander\_function must take no arguments, and its return type must be `fdw_handler`.
+It is possible to create a foreign-data wrapper with no handler function, but you can only declare, not access, foreign tables using such a wrapper.
 
 VALIDATOR validator\_function
-:   The name of a previously registered function that WarehousePG calls to check the generic options provided to the foreign-data wrapper. This function also checks the options for foreign servers, user mappings, and foreign tables that use the foreign-data wrapper. If no validator function or `NO VALIDATOR` is specified, WarehousePG does not check options at creation time. \(Depending upon the implementation, foreign-data wrappers may ignore or reject invalid options at runtime.\)
-:    validator\_function must take two arguments: one of type `text[]`, which contains the array of options as stored in the system catalogs, and one of type `oid`, which identifies the OID of the system catalog containing the options.
-:   The return type is ignored; validator\_function should report invalid options using the `ereport(ERROR)` function.
+The name of a previously registered function that WarehousePG calls to check the generic options provided to the foreign-data wrapper. This function also checks the options for foreign servers, user mappings, and foreign tables that use the foreign-data wrapper. If no validator function or `NO VALIDATOR` is specified, WarehousePG does not check options at creation time. \(Depending upon the implementation, foreign-data wrappers may ignore or reject invalid options at runtime.\)
+ validator\_function must take two arguments: one of type `text[]`, which contains the array of options as stored in the system catalogs, and one of type `oid`, which identifies the OID of the system catalog containing the options.
+The return type is ignored; validator\_function should report invalid options using the `ereport(ERROR)` function.
 
 OPTIONS \( option 'value' \[, ... \] \)
-:   The options for the new foreign-data wrapper. Option names must be unique. The option names and values are foreign-data wrapper-specific and are validated using the foreign-data wrappers' validator\_function.
+The options for the new foreign-data wrapper. Option names must be unique. The option names and values are foreign-data wrapper-specific and are validated using the foreign-data wrappers' validator\_function.
 
 mpp\_execute \{ 'coordinator' \| 'any' \| 'all segments' \}
-:   A WarehousePG-specific option that identifies the host from which the foreign-data wrapper reads or writes data:
+A WarehousePG-specific option that identifies the host from which the foreign-data wrapper reads or writes data:
 
     -   `coordinator` \(the default\)—Read or write data from the coordinator host.
     -   `any`—Read data from either the coordinator host or any one segment, depending on which path costs less.

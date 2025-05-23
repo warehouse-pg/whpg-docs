@@ -24,25 +24,25 @@ Creating a server requires the `USAGE` privilege on the foreign-data wrapper spe
 
 IF NOT EXISTS
 
-:   Do not throw an error if a server with the same name already exists. WarehousePG issues a notice in this case. Note that there is no guarantee that the existing server is anything like the one that would have been created.
+Do not throw an error if a server with the same name already exists. WarehousePG issues a notice in this case. Note that there is no guarantee that the existing server is anything like the one that would have been created.
 
 server\_name
-:   The name of the foreign server to create. The server name must be unique within the database.
+The name of the foreign server to create. The server name must be unique within the database.
 
 server\_type
-:   Optional server type, potentially useful to foreign-data wrappers.
+Optional server type, potentially useful to foreign-data wrappers.
 
 server\_version
-:   Optional server version, potentially useful to foreign-data wrappers.
+Optional server version, potentially useful to foreign-data wrappers.
 
 fdw\_name
-:   Name of the foreign-data wrapper that manages the server.
+Name of the foreign-data wrapper that manages the server.
 
 OPTIONS \( option 'value' \[, ... \] \)
-:   The options for the new foreign server. The options typically define the connection details of the server, but the actual names and values are dependent upon the server's foreign-data wrapper.
+The options for the new foreign server. The options typically define the connection details of the server, but the actual names and values are dependent upon the server's foreign-data wrapper.
 
 mpp\_execute \{ 'coordinator' \| 'any' \| 'all segments' \}
-:   A WarehousePG-specific option that identifies the host from which the foreign-data wrapper reads or writes data:
+A WarehousePG-specific option that identifies the host from which the foreign-data wrapper reads or writes data:
 
     -   `coordinator` \(the default\)—Read or write data from the coordinator host.
     -   `any`—Read data from either the coordinator host or any one segment, depending on which path costs less.
@@ -55,7 +55,7 @@ mpp\_execute \{ 'coordinator' \| 'any' \| 'all segments' \}
     The `mpp_execute` option can be specified in multiple commands: `CREATE FOREIGN TABLE`, `CREATE SERVER`, and `CREATE FOREIGN DATA WRAPPER`. The foreign table setting takes precedence over the foreign server setting, followed by the foreign-data wrapper setting.
 
 num\_segments 'num'
-:   When `mpp_execute` is set to `'all segments'`, the WarehousePG-specific `num_segments` option identifies the number of query executors that WarehousePG spawns on the source WarehousePG cluster. If you do not provide a value, num defaults to the number of segments in the source cluster.
+When `mpp_execute` is set to `'all segments'`, the WarehousePG-specific `num_segments` option identifies the number of query executors that WarehousePG spawns on the source WarehousePG cluster. If you do not provide a value, num defaults to the number of segments in the source cluster.
 
     Support for the foreign server `num_segments` option is foreign-data wrapper-specific.
 

@@ -50,49 +50,49 @@ If the standby coordinator is not accessible, you can start the system and troub
 ## <a id="section4"></a>Options 
 
 -a
-:   Do not prompt the user for confirmation. Deactivates interactive mode.
+Do not prompt the user for confirmation. Deactivates interactive mode.
 
 -B parallel\_processes
-:   The number of segments to start in parallel. If not specified, the utility will start up to 64 parallel processes depending on how many segment instances it needs to start.
+The number of segments to start in parallel. If not specified, the utility will start up to 64 parallel processes depending on how many segment instances it needs to start.
 
 -d coordinator\_data\_directory
-:   Optional. The coordinator host data directory. If not specified, the value set for `$COORDINATOR_DATA_DIRECTORY` will be used.
+Optional. The coordinator host data directory. If not specified, the value set for `$COORDINATOR_DATA_DIRECTORY` will be used.
 
 -l logfile\_directory
-:   The directory to write the log file. Defaults to `~/gpAdminLogs`.
+The directory to write the log file. Defaults to `~/gpAdminLogs`.
 
 -m
-:   Optional. Starts the coordinator instance only, which may be useful for maintenance tasks. This mode only allows connections to the coordinator in utility mode. For example:
+Optional. Starts the coordinator instance only, which may be useful for maintenance tasks. This mode only allows connections to the coordinator in utility mode. For example:
 
-:   `PGOPTIONS='-c gp_role=utility' psql`
+`PGOPTIONS='-c gp_role=utility' psql`
 
-:   The consistency of the heap checksum setting on coordinator and segment instances is not checked.
+The consistency of the heap checksum setting on coordinator and segment instances is not checked.
 
 -q
-:   Run in quiet mode. Command output is not displayed on the screen, but is still written to the log file.
+Run in quiet mode. Command output is not displayed on the screen, but is still written to the log file.
 
 -R
-:   Starts WarehousePG in restricted mode \(only database superusers are allowed to connect\).
+Starts WarehousePG in restricted mode \(only database superusers are allowed to connect\).
 
 --skip-heap-checksum-validation
-:   During startup, the utility does not validate the consistency of the heap checksum setting among the WarehousePG coordinator and segment instances. The default is to ensure that the heap checksum setting is the same on all instances, either enabled or deactivated.
+During startup, the utility does not validate the consistency of the heap checksum setting among the WarehousePG coordinator and segment instances. The default is to ensure that the heap checksum setting is the same on all instances, either enabled or deactivated.
 
     > **Caution** Starting WarehousePG without this validation could lead to data loss. Use this option to start WarehousePG only when it is necessary to ignore the heap checksum verification errors to recover data or to troubleshoot the errors.
 
 -t timeout\_seconds
-:   Specifies a timeout in seconds to wait for a segment instance to start up. If a segment instance was shutdown abnormally \(due to power failure or killing its `postgres` database listener process, for example\), it may take longer to start up due to the database recovery and validation process. If not specified, the default timeout is 600 seconds.
+Specifies a timeout in seconds to wait for a segment instance to start up. If a segment instance was shutdown abnormally \(due to power failure or killing its `postgres` database listener process, for example\), it may take longer to start up due to the database recovery and validation process. If not specified, the default timeout is 600 seconds.
 
 -v
-:   Displays detailed status, progress and error messages output by the utility.
+Displays detailed status, progress and error messages output by the utility.
 
 -y
-:   Optional. Do not start the standby coordinator host. The default is to start the standby coordinator host and synchronization process.
+Optional. Do not start the standby coordinator host. The default is to start the standby coordinator host and synchronization process.
 
 -? \| -h \| --help
-:   Displays the online help.
+Displays the online help.
 
 --version
-:   Displays the version of this utility.
+Displays the version of this utility.
 
 ## <a id="section5"></a>Examples 
 

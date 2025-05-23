@@ -122,91 +122,91 @@ Why is there is an `ELEMENT` option, when the system makes the correct array typ
 ## <a id="section7"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of a type to be created.
+The name \(optionally schema-qualified\) of a type to be created.
 
 attribute\_name
-:   The name of an attribute \(column\) for the composite type.
+The name of an attribute \(column\) for the composite type.
 
 data\_type
-:   The name of an existing data type to become a column of the composite type.
+The name of an existing data type to become a column of the composite type.
 
 collation
-:   The name of an existing collation to be associated with a column of a composite type, or with a range type.
+The name of an existing collation to be associated with a column of a composite type, or with a range type.
 
 label
-:   A string literal representing the textual label associated with one value of an enum type.
+A string literal representing the textual label associated with one value of an enum type.
 
 subtype
-:   The name of the element type that the range type will represent ranges of.
+The name of the element type that the range type will represent ranges of.
 
 subtype\_operator\_class
-:   The name of a b-tree operator class for the subtype.
+The name of a b-tree operator class for the subtype.
 
 canonical\_function
-:   The name of the canonicalization function for the range type.
+The name of the canonicalization function for the range type.
 
 subtype\_diff\_function
-:   The name of a difference function for the subtype.
+The name of a difference function for the subtype.
 
 input\_function
-:   The name of a function that converts data from the type's external textual form to its internal form.
+The name of a function that converts data from the type's external textual form to its internal form.
 
 output\_function
-:   The name of a function that converts data from the type's internal form to its external textual form.
+The name of a function that converts data from the type's internal form to its external textual form.
 
 receive\_function
-:   The name of a function that converts data from the type's external binary form to its internal form.
+The name of a function that converts data from the type's external binary form to its internal form.
 
 send\_function
-:   The name of a function that converts data from the type's internal form to its external binary form.
+The name of a function that converts data from the type's internal form to its external binary form.
 
 type\_modifier\_input\_function
-:   The name of a function that converts an array of modifier\(s\) for the type to internal form.
+The name of a function that converts an array of modifier\(s\) for the type to internal form.
 
 type\_modifier\_output\_function
-:   The name of a function that converts the internal form of the type's modifier\(s\) to external textual form.
+The name of a function that converts the internal form of the type's modifier\(s\) to external textual form.
 
 analyze\_function
-:   The name of a function that performs statistical analysis for the data type.
+The name of a function that performs statistical analysis for the data type.
 
 internallength
-:   A numeric constant that specifies the length in bytes of the new type's internal representation. The default assumption is that it is variable-length.
+A numeric constant that specifies the length in bytes of the new type's internal representation. The default assumption is that it is variable-length.
 
 alignment
-:   The storage alignment requirement of the data type. Must be one of `char`, `int2`, `int4`, or `double`. The default is `int4`.
+The storage alignment requirement of the data type. Must be one of `char`, `int2`, `int4`, or `double`. The default is `int4`.
 
 storage
-:   The storage strategy for the data type. Must be one of `plain`, `external`, `extended`, or `main`. The default is `plain`.
+The storage strategy for the data type. Must be one of `plain`, `external`, `extended`, or `main`. The default is `plain`.
 
 like\_type
-:   The name of an existing data type that the new type will have the same representation as. The values internallength, passedbyvalue, alignment, and storage, are copied from that type, unless overridden by explicit specification elsewhere in this `CREATE TYPE` command.
+The name of an existing data type that the new type will have the same representation as. The values internallength, passedbyvalue, alignment, and storage, are copied from that type, unless overridden by explicit specification elsewhere in this `CREATE TYPE` command.
 
 category
-:   The category code \(a single ASCII character\) for this type. The default is '`U`', signifying a user-defined type. You can find the other standard category codes in [`pg_type` Category Codes](../system_catalogs/pg_type.html#typcategory). You may also assign unused ASCII characters to custom categories that you create.
+The category code \(a single ASCII character\) for this type. The default is '`U`', signifying a user-defined type. You can find the other standard category codes in [`pg_type` Category Codes](../system_catalogs/pg_type.html#typcategory). You may also assign unused ASCII characters to custom categories that you create.
 
 preferred
-:   `true` if this type is a preferred type within its type category, else `false`. The default value is `false`. Be careful when you create a new preferred type within an existing type category; this could cause surprising behaviour changes.
+`true` if this type is a preferred type within its type category, else `false`. The default value is `false`. Be careful when you create a new preferred type within an existing type category; this could cause surprising behaviour changes.
 
 default
-:   The default value for the data type. If this is omitted, the default is null.
+The default value for the data type. If this is omitted, the default is null.
 
 element
-:   The type being created is an array; this specifies the type of the array elements.
+The type being created is an array; this specifies the type of the array elements.
 
 delimiter
-:   The delimiter character to be used between values in arrays made of this type.
+The delimiter character to be used between values in arrays made of this type.
 
 collatable
-:   True if this type's operations can use collation information. The default is false.
+True if this type's operations can use collation information. The default is false.
 
 compression\_type
-:   Set to `ZLIB` \(the default\), `ZSTD`, or `RLE_TYPE` to specify the type of compression used in columns of this type.
+Set to `ZLIB` \(the default\), `ZSTD`, or `RLE_TYPE` to specify the type of compression used in columns of this type.
 
 compression\_level
-:   For Zstd compression, set to an integer value from 1 \(fastest compression\) to 19 \(highest compression ratio\). For zlib compression, the valid range is from 1 to 9. For `RLE_TYPE`, the compression level can be set to an integer value from 1 \(fastest compression\) to 6 \(highest compression ratio\). The default compression level is 1.
+For Zstd compression, set to an integer value from 1 \(fastest compression\) to 19 \(highest compression ratio\). For zlib compression, the valid range is from 1 to 9. For `RLE_TYPE`, the compression level can be set to an integer value from 1 \(fastest compression\) to 6 \(highest compression ratio\). The default compression level is 1.
 
 blocksize
-:   Set to the size, in bytes, for each block in the column. The `BLOCKSIZE` must be between 8192 and 2097152 bytes, and be a multiple of 8192. The default block size is 32768.
+Set to the size, in bytes, for each block in the column. The `BLOCKSIZE` must be between 8192 and 2097152 bytes, and be a multiple of 8192. The default block size is 32768.
 
 ## <a id="section8"></a>Notes 
 

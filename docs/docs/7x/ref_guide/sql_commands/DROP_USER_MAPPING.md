@@ -18,13 +18,13 @@ The owner of a foreign server can drop user mappings for that server for any use
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the user mapping does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the user mapping does not exist. WarehousePG issues a notice in this case.
 
 user\_name
-:   User name of the mapping. `CURRENT_USER` and `USER` match the name of the current user. `PUBLIC` is used to match all present and future user names in the system.
+User name of the mapping. `CURRENT_USER` and `USER` match the name of the current user. `PUBLIC` is used to match all present and future user names in the system.
 
 server\_name
-:   Server name of the user mapping.
+Server name of the user mapping.
 
 ## <a id="section6"></a>Examples 
 

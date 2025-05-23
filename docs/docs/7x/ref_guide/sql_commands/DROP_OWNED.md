@@ -15,13 +15,13 @@ DROP OWNED BY { <name> | CURRENT_USER | SESSION_USER } [, ...] [CASCADE | RESTRI
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of a role whose objects will be dropped, and whose privileges will be revoked.
+The name of a role whose objects will be dropped, and whose privileges will be revoked.
 
 CASCADE
-:   Automatically drop objects that depend on the affected objects, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the affected objects, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the objects owned by a role if any other database objects depend on one of the affected objects. This is the default.
+Refuse to drop the objects owned by a role if any other database objects depend on one of the affected objects. This is the default.
 
 ## <a id="section5"></a>Notes 
 

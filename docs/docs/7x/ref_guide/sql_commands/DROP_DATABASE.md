@@ -17,10 +17,10 @@ DROP DATABASE [IF EXISTS] <name>
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the database does not exist. A notice is issued in this case.
+Do not throw an error if the database does not exist. A notice is issued in this case.
 
 name
-:   The name of the database to remove.
+The name of the database to remove.
 
 ## <a id="section5"></a>Notes 
 

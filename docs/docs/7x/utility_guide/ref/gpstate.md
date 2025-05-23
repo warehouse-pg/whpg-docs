@@ -24,19 +24,19 @@ The `gpstate` utility displays information about a running WarehousePG instance.
 ## <a id="section4"></a>Options 
 
 -b \(brief status\)
-:   Optional. Display a brief summary of the state of the WarehousePG cluster. This is the default option.
+Optional. Display a brief summary of the state of the WarehousePG cluster. This is the default option.
 
 -B parallel\_processes
-:   The number of segments to check in parallel. If not specified, the utility will start up to 60 parallel processes depending on how many segment instances it needs to check.
+The number of segments to check in parallel. If not specified, the utility will start up to 60 parallel processes depending on how many segment instances it needs to check.
 
 -c \(show primary to mirror mappings\)
-:   Optional. Display mapping of primary segments to their corresponding mirror segments.
+Optional. Display mapping of primary segments to their corresponding mirror segments.
 
 -d coordinator\_data\_directory
-:   Optional. The coordinator data directory. If not specified, the value set for `$COORDINATOR_DATA_DIRECTORY` will be used.
+Optional. The coordinator data directory. If not specified, the value set for `$COORDINATOR_DATA_DIRECTORY` will be used.
 
 -e \(show segments with mirror status issues\)
-:   Show details on primary/mirror segment pairs that have potential issues. These issues include:
+Show details on primary/mirror segment pairs that have potential issues. These issues include:
 
     -   Whether any segments are down.
     -   Whether any primary-mirror segment pairs are out of sync – including information on how many bytes are remaining to sync \(as displayed in the `WAL sync remaining bytes` output field\).
@@ -49,37 +49,37 @@ The `gpstate` utility displays information about a running WarehousePG instance.
     -   Whether any primary-mirror segment pairs are not in their preferred roles.
 
 -f \(show standby coordinator details\)
-:   Display details of the standby coordinator host if configured.
+Display details of the standby coordinator host if configured.
 
 -i \(show WarehousePG version\)
-:   Display the WarehousePG software version information for each instance.
+Display the WarehousePG software version information for each instance.
 
 -l logfile\_directory
-:   The directory to write the log file. Defaults to `~/gpAdminLogs`.
+The directory to write the log file. Defaults to `~/gpAdminLogs`.
 
 -m \(list mirrors\)
-:   Optional. List the mirror segment instances in the system and their current role.
+Optional. List the mirror segment instances in the system and their current role.
 
 -p \(show ports\)
-:   List the port numbers used throughout the WarehousePG cluster.
+List the port numbers used throughout the WarehousePG cluster.
 
 -q \(no screen output\)
-:   Optional. Run in quiet mode. Except for warning messages, command output is not displayed on the screen. However, this information is still written to the log file.
+Optional. Run in quiet mode. Except for warning messages, command output is not displayed on the screen. However, this information is still written to the log file.
 
 -Q \(quick status\)
-:   Optional. Checks segment status in the system catalog on the coordinator host. Does not poll the segments for status.
+Optional. Checks segment status in the system catalog on the coordinator host. Does not poll the segments for status.
 
 -s \(detailed status\)
-:   Optional. Displays detailed status information about the WarehousePG cluster.
+Optional. Displays detailed status information about the WarehousePG cluster.
 
 -v \(verbose output\)
-:   Optional. Displays error messages and outputs detailed status and progress information.
+Optional. Displays error messages and outputs detailed status and progress information.
 
 -x \(expand\)
-:   Optional. Displays detailed information about the progress and state of a WarehousePG cluster expansion.
+Optional. Displays detailed information about the progress and state of a WarehousePG cluster expansion.
 
 -? \| -h \| --help \(help\)
-:   Displays the online help.
+Displays the online help.
 
 ## <a id="section5"></a>Output Field Definitions 
 

@@ -80,47 +80,47 @@ procedure\_name
 routine\_name
 rule\_name
 trigger\_name
-:   The name of the object to be commented. Names of tables, aggregates, collations, conversions, domains, foreign tables, functions, indexes, operators, operator classes, operator families, procedures, routines, sequences, statistics, text search objects, types, views, and materialized views can be schema-qualified. When commenting on a column, relation\_name must refer to a table, view, materialized view, composite type, or foreign table.
+The name of the object to be commented. Names of tables, aggregates, collations, conversions, domains, foreign tables, functions, indexes, operators, operator classes, operator families, procedures, routines, sequences, statistics, text search objects, types, views, and materialized views can be schema-qualified. When commenting on a column, relation\_name must refer to a table, view, materialized view, composite type, or foreign table.
 
     > **Note** WarehousePG does not support triggers.
 
 table_name
 domain_name
-:   When creating a comment on a constraint, a trigger, a rule, or a policy, these parameters specify the name of the table or domain on which that object is defined.
+When creating a comment on a constraint, a trigger, a rule, or a policy, these parameters specify the name of the table or domain on which that object is defined.
 
 source\_type
-:   The name of the source data type of the cast.
+The name of the source data type of the cast.
 
 target\_type
-:   The name of the target data type of the cast.
+The name of the target data type of the cast.
 
 argmode
-:   The mode of a function or aggregate argument: either `IN`, `OUT`, `INOUT`, or `VARIADIC`. If omitted, the default is `IN`. Note that `COMMENT` does not actually pay any attention to `OUT` arguments, since only the input arguments are needed to determine the function's identity. It is sufficient to list the `IN`, `INOUT`, and `VARIADIC` arguments.
+The mode of a function or aggregate argument: either `IN`, `OUT`, `INOUT`, or `VARIADIC`. If omitted, the default is `IN`. Note that `COMMENT` does not actually pay any attention to `OUT` arguments, since only the input arguments are needed to determine the function's identity. It is sufficient to list the `IN`, `INOUT`, and `VARIADIC` arguments.
 
 argname
-:   The name of a function, procedure, or aggregate argument. Note that `COMMENT` does not actually pay any attention to argument names, since only the argument data types are needed to determine the function's identity.
+The name of a function, procedure, or aggregate argument. Note that `COMMENT` does not actually pay any attention to argument names, since only the argument data types are needed to determine the function's identity.
 
 argtype
-:   The data type of a function, procedure, or aggregate argument.
+The data type of a function, procedure, or aggregate argument.
 
 left\_type
 right\_type
-:   The data type\(s\) of the operator's arguments \(optionally schema-qualified\). Specify `NONE` for the missing argument of a prefix or postfix operator.
+The data type\(s\) of the operator's arguments \(optionally schema-qualified\). Specify `NONE` for the missing argument of a prefix or postfix operator.
 
 PROCEDURAL
-:   WarehousePG ignores this noise word.
+WarehousePG ignores this noise word.
 
 type_name
-:   The name of the data type of the transform.
+The name of the data type of the transform.
 
 lang_name
-:   The name of the language of the transform.
+The name of the language of the transform.
 
 string_literal
-:   The new comment contents, written as a string literal.
+The new comment contents, written as a string literal.
 
 NULL
-:   Specify `NULL` to drop the comment.
+Specify `NULL` to drop the comment.
 
 ## <a id="section5"></a>Notes 
 

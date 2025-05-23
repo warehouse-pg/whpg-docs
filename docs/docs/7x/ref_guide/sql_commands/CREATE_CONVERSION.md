@@ -18,21 +18,21 @@ To create a conversion, you must have `EXECUTE` privilege on the function and `C
 ## <a id="section4"></a>Parameters 
 
 DEFAULT
-:   Indicates that this conversion is the default for this particular source to destination encoding. There should be only one default encoding in a schema for the encoding pair.
+Indicates that this conversion is the default for this particular source to destination encoding. There should be only one default encoding in a schema for the encoding pair.
 
 name
-:   The name of the conversion. The conversion name may be schema-qualified. If it is not, the conversion is defined in the current schema. The conversion name must be unique within a schema.
+The name of the conversion. The conversion name may be schema-qualified. If it is not, the conversion is defined in the current schema. The conversion name must be unique within a schema.
 
 source\_encoding
-:   The source encoding name.
+The source encoding name.
 
 dest\_encoding
-:   The destination encoding name.
+The destination encoding name.
 
 function\_name
-:   The function used to perform the conversion. The function name may be schema-qualified. If it is not, the function will be looked up in the path. The function must have the following signature:
+The function used to perform the conversion. The function name may be schema-qualified. If it is not, the function will be looked up in the path. The function must have the following signature:
 
-:   ```
+```
 conv_proc(
     integer,  -- source encoding ID
     integer,  -- destination encoding ID

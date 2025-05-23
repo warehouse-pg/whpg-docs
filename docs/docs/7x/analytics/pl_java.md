@@ -131,7 +131,6 @@ To install and use PL/Java:
 Before you install the PL/Java extension, make sure that your WarehousePG is running, you have sourced `greenplum_path.sh`, and that the `$COORDINATOR_DATA_DIRECTORY` and `$GPHOME` variables are set.
 
 1.  Download the PL/Java extension package then copy it to the coordinator host.
-2.  Follow the instructions in [Verifying the WarehousePG Software Download](../install_guide/verify_sw.html) to verify the integrity of the **WarehousePG Procedural Languages PL/Java** software.
 3.  Install the software extension package 
 
 4.  Ensure that the environment variables `JAVA_HOME` and `LD_LIBRARY_PATH` are set properly in `$GPHOME/greenplum_path.sh` on all WarehousePG hosts.

@@ -139,7 +139,6 @@ Install the PL/Container language extension using the `gppkg` utility.
 
 1.  Download the PL/Container package that applies to your WarehousePG version. 
 2.  As `gpadmin`, copy the PL/Container language extension package to the coordinator host.
-3.  Follow the instructions in [Verifying the WarehousePG Software Download](../install_guide/verify_sw.html) to verify the integrity of the **WarehousePG Procedural Languages PL/Container** software.
 4.  Run the package installation command:
 
     ```
@@ -195,7 +194,6 @@ Install the Docker images that PL/Container will use to create language-specific
 
     If you require different images from the ones provided by WarehousePG, you can create custom Docker images, install the image and add the image to the PL/ Container configuration.
 
--   Follow the instructions in [Verifying the WarehousePG Software Download](../install_guide/verify_sw.html) to verify the integrity of the **WarehousePG Procedural Languages PL/Container Image** software.
 -   Use the `plcontainer image-add` command to install an image on all WarehousePG hosts. Provide the `-f` option to specify the file system location of a downloaded image file. For example:
 
     ```

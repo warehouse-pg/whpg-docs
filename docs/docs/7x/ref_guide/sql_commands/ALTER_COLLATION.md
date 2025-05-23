@@ -22,19 +22,19 @@ You must own the collation to use `ALTER COLLATION`. To alter the owner, you mus
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing collation.
+The name \(optionally schema-qualified\) of an existing collation.
 
 new\_name
-:   The new name of the collation.
+The new name of the collation.
 
 new\_owner
-:   The new owner of the collation.
+The new owner of the collation.
 
 new\_schema
-:   The new schema for the collation.
+The new schema for the collation.
 
 REFRESH VERSION
-:   Update the collation's version. See the [Notes](#section4a) below.
+Update the collation's version. See the [Notes](#section4a) below.
 
 ## <a id="section4a"></a>Notes
 

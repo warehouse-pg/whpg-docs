@@ -23,19 +23,19 @@ For information about creating and enabling a custom data access protocol, refer
 ## <a id="section4"></a>Parameters 
 
 TRUSTED
-:   If not specified, only superusers and the protocol owner can create external tables using the protocol. If specified, superusers and the protocol owner can `GRANT` permissions on the protocol to other database roles.
+If not specified, only superusers and the protocol owner can create external tables using the protocol. If specified, superusers and the protocol owner can `GRANT` permissions on the protocol to other database roles.
 
 name
-:   The name of the data access protocol. The protocol name is case sensitive. The name must be unique among the protocols in the database.
+The name of the data access protocol. The protocol name is case sensitive. The name must be unique among the protocols in the database.
 
 readfunc= 'read\_call\_handler'
-:   The name of a previously registered function that WarehousePG calls to read data from an external data source. The command must specify either a read call handler or a write call handler.
+The name of a previously registered function that WarehousePG calls to read data from an external data source. The command must specify either a read call handler or a write call handler.
 
 writefunc= 'write\_call\_handler'
-:   The name of a previously registered function that WarehousePG calls to write data to an external data source. The command must specify either a read call handler or a write call handler.
+The name of a previously registered function that WarehousePG calls to write data to an external data source. The command must specify either a read call handler or a write call handler.
 
 validatorfunc='validate\_handler'
-:   An optional validator function that validates the URL specified in the `CREATE EXTERNAL TABLE` command.
+An optional validator function that validates the URL specified in the `CREATE EXTERNAL TABLE` command.
 
 ## <a id="section5"></a>Notes 
 

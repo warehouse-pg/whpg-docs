@@ -17,16 +17,16 @@ A schema can be dropped only by its owner or a superuser. Note that the owner ca
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the schema does not exist. A notice is issued in this case.
+Do not throw an error if the schema does not exist. A notice is issued in this case.
 
 name
-:   The name of the schema to remove.
+The name of the schema to remove.
 
 CASCADE
-:   Automatically drop objects \(tables, functions, etc.\) that are contained in the schema, and in turn all objects that depend on those objects.
+Automatically drop objects \(tables, functions, etc.\) that are contained in the schema, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the schema if it contains any objects. This is the default.
+Refuse to drop the schema if it contains any objects. This is the default.
 
 ## <a id="section4a"></a>Notes
 

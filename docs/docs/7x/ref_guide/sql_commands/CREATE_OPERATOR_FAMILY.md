@@ -23,10 +23,10 @@ Refer to [Interfacing Extensions to Indexes](https://www.postgresql.org/docs/12/
 ## <a id="section4"></a>Parameters 
 
 name
-:   The \(optionally schema-qualified\) name of the operator family to be created.
+The \(optionally schema-qualified\) name of the operator family to be created.
 
 index\_method
-:   The name of the index method this operator family is for.
+The name of the index method this operator family is for.
 
 ## <a id="section7"></a>Compatibility 
 

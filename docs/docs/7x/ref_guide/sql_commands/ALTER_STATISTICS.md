@@ -21,16 +21,16 @@ You must own the statistics object to use `ALTER STATISTICS`. To change a statis
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of the statistics object to be altered.
+The name \(optionally schema-qualified\) of the statistics object to be altered.
 
 new\_owner
-:   The user name of the new owner of the statistics object.
+The user name of the new owner of the statistics object.
 
 new\_name
-:   The new name for the statistics object.
+The new name for the statistics object.
 
 new\_schema
-:   The new schema for the statistics object.
+The new schema for the statistics object.
 
 
 ## <a id="section6"></a>Compatibility 
