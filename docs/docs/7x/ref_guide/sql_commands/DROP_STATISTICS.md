@@ -15,14 +15,14 @@ DROP STATISTICS [ IF EXISTS ] <name> [, ...] [ CASCADE | RESTRICT ]
 ## <a id="section4"></a>Parameters 
 
 `IF EXISTS`
-:   Do not throw an error if the statistics object does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the statistics object does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name \(optionally schema-qualified\) of the statistics object to drop.
+The name \(optionally schema-qualified\) of the statistics object to drop.
 
 CASCADE
 RESTRICT
-:   These key words have no effect, since there are no dependencies on statistics.
+These key words have no effect, since there are no dependencies on statistics.
 
 ## <a id="section6"></a>Examples 
 

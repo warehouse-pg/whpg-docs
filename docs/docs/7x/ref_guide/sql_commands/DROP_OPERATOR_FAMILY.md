@@ -17,19 +17,19 @@ DROP OPERATOR FAMILY [IF EXISTS] <name> USING <index_method> [CASCADE | RESTRICT
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the operator family does not exist. A notice is issued in this case.
+Do not throw an error if the operator family does not exist. A notice is issued in this case.
 
 name
-:   The name \(optionally schema-qualified\) of an existing operator family.
+The name \(optionally schema-qualified\) of an existing operator family.
 
 index\_method
-:   The name of the index access method the operator family is for.
+The name of the index access method the operator family is for.
 
 CASCADE
-:   Automatically drop objects that depend on the operator family, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the operator family, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the operator family if any objects depend on it. This is the default.
+Refuse to drop the operator family if any objects depend on it. This is the default.
 
 ## <a id="section5"></a>Examples 
 

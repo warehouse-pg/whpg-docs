@@ -7,7 +7,6 @@ Perform the following tasks in order:
 
 1.  [Install WarehousePG](#topic_oy5_21n_1jb):
     - [Download the WarehousePG Server Software](#topic_download) (WarehousePG)
-    - [Verify the WarehousePG Software](#topic_verify_sha) (WarehousePG)
     - [Install the WarehousePG Software](#topic_install) 
     - [(Optional) Install to a Non-Default Directory](#topic_dj4_ssr_cmb)
 2.  [Enabling Passwordless SSH](#topic_xmb_gb5_vhb)
@@ -20,9 +19,9 @@ Perform the following tasks in order:
 
 You must install WarehousePG on each host machine of the WarehousePG cluster. 
 
-VMware distributes the WarehousePG software as a downloadable package that you install on each host system with the operating system's package management system. 
+WarehousePG software aiss a downloadable package that you install on each host system with the operating system's package management system. 
 
-Open source WarehousePG releases are available as RPM installers for RHEL/Oracle/Rocky Linux. See [Open Source WarehousePG by VMware](https://network.pivotal.io/products/greenplum-database) to download pre-built binaries in RPM format.
+Open source WarehousePG releases are available as RPM installers for RHEL Linux.
 
 ### <a id="topic_download"></a>Downloading the WarehousePG Server Software (WarehousePG)
 
@@ -30,9 +29,7 @@ You can download the *WarehousePG Server* software package from the github repo.
 
 Be sure to note the name and the file system location of the downloaded file.
 
-### <a id="topic_verify_sha"></a>Verifying the WarehousePG Software (WarehousePG)
 
-Follow the instructions in [Verifying the WarehousePG Software Download](verify_sw.html) to verify the integrity of the *WarehousePG Server* software.
 
 ### <a id="topic_install"></a>Installing WarehousePG
 

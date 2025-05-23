@@ -39,40 +39,40 @@ You must own the procedure to use `ALTER PROCEDURE`. To change a procedure's sch
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing procedure. If no argument list is specified, the name must be unique in its schema.
+The name \(optionally schema-qualified\) of an existing procedure. If no argument list is specified, the name must be unique in its schema.
 
 argmode
-:   The mode of an argument: `IN` or `VARIADIC`. If omitted, the default is `IN`.
+The mode of an argument: `IN` or `VARIADIC`. If omitted, the default is `IN`.
 
 argname
-:   The name of an argument. Note that `ALTER PROCEDURE` does not actually pay any attention to argument names, since only the argument data types are needed to determine the function's identity.
+The name of an argument. Note that `ALTER PROCEDURE` does not actually pay any attention to argument names, since only the argument data types are needed to determine the function's identity.
 
 argtype
-:   The data type\(s\) of the procedure's arguments \(optionally schema-qualified\), if any.
+The data type\(s\) of the procedure's arguments \(optionally schema-qualified\), if any.
 
 new\_name
-:   The new name of the procedure.
+The new name of the procedure.
 
 new\_owner
-:   The new owner of the procedure. Note that if the procedure is marked `SECURITY DEFINER`, it will subsequently run as the new owner.
+The new owner of the procedure. Note that if the procedure is marked `SECURITY DEFINER`, it will subsequently run as the new owner.
 
 new\_schema
-:   The new schema for the procedure.
+The new schema for the procedure.
 
 extension\_name
-:   The name of the extension that the procedure is to depend on.
+The name of the extension that the procedure is to depend on.
 
 \[ EXTERNAL \] SECURITY INVOKER
 \[ EXTERNAL \] SECURITY DEFINER
-:   Change whether the procedure is a security definer or not. The key word `EXTERNAL` is ignored for SQL conformance. See [CREATE PROCEDURE](CREATE_PROCEDURE.html) for more information about this capability.
+Change whether the procedure is a security definer or not. The key word `EXTERNAL` is ignored for SQL conformance. See [CREATE PROCEDURE](CREATE_PROCEDURE.html) for more information about this capability.
 
 configuration\_parameter
 value
-:   Set or change the value of a configuration parameter when the procedure is called. If value is `DEFAULT` or, equivalently, `RESET` is used, the procedure-local setting is removed, and the procedure runs with the value present in its environment. Use `RESET ALL` to clear all procedure-local settings. `SET FROM CURRENT` saves the value of the parameter that is current when `ALTER PROCEDURE` is run as the value to be applied when the procedure is entered.
-:   See [SET](SET.html) for more information about allowed parameter names and values.
+Set or change the value of a configuration parameter when the procedure is called. If value is `DEFAULT` or, equivalently, `RESET` is used, the procedure-local setting is removed, and the procedure runs with the value present in its environment. Use `RESET ALL` to clear all procedure-local settings. `SET FROM CURRENT` saves the value of the parameter that is current when `ALTER PROCEDURE` is run as the value to be applied when the procedure is entered.
+See [SET](SET.html) for more information about allowed parameter names and values.
 
 RESTRICT
-:   Ignored for conformance with the SQL standard.
+Ignored for conformance with the SQL standard.
 
 ## <a id="section5"></a>Notes 
 

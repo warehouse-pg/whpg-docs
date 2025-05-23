@@ -35,53 +35,53 @@ hostnossl  <database>  <user>  <IP-address>  <IP-mask>  <auth-method>  [<auth-op
 The meaning of the `pg_hba.conf` fields is as follows:
 
 `local`
-:   Matches connection attempts using UNIX-domain sockets. Without a record of this type, UNIX-domain socket connections are disallowed.
+Matches connection attempts using UNIX-domain sockets. Without a record of this type, UNIX-domain socket connections are disallowed.
 
 `host`
-:   Matches connection attempts made using TCP/IP. Remote TCP/IP connections will not be possible unless the server is started with an appropriate value for the `listen_addresses` server configuration parameter. WarehousePG by default allows connections from all hosts \(`'*'`\).
+Matches connection attempts made using TCP/IP. Remote TCP/IP connections will not be possible unless the server is started with an appropriate value for the `listen_addresses` server configuration parameter. WarehousePG by default allows connections from all hosts \(`'*'`\).
 
 `hostssl`
-:   Matches connection attempts made using TCP/IP, but only when the connection is made with SSL encryption. SSL must be enabled at server start time by setting the `ssl` configuration parameter to on. Requires SSL authentication be configured in `postgresql.conf`. See [Configuring postgresql.conf for SSL Authentication](#ssl_postgresql).
+Matches connection attempts made using TCP/IP, but only when the connection is made with SSL encryption. SSL must be enabled at server start time by setting the `ssl` configuration parameter to on. Requires SSL authentication be configured in `postgresql.conf`. See [Configuring postgresql.conf for SSL Authentication](#ssl_postgresql).
 
 `hostnossl`
-:   Matches connection attempts made over TCP/IP that do not use SSL.
+Matches connection attempts made over TCP/IP that do not use SSL.
 
 `database`
-:   Specifies which database names this record matches. The value `all` specifies that it matches all databases. Multiple database names can be supplied by separating them with commas. A separate file containing database names can be specified by preceding the file name with `@`.
+Specifies which database names this record matches. The value `all` specifies that it matches all databases. Multiple database names can be supplied by separating them with commas. A separate file containing database names can be specified by preceding the file name with `@`.
 
 `user`
-:   Specifies which database role names this record matches. The value `all` specifies that it matches all roles. If the specified role is a group and you want all members of that group to be included, precede the role name with a `+`. Multiple role names can be supplied by separating them with commas. A separate file containing role names can be specified by preceding the file name with `@`.
+Specifies which database role names this record matches. The value `all` specifies that it matches all roles. If the specified role is a group and you want all members of that group to be included, precede the role name with a `+`. Multiple role names can be supplied by separating them with commas. A separate file containing role names can be specified by preceding the file name with `@`.
 
 `address`
-:   Specifies the client machine addresses that this record matches. This field can contain either a host name, an IP address range, or one of the special key words mentioned below.
+Specifies the client machine addresses that this record matches. This field can contain either a host name, an IP address range, or one of the special key words mentioned below.
 
-:   An IP address range is specified using standard numeric notation for the range's starting address, then a slash \(`/`\) and a CIDR mask length. The mask length indicates the number of high-order bits of the client IP address that must match. Bits to the right of this should be zero in the given IP address. There must not be any white space between the IP address, the `/`, and the CIDR mask length.
+An IP address range is specified using standard numeric notation for the range's starting address, then a slash \(`/`\) and a CIDR mask length. The mask length indicates the number of high-order bits of the client IP address that must match. Bits to the right of this should be zero in the given IP address. There must not be any white space between the IP address, the `/`, and the CIDR mask length.
 
-:   Typical examples of an IPv4 address range specified this way are `172.20.143.89/32` for a single host, or `172.20.143.0/24` for a small network, or `10.6.0.0/16` for a larger one. An IPv6 address range might look like `::1/128` for a single host \(in this case the IPv6 loopback address\) or `fe80::7a31:c1ff:0000:0000/96` for a small network. `0.0.0.0/0` represents all IPv4 addresses, and `::0/0` represents all IPv6 addresses. To specify a single host, use a mask length of 32 for IPv4 or 128 for IPv6. In a network address, do not omit trailing zeroes.
+Typical examples of an IPv4 address range specified this way are `172.20.143.89/32` for a single host, or `172.20.143.0/24` for a small network, or `10.6.0.0/16` for a larger one. An IPv6 address range might look like `::1/128` for a single host \(in this case the IPv6 loopback address\) or `fe80::7a31:c1ff:0000:0000/96` for a small network. `0.0.0.0/0` represents all IPv4 addresses, and `::0/0` represents all IPv6 addresses. To specify a single host, use a mask length of 32 for IPv4 or 128 for IPv6. In a network address, do not omit trailing zeroes.
 
-:   An entry given in IPv4 format will match only IPv4 connections, and an entry given in IPv6 format will match only IPv6 connections, even if the represented address is in the IPv4-in-IPv6 range.
+An entry given in IPv4 format will match only IPv4 connections, and an entry given in IPv6 format will match only IPv6 connections, even if the represented address is in the IPv4-in-IPv6 range.
 
-:   > **Note** Entries in IPv6 format will be rejected if the host system C library does not have support for IPv6 addresses.
+> **Note** Entries in IPv6 format will be rejected if the host system C library does not have support for IPv6 addresses.
 
-:   You can also write `all` to match any IP address, `samehost` to match any of the server's own IP addresses, or `samenet` to match any address in any subnet to which the server is directly connected.
+You can also write `all` to match any IP address, `samehost` to match any of the server's own IP addresses, or `samenet` to match any address in any subnet to which the server is directly connected.
 
-:   If a host name is specified \(an address that is not an IP address, IP range, or special key word is treated as a host name\), that name is compared with the result of a reverse name resolution of the client IP address \(for example, reverse DNS lookup, if DNS is used\). Host name comparisons are case insensitive. If there is a match, then a forward name resolution \(for example, forward DNS lookup\) is performed on the host name to check whether any of the addresses it resolves to are equal to the client IP address. If both directions match, then the entry is considered to match.
+If a host name is specified \(an address that is not an IP address, IP range, or special key word is treated as a host name\), that name is compared with the result of a reverse name resolution of the client IP address \(for example, reverse DNS lookup, if DNS is used\). Host name comparisons are case insensitive. If there is a match, then a forward name resolution \(for example, forward DNS lookup\) is performed on the host name to check whether any of the addresses it resolves to are equal to the client IP address. If both directions match, then the entry is considered to match.
 
-:   The host name that is used in `pg_hba.conf` should be the one that address-to-name resolution of the client's IP address returns, otherwise the line won't be matched. Some host name databases allow associating an IP address with multiple host names, but the operating system will only return one host name when asked to resolve an IP address.
+The host name that is used in `pg_hba.conf` should be the one that address-to-name resolution of the client's IP address returns, otherwise the line won't be matched. Some host name databases allow associating an IP address with multiple host names, but the operating system will only return one host name when asked to resolve an IP address.
 
-:   A host name specification that starts with a dot \(.\) matches a suffix of the actual host name. So `.example.com` would match `foo.example.com` \(but not just `example.com`\).
+A host name specification that starts with a dot \(.\) matches a suffix of the actual host name. So `.example.com` would match `foo.example.com` \(but not just `example.com`\).
 
-:   When host names are specified in `pg_hba.conf`, you should ensure that name resolution is reasonably fast. It can be advantageous to set up a local name resolution cache such as `nscd`. Also, you can enable the server configuration parameter `log_hostname` to see the client host name instead of the IP address in the log.
+When host names are specified in `pg_hba.conf`, you should ensure that name resolution is reasonably fast. It can be advantageous to set up a local name resolution cache such as `nscd`. Also, you can enable the server configuration parameter `log_hostname` to see the client host name instead of the IP address in the log.
 
 `IP-address`
 `IP-mask`
-:   These two fields can be used as an alternative to the CIDR address notation. Instead of specifying the mask length, the actual mask is specified in a separate column. For example, `255.0.0.0` represents an IPv4 CIDR mask length of 8, and `255.255.255.255` represents a CIDR mask length of 32.
+These two fields can be used as an alternative to the CIDR address notation. Instead of specifying the mask length, the actual mask is specified in a separate column. For example, `255.0.0.0` represents an IPv4 CIDR mask length of 8, and `255.255.255.255` represents a CIDR mask length of 32.
 
 `auth-method`
-:   Specifies the authentication method to use when a connection matches this record. See [Authentication Methods](#topic_nyh_gwd_jr) for options.
+Specifies the authentication method to use when a connection matches this record. See [Authentication Methods](#topic_nyh_gwd_jr) for options.
 
 `auth-options`
-:   After the `auth-method` field, there can be field\(s\) of the form `name=value` that specify options for the authentication method. Details about which options are available for which authentication methods are described in [Authentication Methods](#topic_nyh_gwd_jr).
+After the `auth-method` field, there can be field\(s\) of the form `name=value` that specify options for the authentication method. Details about which options are available for which authentication methods are described in [Authentication Methods](#topic_nyh_gwd_jr).
 
 Files included by @ constructs are read as lists of names, which can be separated by either whitespace or commas. Comments are introduced by \#, just as in `pg_hba.conf`, and nested @ constructs are allowed. Unless the file name following @ is an absolute path, it is taken to be relative to the directory containing the referencing file.
 
@@ -134,21 +134,21 @@ To edit `pg_hba.conf`:
 ### <a id="basic_auth"></a>Basic Authentication 
 
 Trust
-:   Allows the connection unconditionally, without the need for a password or any other authentication. This entry is required for the `gpadmin` role, and for WarehousePG utilities \(for example `gpinitsystem`, `gpstop`, or `gpstart` amongst others\) that need to connect between nodes without prompting for input or a password.
+Allows the connection unconditionally, without the need for a password or any other authentication. This entry is required for the `gpadmin` role, and for WarehousePG utilities \(for example `gpinitsystem`, `gpstop`, or `gpstart` amongst others\) that need to connect between nodes without prompting for input or a password.
 
-:   > **Important** For a more secure system, remove records for remote connections that use `trust` authentication from the `pg_hba.conf` file. `trust` authentication grants any user who can connect to the server access to the database using any role they specify. You can safely replace `trust` authentication with `ident` authentication for local UNIX-socket connections. You can also use `ident` authentication for local and remote TCP clients, but the client host must be running an ident service and you must `trust` the integrity of that machine.
+> **Important** For a more secure system, remove records for remote connections that use `trust` authentication from the `pg_hba.conf` file. `trust` authentication grants any user who can connect to the server access to the database using any role they specify. You can safely replace `trust` authentication with `ident` authentication for local UNIX-socket connections. You can also use `ident` authentication for local and remote TCP clients, but the client host must be running an ident service and you must `trust` the integrity of that machine.
 
 Reject
-:   Reject the connections with the matching parameters. You should typically use this to restrict access from specific hosts or insecure connections.
+Reject the connections with the matching parameters. You should typically use this to restrict access from specific hosts or insecure connections.
 
 Ident
-:   Authenticates based on the client's operating system user name. This is secure for local socket connections. Using `ident` for TCP connections from remote hosts requires that the client's host is running an ident service. The `ident` authentication method should only be used with remote hosts on a trusted, closed network.
+Authenticates based on the client's operating system user name. This is secure for local socket connections. Using `ident` for TCP connections from remote hosts requires that the client's host is running an ident service. The `ident` authentication method should only be used with remote hosts on a trusted, closed network.
 
 md5
-:   Require the client to supply a double-MD5-hashed password for authentication.
+Require the client to supply a double-MD5-hashed password for authentication.
 
 password
-:   Require the client to supply an unencrypted password for authentication. Since the password is sent in clear text over the network, this should not be used on untrusted networks.
+Require the client to supply an unencrypted password for authentication. Since the password is sent in clear text over the network, this should not be used on untrusted networks.
 
 The password-based authentication methods are `md5` and `password`. These methods operate similarly except for the way that the password is sent across the connection: MD5-hashed and clear-text respectively.
 
@@ -200,13 +200,13 @@ When connecting to the database make sure you have a ticket for a principal matc
 The following configuration options are supported for GSSAPI:
 
 `include_realm`
-:   If set to 1, the realm name from the authenticated user principal is included in the system user name that is passed through user name mapping. This is the recommended configuration as, otherwise, it is impossible to differentiate users with the same username who are from different realms. The default for this parameter is 0 \(meaning to not include the realm in the system user name\) but may change to 1 in a future version of WarehousePG. You can set it explicitly to avoid any issues when upgrading.
+If set to 1, the realm name from the authenticated user principal is included in the system user name that is passed through user name mapping. This is the recommended configuration as, otherwise, it is impossible to differentiate users with the same username who are from different realms. The default for this parameter is 0 \(meaning to not include the realm in the system user name\) but may change to 1 in a future version of WarehousePG. You can set it explicitly to avoid any issues when upgrading.
 
 `map`
-:   Allows for mapping between system and database user names. For a GSSAPI/Kerberos principal, such as `username@EXAMPLE.COM` \(or, less commonly, `username/hostbased@EXAMPLE.COM`\), the default user name used for mapping is `username` \(or `username/hostbased`, respectively\), unless `include_realm` has been set to 1 \(as recommended, see above\), in which case `username@EXAMPLE.COM` \(or `username/hostbased@EXAMPLE.COM`\) is what is seen as the system username when mapping.
+Allows for mapping between system and database user names. For a GSSAPI/Kerberos principal, such as `username@EXAMPLE.COM` \(or, less commonly, `username/hostbased@EXAMPLE.COM`\), the default user name used for mapping is `username` \(or `username/hostbased`, respectively\), unless `include_realm` has been set to 1 \(as recommended, see above\), in which case `username@EXAMPLE.COM` \(or `username/hostbased@EXAMPLE.COM`\) is what is seen as the system username when mapping.
 
 `krb_realm`
-:   Sets the realm to match user principal names against. If this parameter is set, only users of that realm will be accepted. If it is not set, users of any realm can connect, subject to whatever user name mapping is done.
+Sets the realm to match user principal names against. If this parameter is set, only users of that realm will be accepted. If it is not set, users of any realm can connect, subject to whatever user name mapping is done.
 
 ### <a id="ldap_auth"></a>LDAP Authentication 
 
@@ -227,34 +227,34 @@ Following are the recommended steps for configuring your system for LDAP authent
 Specify the following parameter `auth-options`.
 
 ldapserver
-:   Names or IP addresses of LDAP servers to connect to. Multiple servers may be specified, separated by spaces.
+Names or IP addresses of LDAP servers to connect to. Multiple servers may be specified, separated by spaces.
 
 ldapprefix
-:   String to prepend to the user name when forming the DN to bind as, when doing simple bind authentication.
+String to prepend to the user name when forming the DN to bind as, when doing simple bind authentication.
 
 ldapsuffix
-:   String to append to the user name when forming the DN to bind as, when doing simple bind authentication.
+String to append to the user name when forming the DN to bind as, when doing simple bind authentication.
 
 ldapport
-:   Port number on LDAP server to connect to. If no port is specified, the LDAP library's default port setting will be used.
+Port number on LDAP server to connect to. If no port is specified, the LDAP library's default port setting will be used.
 
 ldaptls
-:   Set to 1 to make the connection between PostgreSQL and the LDAP server use TLS encryption. Note that this only encrypts the traffic to the LDAP server — the connection to the client will still be unencrypted unless SSL is used.
+Set to 1 to make the connection between PostgreSQL and the LDAP server use TLS encryption. Note that this only encrypts the traffic to the LDAP server — the connection to the client will still be unencrypted unless SSL is used.
 
 ldapbasedn
-:   Root DN to begin the search for the user in, when doing search+bind authentication.
+Root DN to begin the search for the user in, when doing search+bind authentication.
 
 ldapbinddn
-:   DN of user to bind to the directory with to perform the search when doing search+bind authentication.
+DN of user to bind to the directory with to perform the search when doing search+bind authentication.
 
 ldapbindpasswd
-:   Password for user to bind to the directory with to perform the search when doing search+bind authentication.
+Password for user to bind to the directory with to perform the search when doing search+bind authentication.
 
 ldapsearchattribute
-:   Attribute to match against the user name in the search when doing search+bind authentication.
+Attribute to match against the user name in the search when doing search+bind authentication.
 
 ldapsearchfilter
-:   Beginning with WarehousePG 6.22, this attribute enables you to provide a search filter to use when doing search+bind authentication. Occurrences of `$username` will be replaced with the user name. This allows for more flexible search filters than `ldapsearchattribute`. Note that you can specify _either_ `ldapsearchattribute` or `ldapsearchattribute`, but not both.
+Beginning with WarehousePG 6.22, this attribute enables you to provide a search filter to use when doing search+bind authentication. Occurrences of `$username` will be replaced with the user name. This allows for more flexible search filters than `ldapsearchattribute`. Note that you can specify _either_ `ldapsearchattribute` or `ldapsearchattribute`, but not both.
 
 When using search+bind mode, the search can be performed using a single attribute specified with `ldapsearchattribute`, or using a custom search filter specified with `ldapsearchfilter`. Specifying `ldapsearchattribute=foo` is equivalent to specifying `ldapsearchfilter="(foo=$username)"`. If neither option is specified the default is `ldapsearchattribute=uid`.
 
@@ -286,12 +286,12 @@ Authentication method:
     Authentication options:
 
     Hostssl
-    :   Connection type must be hostssl.
+    Connection type must be hostssl.
 
     map=mapping
-    :   mapping.
+    mapping.
 
-    :   This is specified in the `pg_ident.conf`, or in the file specified in the `ident_file` server setting.
+    This is specified in the `pg_ident.conf`, or in the file specified in the `ident_file` server setting.
 
     Following are sample `pg_hba.conf` entries for SSL client authentication:
 
@@ -375,28 +375,28 @@ You can specify a different directory for the location of the SSL server files w
 SSL options:
 
 sslmode
-:   Specifies the level of protection.
+Specifies the level of protection.
 
 `require`
-:   Only use an SSL connection. If a root CA file is present, verify the certificate in the same way as if `verify-ca` was specified.
+Only use an SSL connection. If a root CA file is present, verify the certificate in the same way as if `verify-ca` was specified.
 
 `verify-ca`
-:   Only use an SSL connection. Verify that the server certificate is issued by a trusted CA.
+Only use an SSL connection. Verify that the server certificate is issued by a trusted CA.
 
 `verify-full`
-:   Only use an SSL connection. Verify that the server certificate is issued by a trusted CA and that the server host name matches that in the certificate.
+Only use an SSL connection. Verify that the server certificate is issued by a trusted CA and that the server host name matches that in the certificate.
 
 sslcert
-:   The file name of the client SSL certificate. The default is `$COORDINATOR_DATA_DIRECTORY/postgresql.crt`.
+The file name of the client SSL certificate. The default is `$COORDINATOR_DATA_DIRECTORY/postgresql.crt`.
 
 sslkey
-:   The secret key used for the client certificate. The default is `$COORDINATOR_DATA_DIRECTORY/postgresql.key`.
+The secret key used for the client certificate. The default is `$COORDINATOR_DATA_DIRECTORY/postgresql.key`.
 
 sslrootcert
-:   The name of a file containing SSL Certificate Authority certificate\(s\). The default is `$COORDINATOR_DATA_DIRECTORY/root.crt`.
+The name of a file containing SSL Certificate Authority certificate\(s\). The default is `$COORDINATOR_DATA_DIRECTORY/root.crt`.
 
 sslcrl
-:   The name of the SSL certificate revocation list. The default is `$COORDINATOR_DATA_DIRECTORY/root.crl`.
+The name of the SSL certificate revocation list. The default is `$COORDINATOR_DATA_DIRECTORY/root.crl`.
 
 The client connection parameters can be set using the following environment variables:
 
@@ -475,16 +475,16 @@ The RADIUS encryption vector requires SSL to be enabled in order to be cryptogra
 ### <a id="radius"></a>RADIUS Authentication Options 
 
 radiusserver
-:   The name of the RADIUS server.
+The name of the RADIUS server.
 
 radiussecret
-:   The RADIUS shared secret.
+The RADIUS shared secret.
 
 radiusport
-:   The port to connect to on the RADIUS server.
+The port to connect to on the RADIUS server.
 
 radiusidentifier
-:   NAS identifier in RADIUS requests.
+NAS identifier in RADIUS requests.
 
 Following are sample `pg_hba.conf` entries for RADIUS client authentication:
 

@@ -55,73 +55,73 @@ This utility performs the following tasks:
 ## <a id="section4"></a>Options 
 
 -a
-:   Do not prompt the user for confirmation.
+Do not prompt the user for confirmation.
 
 -B parallel\_processes
-:   The number of segments to create in parallel. If not specified, the utility will start up to 4 parallel processes at a time.
+The number of segments to create in parallel. If not specified, the utility will start up to 4 parallel processes at a time.
 
 -c cluster\_configuration\_file
-:   Required. The full path and filename of the configuration file, which contains all of the defined parameters to configure and initialize a new WarehousePG cluster. See [Initialization Configuration File Format](#section5) for a description of this file. You must provide either the `-c <cluster_configuration_file>` option or the `-I <input_configuration_file>` option to `gpinitsystem`.
+Required. The full path and filename of the configuration file, which contains all of the defined parameters to configure and initialize a new WarehousePG cluster. See [Initialization Configuration File Format](#section5) for a description of this file. You must provide either the `-c <cluster_configuration_file>` option or the `-I <input_configuration_file>` option to `gpinitsystem`.
 
 -D
-:   Sets log output level to debug.
+Sets log output level to debug.
 
 -h hostfile\_gpinitsystem
-:   Optional. The full path and filename of a file that contains the host addresses of your segment hosts. If not specified on the command line, you can specify the host file using the `MACHINE_LIST_FILE` parameter in the gpinitsystem\_config file.
+Optional. The full path and filename of a file that contains the host addresses of your segment hosts. If not specified on the command line, you can specify the host file using the `MACHINE_LIST_FILE` parameter in the gpinitsystem\_config file.
 
 -I input\_configuration\_file
-:   The full path and filename of an input configuration file, which defines the WarehousePG host systems, the coordinator instance and segment instances on the hosts, using the `QD_PRIMARY_ARRAY`, `PRIMARY_ARRAY`, and `MIRROR_ARRAY` parameters. The input configuration file is typically created by using `gpinitsystem` with the `-O output\_configuration\_file` option. Edit those parameters in order to initialize a new cluster or re-create a cluster from a backed up configuration. You must provide either the `-c <cluster_configuration_file>` option or the `-I <input_configuration_file>` option to `gpinitsystem`.
+The full path and filename of an input configuration file, which defines the WarehousePG host systems, the coordinator instance and segment instances on the hosts, using the `QD_PRIMARY_ARRAY`, `PRIMARY_ARRAY`, and `MIRROR_ARRAY` parameters. The input configuration file is typically created by using `gpinitsystem` with the `-O output\_configuration\_file` option. Edit those parameters in order to initialize a new cluster or re-create a cluster from a backed up configuration. You must provide either the `-c <cluster_configuration_file>` option or the `-I <input_configuration_file>` option to `gpinitsystem`.
 
 -n locale \| --locale=locale
-:   Sets the default locale used by WarehousePG. If not specified, the default locale is `en_US.utf8`. A locale identifier consists of a language identifier and a region identifier, and optionally a character set encoding. For example, `sv_SE` is Swedish as spoken in Sweden, `en_US` is U.S. English, and `fr_CA` is French Canadian. If more than one character set can be useful for a locale, then the specifications look like this: `en_US.UTF-8` \(locale specification and character set encoding\). On most systems, the command `locale` will show the locale environment settings and `locale -a` will show a list of all available locales.
+Sets the default locale used by WarehousePG. If not specified, the default locale is `en_US.utf8`. A locale identifier consists of a language identifier and a region identifier, and optionally a character set encoding. For example, `sv_SE` is Swedish as spoken in Sweden, `en_US` is U.S. English, and `fr_CA` is French Canadian. If more than one character set can be useful for a locale, then the specifications look like this: `en_US.UTF-8` \(locale specification and character set encoding\). On most systems, the command `locale` will show the locale environment settings and `locale -a` will show a list of all available locales.
 
 --lc-collate=locale
-:   Similar to `--locale`, but sets the locale used for collation \(sorting data\). The sort order cannot be changed after WarehousePG is initialized, so it is important to choose a collation locale that is compatible with the character set encodings that you plan to use for your data. There is a special collation name of `C` or `POSIX` \(byte-order sorting as opposed to dictionary-order sorting\). The `C` collation can be used with any character encoding.
+Similar to `--locale`, but sets the locale used for collation \(sorting data\). The sort order cannot be changed after WarehousePG is initialized, so it is important to choose a collation locale that is compatible with the character set encodings that you plan to use for your data. There is a special collation name of `C` or `POSIX` \(byte-order sorting as opposed to dictionary-order sorting\). The `C` collation can be used with any character encoding.
 
 --lc-ctype=locale
-:   Similar to `--locale`, but sets the locale used for character classification \(what character sequences are valid and how they are interpreted\). This cannot be changed after WarehousePG is initialized, so it is important to choose a character classification locale that is compatible with the data you plan to store in WarehousePG.
+Similar to `--locale`, but sets the locale used for character classification \(what character sequences are valid and how they are interpreted\). This cannot be changed after WarehousePG is initialized, so it is important to choose a character classification locale that is compatible with the data you plan to store in WarehousePG.
 
 --lc-messages=locale
-:   Similar to `--locale`, but sets the locale used for messages output by WarehousePG. The current version of WarehousePG does not support multiple locales for output messages \(all messages are in English\), so changing this setting will not have any effect.
+Similar to `--locale`, but sets the locale used for messages output by WarehousePG. The current version of WarehousePG does not support multiple locales for output messages \(all messages are in English\), so changing this setting will not have any effect.
 
 --lc-monetary=locale
-:   Similar to `--locale`, but sets the locale used for formatting currency amounts.
+Similar to `--locale`, but sets the locale used for formatting currency amounts.
 
 --lc-numeric=locale
-:   Similar to `--locale`, but sets the locale used for formatting numbers.
+Similar to `--locale`, but sets the locale used for formatting numbers.
 
 --lc-time=locale
-:   Similar to `--locale`, but sets the locale used for formatting dates and times.
+Similar to `--locale`, but sets the locale used for formatting dates and times.
 
 -l logfile\_directory
-:   The directory to write the log file. Defaults to `~/gpAdminLogs`.
+The directory to write the log file. Defaults to `~/gpAdminLogs`.
 
 -m number \| --max\_connections=number
-:   Sets the maximum number of client connections allowed to the coordinator. The default is 250.
+Sets the maximum number of client connections allowed to the coordinator. The default is 250.
 
 -O output\_configuration\_file
-:   Optional, used during new cluster initialization. This option writes the `cluster_configuration_file` information \(used with -c\) to the specified `output_configuration_file`. This file defines the WarehousePG members using the `QD_PRIMARY_ARRAY`, `PRIMARY_ARRAY`, and `MIRROR_ARRAY` parameters. Use this file as a template for the `-I` `input_configuration_file` option. See [Examples](#section6) for more information.
+Optional, used during new cluster initialization. This option writes the `cluster_configuration_file` information \(used with -c\) to the specified `output_configuration_file`. This file defines the WarehousePG members using the `QD_PRIMARY_ARRAY`, `PRIMARY_ARRAY`, and `MIRROR_ARRAY` parameters. Use this file as a template for the `-I` `input_configuration_file` option. See [Examples](#section6) for more information.
 
 -p postgresql\_conf\_param\_file
-:   Optional. The name of a file that contains `postgresql.conf` parameter settings that you want to set for WarehousePG. These settings will be used when the individual coordinator and segment instances are initialized. You can also set parameters after initialization using the `gpconfig` utility.
+Optional. The name of a file that contains `postgresql.conf` parameter settings that you want to set for WarehousePG. These settings will be used when the individual coordinator and segment instances are initialized. You can also set parameters after initialization using the `gpconfig` utility.
 
 -q
-:   Run in quiet mode. Command output is not displayed on the screen, but is still written to the log file.
+Run in quiet mode. Command output is not displayed on the screen, but is still written to the log file.
 
 -b size \| --shared\_buffers=size
-:   Sets the amount of memory a WarehousePG server instance uses for shared memory buffers. You can specify sizing in kilobytes \(kB\), megabytes \(MB\) or gigabytes \(GB\). The default is 125MB.
+Sets the amount of memory a WarehousePG server instance uses for shared memory buffers. You can specify sizing in kilobytes \(kB\), megabytes \(MB\) or gigabytes \(GB\). The default is 125MB.
 
 -s standby\_coordinator\_host
-:   Optional. If you wish to configure a backup coordinator instance, specify the host name using this option. The WarehousePG software must already be installed and configured on this host.
+Optional. If you wish to configure a backup coordinator instance, specify the host name using this option. The WarehousePG software must already be installed and configured on this host.
 
 -P standby\_coordinator\_port
-:   If you configure a standby coordinator instance with `-s`, specify its port number using this option. The default port is the same as the coordinator port. To run the standby and coordinator on the same host, you must use this option to specify a different port for the standby. The WarehousePG software must already be installed and configured on the standby host.
+If you configure a standby coordinator instance with `-s`, specify its port number using this option. The default port is the same as the coordinator port. To run the standby and coordinator on the same host, you must use this option to specify a different port for the standby. The WarehousePG software must already be installed and configured on the standby host.
 
 -S standby\_coordinator\_datadir \| --standby\_dir=standby\_coordinator\_datadir
-:   If you configure a standby coordinator host with `-s`, use this option to specify its data directory. If you configure a standby on the same host as the coordinator instance, the coordinator and standby must have separate data directories.
+If you configure a standby coordinator host with `-s`, use this option to specify its data directory. If you configure a standby on the same host as the coordinator instance, the coordinator and standby must have separate data directories.
 
 -e superuser\_password \| --su\_password=superuser\_password
-:   Use this option to specify the password to set for the WarehousePG superuser account \(such as `gpadmin`\). If this option is not specified, the default password `gparray` is assigned to the superuser account. You can use the `ALTER ROLE` command to change the password at a later time.
+Use this option to specify the password to set for the WarehousePG superuser account \(such as `gpadmin`\). If this option is not specified, the default password `gparray` is assigned to the superuser account. You can use the `ALTER ROLE` command to change the password at a later time.
 
     Recommended security best practices:
 
@@ -129,13 +129,13 @@ This utility performs the following tasks:
     -   Change the password immediately after installation.
 
 --mirror-mode=\{group\|spread\}
-:   Use this option to specify the placement of mirror segment instances on the segment hosts. The default, `group`, groups the mirror segments for all of a host's primary segments on a single alternate host. `spread` spreads mirror segments for the primary segments on a host across different hosts in the WarehousePG cluster. Spreading is only allowed if the number of hosts is greater than the number of segment instances per host. See [Overview of Segment Mirroring](../../admin_guide/ha/overview-of-segment-mirroring.html#topic3) for information about WarehousePG mirroring strategies.
+Use this option to specify the placement of mirror segment instances on the segment hosts. The default, `group`, groups the mirror segments for all of a host's primary segments on a single alternate host. `spread` spreads mirror segments for the primary segments on a host across different hosts in the WarehousePG cluster. Spreading is only allowed if the number of hosts is greater than the number of segment instances per host. See [Overview of Segment Mirroring](../../admin_guide/ha/overview-of-segment-mirroring.html#topic3) for information about WarehousePG mirroring strategies.
 
 -v \| --version
-:   Print the `gpinitsystem` version and exit.
+Print the `gpinitsystem` version and exit.
 
 -? \| --help
-:   Show help about `gpinitsystem` command line arguments, and exit.
+Show help about `gpinitsystem` command line arguments, and exit.
 
 ## <a id="section5"></a>Initialization Configuration File Format 
 
@@ -149,56 +149,56 @@ MIRROR_PORT_BASE = 7000
 ```
 
 MACHINE\_LIST\_FILE
-:   **Optional.** Can be used in place of the `-h` option. This specifies the file that contains the list of the segment host address names that comprise the WarehousePG cluster. The coordinator host is assumed to be the host from which you are running the utility and should not be included in this file. If your segment hosts have multiple network interfaces, then this file would include all addresses for the host. Give the absolute path to the file.
+**Optional.** Can be used in place of the `-h` option. This specifies the file that contains the list of the segment host address names that comprise the WarehousePG cluster. The coordinator host is assumed to be the host from which you are running the utility and should not be included in this file. If your segment hosts have multiple network interfaces, then this file would include all addresses for the host. Give the absolute path to the file.
 
 SEG\_PREFIX
-:   **Required.** This specifies a prefix that will be used to name the data directories on the coordinator and segment instances. The naming convention for data directories in a WarehousePG cluster is SEG\_PREFIXnumber where number starts with 0 for segment instances \(the coordinator is always -1\). So for example, if you choose the prefix `gpseg`, your coordinator instance data directory would be named `gpseg-1`, and the segment instances would be named `gpseg0`, `gpseg1`, `gpseg2`, `gpseg3`, and so on.
+**Required.** This specifies a prefix that will be used to name the data directories on the coordinator and segment instances. The naming convention for data directories in a WarehousePG cluster is SEG\_PREFIXnumber where number starts with 0 for segment instances \(the coordinator is always -1\). So for example, if you choose the prefix `gpseg`, your coordinator instance data directory would be named `gpseg-1`, and the segment instances would be named `gpseg0`, `gpseg1`, `gpseg2`, `gpseg3`, and so on.
 
 PORT\_BASE
-:   **Required.** This specifies the base number by which primary segment port numbers are calculated. The first primary segment port on a host is set as `PORT_BASE`, and then incremented by one for each additional primary segment on that host. Valid values range from 1 through 65535.
+**Required.** This specifies the base number by which primary segment port numbers are calculated. The first primary segment port on a host is set as `PORT_BASE`, and then incremented by one for each additional primary segment on that host. Valid values range from 1 through 65535.
 
 DATA\_DIRECTORY
-:   **Required.** This specifies the data storage location\(s\) where the utility will create the primary segment data directories. The number of locations in the list dictate the number of primary segments that will get created per physical host \(if multiple addresses for a host are listed in the host file, the number of segments will be spread evenly across the specified interface addresses\). It is OK to list the same data storage area multiple times if you want your data directories created in the same location. The user who runs `gpinitsystem` \(for example, the `gpadmin` user\) must have permission to write to these directories. For example, this will create six primary segments per host:
+**Required.** This specifies the data storage location\(s\) where the utility will create the primary segment data directories. The number of locations in the list dictate the number of primary segments that will get created per physical host \(if multiple addresses for a host are listed in the host file, the number of segments will be spread evenly across the specified interface addresses\). It is OK to list the same data storage area multiple times if you want your data directories created in the same location. The user who runs `gpinitsystem` \(for example, the `gpadmin` user\) must have permission to write to these directories. For example, this will create six primary segments per host:
 
-:   ```
+```
 declare -a DATA_DIRECTORY=(/data1/primary /data1/primary 
 /data1/primary /data2/primary /data2/primary /data2/primary)
 ```
 
 COORDINATOR\_HOSTNAME
-:   **Required.** The host name of the coordinator instance. This host name must exactly match the configured host name of the machine \(run the `hostname` command to determine the correct hostname\).
+**Required.** The host name of the coordinator instance. This host name must exactly match the configured host name of the machine \(run the `hostname` command to determine the correct hostname\).
 
 COORDINATOR\_DIRECTORY
-:   **Required.** This specifies the location where the data directory will be created on the coordinator host. You must make sure that the user who runs `gpinitsystem` \(for example, the `gpadmin` user\) has permissions to write to this directory.
+**Required.** This specifies the location where the data directory will be created on the coordinator host. You must make sure that the user who runs `gpinitsystem` \(for example, the `gpadmin` user\) has permissions to write to this directory.
 
 COORDINATOR\_PORT
-:   **Required.** The port number for the coordinator instance. This is the port number that users and client connections will use when accessing the WarehousePG cluster.
+**Required.** The port number for the coordinator instance. This is the port number that users and client connections will use when accessing the WarehousePG cluster.
 
 TRUSTED\_SHELL
-:   **Required.** The shell the `gpinitsystem` utility uses to run commands on remote hosts. Allowed values are `ssh`. You must set up your trusted host environment before running the `gpinitsystem` utility \(you can use `gpssh-exkeys` to do this\).
+**Required.** The shell the `gpinitsystem` utility uses to run commands on remote hosts. Allowed values are `ssh`. You must set up your trusted host environment before running the `gpinitsystem` utility \(you can use `gpssh-exkeys` to do this\).
 
 ENCODING
-:   **Required.** The character set encoding to use. This character set must be compatible with the `--locale` settings used, especially `--lc-collate` and `--lc-ctype`. WarehousePG supports the same character sets as PostgreSQL.
+**Required.** The character set encoding to use. This character set must be compatible with the `--locale` settings used, especially `--lc-collate` and `--lc-ctype`. WarehousePG supports the same character sets as PostgreSQL.
 
 DATABASE\_NAME
-:   **Optional.** The name of a WarehousePG database to create after the system is initialized. You can always create a database later using the `CREATE DATABASE` command or the `createdb` utility.
+**Optional.** The name of a WarehousePG database to create after the system is initialized. You can always create a database later using the `CREATE DATABASE` command or the `createdb` utility.
 
 MIRROR\_PORT\_BASE
-:   **Optional.** This specifies the base number by which mirror segment port numbers are calculated. The first mirror segment port on a host is set as `MIRROR_PORT_BASE`, and then incremented by one for each additional mirror segment on that host. Valid values range from 1 through 65535 and cannot conflict with the ports calculated by `PORT_BASE`.
+**Optional.** This specifies the base number by which mirror segment port numbers are calculated. The first mirror segment port on a host is set as `MIRROR_PORT_BASE`, and then incremented by one for each additional mirror segment on that host. Valid values range from 1 through 65535 and cannot conflict with the ports calculated by `PORT_BASE`.
 
 MIRROR\_DATA\_DIRECTORY
-:   **Optional.** This specifies the data storage location\(s\) where the utility will create the mirror segment data directories. There must be the same number of data directories declared for mirror segment instances as for primary segment instances \(see the `DATA_DIRECTORY` parameter\). The user who runs `gpinitsystem` \(for example, the `gpadmin` user\) must have permission to write to these directories. For example:
+**Optional.** This specifies the data storage location\(s\) where the utility will create the mirror segment data directories. There must be the same number of data directories declared for mirror segment instances as for primary segment instances \(see the `DATA_DIRECTORY` parameter\). The user who runs `gpinitsystem` \(for example, the `gpadmin` user\) must have permission to write to these directories. For example:
 
-:   ```
+```
 declare -a MIRROR_DATA_DIRECTORY=(/data1/mirror 
 /data1/mirror /data1/mirror /data2/mirror /data2/mirror 
 /data2/mirror)
 ```
 
 QD\_PRIMARY\_ARRAY, PRIMARY\_ARRAY, MIRROR\_ARRAY
-:   **Required** when using `input_configuration file` with `-I` option. These parameters specify the WarehousePG coordinator host, the primary segment, and the mirror segment hosts respectively. During new cluster initialization, use the `gpinitsystem` `-O output\_configuration\_file` to populate `QD_PRIMARY_ARRAY`, `PRIMARY_ARRAY`, `MIRROR_ARRAY`.
+**Required** when using `input_configuration file` with `-I` option. These parameters specify the WarehousePG coordinator host, the primary segment, and the mirror segment hosts respectively. During new cluster initialization, use the `gpinitsystem` `-O output\_configuration\_file` to populate `QD_PRIMARY_ARRAY`, `PRIMARY_ARRAY`, `MIRROR_ARRAY`.
 
-:   To initialize a new cluster or re-create a cluster from a backed up configuration, edit these values in the input configuration file used with the `gpinitsystem` `-I input\_configuration\_file` option. Use one of the following formats to specify the host information:
+To initialize a new cluster or re-create a cluster from a backed up configuration, edit these values in the input configuration file used with the `gpinitsystem` `-I input\_configuration\_file` option. Use one of the following formats to specify the host information:
 
     ```
     <hostname>~<address>~<port>~<data_directory>/<seg_prefix<segment_id>~<dbid>~<content_id>
@@ -210,9 +210,9 @@ QD\_PRIMARY\_ARRAY, PRIMARY\_ARRAY, MIRROR\_ARRAY
     <host>~<port>~<data_directory>/<seg_prefix<segment_id>~<dbid>~<content_id>
     ```
 
-:   The first format populates the `hostname` and `address` fields in the `gp_segment_configuration` catalog table with the hostname and address values provided in the input configuration file. The second format populates `hostname` and `address` fields with the same value, derived from host.
+The first format populates the `hostname` and `address` fields in the `gp_segment_configuration` catalog table with the hostname and address values provided in the input configuration file. The second format populates `hostname` and `address` fields with the same value, derived from host.
 
-:   The WarehousePG coordinator always uses the value -1 for the segment ID and content ID. For example, seg\_prefix<segment\_id\> and dbid values for `QD_PRIMARY_ARRAY` use `-1` to indicate the coordinator instance:
+The WarehousePG coordinator always uses the value -1 for the segment ID and content ID. For example, seg\_prefix<segment\_id\> and dbid values for `QD_PRIMARY_ARRAY` use `-1` to indicate the coordinator instance:
 
     ```
     QD_PRIMARY_ARRAY=cdw~cdw~5432~/gpdata/coordinator/gpseg-1~1~-1
@@ -230,23 +230,23 @@ QD\_PRIMARY\_ARRAY, PRIMARY\_ARRAY, MIRROR\_ARRAY
     )
     ```
 
-:   To re-create a cluster using a known WarehousePG cluster configuration, you can edit the segment and content IDs to match the values of the system.
+To re-create a cluster using a known WarehousePG cluster configuration, you can edit the segment and content IDs to match the values of the system.
 
 HEAP\_CHECKSUM
-:   **Optional.** This parameter specifies if checksums are enabled for heap data. When enabled, checksums are calculated for heap storage in all databases, enabling WarehousePG to detect corruption in the I/O system. This option is set when the system is initialized and cannot be changed later.
+**Optional.** This parameter specifies if checksums are enabled for heap data. When enabled, checksums are calculated for heap storage in all databases, enabling WarehousePG to detect corruption in the I/O system. This option is set when the system is initialized and cannot be changed later.
 
-:   The `HEAP_CHECKSUM` option is on by default and turning it off is strongly discouraged. If you set this option to off, data corruption in storage can go undetected and make recovery much more difficult.
+The `HEAP_CHECKSUM` option is on by default and turning it off is strongly discouraged. If you set this option to off, data corruption in storage can go undetected and make recovery much more difficult.
 
-:   To determine if heap checksums are enabled in a WarehousePG cluster, you can query the `data_checksums` server configuration parameter with the `gpconfig` management utility:
+To determine if heap checksums are enabled in a WarehousePG cluster, you can query the `data_checksums` server configuration parameter with the `gpconfig` management utility:
 
     ```
     $ gpconfig -s data_checksums
     ```
 
 HBA\_HOSTNAMES
-:   **Optional.** This parameter controls whether `gpinitsystem` uses IP addresses or host names in the `pg_hba.conf` file when updating the file with addresses that can connect to WarehousePG. The default value is `0`, the utility uses IP addresses when updating the file. When Initializing WarehousePG, specify `HBA_HOSTNAMES=1` to have the utility use host names in the `pg_hba.conf` file.
+**Optional.** This parameter controls whether `gpinitsystem` uses IP addresses or host names in the `pg_hba.conf` file when updating the file with addresses that can connect to WarehousePG. The default value is `0`, the utility uses IP addresses when updating the file. When Initializing WarehousePG, specify `HBA_HOSTNAMES=1` to have the utility use host names in the `pg_hba.conf` file.
 
-:   For information about how WarehousePG resolves host names in the `pg_hba.conf` file, see [Configuring Client Authentication](../../admin_guide/client_auth.html#topic1).
+For information about how WarehousePG resolves host names in the `pg_hba.conf` file, see [Configuring Client Authentication](../../admin_guide/client_auth.html#topic1).
 
 ## <a id="spechosts"></a>Specifying Hosts using Hostnames or IP Addresses 
 

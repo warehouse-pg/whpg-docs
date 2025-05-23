@@ -19,25 +19,25 @@ REINDEX [ (VERBOSE) ] { INDEX | TABLE | SCHEMA | DATABASE | SYSTEM } <name>
 ## <a id="section4"></a>Parameters 
 
 INDEX
-:   Recreate the specified index.
+Recreate the specified index.
 
 TABLE
-:   Recreate all indexes of the specified table. If the table has a secondary "TOAST" table, that is reindexed as well.
+Recreate all indexes of the specified table. If the table has a secondary "TOAST" table, that is reindexed as well.
 
 SCHEMA
-:   Recreate all indexes of the specified schema. If a table of this schema has a secondary "TOAST" table, that is reindexed as well. Indexes on shared system catalogs are also processed. You cannot run this form of `REINDEX` inside a transaction block.
+Recreate all indexes of the specified schema. If a table of this schema has a secondary "TOAST" table, that is reindexed as well. Indexes on shared system catalogs are also processed. You cannot run this form of `REINDEX` inside a transaction block.
 
 DATABASE
-:   Recreate all indexes within the current database. Indexes on shared system catalogs are also processed. This form of `REINDEX` cannot be run inside a transaction block.
+Recreate all indexes within the current database. Indexes on shared system catalogs are also processed. This form of `REINDEX` cannot be run inside a transaction block.
 
 SYSTEM
-:   Recreate all indexes on system catalogs within the current database. Indexes on shared system catalogs are included. Indexes on user tables are not processed. This form of `REINDEX` cannot be run inside a transaction block.
+Recreate all indexes on system catalogs within the current database. Indexes on shared system catalogs are included. Indexes on user tables are not processed. This form of `REINDEX` cannot be run inside a transaction block.
 
 name
-:   The name of the specific index, table, or database to be reindexed. Index and table names may be schema-qualified. Presently, `REINDEX DATABASE` and `REINDEX SYSTEM` can only reindex the current database, so their parameter must match the current database's name.
+The name of the specific index, table, or database to be reindexed. Index and table names may be schema-qualified. Presently, `REINDEX DATABASE` and `REINDEX SYSTEM` can only reindex the current database, so their parameter must match the current database's name.
 
 VERBOSE
-:   Prints a progress report as each index is reindexed.
+Prints a progress report as each index is reindexed.
 
 ## <a id="section5"></a>Notes 
 

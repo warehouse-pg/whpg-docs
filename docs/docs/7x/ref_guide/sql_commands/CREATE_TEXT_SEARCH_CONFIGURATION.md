@@ -26,13 +26,13 @@ Refer to [Using Full Text Search](../../admin_guide/textsearch/full-text-search.
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name of the text search configuration to be created. The name can be schema-qualified.
+The name of the text search configuration to be created. The name can be schema-qualified.
 
 parser\_name
-:   The name of the text search parser to use for this configuration.
+The name of the text search parser to use for this configuration.
 
 source\_config
-:   The name of an existing text search configuration to copy.
+The name of an existing text search configuration to copy.
 
 ## <a id="section9"></a>Notes 
 

@@ -29,32 +29,32 @@ To be able to create a domain, you must have `USAGE` privilege on the underlying
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of a domain to be created.
+The name \(optionally schema-qualified\) of a domain to be created.
 
 data\_type
-:   The underlying data type of the domain. This may include array specifiers.
+The underlying data type of the domain. This may include array specifiers.
 
 collation
-:   An optional collation for the domain. If no collation is specified, the domain has the same collation behavior as its underlying data type. The underlying type must be collatable if `COLLATE` is specified.
+An optional collation for the domain. If no collation is specified, the domain has the same collation behavior as its underlying data type. The underlying type must be collatable if `COLLATE` is specified.
 
 DEFAULT expression
-:   Specifies a default value for columns of the domain data type. The value is any variable-free expression \(but subqueries are not allowed\). The data type of the default expression must match the data type of the domain. If no default value is specified, then the default value is the null value.
-:   The default expression will be used in any insert operation that does not specify a value for the column. If a default value is defined for a particular column, it overrides any default associated with the domain. In turn, the domain default overrides any default value associated with the underlying data type.
+Specifies a default value for columns of the domain data type. The value is any variable-free expression \(but subqueries are not allowed\). The data type of the default expression must match the data type of the domain. If no default value is specified, then the default value is the null value.
+The default expression will be used in any insert operation that does not specify a value for the column. If a default value is defined for a particular column, it overrides any default associated with the domain. In turn, the domain default overrides any default value associated with the underlying data type.
 
 CONSTRAINT constraint\_name
-:   An optional name for a constraint. If not specified, the system generates a name.
+An optional name for a constraint. If not specified, the system generates a name.
 
 NOT NULL
-:   Values of this domain are prevented from being null (but see the Notes below).
+Values of this domain are prevented from being null (but see the Notes below).
 
 NULL
-:   Values of this domain are allowed to be null. This is the default.
-:   This clause is only intended for compatibility with nonstandard SQL databases. Its use is discouraged in new applications.
+Values of this domain are allowed to be null. This is the default.
+This clause is only intended for compatibility with nonstandard SQL databases. Its use is discouraged in new applications.
 
 CHECK \(expression\)
-:   `CHECK` clauses specify integrity constraints or tests which values of the domain must satisfy. Each constraint must be an expression producing a Boolean result. It should use the key word `VALUE` to refer to the value being tested. Expressions evaluating to TRUE or UNKNOWN succeed. If the expression produces a FALSE result, an error is reported and the value is not allowed to be converted to the domain type.
-:   Currently, `CHECK` expressions cannot contain subqueries nor refer to variables other than `VALUE`.
-:   When a domain has multiple `CHECK` constraints, they will be tested in alphabetical order by name. \(WarehousePG versions before 7.0 did not honor any particular firing order for `CHECK` constraints.\)
+`CHECK` clauses specify integrity constraints or tests which values of the domain must satisfy. Each constraint must be an expression producing a Boolean result. It should use the key word `VALUE` to refer to the value being tested. Expressions evaluating to TRUE or UNKNOWN succeed. If the expression produces a FALSE result, an error is reported and the value is not allowed to be converted to the domain type.
+Currently, `CHECK` expressions cannot contain subqueries nor refer to variables other than `VALUE`.
+When a domain has multiple `CHECK` constraints, they will be tested in alphabetical order by name. \(WarehousePG versions before 7.0 did not honor any particular firing order for `CHECK` constraints.\)
 
 ## <a id="section4a"></a>Notes
 

@@ -15,19 +15,19 @@ DROP TRIGGER [IF EXISTS] <name> ON <table> [CASCADE | RESTRICT]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the trigger does not exist. A notice is issued in this case.
+Do not throw an error if the trigger does not exist. A notice is issued in this case.
 
 name
-:   The name of the trigger to remove.
+The name of the trigger to remove.
 
 table
-:   The name \(optionally schema-qualified\) of the table for which the trigger is defined.
+The name \(optionally schema-qualified\) of the table for which the trigger is defined.
 
 CASCADE
-:   Automatically drop objects that depend on the trigger.
+Automatically drop objects that depend on the trigger.
 
 RESTRICT
-:   Refuse to drop the trigger if any objects depend on it. This is the default.
+Refuse to drop the trigger if any objects depend on it. This is the default.
 
 ## <a id="section5"></a>Examples 
 

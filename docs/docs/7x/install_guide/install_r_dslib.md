@@ -156,7 +156,7 @@ Before you install the R Data Science Library package, make sure that your Wareh
     The file name format of the package is `DataScienceR-<version>-relhel<N>_x86_64.gppkg`.
 
 2.  Copy the package to the WarehousePG coordinator host.
-3.  Follow the instructions in [Verifying the WarehousePG Software Download](../install_guide/verify_sw.html) to verify the integrity of the *WarehousePG Procedural Languages R Data Science Package* software.
+
 3.  Use the `gppkg` command to install the package. For example:
 
     ```

@@ -17,16 +17,16 @@ WarehousePG does not support invoking `DISCARD ALL` in a transaction.
 ## <a id="section4"></a>Parameters 
 
 PLANS
-:   Releases all cached query plans, forcing re-planning to occur the next time the associated prepared statement is used.
+Releases all cached query plans, forcing re-planning to occur the next time the associated prepared statement is used.
 
 SEQUENCES
-:   Discards all cached sequence-related state, including any preallocated sequence values that have not yet been returned by `nextval()`. \(See [CREATE SEQUENCE](CREATE_SEQUENCE.html) for a description of preallocated sequence values.\)
+Discards all cached sequence-related state, including any preallocated sequence values that have not yet been returned by `nextval()`. \(See [CREATE SEQUENCE](CREATE_SEQUENCE.html) for a description of preallocated sequence values.\)
 
 TEMPORARY/TEMP
-:   Drops all temporary tables created in the current session.
+Drops all temporary tables created in the current session.
 
 ALL
-:   Releases all temporary resources associated with the current session and resets the session to its initial state. Currently, this has the same effect as executing the following sequence of statements:
+Releases all temporary resources associated with the current session and resets the session to its initial state. Currently, this has the same effect as executing the following sequence of statements:
 
     ```
     CLOSE ALL;

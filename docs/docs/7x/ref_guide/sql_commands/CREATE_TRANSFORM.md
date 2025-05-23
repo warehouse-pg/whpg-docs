@@ -30,16 +30,16 @@ To create a transform, you must own and have `USAGE` privilege on the type, have
 ## <a id="section4"></a>Parameters 
 
 type\_name
-:   The name of the data type of the transform.
+The name of the data type of the transform.
 
 lang\_name
-:   The name of the language of the transform.
+The name of the language of the transform.
 
 from\_sql\_function\_name[(argument\_type [, ...])]
-:   The name of the function for converting the type from the SQL environment to the language. It must take a single argument of type `internal` and return type `internal`. The actual argument will be of the type for the transform, and the function should be coded as if it were. \(An SQL-level function returning `internal` must declare at least one argument of type `internal`.\) The actual return value will be something specific to the language implementation. If no argument list is specified, the function name must be unique in its schema.
+The name of the function for converting the type from the SQL environment to the language. It must take a single argument of type `internal` and return type `internal`. The actual argument will be of the type for the transform, and the function should be coded as if it were. \(An SQL-level function returning `internal` must declare at least one argument of type `internal`.\) The actual return value will be something specific to the language implementation. If no argument list is specified, the function name must be unique in its schema.
 
 to\_sql\_function\_name[(argument\_type [, ...])]
-:   The name of the function for converting the type from the language to the SQL environment. It must take a single argument of type `internal` and return the type that is the type for the transform. The actual argument value will be something specific to the language implementation. If no argument list is specified, the function name must be unique in its schema.
+The name of the function for converting the type from the language to the SQL environment. It must take a single argument of type `internal` and return the type that is the type for the transform. The actual argument value will be something specific to the language implementation. If no argument list is specified, the function name must be unique in its schema.
 
 ## <a id="section5"></a>Notes 
 

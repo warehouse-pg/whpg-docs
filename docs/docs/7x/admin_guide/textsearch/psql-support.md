@@ -33,7 +33,7 @@ The optional parameter `PATTERN` can be the name of a text search object, option
 The available commands are:
 
 `\dF[+] [PATTERN]`
-:   List text search configurations \(add `+` for more detail\).
+List text search configurations \(add `+` for more detail\).
 
 ```
 => \dF russian
@@ -69,7 +69,7 @@ Parser: "pg_catalog.default"
 ```
 
 `\dFd[+] [PATTERN]`
-:   List text search dictionaries \(add `+` for more detail\).
+List text search dictionaries \(add `+` for more detail\).
 
 ```
 => \dFd
@@ -101,7 +101,7 @@ Parser: "pg_catalog.default"
 ```
 
 \\dFp\[+\] \[PATTERN\]
-:   List text search parsers \(add `+` for more detail\).
+List text search parsers \(add `+` for more detail\).
 
 ```
 => \dFp
@@ -149,7 +149,7 @@ Parser: "pg_catalog.default"
 ```
 
 `\dFt[+] [PATTERN]`
-:   List text search templates \(add + for more detail\).
+List text search templates \(add + for more detail\).
 
 ```
 => \dFt

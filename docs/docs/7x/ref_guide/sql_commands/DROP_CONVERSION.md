@@ -15,14 +15,14 @@ DROP CONVERSION [IF EXISTS] <name> [CASCADE | RESTRICT]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the conversion does not exist. A notice is issued in this case.
+Do not throw an error if the conversion does not exist. A notice is issued in this case.
 
 name
-:   The name of the conversion. The conversion name may be schema-qualified.
+The name of the conversion. The conversion name may be schema-qualified.
 
 CASCADE
 RESTRICT
-:   These keywords have no effect since there are no dependencies on conversions.
+These keywords have no effect since there are no dependencies on conversions.
 
 ## <a id="section5"></a>Examples 
 

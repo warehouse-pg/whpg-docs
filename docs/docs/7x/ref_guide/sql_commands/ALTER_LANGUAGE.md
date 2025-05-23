@@ -16,13 +16,13 @@ ALTER [ PROCEDURAL ] LANGUAGE <name> OWNER TO { <new_owner> | CURRENT_USER | SES
 ## <a id="section4"></a>Parameters 
 
 name
-:   Name of a language.
+Name of a language.
 
 new\_name
-:   The new name of the language.
+The new name of the language.
 
 new\_owner
-:   The new owner of the language.
+The new owner of the language.
 
 ## <a id="section5"></a>Compatibility 
 

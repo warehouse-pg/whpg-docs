@@ -46,82 +46,82 @@ You must own the function to use `ALTER FUNCTION`. To change a function's schema
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing function. If no argument list is specified, the name must be unique in its schema.
+The name \(optionally schema-qualified\) of an existing function. If no argument list is specified, the name must be unique in its schema.
 
 argmode
-:   The mode of an argument: either `IN`, `OUT`, `INOUT`, or `VARIADIC`. If omitted, the default is `IN`. Note that `ALTER FUNCTION` does not actually pay any attention to `OUT` arguments, since only the input arguments are needed to determine the function's identity. So it is sufficient to list the `IN`, `INOUT`, and `VARIADIC` arguments.
+The mode of an argument: either `IN`, `OUT`, `INOUT`, or `VARIADIC`. If omitted, the default is `IN`. Note that `ALTER FUNCTION` does not actually pay any attention to `OUT` arguments, since only the input arguments are needed to determine the function's identity. So it is sufficient to list the `IN`, `INOUT`, and `VARIADIC` arguments.
 
 argname
-:   The name of an argument. Note that [ALTER FUNCTION](ALTER_FUNCTION.html) does not actually pay any attention to argument names, since only the argument data types are needed to determine the function's identity.
+The name of an argument. Note that [ALTER FUNCTION](ALTER_FUNCTION.html) does not actually pay any attention to argument names, since only the argument data types are needed to determine the function's identity.
 
 argtype
-:   The data type\(s\) of the function's arguments \(optionally schema-qualified\), if any.
+The data type\(s\) of the function's arguments \(optionally schema-qualified\), if any.
 
 new\_name
-:   The new name of the function.
+The new name of the function.
 
 new\_owner
-:   The new owner of the function. Note that if the function is marked `SECURITY DEFINER`, it will subsequently run as the new owner.
+The new owner of the function. Note that if the function is marked `SECURITY DEFINER`, it will subsequently run as the new owner.
 
 new\_schema
-:   The new schema for the function.
+The new schema for the function.
 
 extension\_name
-:   The name of the extension that the function is to depend on.
+The name of the extension that the function is to depend on.
 
 CALLED ON NULL INPUT
 RETURNS NULL ON NULL INPUT
 STRICT
-:   `CALLED ON NULL INPUT` changes the function so that it will be invoked when some or all of its arguments are null. `RETURNS NULL ON NULL INPUT` or `STRICT` changes the function so that it is not invoked if any of its arguments are null; instead, a null result is assumed automatically. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information.
+`CALLED ON NULL INPUT` changes the function so that it will be invoked when some or all of its arguments are null. `RETURNS NULL ON NULL INPUT` or `STRICT` changes the function so that it is not invoked if any of its arguments are null; instead, a null result is assumed automatically. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information.
 
 IMMUTABLE
 STABLE
 VOLATILE
-:   Change the volatility of the function to the specified setting. See [CREATE FUNCTION](CREATE_FUNCTION.html) for details.
+Change the volatility of the function to the specified setting. See [CREATE FUNCTION](CREATE_FUNCTION.html) for details.
 
 \[ EXTERNAL \] SECURITY INVOKER
 \[ EXTERNAL \] SECURITY DEFINER
-:   Change whether the function is a security definer or not. The key word `EXTERNAL` is ignored for SQL conformance. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information about this capability.
+Change whether the function is a security definer or not. The key word `EXTERNAL` is ignored for SQL conformance. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information about this capability.
 
 PARALLEL
-:   Change whether the function is deemed safe for parallelism. See [CREATE FUNCTION](CREATE_FUNCTION.html) for details.
+Change whether the function is deemed safe for parallelism. See [CREATE FUNCTION](CREATE_FUNCTION.html) for details.
 
 LEAKPROOF
-:   Change whether the function is considered leakproof or not. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information about this capability.
+Change whether the function is considered leakproof or not. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information about this capability.
 
 EXECUTE ON ANY
 EXECUTE ON COORDINATOR
 EXECUTE ON ALL SEGMENTS
 EXECUTE ON INITPLAN
-:   The `EXECUTE ON` attributes specify where \(coordinator or segment instance\) a function runs when it is invoked during the query execution process.
+The `EXECUTE ON` attributes specify where \(coordinator or segment instance\) a function runs when it is invoked during the query execution process.
 
-:   `EXECUTE ON ANY` \(the default\) indicates that the function can be run on the coordinator, or any segment instance, and it returns the same result regardless of where it is run. WarehousePG determines where the function runs.
+`EXECUTE ON ANY` \(the default\) indicates that the function can be run on the coordinator, or any segment instance, and it returns the same result regardless of where it is run. WarehousePG determines where the function runs.
 
-:   `EXECUTE ON COORDINATOR` indicates that the function must run only on the coordinator instance.
+`EXECUTE ON COORDINATOR` indicates that the function must run only on the coordinator instance.
 
-:   `EXECUTE ON ALL SEGMENTS` indicates that the function must run on all primary segment instances, but not the coordinator, for each invocation. The overall result of the function is the `UNION ALL` of the results from all segment instances.
+`EXECUTE ON ALL SEGMENTS` indicates that the function must run on all primary segment instances, but not the coordinator, for each invocation. The overall result of the function is the `UNION ALL` of the results from all segment instances.
 
-:   `EXECUTE ON INITPLAN` indicates that the function contains an SQL command that dispatches queries to the segment instances and requires special processing on the coordinator instance by WarehousePG when possible.
+`EXECUTE ON INITPLAN` indicates that the function contains an SQL command that dispatches queries to the segment instances and requires special processing on the coordinator instance by WarehousePG when possible.
 
-:   For more information about the `EXECUTE ON` attributes, see [CREATE FUNCTION](CREATE_FUNCTION.html).
+For more information about the `EXECUTE ON` attributes, see [CREATE FUNCTION](CREATE_FUNCTION.html).
 
 COST execution\_cost
-:   Change the estimated execution cost of the function. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information.
+Change the estimated execution cost of the function. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information.
 
 ROWS result\_rows
-:   Change the estimated number of rows returned by a set-returning function. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information.
+Change the estimated number of rows returned by a set-returning function. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information.
 
 SUPPORT support\_function
-:   Set or change the planner support function to use for this function. You must be superuser to use this option.
-:   This option cannot be used to remove the support function altogether, since it must name a new support function. Use `CREATE OR REPLACE FUNCTION` if you require that.
+Set or change the planner support function to use for this function. You must be superuser to use this option.
+This option cannot be used to remove the support function altogether, since it must name a new support function. Use `CREATE OR REPLACE FUNCTION` if you require that.
 
 configuration\_parameter
 value
-:   Set or change the value of a configuration parameter when the function is called. If value is `DEFAULT` or, equivalently, `RESET` is used, the function-local setting is removed, and the function runs with the value present in its environment. Use `RESET ALL` to clear all function-local settings. `SET FROM CURRENT` saves the value of the parameter that is current when `ALTER FUNCTION` is run as the value to be applied when the function is entered.
-:   See [SET](SET.html) for more information about allowed parameter names and values.
+Set or change the value of a configuration parameter when the function is called. If value is `DEFAULT` or, equivalently, `RESET` is used, the function-local setting is removed, and the function runs with the value present in its environment. Use `RESET ALL` to clear all function-local settings. `SET FROM CURRENT` saves the value of the parameter that is current when `ALTER FUNCTION` is run as the value to be applied when the function is entered.
+See [SET](SET.html) for more information about allowed parameter names and values.
 
 RESTRICT
-:   Ignored for conformance with the SQL standard.
+Ignored for conformance with the SQL standard.
 
 ## <a id="section5"></a>Notes 
 

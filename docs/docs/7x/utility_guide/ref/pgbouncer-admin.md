@@ -24,7 +24,7 @@ You can control connections between PgBouncer and WarehousePG from the console. 
 ## <a id="opt"></a>Options
 
 -p \<port\>
-:   The PgBouncer port number.
+The PgBouncer port number.
 
 ## <a id="topic_bk3_3jc_dt"></a>Command Syntax
 
@@ -55,53 +55,53 @@ DETAIL:
 The following PgBouncer administration commands control the running `pgbouncer` process.
 
 PAUSE \[\<db\>\]
-:   If no database is specified, PgBouncer tries to disconnect from all servers, first waiting for all queries to be released according to the server pool’s pooling mode (in transaction pooling mode, the transaction must complete, in statement mode, the statement must complete, and in session pooling mode the client must disconnect). The command will not return before all queries are finished. This command is to be used to prepare to restart the database.
+If no database is specified, PgBouncer tries to disconnect from all servers, first waiting for all queries to be released according to the server pool’s pooling mode (in transaction pooling mode, the transaction must complete, in statement mode, the statement must complete, and in session pooling mode the client must disconnect). The command will not return before all queries are finished. This command is to be used to prepare to restart the database.
 
-:   If a database name is specified, PgBouncer pauses only that database.
+If a database name is specified, PgBouncer pauses only that database.
 
-:   New client connections to a paused database will wait until a `RESUME` command is invoked.
+New client connections to a paused database will wait until a `RESUME` command is invoked.
 
 DISABLE \<db\>
-:   Reject all new client connections on the database.
+Reject all new client connections on the database.
 
 ENABLE \<db\>
-:   Allow new client connections after a previous `DISABLE` command.
+Allow new client connections after a previous `DISABLE` command.
 
 RECONNECT
-:   Close each open server connection for the given database, or all databases, after it is released \(according to the pooling mode\), even if its lifetime is not up yet. New server connections can be made immediately and will connect as necessary according to the pool size settings.
+Close each open server connection for the given database, or all databases, after it is released \(according to the pooling mode\), even if its lifetime is not up yet. New server connections can be made immediately and will connect as necessary according to the pool size settings.
 
-:   This command is useful when the server connection setup has changed, for example to perform a gradual switchover to a new server. It is not necessary to run this command when the connection string in `pgbouncer.ini` has been changed and reloaded (see `RELOAD`) or when DNS resolution has changed, because then the equivalent of this command will be run automatically. This command is only necessary if something downstream of PgBouncer routes the connections.
+This command is useful when the server connection setup has changed, for example to perform a gradual switchover to a new server. It is not necessary to run this command when the connection string in `pgbouncer.ini` has been changed and reloaded (see `RELOAD`) or when DNS resolution has changed, because then the equivalent of this command will be run automatically. This command is only necessary if something downstream of PgBouncer routes the connections.
 
-:   After this command is run, there could be an extended period where some server connections go to an old destination and some server connections go to a new destination. This is likely only sensible when switching read-only traffic between read-only replicas, or when switching between nodes of a multimaster replication setup. If all connections need to be switched at the same time, `PAUSE` is recommended instead. To close server connections without waiting (for example, in emergency failover rather than gradual switchover scenarios), also consider `KILL`.
+After this command is run, there could be an extended period where some server connections go to an old destination and some server connections go to a new destination. This is likely only sensible when switching read-only traffic between read-only replicas, or when switching between nodes of a multimaster replication setup. If all connections need to be switched at the same time, `PAUSE` is recommended instead. To close server connections without waiting (for example, in emergency failover rather than gradual switchover scenarios), also consider `KILL`.
 
 KILL \<db\>
-:   Immediately drop all client and server connections to the named database.
+Immediately drop all client and server connections to the named database.
 
-:   New client connections to a killed database will wait until `RESUME` is called.
+New client connections to a killed database will wait until `RESUME` is called.
 
 SUSPEND
-:   All socket buffers are flushed and PgBouncer stops listening for data on them. The command will not return before all buffers are empty. To be used when rebooting PgBouncer online.
+All socket buffers are flushed and PgBouncer stops listening for data on them. The command will not return before all buffers are empty. To be used when rebooting PgBouncer online.
 
-:   New client connections to a suspended database will wait until `RESUME` is called.
+New client connections to a suspended database will wait until `RESUME` is called.
 
 RESUME \[\<db\>\]
-:   Resume work from a previous `KILL`, `PAUSE`, or `SUSPEND` command.
+Resume work from a previous `KILL`, `PAUSE`, or `SUSPEND` command.
 
 SHUTDOWN
-:   The PgBouncer process will exit. To exit from the `psql` command line session, enter `\q`.
+The PgBouncer process will exit. To exit from the `psql` command line session, enter `\q`.
 
 RELOAD
-:   The PgBouncer process reloads the current configuration file and updates the changeable settings.
+The PgBouncer process reloads the current configuration file and updates the changeable settings.
 
-:   PgBouncer notices when a configuration file reload changes the connection parameters of a database definition. An existing server connection to the old destination will be closed when the server connection is next released (according to the pooling mode), and new server connections will immediately use the updated connection parameters
+PgBouncer notices when a configuration file reload changes the connection parameters of a database definition. An existing server connection to the old destination will be closed when the server connection is next released (according to the pooling mode), and new server connections will immediately use the updated connection parameters
 
 WAIT\_CLOSE \[\<db\>\]
-:   Wait until all server connections, either of the specified database or of all databases, have cleared the “close\_needed” state \(see `SHOW SERVERS`\). This can be called after a `RECONNECT` or `RELOAD` to wait until the respective configuration change has been fully activated, for example in switchover scripts.
+Wait until all server connections, either of the specified database or of all databases, have cleared the “close\_needed” state \(see `SHOW SERVERS`\). This can be called after a `RECONNECT` or `RELOAD` to wait until the respective configuration change has been fully activated, for example in switchover scripts.
 
 SET key = value
-:   Changes the specified configuration setting. See the [`SHOW CONFIG;`](#CONFIG) command.
+Changes the specified configuration setting. See the [`SHOW CONFIG;`](#CONFIG) command.
 
-:   (Note that this command is run on the PgBouncer admin console and sets PgBouncer settings. A `SET` command run on another database will be passed to the PostgreSQL backend like any other SQL command.)
+(Note that this command is run on the PgBouncer admin console and sets PgBouncer settings. A `SET` command run on another database will be passed to the PostgreSQL backend like any other SQL command.)
 
 ## <a id="topic_zfh_2dl_gs"></a>SHOW Command
 

@@ -29,32 +29,32 @@ You must own the view to use `ALTER VIEW`. To change a view's schema you must al
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing view.
+The name \(optionally schema-qualified\) of an existing view.
 
 IF EXISTS
-:   Do not throw an error if the view does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the view does not exist. WarehousePG issues a notice in this case.
 
 SET/DROP DEFAULT
-:   These forms set or remove the default value for a column. A view column's default value is substituted into any `INSERT` or `UPDATE` command whose target is the view, before applying any rules or triggers for the view. The view's default will therefore take precedence over any default values from underlying relations.
+These forms set or remove the default value for a column. A view column's default value is substituted into any `INSERT` or `UPDATE` command whose target is the view, before applying any rules or triggers for the view. The view's default will therefore take precedence over any default values from underlying relations.
 
 new\_owner
-:   The user name of the new owner of the view.
+The user name of the new owner of the view.
 
 new\_name
-:   The new name of the view.
+The new name of the view.
 
 new\_schema
-:   The new schema for the view.
+The new schema for the view.
 
 SET ( view\_option\_name [= view\_option\_value] [, ... ] )
 RESET ( view\_option\_name [, ... ] )
-:   Sets or resets a view option. Currently supported options are:
+Sets or resets a view option. Currently supported options are:
 
     check\_option \(string\)
-    :   Changes the check option of the view. The value must be `local` or `cascaded`.
+    Changes the check option of the view. The value must be `local` or `cascaded`.
 
     security\_barrier \(boolean\)
-    :   Changes the security-barrier property of the view. The value must be a Boolean value, such as `true` or `false`.
+    Changes the security-barrier property of the view. The value must be a Boolean value, such as `true` or `false`.
 
 ## <a id="Notes"></a>Notes 
 

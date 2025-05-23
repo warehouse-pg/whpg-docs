@@ -15,16 +15,16 @@ DROP COLLATION [ IF EXISTS ] <name> [ CASCADE | RESTRICT ]
 ## <a id="section4"></a>Parameters 
 
 `IF EXISTS`
-:   Do not throw an error if the collation does not exist. A notice is issued in this case.
+Do not throw an error if the collation does not exist. A notice is issued in this case.
 
 name
-:   The name of the collation. The collation name can be schema-qualified.
+The name of the collation. The collation name can be schema-qualified.
 
 `CASCADE`
-:   Automatically drop objects that depend on the collation, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the collation, and in turn all objects that depend on those objects.
 
 `RESTRICT`
-:   Refuse to drop the collation if any objects depend on it. This is the default.
+Refuse to drop the collation if any objects depend on it. This is the default.
 
 
 ## <a id="section6"></a>Examples 

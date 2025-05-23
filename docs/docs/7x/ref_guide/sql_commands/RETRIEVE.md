@@ -26,13 +26,13 @@ If `RETRIEVE` runs off the end of the available rows then the cursor is left pos
 ## <a id="section5"></a>Parameters 
 
 count
-:   Retrieve the next count number of rows. count must be a positive number.
+Retrieve the next count number of rows. count must be a positive number.
 
 ALL
-:   Retrieve all remaining rows.
+Retrieve all remaining rows.
 
 endpoint\_name
-:   The name of the endpoint from which to retrieve the rows.
+The name of the endpoint from which to retrieve the rows.
 
 ## <a id="section5a"></a>Outputs
 

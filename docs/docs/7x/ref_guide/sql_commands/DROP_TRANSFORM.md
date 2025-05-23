@@ -17,19 +17,19 @@ To drop a transform, you must own the type and the language. These are the same 
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the transform does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the transform does not exist. WarehousePG issues a notice in this case.
 
 type\_name
-:   The name of the data type of the transform.
+The name of the data type of the transform.
 
 lang\_name
-:   The name of the language of the transform.
+The name of the language of the transform.
 
 CASCADE
-:   Automatically drop objects that depend on the transform, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the transform, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the transform if any objects depend on it. This is the default.
+Refuse to drop the transform if any objects depend on it. This is the default.
 
 ## <a id="section5"></a>Examples 
 

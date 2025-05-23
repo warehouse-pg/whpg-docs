@@ -78,7 +78,7 @@ The `postgresml` extension currently supports just a subset of all of the user-d
 - `pgml.train()`: Handles different training tasks which are configurable with the function parameters. Read more about supervised learning [here](https://postgresml.org/docs/use-cases/supervised-learning).
 - `pgml.predict()`: Provides online predictions using the best, automatically deployed model for a project. Read more about supervised learning [here](https://postgresml.org/docs/use-cases/supervised-learning).
 
-VMware anticipates adding support for the additional PostgresML functions in future releases. 
+additional PostgresML functions may be available in the future based on demand
 
 ### <a id="pgml_load_dataset"></a>pgml.load_dataset()
 

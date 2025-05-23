@@ -43,34 +43,34 @@ You must own the domain to use `ALTER DOMAIN`. To change the schema of a domain,
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing domain to alter.
+The name \(optionally schema-qualified\) of an existing domain to alter.
 
 domain\_constraint
-:   New domain constraint for the domain.
+New domain constraint for the domain.
 
 constraint\_name
-:   Name of an existing constraint to drop or rename.
+Name of an existing constraint to drop or rename.
 
 NOT VALID
-:   Do not verify existing column data for constraint validity.
+Do not verify existing column data for constraint validity.
 
 CASCADE
-:   Automatically drop objects that depend on the constraint, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the constraint, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the constraint if there are any dependent objects. This is the default behavior.
+Refuse to drop the constraint if there are any dependent objects. This is the default behavior.
 
 new\_name
-:   The new name for the domain.
+The new name for the domain.
 
 new\_constraint\_name
-:   The new name for the constraint.
+The new name for the constraint.
 
 new\_owner
-:   The user name of the new owner of the domain.
+The user name of the new owner of the domain.
 
 new\_schema
-:   The new schema for the domain.
+The new schema for the domain.
 
 ## <a id="section4a"></a>Notes 
 

@@ -15,16 +15,16 @@ DROP SEQUENCE [IF EXISTS] <name> [, ...] [CASCADE | RESTRICT]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the sequence does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the sequence does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name \(optionally schema-qualified\) of the sequence to remove.
+The name \(optionally schema-qualified\) of the sequence to remove.
 
 CASCADE
-:   Automatically drop objects that depend on the sequence, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the sequence, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the sequence if any objects depend on it. This is the default.
+Refuse to drop the sequence if any objects depend on it. This is the default.
 
 ## <a id="section5"></a>Examples 
 

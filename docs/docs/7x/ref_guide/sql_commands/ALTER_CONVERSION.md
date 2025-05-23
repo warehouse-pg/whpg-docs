@@ -22,16 +22,16 @@ You must own the conversion to use `ALTER CONVERSION`. To alter the owner, you m
 ## <a id="section4"></a>Parameters 
 
 name
-:   The name \(optionally schema-qualified\) of an existing conversion.
+The name \(optionally schema-qualified\) of an existing conversion.
 
 new\_name
-:   The new name of the conversion.
+The new name of the conversion.
 
 new\_owner
-:   The new owner of the conversion.
+The new owner of the conversion.
 
 new\_schema
-:   The new schema for the conversion.
+The new schema for the conversion.
 
 ## <a id="section5"></a>Examples 
 

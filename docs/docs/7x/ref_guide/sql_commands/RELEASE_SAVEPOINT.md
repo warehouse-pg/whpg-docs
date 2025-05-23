@@ -19,7 +19,7 @@ Destroying a savepoint makes it unavailable as a rollback point, but it has no o
 ## <a id="section4"></a>Parameters 
 
 savepoint\_name
-:   The name of the savepoint to destroy.
+The name of the savepoint to destroy.
 
 ## <a id="section_notes"></a>Notes
 

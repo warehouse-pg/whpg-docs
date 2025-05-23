@@ -17,19 +17,19 @@ DROP OPERATOR CLASS [IF EXISTS] <name> USING <index_method> [CASCADE | RESTRICT]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the operator class does not exist. A notice is issued in this case.
+Do not throw an error if the operator class does not exist. A notice is issued in this case.
 
 name
-:   The name \(optionally schema-qualified\) of an existing operator class.
+The name \(optionally schema-qualified\) of an existing operator class.
 
 index\_method
-:   The name of the index access method the operator class is for.
+The name of the index access method the operator class is for.
 
 CASCADE
-:   Automatically drop objects that depend on the operator class \(such as indexes\), and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the operator class \(such as indexes\), and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the operator class if any objects depend on it. This is the default.
+Refuse to drop the operator class if any objects depend on it. This is the default.
 
 ## <a id="section4"></a>Notes
 

@@ -140,7 +140,7 @@ The following gpfdist configuration, called `config.yaml`, applies to the prices
 VERSION: 1.0.0.1
 TRANSFORMATIONS:
   prices_input:
-    TYPE:     input
+    TYPE  input
     COMMAND:  /bin/bash input_transform.sh %filename%
 
 ```
@@ -263,41 +263,41 @@ The following is the basic structure of a configuration file.
 
 ```
 ---
-VERSION:   1.0.0.1
+VERSION1.0.0.1
 TRANSFORMATIONS: 
   transformation_name1:
-    TYPE:      input | output
-    COMMAND:   command
-    CONTENT:   data | paths
-    SAFE:      posix-regex
-    STDERR:    server | console
+    TYPE   input | output
+    COMMANDcommand
+    CONTENTdata | paths
+    SAFE   posix-regex
+    STDERR server | console
   transformation_name2:
-    TYPE:      input | output
-    COMMAND:   command 
+    TYPE   input | output
+    COMMANDcommand 
 ...
 ```
 
 VERSION
-:   Required. The version of the gpfdist configuration file schema. The current version is 1.0.0.1.
+Required. The version of the gpfdist configuration file schema. The current version is 1.0.0.1.
 
 TRANSFORMATIONS
-:   Required. Begins the transformation specification section. A configuration file must have at least one transformation. When gpfdist receives a transformation request, it looks in this section for an entry with the matching transformation name.
+Required. Begins the transformation specification section. A configuration file must have at least one transformation. When gpfdist receives a transformation request, it looks in this section for an entry with the matching transformation name.
 
 TYPE
-:   Required. Specifies the direction of transformation. Values are `input` or `output`.
+Required. Specifies the direction of transformation. Values are `input` or `output`.
 
 -   `input`: gpfdist treats the standard output of the transformation process as a stream of records to load into WarehousePG.
 -   `output` : gpfdist treats the standard input of the transformation process as a stream of records from WarehousePG to transform and write to the appropriate output.
 
 COMMAND
-:   Required. Specifies the command gpfdist will run to perform the transformation.
+Required. Specifies the command gpfdist will run to perform the transformation.
 
 For input transformations, gpfdist invokes the command specified in the `CONTENT` setting. The command is expected to open the underlying file\(s\) as appropriate and produce one line of `TEXT` for each row to load into WarehousePG. The input transform determines whether the entire content should be converted to one row or to multiple rows.
 
 For output transformations, gpfdist invokes this command as specified in the `CONTENT` setting. The output command is expected to open and write to the underlying file\(s\) as appropriate. The output transformation determines the final placement of the converted output.
 
 CONTENT
-:   Optional. The values are `data` and `paths`. The default value is `data`.
+Optional. The values are `data` and `paths`. The default value is `data`.
 
 -   When `CONTENT` specifies `data`, the text `%filename%` in the `COMMAND` section is replaced by the path to the file to read or write.
 -   When `CONTENT` specifies `paths`, the text `%filename%` in the `COMMAND` section is replaced by the path to the temporary file that contains the list of files to read or write.
@@ -309,10 +309,10 @@ COMMAND: /bin/bash input_transform.sh %filename%
 ```
 
 SAFE
-:   Optional. A `POSIX` regular expression that the paths must match to be passed to the transformation. Specify `SAFE` when there is a concern about injection or improper interpretation of paths passed to the command. The default is no restriction on paths.
+Optional. A `POSIX` regular expression that the paths must match to be passed to the transformation. Specify `SAFE` when there is a concern about injection or improper interpretation of paths passed to the command. The default is no restriction on paths.
 
 STDERR
-:   Optional. The values are `server` and `console`.
+Optional. The values are `server` and `console`.
 
 This setting specifies how to handle standard error output from the transformation. The default, `server`, specifies that gpfdist will capture the standard error output from the transformation in a temporary file and send the first 8k of that file to WarehousePG as an error message. The error message will appear as an SQL error. `Console` specifies that gpfdist does not redirect or transmit the standard error output from the transformation.
 

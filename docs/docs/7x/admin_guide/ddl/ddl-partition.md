@@ -23,13 +23,13 @@ These benefits will normally be worthwhile only when a table would otherwise be 
 WarehousePG supports the following forms of table partitioning:
 
 *Range Partitioning*
-:   The table is partitioned into "ranges" defined by a key column or set of columns, with no overlap between the ranges of values assigned to different partitions. For example, one might partition by date ranges, or by ranges of identifiers for particular business objects. Each range's bounds are understood as being inclusive at the lower end and exclusive at the upper end. For example, if one partition's range is from `1` to `10`, and the next one's range is from `10` to `20`, the value `10` belongs to the second partition not the first.
+The table is partitioned into "ranges" defined by a key column or set of columns, with no overlap between the ranges of values assigned to different partitions. For example, one might partition by date ranges, or by ranges of identifiers for particular business objects. Each range's bounds are understood as being inclusive at the lower end and exclusive at the upper end. For example, if one partition's range is from `1` to `10`, and the next one's range is from `10` to `20`, the value `10` belongs to the second partition not the first.
 
 *List Partitioning*
-:   The table is partitioned by explicitly listing which key value(s) appear in each partition, for example sales territory or product line.
+The table is partitioned by explicitly listing which key value(s) appear in each partition, for example sales territory or product line.
 
 *Hash Partitioning*
-:   The table is partitioned by specifying a modulus and a remainder for each partition. Each partition holds the rows for which the hash value of the partition key divided by the specified modulus produces the specified remainder.
+The table is partitioned by specifying a modulus and a remainder for each partition. Each partition holds the rows for which the hash value of the partition key divided by the specified modulus produces the specified remainder.
 
 The following figure illustrates a multi-level partition design utilizing both date-range and list partitioning.
 

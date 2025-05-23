@@ -16,10 +16,10 @@ ABORT [WORK | TRANSACTION] [AND [NO] CHAIN]
 
 WORK
 TRANSACTION
-:   Optional key words. They have no effect.
+Optional key words. They have no effect.
 
 AND CHAIN
-:   If `AND CHAIN` is specified, a new transaction is immediately started with the same transaction characteristics \(see [SET TRANSACTION](SET_TRANSACTION.html)\) as the just finished one. Otherwise, no new transaction is started.
+If `AND CHAIN` is specified, a new transaction is immediately started with the same transaction characteristics \(see [SET TRANSACTION](SET_TRANSACTION.html)\) as the just finished one. Otherwise, no new transaction is started.
 
 ## <a id="section5"></a>Notes 
 

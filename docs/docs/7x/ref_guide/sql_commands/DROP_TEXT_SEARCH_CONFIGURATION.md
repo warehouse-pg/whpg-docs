@@ -15,16 +15,16 @@ DROP TEXT SEARCH CONFIGURATION [ IF EXISTS ] <name> [ CASCADE | RESTRICT ]
 ## <a id="section4"></a>Parameters 
 
 IF EXISTS
-:   Do not throw an error if the text search configuration does not exist. WarehousePG issues a notice in this case.
+Do not throw an error if the text search configuration does not exist. WarehousePG issues a notice in this case.
 
 name
-:   The name \(optionally schema-qualified\) of an existing text search configuration.
+The name \(optionally schema-qualified\) of an existing text search configuration.
 
 CASCADE
-:   Automatically drop objects that depend on the text search configuration, and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the text search configuration, and in turn all objects that depend on those objects.
 
 RESTRICT
-:   Refuse to drop the text search configuration if any objects depend on it. This is the default.
+Refuse to drop the text search configuration if any objects depend on it. This is the default.
 
 ## <a id="section5"></a>Examples 
 

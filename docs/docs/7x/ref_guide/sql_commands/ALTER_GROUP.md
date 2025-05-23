@@ -29,13 +29,13 @@ The third variant changes the name of the group. This is exactly equivalent to r
 ## <a id="section4"></a>Parameters 
 
 group\_name
-:   The name of the group \(role\) to modify.
+The name of the group \(role\) to modify.
 
 user\_name
-:   Users \(roles\) that are to be added to or removed from the group. The users \(roles\) must already exist; `ALTER GROUP` does not create or drop users.
+Users \(roles\) that are to be added to or removed from the group. The users \(roles\) must already exist; `ALTER GROUP` does not create or drop users.
 
 new\_name
-:   The new name of the group.
+The new name of the group.
 
 ## <a id="section5"></a>Examples 
 

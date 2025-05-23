@@ -11,7 +11,6 @@ For information about GDAL, see [https://gdal.org/](https://gdal.org/).
 
 ## <a id="topic3"></a>WarehousePG PostGIS Extension
 
-The WarehousePG PostGIS extension package is available for download.After you download the package, you can follow the instructions in [Verifying the WarehousePG Software Download](../install_guide/verify_sw.html) to verify the integrity of the download. 
 
 WarehousePG supports the PostGIS extension with these component versions:
 
@@ -103,9 +102,7 @@ To enable PostGIS support, install the WarehousePG PostGIS extension package int
 
 Install WarehousePG PostGIS extension package with the `gppkg` utility. For example, this command installs the package for RHEL 7.
 
-```
-gppkg install postgis-3.3.2+pivotal.1.build.1-gp7-rhel8-x86_64.gppkg
-```
+
 
 After installing the package, source the `greenplum_path.sh` file and restart WarehousePG. This command restarts WarehousePG.
 
@@ -246,9 +243,6 @@ Depending on the extensions you enabled for PostGIS, drop support for the extens
 
 After PostGIS support has been removed from all databases in the WarehousePG cluster, you can remove the PostGIS extension package. For example, this `gppkg` command removes the PostGIS extension package.
 
-```
-gppkg remove postgis-3.3.2+pivotal.1
-```
 
 After removing the package, ensure that these lines for PostGIS Raster support are removed from the `greenplum_path.sh` file.
 

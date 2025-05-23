@@ -147,7 +147,7 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
     
     gpg:  checking the trustdbgpg: 
           3 marginal(s) needed, 1 complete(s) needed, PGP trust model
-    gpg:  depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+    gpg:  depth: 0  valid1  signed0  trust: 0-, 0q, 0n, 0m, 0f, 1u
     gpg:  next trustdb check due at 2016-01-13
     pub   2048R/2027CC30 2015-01-13 [expires: 2016-01-13]
           Key fingerprint = 7EDA 6AD0 F5E0 400F 4D45   3259 077D 725E 2027 CC30

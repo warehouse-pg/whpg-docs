@@ -23,7 +23,7 @@ The method a client application must use to detect notification events depends o
 ## <a id="section4"></a>Parameters 
 
 channel
-:   The name of a notification channel (any identifier).
+The name of a notification channel (any identifier).
 
 ## <a id="section4a"></a>Notes
 

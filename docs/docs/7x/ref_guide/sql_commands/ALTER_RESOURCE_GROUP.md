@@ -57,33 +57,33 @@ You can alter one limit type in a single `ALTER RESOURCE GROUP` call.
 ## <a id="parameters"></a>Parameters 
 
 name
-:   The name of the resource group to alter.
+The name of the resource group to alter.
 
 CONCURRENCY integer
-:   The maximum number of concurrent transactions, including active and idle transactions, that are permitted for this resource group. The `CONCURRENCY` value must be an integer in the range \[0 .. `max_connections`\]. The default `CONCURRENCY` value for resource groups defined for roles is 20.
+The maximum number of concurrent transactions, including active and idle transactions, that are permitted for this resource group. The `CONCURRENCY` value must be an integer in the range \[0 .. `max_connections`\]. The default `CONCURRENCY` value for resource groups defined for roles is 20.
 
-:   You must set `CONCURRENCY` to `0` for resource groups that you create for external components.
+You must set `CONCURRENCY` to `0` for resource groups that you create for external components.
 
-:   > **Note** You cannot set the `CONCURRENCY` value for the `admin_group` to `0`.
+> **Note** You cannot set the `CONCURRENCY` value for the `admin_group` to `0`.
 
 CPU_MAX_PERCENT integer
-:   The percentage of the maximum available CPU resources that the resource group can use. The value range is `1-100`. 
+The percentage of the maximum available CPU resources that the resource group can use. The value range is `1-100`. 
 
 CPU_WEIGHT integer
-:   The scheduling priority of the current group. The value range is `1-500`, the default is `100. 
+The scheduling priority of the current group. The value range is `1-500`, the default is `100. 
 
 CPUSET <coordinator_cores>;<segment_cores>
 
-:   `CPUSET` identifies the CPU cores to reserve for this resource group on the coordinator host and on segment hosts. The CPU cores that you specify must be available in the system and cannot overlap with any CPU cores that you specify for other resource groups.
+`CPUSET` identifies the CPU cores to reserve for this resource group on the coordinator host and on segment hosts. The CPU cores that you specify must be available in the system and cannot overlap with any CPU cores that you specify for other resource groups.
 
-:   > **Note** You must specify either `CPU_MAX_PERCENT` or `CPUSET` when you create a resource group, but not both.
+> **Note** You must specify either `CPU_MAX_PERCENT` or `CPUSET` when you create a resource group, but not both.
 
-:   Specify cores as a comma-separated list of single core numbers or core number intervals. Define the coordinator host cores first, followed by segment host cores, and separate the two with a semicolon. You must enclose the full core configuration in single quotes. For example, '1;1,3-4' configures core 1 for the coordinator host, and cores 1, 3, and 4 for the segment hosts.
+Specify cores as a comma-separated list of single core numbers or core number intervals. Define the coordinator host cores first, followed by segment host cores, and separate the two with a semicolon. You must enclose the full core configuration in single quotes. For example, '1;1,3-4' configures core 1 for the coordinator host, and cores 1, 3, and 4 for the segment hosts.
 
-:   > **Note** You can configure `CPUSET` for a resource group only after you have enabled resource group-based resource management for your WarehousePG cluster.
+> **Note** You can configure `CPUSET` for a resource group only after you have enabled resource group-based resource management for your WarehousePG cluster.
 
 IO_LIMIT='<tablespace_io_limit_spec> [; ...]'
-:   Optional. The maximum read/write sequential disk I/O throughput, and the maximum read/write I/O operations per second for the queries assigned to a specific resource group. 
+Optional. The maximum read/write sequential disk I/O throughput, and the maximum read/write I/O operations per second for the queries assigned to a specific resource group. 
 
 Where `<tablespace_io_limit_spec>` is:
 
@@ -116,16 +116,16 @@ If the parameter `IO_LIMIT` is not set, the default value for `rbps`, `wpbs`, `r
 > **Note** The parameter `IO_LIMIT` is only available when you use Linux Control Groups v2. See [Configuring and Using Resource Groups](../../admin_guide/workload_mgmt_resgroups.html#topic71717999) for more information.
 
 MEMORY_QUOTA integer
-:   The maximum available memory, in MB, to reserve for this resource group. This value determines the total amount of memory that all worker processes within a resource group can consume on a segment host during query execution. 
+The maximum available memory, in MB, to reserve for this resource group. This value determines the total amount of memory that all worker processes within a resource group can consume on a segment host during query execution. 
 
-:   The minimum memory quantity you can specify for a resource group is `0`. The default value is `-1`. 
+The minimum memory quantity you can specify for a resource group is `0`. The default value is `-1`. 
 
-:   When you specify a `MEMORY_QUOTA` of `-1`, `MEMORY QUOTA` takes the value of the `statement_mem` server configuration parameter. 
+When you specify a `MEMORY_QUOTA` of `-1`, `MEMORY QUOTA` takes the value of the `statement_mem` server configuration parameter. 
 
-:   > **Note** If the server configuration parameter `gp_resgroup_memory_query_fixed_mem` is set, its value overrides at the session level the value of `MEMORY_QUOTA`.
+> **Note** If the server configuration parameter `gp_resgroup_memory_query_fixed_mem` is set, its value overrides at the session level the value of `MEMORY_QUOTA`.
 
 MIN_COST integer
-:   The limit on the cost of the query plan generated by a query in this resource group. When the query plan cost of the query is less than this value, the query will be unassigned from the resource group to which it belongs. 
+The limit on the cost of the query plan generated by a query in this resource group. When the query plan cost of the query is less than this value, the query will be unassigned from the resource group to which it belongs. 
 
 This means that low-cost queries will execute more quickly, as they are not subject to resource constraints. 
 

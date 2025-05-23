@@ -32,39 +32,39 @@ For partitioned tables, `ANALYZE` collects additional statistics, HyperLogLog \(
 ## <a id="section4"></a>Parameters 
 
 \{ root\_partition\_table\_name \| leaf\_partition\_table\_name \} \[ \(column \[, ...\] \) \]
-:   Collect statistics for partitioned tables including HLL statistics. HLL statistics are collected only on leaf partitions.
+Collect statistics for partitioned tables including HLL statistics. HLL statistics are collected only on leaf partitions.
 
-:   `ANALYZE root\_partition\_table\_name`, collects statistics on all leaf partitions and the root partition.
+`ANALYZE root\_partition\_table\_name`, collects statistics on all leaf partitions and the root partition.
 
-:   `ANALYZE leaf\_partition\_table\_name`, collects statistics on the leaf partition.
+`ANALYZE leaf\_partition\_table\_name`, collects statistics on the leaf partition.
 
-:   By default, if you specify a leaf partition, and all other leaf partitions have statistics, `ANALYZE` updates the root partition statistics. If not all leaf partitions have statistics, `ANALYZE` logs information about the leaf partitions that do not have statistics. For information about when root partition statistics are collected, see [Notes](#section5).
+By default, if you specify a leaf partition, and all other leaf partitions have statistics, `ANALYZE` updates the root partition statistics. If not all leaf partitions have statistics, `ANALYZE` logs information about the leaf partitions that do not have statistics. For information about when root partition statistics are collected, see [Notes](#section5).
 
 ROOTPARTITION \[ALL\]
-:   Collect statistics only on the root partition of partitioned tables based on the data in the partitioned table. If possible, `ANALYZE` uses leaf partition statistics to generate root partition statistics. Otherwise, `ANALYZE` collects the statistics by sampling leaf partition data. Statistics are not collected on the leaf partitions, the data is only sampled. HLL statistics are not collected.
+Collect statistics only on the root partition of partitioned tables based on the data in the partitioned table. If possible, `ANALYZE` uses leaf partition statistics to generate root partition statistics. Otherwise, `ANALYZE` collects the statistics by sampling leaf partition data. Statistics are not collected on the leaf partitions, the data is only sampled. HLL statistics are not collected.
 
-:   For information about when the `ROOTPARTITION` keyword is required, see [Notes](#section5).
+For information about when the `ROOTPARTITION` keyword is required, see [Notes](#section5).
 
-:   When you specify `ROOTPARTITION`, you must specify either `ALL` or the name of a partitioned table.
+When you specify `ROOTPARTITION`, you must specify either `ALL` or the name of a partitioned table.
 
-:   If you specify `ALL` with `ROOTPARTITION`, WarehousePG collects statistics for the root partition of all partitioned tables in the database. If there are no partitioned tables in the database, a message stating that there are no partitioned tables is returned. For tables that are not partitioned tables, statistics are not collected.
+If you specify `ALL` with `ROOTPARTITION`, WarehousePG collects statistics for the root partition of all partitioned tables in the database. If there are no partitioned tables in the database, a message stating that there are no partitioned tables is returned. For tables that are not partitioned tables, statistics are not collected.
 
-:   If you specify a table name with `ROOTPARTITION` and the table is not a partitioned table, no statistics are collected for the table and a warning message is returned.
+If you specify a table name with `ROOTPARTITION` and the table is not a partitioned table, no statistics are collected for the table and a warning message is returned.
 
-:   The `ROOTPARTITION` clause is not valid with `VACUUM ANALYZE`. The command `VACUUM ANALYZE ROOTPARTITION` returns an error.
+The `ROOTPARTITION` clause is not valid with `VACUUM ANALYZE`. The command `VACUUM ANALYZE ROOTPARTITION` returns an error.
 
-:   If all the leaf partitions have statistics, performing `ANALYZE ROOTPARTITION` to generate root partition statistics should be quick \(a few seconds depending on the number of partitions and table columns\). If some of the leaf partitions do not have statistics, then all the table data is sampled to generate root partition statistics. Sampling table data takes longer and results in lower quality root partition statistics.
+If all the leaf partitions have statistics, performing `ANALYZE ROOTPARTITION` to generate root partition statistics should be quick \(a few seconds depending on the number of partitions and table columns\). If some of the leaf partitions do not have statistics, then all the table data is sampled to generate root partition statistics. Sampling table data takes longer and results in lower quality root partition statistics.
 
-:   For the partitioned table *sales\_curr\_yr*, this example command collects statistics only on the root partition of the partitioned table. `ANALYZE ROOTPARTITION sales_curr_yr;`
+For the partitioned table *sales\_curr\_yr*, this example command collects statistics only on the root partition of the partitioned table. `ANALYZE ROOTPARTITION sales_curr_yr;`
 
-:   This example `ANALYZE` command collects statistics on the root partition of all the partitioned tables in the database.
+This example `ANALYZE` command collects statistics on the root partition of all the partitioned tables in the database.
 
     ```
     ANALYZE ROOTPARTITION ALL;
     ```
 
 VERBOSE
-:   Enables display of progress messages. When specified, `ANALYZE` emits this information
+Enables display of progress messages. When specified, `ANALYZE` emits this information
 
     -   The table that is being processed.
     -   The query that is run to generate the sample table.
@@ -73,13 +73,13 @@ VERBOSE
     -   The statistics that are collected.
 
 SKIP_LOCKED
-:   Specifies that `ANALYZE` should not wait for any conflicting locks to be released when beginning work on a relation: if it cannot lock a relation immediately without waiting, it skips the relation. Note that even with this option, `ANALYZE` may still block when opening the relation's indexes or when acquiring sample rows from partitions, table inheritance children, and some types of foreign tables. Also, while `ANALYZE` ordinarily processes all partitions of specified partitioned tables, this option will cause `ANALYZE` to skip all partitions if there is a conflicting lock on the partitioned table.
+Specifies that `ANALYZE` should not wait for any conflicting locks to be released when beginning work on a relation: if it cannot lock a relation immediately without waiting, it skips the relation. Note that even with this option, `ANALYZE` may still block when opening the relation's indexes or when acquiring sample rows from partitions, table inheritance children, and some types of foreign tables. Also, while `ANALYZE` ordinarily processes all partitions of specified partitioned tables, this option will cause `ANALYZE` to skip all partitions if there is a conflicting lock on the partitioned table.
 
 table
-:   The name \(possibly schema-qualified\) of a specific table to analyze. If omitted, all regular tables \(but not foreign tables\) in the current database are analyzed.
+The name \(possibly schema-qualified\) of a specific table to analyze. If omitted, all regular tables \(but not foreign tables\) in the current database are analyzed.
 
 column
-:   The name of a specific column to analyze. Defaults to all columns.
+The name of a specific column to analyze. Defaults to all columns.
 
 ## <a id="section5"></a>Notes 
 
