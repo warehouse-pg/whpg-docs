@@ -28,8 +28,6 @@ The following WarehousePG management utilities are located in `$GPHOME/bin`.
 <td style="vertical-align:top;" class="stentry">
 <ul class="ul" id="topic1__ul_zy5_fxn_r4">
 
-<li class="li"><a class="xref" href="../utility_guide/ref/gppkg.html">gppkg</a>
-</li>
 <li class="li"><a class="xref" href="../utility_guide/ref/gpssh.html">gpssh</a>
 </li>
 <li class="li"><a class="xref" href="../utility_guide/ref/gpssh-exkeys.html">gpssh-exkeys</a>

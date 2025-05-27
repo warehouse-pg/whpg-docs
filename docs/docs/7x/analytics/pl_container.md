@@ -135,15 +135,11 @@ For a list of observations while using Docker and PL/Container, see the [Notes](
 
 ### <a id="install_pl_utility"></a>Install PL/Container
 
-Install the PL/Container language extension using the `gppkg` utility.
+Install the PL/Container language extension 
 
 1.  Download the PL/Container package that applies to your WarehousePG version. 
 2.  As `gpadmin`, copy the PL/Container language extension package to the coordinator host.
 4.  Run the package installation command:
-
-    ```
-    gppkg install plcontainer-2.1.1-rhel8-x86_64.gppkg
-    ```
 
 5.  Source the file `$GPHOME/greenplum_path.sh`:
 
@@ -342,7 +338,7 @@ For further details and examples about using PL/Container functions, see [PL/Con
 
 To upgrade PL/Container, you save the current configuration, upgrade PL/Container, and then restore the configuration after upgrade. There is no need to update the Docker images when you upgrade PL/Container.
 
-> **Note** Before you perform this upgrade procedure, ensure that you have migrated your PL/Container package from your previous WarehousePG installation to your new WarehousePG installation. Refer to the [gppkg](../utility_guide/ref/gppkg.html) command for package installation and migration information.
+> **Note** Before you perform this upgrade procedure, ensure that you have migrated your PL/Container package from your previous WarehousePG installation to your new WarehousePG installation.
 
 To upgrade, perform the following procedure:
 
@@ -352,11 +348,7 @@ To upgrade, perform the following procedure:
     $ plcontainer runtime-backup -f plcontainer202-backup.xml
     ```
 
-2.  Use the WarehousePG `gppkg` utility with the `install` option to update the PL/Container language extension using the latest package. For example, the following command updates the PL/Container language extension to version 2.2.0 on a Linux system:
-
-    ```
-    $ gppkg install plcontainer-2.2.0-gp7-rhel8_x86_64.gppkg
-    ```
+2.  Update the PL/Container language extension using the latest package.
 
 3.  Source the WarehousePG environment file `$GPHOME/greenplum_path.sh`.
 
@@ -416,29 +408,7 @@ psql -d mytest -c 'DROP EXTENSION plcontainer CASCADE;'
 
 The `CASCADE` keyword drops PL/Container-specific functions and views.
 
-### <a id="topic_dty_fcj_kw"></a>Uninstall the PL/Container Language Extension
 
-If no databases have `plcontainer` as a registered language, uninstall the WarehousePG PL/Container language extension with the `gppkg` utility.
-
-1.  Use the WarehousePG `gppkg` utility with the `remove` option to uninstall the PL/Container language extension. This example uninstalls the PL/Container language extension on a Linux system:
-
-    ```
-    $ gppkg remove plcontainer-2.1.1
-    ```
-
-    You can run the `gppkg` utility with the `query` option to list the installed extensions and their versions.
-
-2.  Reload `greenplum_path.sh`.
-
-    ```
-    $ source $GPHOME/greenplum_path.sh
-    ```
-
-3.  Restart the database.
-
-    ```
-    $ gpstop -ra
-    ```
 
 
 ## <a id="plc_notes"></a>Notes

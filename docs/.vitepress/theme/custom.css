@@ -59,25 +59,42 @@
  * -------------------------------------------------------------------------- */
 
 :root {
-   --vp-c-default-1:rgba(218, 19, 132, 0.15);
+
+
+
+
+
+
+
+  --vp-c-bg: #ffffff;
+
+  /* side bar & search box background */
+  --vp-c-bg-alt:  rgba(222, 222, 222 , 0.15);
+
+  /* drop down list background */
+  --vp-c-bg-alt:  rgba(222, 222, 222 , 0.15);
+
+  /* home page boxes, copy code icon */
+  --vp-c-bg-soft:  rgba(222, 222, 222 , 0.25);
+
+
+  /* code lines background color, and outlines for emojis on homepage */
+  --vp-c-default-soft:  rgba(222, 222, 222 , 0.55);
+
+
+  --vp-c-default-1:rgba(218, 19, 132, 0.15);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
 
-
-
-/* code lines background color, and outlines for emojis on homepage */
-
-  --vp-c-default-soft: rgba(165, 166, 165 , .22);
-
-
-  
-
+  --vp-c-text-1: #545454;
+  --vp-c-text-2: #1868A0;
+  --vp-c-text-3: #1868A0;
 
 
   --vp-c-brand-1: #1868A0;
   --vp-c-brand-2: #A5A6A5;
   --vp-c-brand-3:  #545454;
-  --vp-c-brand-soft:: rgba(165, 166, 165 , 0815);
+  --vp-c-brand-soft:: rgba(165, 166, 165 , .15);
 
   --vp-code-block-color: rgba(7, 8, 9, 0.95);
   --vp-code-block-bg:  rgba(165, 166, 165 , 0.20);
@@ -86,8 +103,8 @@
   --vp-c-warning-soft:  rgba(234, 179, 8, 0.20);
   --vp-c-danger-soft: rgba(244, 63, 94, 0.22);
 
- --vp-custom-block-info-border:  rgba(165, 166, 165 , 0.75);
- --vp-custom-block-info-text: var(--vp-c-text-1);
+  --vp-custom-block-info-border:  rgba(165, 166, 165 , 0.75);
+  --vp-custom-block-info-text: var(--vp-c-text-1);
   --vp-custom-block-info-bg: rgba(165, 166, 165 , 0.25);
   --vp-custom-block-info-code-bg:  rgba(24, 103, 160, 0.10);
 
@@ -97,19 +114,11 @@
   --vp-custom-block-tip-code-bg: rgba(24, 103, 160, 0.10);
 
 
-  --vp-custom-block-info-text: var(--vp-c-text-1);
-
-
-
   --vp-custom-block-note-border: transparent;
   --vp-custom-block-note-text: var(--vp-c-text-1);
   --vp-custom-block-note-bg: var(--vp-c-default-soft);
   --vp-custom-block-note-code-bg: var(--vp-c-default-soft);
-
-
-  --vp-custom-block-tip-text: var(--vp-c-text-1);
-
-
+ß
   --vp-custom-block-important-border: transparent;
   --vp-custom-block-important-text: var(--vp-c-text-1);
   --vp-custom-block-important-bg: var(--vp-c-important-soft);
@@ -134,47 +143,44 @@
   --vp-custom-block-details-text: var(--vp-custom-block-info-text);
   --vp-custom-block-details-bg: var(--vp-custom-block-info-bg);
   --vp-custom-block-details-code-bg: var(--vp-custom-block-info-code-bg);
+
+
+
+  --vp-c-border: rgba(222, 222, 222 , 0.85);
+  --vp-c-divider: rgba(222, 222, 222 , 0.85);
+  --vp-c-gutter: rgba(222, 222, 222 , 0.85);
+
+
 }
 
 
+  
+.dark {
+--vp-c-text-1: rgba(222, 222, 222 , 0.85);
+
+--vp-c-text-2: #1867a0;
+--vp-c-text-3: #1868A0;
+--vp-code-block-color:  rgba(165, 166, 165 , 0.75);
+
+--vp-c-default-soft: rgba(165, 166, 165 , .18);
 
 
 
-:root {
-    --vp-c-text-1: #545454;
-    --vp-c-text-2: #1868A0;
-    --vp-c-text-3: #1868A0;
+--vp-code-block-color: rgba(7, 8, 9, 0.95);
+--vp-code-block-bg:   rgba(222, 222, 222 , 0.75);
+
+
+--vp-c-bg: #1b1b1f;
+--vp-c-bg-alt: #161618;
+--vp-c-bg-elv: #202127;
+--vp-c-bg-soft: #202127;
+
+
+  --vp-c-border: rgba(222, 222, 222 , 0.85);
+  --vp-c-divider: rgba(222, 222, 222 , 0.15);
+  --vp-c-gutter: rgba(222, 222, 222 , 0.85);
   }
 
-
-
-  .dark {
-    --vp-c-text-1: #545454;
-    --vp-c-text-2: #1868A0;
-    --vp-c-text-3: #1868A0;
-  }
-
-
-
-/**
-
-  :root {
-    --vp-c-text-1: #1868A0;
-    --vp-c-text-2: #545454;
-    --vp-c-text-3: #1868A0;
-
-
-
-  }
-
-
-
-  .dark {
-    --vp-c-text-1: #1868A0;
-    --vp-c-text-2: #545454;
-    --vp-c-text-3: #1868A0;
-  }
-  * -------------------------------------------------------------------------- */
 
 
 /**

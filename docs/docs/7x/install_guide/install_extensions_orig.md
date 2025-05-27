@@ -10,7 +10,7 @@
 -   [WarehousePG PostGIS Extension](../analytics/postGIS.html)
 -   [WarehousePG H3 Extension](../analytics/h3.html)
 
-> **Important** If you intend to use an extension package with WarehousePG 6 you must install and use a WarehousePG extension package \(gppkg files and contrib modules\) that is built for WarehousePG 6. Any custom modules that were used with earlier versions must be rebuilt for use with WarehousePG 6.
+
 
 **Parent topic:** [Installing Optional Extensions \(WarehousePG\)](data_sci_pkgs.html)
 
