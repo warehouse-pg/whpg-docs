@@ -104,18 +104,6 @@ $ psql -d testdb -c 'DROP EXTENSION plr;'
 
 The default command fails if any existing objects \(such as functions\) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/R.
 
-#### <a id="topic8"></a>Uninstall the Extension Package
-
-If no databases have PL/R as a registered language, uninstall the WarehousePG PL/R extension with the `gppkg` utility. This example uninstalls PL/R package version 3.1.0.
-
-```
-$ gppkg remove plr-3.1.0
-```
-
-On RHEL/Oracle/Rocky systems, uninstalling the extension uninstalls the R software that was installed with the extension.
-
-You can run the `gppkg` utility with the `query` option to list the installed extensions and their versions.
-
 
 #### <a id="topic_ifv_tsf_w3b"></a>Uninstall R \(Ubuntu\)
 

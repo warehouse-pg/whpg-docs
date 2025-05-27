@@ -192,17 +192,10 @@ $ sudo yum install tk
 
 1.  Locate the Data Science Package for Python that you built or downloaded.
 
-    The file name format of the package is `DataSciencePython<pythonversion>-<data-science-bundle-version>-gp7-rhel<n>-x86_64.gppkg`.  For example: `DataSciencePython3.11-3.0.0-gp7-rhel8_x86_64.gppkg`.
 
 2.  Copy the package to the WarehousePG coordinator host.
 
-4.  Use the `gppkg` command to install the package. For example:
-
-    ```
-    $ gppkg install DataSciencePython3.11-1.2.0-gp7-el8_x86_64.gppkg
-    ```
-
-    `gppkg` installs the Data Science Package for Python modules on all nodes in your WarehousePG cluster. The command also updates the `PYTHONPATH`, `PATH`, and `LD_LIBRARY_PATH` environment variables in your `greenplum_path.sh` file.
+4.  Install the package. 
 
 5.  Restart WarehousePG. You must re-source `greenplum_path.sh` before restarting your WarehousePG cluster:
 

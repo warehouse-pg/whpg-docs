@@ -189,7 +189,7 @@ Perform the following steps as the WarehousePG administrator `gpadmin`.
     $ gpconfig -c pljava_classpath -v 'examples.jar:myclasses.jar'
     ```
 
-    The file `examples.jar` is installed when you install the PL/Java extension package with the `gppkg` utility.
+    The file `examples.jar` is installed when you install the PL/Java extension package
 
     > **Note** If you install JAR files in a directory other than `$GPHOME/lib/postgresql/java/`, you must specify the absolute path to the JAR file. Each JAR file must be in the same location on all WarehousePG hosts. For more information about specifying the location of JAR files, see the information about the `pljava_classpath` server configuration parameter in the *WarehousePG Reference Guide*.
 
@@ -223,32 +223,7 @@ The default command fails if any existing objects \(such as functions\) depend o
 
 > **Note** The PL/Java `uninstall.sql` script, used in previous releases to remove the language registration, is deprecated.
 
-### <a id="topic_tgt_nfg_mjb"></a>Uninstall the Java JAR files and Software Package
 
-If no databases have PL/Java as a registered language, remove the Java JAR files and uninstall the WarehousePG PL/Java extension with the `gppkg` utility.
-
-1.  Remove the `pljava_classpath` server configuration parameter from the `postgresql.conf` file on all WarehousePG hosts. For example:
-
-    ```
-    $ gpconfig -r pljava_classpath
-    ```
-
-2.  Remove the JAR files from the directories where they were installed on all WarehousePG hosts. For information about JAR file installation directories, see [Enabling PL/Java and Installing JAR Files](#topic6).
-3.  Use the WarehousePG `gppkg` utility with the `remove` option to uninstall the PL/Java extension. This example uninstalls the PL/Java extension on a Linux system:
-
-    ```
-    $ gppkg remove pljava-1.4.3
-    ```
-
-    You can run the `gppkg` utility with the options `query` to list the installed extensions and their versions.
-
-4.  Remove any updates you made to `greenplum_path.sh` for PL/Java.
-5.  Reload `greenplum_path.sh` and restart the database
-
-    ```
-    $ source $GPHOME/greenplum_path.sh
-    $ gpstop -r 
-    ```
 
 
 ## <a id="topic13"></a>Writing PL/Java functions

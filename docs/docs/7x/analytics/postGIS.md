@@ -100,10 +100,6 @@ To enable PostGIS support, install the WarehousePG PostGIS extension package int
 
 #### <a id="section_dlv_xv1_rqb"></a>Installing the WarehousePG PostGIS Extension Package
 
-Install WarehousePG PostGIS extension package with the `gppkg` utility. For example, this command installs the package for RHEL 7.
-
-
-
 After installing the package, source the `greenplum_path.sh` file and restart WarehousePG. This command restarts WarehousePG.
 
 ```
@@ -238,25 +234,6 @@ Depending on the extensions you enabled for PostGIS, drop support for the extens
 
     If you enabled support for PostGIS and specified a specific schema with the `CREATE EXTENSION` command, you can update the `search_path` and drop the PostGIS schema if required.
 
-
-#### <a id="section_wvr_wv1_rqb"></a>Uninstalling the WarehousePG PostGIS Extension Package
-
-After PostGIS support has been removed from all databases in the WarehousePG cluster, you can remove the PostGIS extension package. For example, this `gppkg` command removes the PostGIS extension package.
-
-
-After removing the package, ensure that these lines for PostGIS Raster support are removed from the `greenplum_path.sh` file.
-
-```
-export GDAL_DATA=$GPHOME/share/gdal
-export POSTGIS_ENABLE_OUTDB_RASTERS=0
-export POSTGIS_GDAL_ENABLED_DRIVERS=DISABLE_ALL
-```
-
-Source the `greenplum_path.sh` file and restart WarehousePG. This command restarts WarehousePG.
-
-```
-gpstop -ra
-```
 
 #### <a id="postgis_note"></a>Notes
 
