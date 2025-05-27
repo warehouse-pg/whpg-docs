@@ -54,7 +54,6 @@ MADlib 2.1.0 requires Python 3, which should already be installed as a dependenc
 
 To install MADlib on WarehousePG, you first install a compatible WarehousePG MADlib package and then install the MADlib function libraries on all databases that will use MADlib.
 
-The [gppkg](../utility_guide/ref/gppkg.html) utility installs WarehousePG extensions, along with any dependencies, on all hosts across a cluster. It also automatically installs extensions on new hosts in the case of system expansion segment recovery.
 
 If you have GPUs installed on some or across all hosts in the cluster, then the segments residing on those hosts can benefit from GPU acceleration. GPUs and deep learning libraries such as Keras, TensorFlow, cudNN, and CUDA are managed separately from MADlib. For more information see the [MADlib wiki instructions for deep learning](https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning) and the [MADlib user documentation for deep learning](http://madlib.apache.org/docs/latest/group__grp__dl.html) .
 
@@ -70,11 +69,9 @@ Before you install the MADlib package, make sure that your WarehousePG is runnin
     $ tar xzvf madlib-2.1.0-gp7-rhel8-x86_64.tar.gz
     ```
 
-5.  Install the software package by running the `gppkg` command. For example:
+5.  Install the software package 
 
-    ```
-    $ gppkg install ./madlib-2.1.0-gp7-rhel8-x86_64/madlib-2.1.0-gp7-rhel8-x86_64.gppkg.tar.gz
-    ```
+
 
 ### <a id="topic5"></a>Adding MADlib Functions to a Database
 
@@ -107,29 +104,7 @@ $ madpack -s madlib -p greenplum -c gpadmin@cdw:5432/testdb install-check
 
 When you remove MADlib support from a database, routines that you created in the database that use MADlib functionality will no longer work.
 
-### <a id="topic7"></a>Remove MADlib objects from the database
 
-Use the `madpack uninstall` command to remove MADlib objects from a WarehousePG. For example, this command removes MADlib objects from the database `testdb`.
-
-```
-$ madpack  -s madlib -p greenplum -c gpadmin@cdw:5432/testdb uninstall
-```
-
-### <a id="topic8"></a>Uninstall the WarehousePG MADlib Package
-
-If no databases use the MADlib functions, use the WarehousePG `gppkg` utility with the `remove` option to uninstall the MADlib package. When removing the package you must specify the package and version. This example uninstalls MADlib package version 1.18.
-
-```
-$ gppkg remove madlib-2.1.0-gp7-rhel8-x86_64
-```
-
-You can run the `gppkg` utility with the `query` option to list the installed extensions and their versions.
-
-After you uninstall the package, restart the database.
-
-```
-$ gpstop -r
-```
 
 ## <a id="topic9"></a>Examples
 

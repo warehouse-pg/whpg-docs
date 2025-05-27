@@ -153,17 +153,9 @@ Before you install the R Data Science Library package, make sure that your Wareh
 
 1.  Locate the R Data Science library package that you built or downloaded.
 
-    The file name format of the package is `DataScienceR-<version>-relhel<N>_x86_64.gppkg`.
-
 2.  Copy the package to the WarehousePG coordinator host.
 
-3.  Use the `gppkg` command to install the package. For example:
-
-    ```
-    $ gppkg -i DataScienceR-<version>-relhel<N>_x86_64.gppkg
-    ```
-
-    `gppkg` installs the R Data Science libraries on all nodes in your WarehousePG cluster. The command also sets the `R_LIBS_USER` environment variable and updates the `PATH` and `LD_LIBRARY_PATH` environment variables in your `greenplum_path.sh` file.
+3.  Install the package.
 
 4.  Restart WarehousePG. You must re-source `greenplum_path.sh` before restarting your WarehousePG cluster:
 
@@ -179,26 +171,6 @@ The WarehousePG R Data Science Modules are installed in the following directory:
 $GPHOME/ext/DataScienceR/library
 ```
 
-## <a id="topic_removepdsl"></a>Uninstalling the R Data Science Library Package
-
-Use the `gppkg` utility to uninstall the R Data Science Library package. You must include the version number in the package name you provide to `gppkg`.
-
-To determine your R Data Science Library package version number and remove this package:
-
-```
-$ gppkg -q --all | grep DataScienceR
-DataScienceR-<version>
-$ gppkg -r DataScienceR-<version>
-```
-
-The command removes the R Data Science libraries from your WarehousePG cluster. It also removes the `R_LIBS_USER` environment variable and updates the `PATH` and `LD_LIBRARY_PATH` environment variables in your `greenplum_path.sh` file to their pre-installation values.
-
-Re-source `greenplum_path.sh` and restart WarehousePG after you remove the R Data Science Library package:
-
-```
-$ . /usr/local/greenplum-db/greenplum_path.sh
-$ gpstop -r 
-```
 
 > **Note** When you uninstall the R Data Science Library package from your WarehousePG cluster, any UDFs that you have created that use R libraries installed with this package will return an error.
 

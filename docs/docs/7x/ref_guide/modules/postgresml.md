@@ -10,13 +10,7 @@ Before registering the `postgresml` module, you must install the Data Science bu
 
 1. Install the Data Science bundle for Python 3.11.
 
-    For example:
 
-    ```
-    gppkg install DataSciencePython3.11-x.x.x-gp7-el8_x86_64.gppkg 
-    ```
-
-    where x.x.x is the version string.
 
 2. Add the `postgresml` library to preload when the WarehousePG server starts, using the `shared_preload_libraries` server configuration parameter and then restart the cluster.
 

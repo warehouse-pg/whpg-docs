@@ -246,7 +246,7 @@ WarehousePG is supported on Amazon Web Services \(AWS\) servers using either Ama
 
 WarehousePG provides access to HDFS with the WarehousePG Platform Extension Framework PXF
 
-PXF can use Cloudera, Hortonworks Data Platform, MapR, and generic Apache Hadoop distributions. PXF bundles all of the JAR files on which it depends, including the following Hadoop libraries:
+PXF can use Cloudera and generic Apache Hadoop distributions. PXF bundles all of the JAR files on which it depends, including the following Hadoop libraries:
 
 |PXF Version|Hadoop Version|Hive Server Version|HBase Server Version|
 |-----------|--------------|-------------------|--------------------|
