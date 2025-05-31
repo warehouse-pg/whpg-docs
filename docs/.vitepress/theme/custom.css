@@ -61,11 +61,6 @@
 :root {
 
 
-
-
-
-
-
   --vp-c-bg: #ffffff;
 
   /* side bar & search box background */
@@ -81,6 +76,14 @@
   /* code lines background color, and outlines for emojis on homepage */
   --vp-c-default-soft:  rgba(222, 222, 222 , 0.55);
 
+
+  --vp-c-default-1:rgba(218, 19, 132, 0.15);
+  --vp-c-default-2: var(--vp-c-gray-2);
+  --vp-c-default-3: var(--vp-c-gray-3);
+
+  --vp-c-text-1: #545454;
+  --vp-c-text-2: #1868A0;
+  --vp-c-text-3: #1868A0;
 
   --vp-c-default-1:rgba(218, 19, 132, 0.15);
   --vp-c-default-2: var(--vp-c-gray-2);
@@ -125,8 +128,8 @@
   --vp-custom-block-note-border: transparent;
   --vp-custom-block-note-text: var(--vp-c-text-1);
   --vp-custom-block-note-bg: var(--vp-c-default-soft);
-  --vp-custom-block-note-code-bg: var(--vp-c-default-soft)
 
+  --vp-custom-block-note-code-bg: var(--vp-c-default-soft)
 
   --vp-custom-block-important-border: transparent;
   --vp-custom-block-important-text: var(--vp-c-text-1);
@@ -152,8 +155,6 @@
   --vp-custom-block-details-text: var(--vp-custom-block-info-text);
   --vp-custom-block-details-bg: var(--vp-custom-block-info-bg);
   --vp-custom-block-details-code-bg: var(--vp-custom-block-info-code-bg);
-
-
 
   --vp-c-border: rgba(222, 222, 222 , 0.85);
   --vp-c-divider: rgba(222, 222, 222 , 0.85);
