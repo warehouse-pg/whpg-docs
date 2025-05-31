@@ -21,5 +21,5 @@ The following table summarizes some of the differences between resource queues a
 |Limit Bypass|Limits are not enforced for `SUPERUSER` roles and certain operators and functions|Limits are not enforced on `SET`, `RESET`, and `SHOW` commands. Additionally, certain queries may be configured to bypass the concurrency limit|
 |External Components|None|Manage PL/Container CPU resources|
 
-**Parent topic:** [Managing Performance](performance.thml)
+**Parent topic:** [Managing Performance](performance.html)
 

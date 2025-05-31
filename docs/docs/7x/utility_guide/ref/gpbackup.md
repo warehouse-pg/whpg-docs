@@ -41,6 +41,8 @@ gpbackup --dbname <database_name>
 gpbackup --help 
 ```
 
+ `gprestore` [reference](/docs/7x/utility_guide/ref/gprestore.html) 
+
 ## <a id="section3"></a>Description 
 
 The `gpbackup` utility backs up the contents of a database into a collection of metadata files and data files that can be used to restore the database at a later time using gprestore. When you back up a database, you can specify table level and schema level filter options to back up specific tables. For example, you can combine schema level and table level options to back up all the tables in a schema except for a single table.
@@ -122,7 +124,7 @@ Optional. Displays verbose debug messages during operation.
 `--exclude-schema <schema_name>`<br>
 Optional. Specifies a database schema to exclude from the backup. You can specify this option multiple times to exclude multiple schemas. You cannot combine this option with the option `--include-schema`, `--include-schema-file`, or a table filtering option such as `--include-table`.
 
-[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/gpbackup_gprestore.html#filter)
 
 
 
@@ -139,7 +141,7 @@ __See Requirements and Limitations for limitations when leaf partitions of a par
 `--exclude-schema-file <file_name>`<br>
 Optional. Specifies a text file containing a list of schemas to exclude from the backup. Each line in the text file must define a single schema. The file must not include trailing lines. If a schema name uses any character other than a lowercase letter, number, or an underscore character, then you must include that name in double quotes. You cannot combine this option with the option `--include-schema` or `--include-schema-file`, or a table filtering option such as `--include-table`.
 
-[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/gpbackup_gprestore.html#filter)
 
 
 
@@ -152,7 +154,7 @@ Optional. Specifies a table to exclude from the backup. The table must be in the
 
 If you specify a leaf partition name, `gpbackup` ignores the partition names. The leaf partition is not excluded.
 
-[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/gpbackup_gprestore.html#filter)
 
 
 `--exclude-table-file <file_name>`<br>
@@ -160,7 +162,7 @@ Optional. Specifies a text file containing a list of tables to exclude from the 
 
 If you specify leaf partition names in a file that is used with --exclude-table-file, `gpbackup` ignores the partition names. The leaf partitions are not excluded.
 
-[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/gpbackup_gprestore.html#filter)
 
 
 `--include-schema <schema_name>`<br>
@@ -170,7 +172,7 @@ Optional. Specifies a database schema to include in the backup. You can specify 
 `--include-schema-file <file_name>`<br>
 Optional. Specifies a text file containing a list of schemas to back up. Each line in the text file must define a single schema. The file must not include trailing lines. If a schema name uses any character other than a lowercase letter, number, or an underscore character, then you must include that name in double quotes. 
 
-[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/backup-gpbackup.html#filter)
+[__See Filtering the Contents of a Backup or Restore for more information.__](../../admin_guide/backup_restore/gpbackup_gprestore.html#filter)
 
 
 `--include-table <schema.table>`<br>
@@ -309,7 +311,7 @@ To create the database `demo` using the WarehousePG coordinator on host `gpcoord
 createdb -p 54321 -h gpcoord -E LATIN1 demo
 ```
 
-## <a id="section7"></a>See Also 
+## <a id="See Also "></a>See Also 
 
-[CREATE DATABASE](../../ref_guide/sql_commands/CREATE_DATABASE.html), [dropdb](dropdb.html)
+[gprestore](gprestore.html)
 

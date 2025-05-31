@@ -5,7 +5,7 @@ Managing system performance includes measuring performance, identifying the caus
 
 WarehousePG measures database performance based on the rate at which the database management system \(DBMS\) supplies information to requesters.
 
-**Parent topic:** [Managing Performance](performance.thml)
+**Parent topic:** [Managing Performance](performance.html)
 
 ## <a id="topic2"></a>Understanding the Performance Factors
 

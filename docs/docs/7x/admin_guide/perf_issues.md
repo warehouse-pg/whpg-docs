@@ -3,7 +3,7 @@
 
 This section explains the troubleshooting processes for common performance issues and potential solutions to these issues.
 
-**Parent topic:** [Managing Performance](performance.thml)
+**Parent topic:** [Managing Performance](performance.html)
 
 ## <a id="topic2"></a>Identifying Hardware and Segment Failures
 

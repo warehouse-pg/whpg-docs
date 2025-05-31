@@ -23,6 +23,3 @@ Reference information for WarehousePG clusters including SQL commands, system ca
 -   **[Server Programmatic Interfaces](extensions/srvapi_intro.html)**  
 
 -   **[SQL Features, Reserved and Key Words, and Compliance](misc.html)**  
-
-
-actually index.html

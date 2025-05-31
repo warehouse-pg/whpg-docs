@@ -53,10 +53,10 @@ export default defineConfig(
           { text: "Release Notes", link: "/docs/7x/" },
           { text: "Install Guide", link: "/docs/7x/install_guide/" },
           { text: "Admin Guide", link: "/docs/7x/admin_guide/" },
-          { text: "Cluster Utilities", link: "/docs/7x/utility_guide/reference.md" },         
+          { text: "Utility Guide", link: "/docs/7x/utility_guide/reference.md" },         
           { text: "Analytics Guide", link: "/docs/7x/analytics/" },      
           { text: "Reference Guide", link: "/docs/7x/ref_guide/" },        
-          { text: "Backup/Restore Guide", link: "/docs/7x/admin_guide/backup_restore/backup-gpbackup.md" }
+          { text: "Backup & Restore Guide", link: "/docs/7x/admin_guide/backup_restore/gpbackup_gprestore.md" }
 
 
 
