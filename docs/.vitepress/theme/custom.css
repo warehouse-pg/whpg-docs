@@ -90,6 +90,14 @@
   --vp-c-text-2: #1868A0;
   --vp-c-text-3: #1868A0;
 
+  --vp-c-default-1:rgba(218, 19, 132, 0.15);
+  --vp-c-default-2: var(--vp-c-gray-2);
+  --vp-c-default-3: var(--vp-c-gray-3);
+
+  --vp-c-text-1: #545454;
+  --vp-c-text-2: #1868A0;
+  --vp-c-text-3: #1868A0;
+
 
   --vp-c-brand-1: #1868A0;
   --vp-c-brand-2: #A5A6A5;
@@ -117,7 +125,8 @@
   --vp-custom-block-note-border: transparent;
   --vp-custom-block-note-text: var(--vp-c-text-1);
   --vp-custom-block-note-bg: var(--vp-c-default-soft);
-  --vp-custom-block-note-code-bg: var(--vp-c-default-soft);
+  --vp-custom-block-note-code-bg: var(--vp-c-default-soft)
+
 
   --vp-custom-block-important-border: transparent;
   --vp-custom-block-important-text: var(--vp-c-text-1);
