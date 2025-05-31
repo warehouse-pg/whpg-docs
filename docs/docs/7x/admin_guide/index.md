@@ -21,6 +21,6 @@ This topic provides information about using SQL in WarehousePGs.
 Both external and foreign tables provide access to data stored in data sources outside of WarehousePG as if the data were stored in regular database tables. You can read data from and write data to external and foreign tables.
 -   **[Loading and Unloading Data](load/topics/g-loading-and-unloading-data.html)**  
 The topics in this section describe methods for loading and writing data into and out of a WarehousePG, and how to format data files.
--   **[Managing Performance](performance.thml)**  
+-   **[Managing Performance](performance.html)**  
 The topics in this section cover WarehousePG performance management, including how to monitor performance and how to configure workloads to prioritize resource utilization.
 

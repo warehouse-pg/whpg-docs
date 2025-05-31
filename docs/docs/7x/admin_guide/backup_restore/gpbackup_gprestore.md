@@ -3,7 +3,14 @@
 
 
 
-`gpbackup` and `gprestore` are WarehousePG utilities that create and restore backup sets in parallel for WarehousePG. By default, `gpbackup` stores only the object metadata files and DDL files for a backup in the WarehousePG Coordinator data directory. WarehousePG segments use the `COPY ... ON SEGMENT` command to store their data for backed-up tables in compressed CSV data files, located in each segment’s backups directory.
+[gpbackup](/docs/7x/utility_guide/ref/gpbackup.html) and [gprestore](/docs/7x/utility_guide/ref/gprestore.html) 
+ are WarehousePG utilities that create and restore backup sets in parallel for WarehousePG. By default, `gpbackup` stores only the object metadata files and DDL files for a backup in the WarehousePG Coordinator data directory. WarehousePG segments use the `COPY ... ON SEGMENT` command to store their data for backed-up tables in compressed CSV data files, located in each segment’s backups directory.
+
+
+
+
+
+
 
 
 ## <a id="parback"></a>Parallel Backup with gpbackup and gprestore
@@ -14,15 +21,14 @@ The backup metadata files contain all of the information that `gprestore` needs 
 
 Each `gpbackup` task uses a single transaction in WarehousePG. During this transaction, metadata is backed up on the Coordinator host, and data for each table on each segment host is written to CSV backup files using COPY ... ON SEGMENT commands in parallel. The backup process acquires an ACCESS SHARE lock on each table that is backed up.
 
-For additional documenation, visit the `gpbackup` and `gprestore` cluster utilities reference page.
+For additional documenation, visit the [gpbackup](/docs/7x/utility_guide/ref/gpbackup.html)  and [gprestore](/docs/7x/utility_guide/ref/gprestore.html)  cluster utilities reference page.
 
 
-
-- [Supported WHPG versions](#versions)
-
-- [Objects in a backup set](#ojbects)
+- [Objects in a backup set](#objects)
 
 - [Backup and Restore Workflow](#workflow)
+
+- [Backup History Database](#db)
 
 - [Using the --include and --exclude filters](#filter)
 
@@ -30,33 +36,14 @@ For additional documenation, visit the `gpbackup` and `gprestore` cluster utilit
 
 - [Backup files layout](#files)
 
-- [Incremental Backups with gpbackup and gprestore](#incremental)
+- [Return Codes](#codes)
 
-- [Using gpbackup with the S3 Plugin](#s3)
-
-- [Plugin API](#api)
+- [Supported WHPG versions](#versions)
 
 - [Limitations](#limitations)
 
 
- 
-|||
-|------|----|
-|`gp_segment_id`|integer|
-|`name`|text|
-|`setting`|text|
-
-
-
-## <a id="versions">Supported WHPG versions</a>
-
-The WarehousePG provided `gpbackup` and `gprestore` utilities are compatible with WarehousePG versions 
-- 6.27.1 or later
-- 7.2.1-WHPG or later
-
-
-
-## <a id="objects">Objects in a backup set</a>
+## <a id="objects"></a>Objects in a backup set
 
 Objects Included in a Backup or Restore
 The following table lists the objects that are backed up and restored with `gpbackup` and `gprestore`. 
@@ -108,7 +95,7 @@ __Objects that are backed up and restored__
 When restoring to an existing database, `gprestore` assumes the public schema exists when restoring objects to the public schema. When restoring to a new database (with the --create-db option), `gprestore` creates the public schema automatically when creating a database with the CREATE DATABASE command. The command uses the template0 database that contains the public schema.
 
 
-## <a id="workflow">Backup and Restore Workflow</a>
+## <a id="workflow"></a>Backup and Restore Workflow
 
 ### Full Backup
 
@@ -342,55 +329,62 @@ When performing a backup or restore operation, `gpbackup` and `gprestore` genera
 
 The report file is placed in the WarehousePG Coordinator backup directory. The report file name contains the timestamp of the operation. These are the formats of the `gpbackup` and `gprestore` report file names.
 
-gpbackup_<backup_timestamp>_report
-`gprestore`_<backup_timestamp>_<restore_timesamp>_report
-For these example report file names, 20180213114446 is the timestamp of the backup and 20180213115426 is the timestamp of the restore operation.
+- `gpbackup_<backup_timestamp>_report`
+- `gprestore_<backup_timestamp>_<restore_timesamp>_report`
 
-gpbackup_20180213114446_report
-`gprestore`_20180213114446_20180213115426_report
+
+For these example report file names, `20250518010000` is the timestamp of the backup and `20250530234643` is the timestamp of the restore operation.
+
+**`gpbackup_20250518010000_report`**
+
+**`gprestore_20250518010000_20180213115426_report`**
+
+
 This backup directory on a WarehousePG Coordinator host contains both a `gpbackup` and `gprestore` report file.
 
-$ ls -l /gpmaster/seg-1/backups/20180213/20180213114446
-total 36
--r--r--r--. 1 gpadmin gpadmin  295 Feb 13 11:44 gpbackup_20180213114446_config.yaml
--r--r--r--. 1 gpadmin gpadmin 1855 Feb 13 11:44 gpbackup_20180213114446_metadata.sql
--r--r--r--. 1 gpadmin gpadmin 1402 Feb 13 11:44 gpbackup_20180213114446_report
--r--r--r--. 1 gpadmin gpadmin 2199 Feb 13 11:44 gpbackup_20180213114446_toc.yaml
--r--r--r--. 1 gpadmin gpadmin  404 Feb 13 11:54 `gprestore`_20180213114446_20180213115426_report
+
+```
+[gpadmin@cdw 20250530234643]$ ls -ltr
+total 2124
+-r--r--r-- 1 gpadmin gpadmin 2120143 May 30 23:46 gpbackup_20250530234643_metadata.sql
+-r--r--r-- 1 gpadmin gpadmin   38064 May 30 23:46 gpbackup_20250530234643_toc.yaml
+-r--r--r-- 1 gpadmin gpadmin    1499 May 30 23:46 gpbackup_20250530234643_config.yaml
+-r--r--r-- 1 gpadmin gpadmin    1837 May 30 23:46 gpbackup_20250530234643_report
+-r--r--r-- 1 gpadmin gpadmin     539 May 31 00:05 gprestore_20250530234643_20250531000515_report
+
+```
+
 The contents of the report files are similar. This is an example of the contents of a `gprestore` report file.
 
-WarehousePG Restore Report
+```
+WarehosuePG Report
 
-Timestamp Key: 20180213114446
-GPDB Version: 5.4.1+dev.8.g9f83645 build commit:9f836456b00f855959d52749d5790ed1c6efc042
-`gprestore` Version: 1.0.0-alpha.3+dev.73.g0406681
+timestamp key:           20250530234643
+gpdb version:            6.27.1 build commit:ab5a612bfdc355ad2d601860dfb70a47778c8dd7
+gprestore version:       1.30.5
 
-Database Name: test
-Command Line: `gprestore` --timestamp 20180213114446 --with-globals --createdb
+database name:           test
+command line:            gprestore --timestamp 20250530234643 --redirect-db test --create-db
 
-Start Time: 2018-02-13 11:54:26
-End Time: 2018-02-13 11:54:31
-Duration: 0:00:05
+backup segment count:    8
+restore segment count:   8
+start time:              Sat May 31 2025 00:05:15
+end time:                Sat May 31 2025 00:05:57
+duration:                0:00:42
 
-Restore Status: Success
+restore status:          Success
+```
 
 
 
 
-## <a id="history"></a>Backup History Database
+## <a id="db"></a>Backup History Database
 `gpbackup` stores details of each backup operation in a SQLite database found in `$COORDINATOR_DATA_DIRECTORY/gpbackup_history.db`.  Details such as timestamps, command line options, incremental backup details and status are stored in this database.  `gpbackup_history.db` is not backed up my `gpbackup`, but can be copied to a secondary location if a backup copy is desired. 
 
 `gpbackup` uses the metadata in `gpbackup_history.db` to create the backup/restore plan for an incremental backup sets when you run `gpbackup` with the `--incremental` option and do not specify the `--from-timesamp` option to indicate the backup that you want to use as the base backup of the incremental backup set. For information about incremental backups, refer to [Incremental Backups with `gpbackup` and `gprestore`](#incrementa). 
 
 
 
-
-## <a id="filter"></a>Return Codes
-One of these codes is returned after `gpbackup` or `gprestore` completes.
-
-0 – Backup or restore completed with no problems  
-1 – Backup or restore completed with non-fatal errors. See log file for more information.  
-2 – Backup or restore failed with a fatal error. See log file for more information.     
 
 ## <a id="filter"></a>Filtering the Contents of a Backup or Restore
 `gpbackup` backs up all schemas and tables in the specified database, unless you exclude or include individual schema or table objects with schema level or table level filter options.
@@ -571,8 +565,14 @@ To have `gpbackup` or `gprestore` send out status email notifications, a `gp_ema
 If the `gp_email_contacts.yaml` file is not present, the gpbackup/gprestore log file will have a message similar to: 
 
 ```
-20250515:18:41:00 gprestore:gpadmin:whpg_cdw:033527-[INFO]:-Found neither /usr/local/greenplum-db-6.27.1/bin/gp_email_contacts.yaml nor /home/gpadmin/gp_email_contacts.yaml
-20250515:18:41:00 gprestore:gpadmin:whpg_cdw:033527-[INFO]:-Email containing gprestore report /data/master/gpseg-1/backups/20250514/20250514202713/gprestore_20250514202713_20250515184040_report will not be sent
+20250530:23:46:52 gpbackup:gpadmin:cdw:022290-[INFO]:-Data backup complete
+20250530:23:46:52 gpbackup:gpadmin:cdw:022290-[INFO]:-Skipped data backup of 24 external/foreign table(s).
+20250530:23:46:52 gpbackup:gpadmin:cdw:022290-[INFO]:-See /home/gpadmin/gpAdminLogs/gpbackup_20250530.log for a complete list of skipped tables.
+20250530:23:46:53 gpbackup:gpadmin:cdw:022290-[INFO]:-Found neither /usr/local/greenplum-db-6.27.1/bin/gp_email_contacts.yaml nor /home/gpadmin/gp_email_contacts.yaml
+20250530:23:46:53 gpbackup:gpadmin:cdw:022290-[INFO]:-Email containing gpbackup report /data/coordinator/gpseg-1/backups/20250530/20250530234643/gpbackup_20250530234643_report will not be sent
+20250530:23:46:53 gpbackup:gpadmin:cdw:022290-[INFO]:-Beginning cleanup
+20250530:23:46:53 gpbackup:gpadmin:cdw:022290-[INFO]:-Cleanup complete
+20250530:23:46:53 gpbackup:gpadmin:cdw:022290-[INFO]:-Backup completed successfully
 ```
 
 If the `gp_email_contacts.yaml` file is present, can configured properly, a similar message will be printed to the logs: 
@@ -586,11 +586,15 @@ The `$HOME/gp_email_contacts.yaml` file will override any configurations found i
 
 The email subject line includes the utility name, timestamp, status, and the name of the WarehousePG Coordinator. This is an example subject line for a `gpbackup` email.
 
-`gpbackup 20250514202713 on whpg_cdw completed: Success`
+```
+gpbackup 20250514202713 on whpg_cdw completed: Success
+```
 
 or
 
-`gprestore 20250515182209 on whpg_cdw completed: Failure`
+```
+gprestore 20250515182209 on whpg_cdw completed: Failure
+```
 
 The email contains summary information about the operation including options, duration, and number of objects backed up or restored. For information about the contents of a notification email, see Report Files.
 
@@ -605,132 +609,353 @@ This is the format of the gp_email_contacts.yaml YAML file for `gpbackup` email 
 ```
 contacts:
   gpbackup:
-  - address: <user>@<domain>
+  - address: name@domain
     status:
          success: [true | false]
          success_with_errors: [true | false]
          failure: [true | false]
-  1gprestore:
-  - address: <use>r@<domain>
+  gprestore:
+  - address: name@domain
     status:
          success: [true | false]
          success_with_errors: [true | false]
          failure: [true | false]
 ```
          
-Email YAML File Sections
-contacts : Required. The section that contains the `gpbackup` and `gprestore` sections. The YAML file can contain a `gpbackup` section, a `gprestore` section, or one of each.
+##### Email YAML File Sections
 
-`gpbackup` : Optional. Begins the `gpbackup` email section.
+**contacts:** Required. The section that contains the `gpbackup` and `gprestore` sections. The YAML file can contain a `gpbackup` section, a `gprestore` section, or one of each.
 
-address : Required. At least one email address must be specified. Multiple email address parameters can be specified. Each address requires a status section.
 
-user@domain is a single, valid email address.
+**gpbackup** : Optional. Begins the gpbackup email section.
 
-status : Required. Specify when the utility sends an email to the specified email address. The default is to not send email notification.
+**address** : Required. At least one email address must be specified. Multiple email address parameters can be specified. Each address requires a status section.  
+
+:::tip Note
+name@domainis a single, valid email address.
+:::
+
+**status** : Required. Specify when the utility sends an email to the specified email address. The default is to not send email notification.
 
 You specify sending email notifications based on the completion status of a backup or restore operation. At least one of these parameters must be specified and each parameter can appear at most once.
 
-success : Optional. Specify if an email is sent if the operation completes without errors. If the value is true, an email is sent if the operation completes without errors. If the value is false (the default), an email is not sent.
+**success** : Optional. Specify if an email is sent if the operation completes without errors. If the value is true, an email is sent if the operation completes without errors. If the value is false (the default), an email is not sent.
 
-success_with_errors : Optional. Specify if an email is sent if the operation completes with errors. If the value is true, an email is sent if the operation completes with errors. If the value is false (the default), an email is not sent.
+**success_with_errors** : Optional. Specify if an email is sent if the operation completes with errors. If the value is true, an email is sent if the operation completes with errors. If the value is false (the default), an email is not sent.
 
-failure : Optional. Specify if an email is sent if the operation fails. If the value is true, an email is sent if the operation fails. If the value is false (the default), an email is not sent.
+**failure** : Optional. Specify if an email is sent if the operation fails. If the value is true, an email is sent if the operation fails. If the value is false (the default), an email is not sent.
 
-`gprestore` : Optional. Begins the `gprestore` email section. This section contains the address and status parameters that are used to send an email notification after a `gprestore` operation. The syntax is the same as the `gpbackup` section.
+**gprestore** : Optional. Begins the gprestore email section. This section contains the address and status parameters that are used to send an email notification after a `gprestore` operation. The syntax is the same as the gpbackup section.
 
-Examples
-This example YAML file specifies sending email to email addresses depending on the success or failure of an operation. For a backup operation, an email is sent to a different address depending on the success or failure of the backup operation. For a restore operation, an email is sent to gpadmin@example.com only when the operation succeeds or completes with errors.
+#### Examples
+This example YAML file specifies sending email to email addresses depending on the success or failure of an operation. For a backup operation, an email is sent to a different address depending on the success or failure of the backup operation. For a restore operation, an email is sent to single address only when the operation succeeds or completes with errors.
 
 ```
 contacts:
   gpbackup:
-  - address: gpadmin@example.com
+  - address: dba_backup_success@whpg.io
     status:
       success:true
-  - address: my_dba@example.com
+  - address: dba_backup_failure@whpg.io
     status:
       success_with_errors: true
       failure: true
   gprestore:
-  - address: gpadmin@example.com
+  - address: dba_restore_status@example.com
     status:
       success: true
       success_with_errors: true
 ```
 
-Understanding Backup Files
-Warning: All `gpbackup` metadata files are created with read-only permissions. Never delete or modify the metadata files for a `gpbackup` backup set. Doing so will render the backup files non-functional.
+## <a id="files"></a>Backup Files Details
+
 
 A complete backup set for `gpbackup` includes multiple metadata files, supporting files, and CSV data files, each designated with the timestamp at which the backup was created.
 
-By default, metadata and supporting files are stored on the WarehousePG master host in the directory `$MASTER_DATA_DIRECTORY/backups/YYYYMMDD/YYYYMMDDHHMMSS/`. If you specify a custom backup directory, this same file path is created as a subdirectory of the backup directory. The following table describes the names and contents of the metadata and supporting files.
+By default, metadata and supporting files are stored on the WarehousePG master host in the directory `$COORDINATOR_DATA_DIRECTORY/backups/YYYYMMDD/YYYYMMDDHHMMSS/`. If you specify a custom backup directory, this same file path is created as a subdirectory of the backup directory. The following table describes the names and contents of the metadata and supporting files.
 
-Table 2. `gpbackup` Metadata Files (master)
-File name	Description
-`gpbackup_<YYYYMMDDHHMMSS>_metadata.sql`	Contains global and database-specific metadata:
-DDL for objects that are global to the WarehousePG cluster, and not owned by a specific database within the cluster.
-DDL for objects in the backed-up database (specified with --dbname) that must be created before to restoring the actual data, and DDL for objects that must be created after restoring the data.
-Global objects include:
-Tablespaces
-Databases
-Database-wide configuration parameter settings (GUCs)
-Resource group definitions
-Resource queue definitions
-Roles
-GRANT assignments of roles to databases
+::: tip Warning: 
+All `gpbackup` metadata files are created with read-only permissions. Never delete or modify the metadata files for a `gpbackup` backup set. Doing so may render the backup files non-functional.
+:::
+
+
+
+### Coordinator Metadata Files
+
+#### `gpbackup_<YYYYMMDDHHMMSS>_metadata.sql`	
+
+
+Contains global and database-specific metadata:
+- DDL for objects that are global to the WarehousePG cluster, and not owned by a specific database within the cluster.
+- DDL for objects in the backed-up database (specified with --dbname) that must be created before to restoring the actual data, and DDL for objects that must be created after restoring the data.
+
+
+**Global objects include:**
+- Tablespaces
+- Databases
+- Database-wide configuration parameter settings (GUCs)
+- Resource group definitions
+- Resource queue definitions
+- Roles
+- GRANT assignments of roles to databases
+
+:::tip Note
 Note: Global metadata is not restored by default. You must include the --with-globals option to the `gprestore` command to restore global metadata.
+:::
 
-Database-specific objects that must be created before to restoring the actual data include:
-Session-level configuration parameter settings (GUCs)
-Schemas
-Procedural language extensions
-Types
-Sequences
-Functions
-Tables
-Protocols
-Operators and operator classes
-Conversions
-Aggregates
-Casts
-Views
-Materialized Views Note: Materialized view data is not restored, only the definition.
-Constraints
-Database-specific objects that must be created after restoring the actual data include:
-Indexes
-Rules
-Triggers. (While WarehousePG does not support triggers, any trigger definitions that are present are backed up and restored.)
-`gpbackup_<YYYYMMDDHHMMSS>_toc.yaml`	Contains metadata for locating object DDL in the _predata.sql and _postdata.sql files. This file also contains the table names and OIDs used for locating the corresponding table data in CSV data files that are created on each segment. See Segment Data Files.
-`gpbackup_<YYYYMMDDHHMMSS>_report`	Contains information about the backup operation that is used to populate the email notice (if configured) that is sent after the backup completes. This file contains information such as:
-Command-line options that were provided
-Database that was backed up
-Database version
-Backup type
-See Configuring Email Notifications.
-`gpbackup_<YYYYMMDDHHMMSS>_config.yaml`	Contains metadata about the execution of the particular backup task, including:
-`gpbackup` version
-Database name
-WarehousePG version
-Additional option settings such as --no-compression, --compression-level, --metadata-only, --data-only, and --with-stats.
-gpbackup_history.yaml	Contains information about options that were used when creating a backup with `gpbackup`, and information about incremental backups.
-Stored on the WarehousePG master host in the WarehousePG master data directory.
+**Database-specific objects** 
+that must be created before to restoring the actual data include:
 
-This file is not backed up by `gpbackup`.
+- Session-level configuration parameter settings (GUCs)
+- Schemas
+- Procedural language extensions
+- Types
+- Sequences
+- Functions
+- Tables
+- Protocols
+- Operators and operator classes
+- Conversions
+- Aggregates
+- Casts
+- Views
+- Materialized Views (only view definition is backed up / restored, not data)
+- Constraints
+- Database-specific objects that must be created after restoring the actual data include:
+- Indexes
+- Rules
+- Triggers. (While WarehousePG does not support triggers, any trigger definitions that are present are backed up and restored.)
 
-For information about incremental backups, see Creating and Using Incremental Backups with `gpbackup` and `gprestore`.
+example:
+```
+CREATE TABLE uat.refund (
+        returned_date_sk integer,
+        returned_time_sk integer,
+        item_sk integer,
+        refunded_customer_sk integer,
+        refunded_cdemo_sk integer,
+        refunded_hdemo_sk integer,
+) DISTRIBUTED RANDOMLY;
 
-Segment Data Files
-By default, each segment creates one compressed CSV file for each table that is backed up on the segment. You can optionally specify the --single-data-file option to create a single data file on each segment. The files are stored in `<seg_dir>/backups/YYYYMMDD/YYYYMMDDHHMMSS/`.
+ALTER TABLE uat.refund OWNER TO gpadmin;
+
+CREATE INDEX item_sk_cr_fee_idx ON uat.refund USING btree (item_sk, fee);
+
+CREATE INDEX item_sk_idx ON uat.refund USING btree (item_sk);
+```
+
+
+####  `gpbackup_<YYYYMMDDHHMMSS>_toc.yaml`	
+
+Table of contents file, containing location information of the various object DDL in the `gpbackup_<YYYYMMDDHHMMSS>_metadata.sql` files 
+
+This file also contains the table names and OIDs used for locating the corresponding table data in CSV data files that are created on each segment. 
+
+example: 
+
+```
+- schema: tpcds
+  name: household_demographics
+  oid: 37231
+  attributestring: (hd_demo_sk,hd_income_band_sk,hd_buy_potential,hd_dep_count,hd_vehicle_count)
+  rowscopied: 7200
+  partitionroot: ""
+  isreplicated: false
+  distbyenum: false
+- schema: tpcds
+  name: income_band
+  oid: 37238
+  attributestring: (ib_income_band_sk,ib_lower_bound,ib_upper_bound)
+  rowscopied: 20
+  partitionroot: ""
+  isreplicated: false
+  distbyenum: false
+- schema: tpcds
+  name: inventory
+  oid: 37245
+  attributestring: (inv_date_sk,inv_item_sk,inv_warehouse_sk,inv_quantity_on_hand)
+  rowscopied: 11745000
+  partitionroot: ""
+  isreplicated: false
+  distbyenum: false
+  ```
+
+See [Segment Data Files](#segfiles)
+
+
+#### `gpbackup_<YYYYMMDDHHMMSS>_report`	
+
+Contains information about the backup operation that is used to populate the email notice (if configured) that is sent after the backup completes. This file contains information such as:
+- Command-line options that were provided
+- Database that was backed up
+- Database version
+- Backup type
+
+example: 
+
+```
+WarehousePG Backup Report
+
+timestamp key:         20250530232002
+gpdb version:          6.27.1 build commit:ab5a612bfdc355ad2d601860dfb70a47778c8dd7
+gpbackup version:      1.30.5
+
+database name:         whpg_tpcds
+command line:          gpbackup --dbname whpg_tpcds --no-compression --single-data-file --backup-dir /tmp/whpg_tpcds_backups
+compression:           None
+plugin executable:     None
+backup section:        All Sections
+object filtering:      None
+includes statistics:   No
+data file format:      Single Data File Per Segment
+incremental:           False
+
+start time:            Fri May 30 2025 23:20:02
+end time:              Fri May 30 2025 23:20:13
+duration:              0:00:11
+
+backup status:         Success
+
+database size:         1699 MB
+segment count:         3
+
+count of database objects in backup:
+aggregates                   0
+casts                        0
+collations                   0
+constraints                  0
+conversions                  0
+default privileges           0
+database gucs                1
+event triggers               0
+extensions                   0
+foreign data wrappers        0
+foreign servers              0
+functions                    0
+indexes                      2
+```
+See [Setting Up Email Alerts](#email)
+
+
+
+#### `gpbackup_<YYYYMMDDHHMMSS>_config.yaml`	
+
+Contains metadata about the execution of the particular backup task, including:
+- `gpbackup` version
+- Database name
+- WarehousePG version
+- Additional option settings such as `--no-compression`,` --compression-level`, `--metadata-only`, `--data-only`, and `--with-stats`.
+
+
+example: 
+```
+backupdir: /tmp/whpg_tpcds_backups
+backupversion: 1.30.5
+compressed: false
+compressiontype: gzip
+databasename: whpg_tpcds
+databaseversion: 6.27.1 build commit:ab5a612bfdc355ad2d601860dfb70a47778c8dd7
+segmentcount: 8
+dataonly: false
+datedeleted: ""
+excluderelations: []
+excludeschemafiltered: false
+excludeschemas: []
+excludetablefiltered: false
+includerelations: []
+includeschemafiltered: false
+includeschemas: []
+includetablefiltered: false
+incremental: false
+leafpartitiondata: false
+metadataonly: false
+plugin: ""
+pluginversion: ""
+restoreplan:
+- timestamp: "20250530232002"
+  tablefqns:
+  - tpcds.call_center
+  - tpcds.catalog_page
+  - tpcds.catalog_returns
+  - tpcds.catalog_sales
+  - tpcds.customer
+  - tpcds.customer_address
+  - tpcds.customer_demographics
+  ```
+
+### <a id="segfiles"></a>Segment Data Files
+
+By default, each segment creates one compressed CSV file for each table that is backed up on the segment. You can optionally specify the `--single-data-file` option to create a single data file on each segment. The files are stored in `<seg_dir>/backups/YYYYMMDD/YYYYMMDDHHMMSS/`.
 
 If you specify a custom backup directory, segment data files are copied to this same file path as a subdirectory of the backup directory. If you include the `--leaf-partition-data` option, `gpbackup` creates one data file for each leaf partition of a partitioned table, instead of just one table for file.
 
-Each data file uses the file name format `gpbackup_<content_id>_<YYYYMMDDHHMMSS>_<oid>.gz` where:
+By default, each table is backed up into a distinct file on the segment hosts: 
+The file uses a name format `gpbackup_<content_id>_<YYYYMMDDHHMMSS>_<oid>.gz` where:
 
 `<content_id>`is the content ID of the segment.
 `<YYYYMMDDHHMMSS>` is the timestamp of the `gpbackup` operation.
-`<oid>` is the object ID of the table. The metadata file `gpbackup_<YYYYMMDDHHMMSS>_toc.yaml` references this `<oid>` to locate the data for a specific table in a schema.
-You can optionally specify the gzip compression level (from 1-9) using the --compression-level option, or disable compression entirely with --no-compression. If you do not specify a compression level, `gpbackup` uses compression level 1 by default.
+`<oid>` is the object ID of the table. 
+
+
+**default multiple data file example**
+
+```
+-rw------- 1 gpadmin gpadmin      216 May 30 23:46 gpbackup_1_20250530234643_32812.zst
+-rw------- 1 gpadmin gpadmin   177641 May 30 23:46 gpbackup_1_20250530234643_32822.zst
+-rw------- 1 gpadmin gpadmin  3080557 May 30 23:46 gpbackup_1_20250530234643_32829.zst
+-rw------- 1 gpadmin gpadmin 32449514 May 30 23:46 gpbackup_1_20250530234643_36476.zst
+-rw------- 1 gpadmin gpadmin  1989827 May 30 23:46 gpbackup_1_20250530234643_37203.zst
+-rw------- 1 gpadmin gpadmin   475551 May 30 23:46 gpbackup_1_20250530234643_37210.zst
+-rw------- 1 gpadmin gpadmin  3002507 May 30 23:46 gpbackup_1_20250530234643_37217.zst
+-rw------- 1 gpadmin gpadmin   535332 May 30 23:46 gpbackup_1_20250530234643_37224.zst
+-rw------- 1 gpadmin gpadmin     8895 May 30 23:46 gpbackup_1_20250530234643_37231.zst
+-rw------- 1 gpadmin gpadmin       74 May 30 23:46 gpbackup_1_20250530234643_37238.zst
+-rw------- 1 gpadmin gpadmin 19518846 May 30 23:46 gpbackup_1_20250530234643_37245.zst
+-rw------- 1 gpadmin gpadmin   606613 May 30 23:46 gpbackup_1_20250530234643_37459.zst
+-rw------- 1 gpadmin gpadmin     4595 May 30 23:46 gpbackup_1_20250530234643_37466.zst
+-rw------- 1 gpadmin gpadmin      177 May 30 23:46 gpbackup_1_20250530234643_37473.zst
+-rw------- 1 gpadmin gpadmin      152 May 30 23:46 gpbackup_1_20250530234643_37480.zst
+-rw------- 1 gpadmin gpadmin      327 May 30 23:46 gpbackup_1_20250530234643_37487.zst
+-rw------- 1 gpadmin gpadmin  4710343 May 30 23:46 gpbackup_1_20250530234643_37494.zst
+````
+
+
+
+ **`--single-data-file`** example
+
+
+All table data for a particular segment is written to a single file:
+-  `gpbackup_<content_id>_<YYYYMMDDHHMMSS>`
+
+With a corresponding table of contents files: 
+- `gpbackup_<content_id>_<YYYYMMDDHHMMSS>_toc.yaml`
+
+```
+-rw-rw-r-- 1 gpadmin gpadmin 417025744 May 30 23:20 gpbackup_0_20250530232002
+-r--r--r-- 1 gpadmin gpadmin      2035 May 30 23:20 gpbackup_0_20250530232002_toc.yaml
+```
+
+
+
+The metadata file `gpbackup_<YYYYMMDDHHMMSS>_toc.yaml` references this `<oid>` to locate the data for a specific table in a schema.
+
+
+You can optionally specify the gzip compression level (from 1-9) using the `--compression-level` option, or disable compression entirely with `--no-compression`. If you do not specify a compression level, `gpbackup` uses compression level 1 by default.
+
+
+
+## <a id="codes"></a>Return Codes
+One of these codes is returned after `gpbackup` or `gprestore` completes.
+
+0 – Backup or restore completed with no problems  
+1 – Backup or restore completed with non-fatal errors. See log file for more information.  
+2 – Backup or restore failed with a fatal error. See log file for more information.     
+
+## <a id="versions"></a>Supported WHPG versions
+
+The WarehousePG provided `gpbackup` and `gprestore` utilities are compatible with WarehousePG versions 
+- 6.27.1 or later
+- 7.2.1-WHPG or later
 
 
 
@@ -759,3 +984,6 @@ Backing up a database with `gpbackup` while simultaneously running DDL commands 
 For tables that might be dropped during a backup, you can exclude the tables from a backup with a `gpbackup` table filtering option such as `--exclude-table` or --exclude-schema.
 
 A backup created with `gpbackup` can only be restored to a WarehousePG cluster with the same number of segment instances as the source cluster. If you run gpexpand to add segments to the cluster, backups you made before starting the expand cannot be restored after the expansion has completed.
+
+
+**Parent topic:** [WarehousePG Administrator Guide](/docs/7x/admin_guide/)

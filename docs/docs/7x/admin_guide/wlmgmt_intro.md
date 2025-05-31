@@ -113,5 +113,5 @@ gp_vmem_protect_limit = gp_vmem / maximum_acting_primary_segments
 
 You would set the `gp_vmem_protect_limit` server configuration parameter on the example system to 16384.
 
-**Parent topic:** [Managing Performance](performance.thml)
+**Parent topic:** [Managing Performance](performance.html)
 

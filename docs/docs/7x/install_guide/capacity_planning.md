@@ -46,7 +46,7 @@ Guidelines for temporary file space and user data space assume a typical analyti
 
 In the *WarehousePG Administrator Guide*, see these topics:
 
--   [Managing Performance](../admin_guide/performance.thml) for information about workload management
+-   [Managing Performance](../admin_guide/performance.html) for information about workload management
 -   [Creating and Managing Tablespaces](../admin_guide/ddl/ddl-tablespace.html) for information about moving the location of temporary and transaction files
 -   [Monitoring System State](../admin_guide/managing/monitor.html) for information about monitoring WarehousePG disk space usage
 
