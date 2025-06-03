@@ -1,5 +1,10 @@
 # Backing up WarehousePG with `gpbackup` and `gprestore`
 
+:::tip Associated Topics
+- [Incremental backups](/docs/7x/admin_guide/backup_restore/incremental.html)
+- [gpbackup syntax reference](/docs/7x/utility_guide/ref/gpbackup.html)
+- [gprestore syntax reference](/docs/7x/utility_guide/ref/gprestore.html) 
+:::
 
 
 
@@ -381,7 +386,7 @@ restore status:          Success
 ## <a id="db"></a>Backup History Database
 `gpbackup` stores details of each backup operation in a SQLite database found in `$COORDINATOR_DATA_DIRECTORY/gpbackup_history.db`.  Details such as timestamps, command line options, incremental backup details and status are stored in this database.  `gpbackup_history.db` is not backed up my `gpbackup`, but can be copied to a secondary location if a backup copy is desired. 
 
-`gpbackup` uses the metadata in `gpbackup_history.db` to create the backup/restore plan for an incremental backup sets when you run `gpbackup` with the `--incremental` option and do not specify the `--from-timesamp` option to indicate the backup that you want to use as the base backup of the incremental backup set. For information about incremental backups, refer to [Incremental Backups with `gpbackup` and `gprestore`](#incrementa). 
+`gpbackup` uses the metadata in `gpbackup_history.db` to create the backup/restore plan for an incremental backup sets when you run `gpbackup` with the `--incremental` option and do not specify the `--from-timesamp` option to indicate the backup that you want to use as the base backup of the incremental backup set. For information about incremental backups, refer to [Incremental Backups with `gpbackup` and `gprestore`](/docs/7x/admin_guide/backup_restore/incremental.html). 
 
 
 

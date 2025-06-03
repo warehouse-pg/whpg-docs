@@ -21,8 +21,6 @@ The segment host naming convention is sdwN where sdw is a prefix and N is an int
 
 > **Important** When data loss is not acceptable for a WarehousePG cluster, WarehousePG coordinator and segment mirroring is recommended. If mirroring is not enabled then WarehousePG stores only one copy of the data, so the underlying storage media provides the only guarantee for data availability and correctness in the event of a hardware failure.
 
-The WarehousePG on vSphere virtualized environment ensures the enforcement of anti-affinity rules required for WarehousePG mirroring solutions and fully supports mirrorless deployments. Other virtualized or containerized deployment environments are generally not supported for production use unless both WarehousePG coordinator and segment mirroring are enabled.
-
 > **Note** For information about upgrading WarehousePG from a previous version, see the *WarehousePG Release Notes* for the release that you are installing.
 
 > **Note** Automating the configuration steps described in this topic and [Installing WarehousePG](install_whpg.html) with a system provisioning tool, such as Ansible, Chef, or Puppet, can save time and ensure a reliable and repeatable WarehousePG installation.

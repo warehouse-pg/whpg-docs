@@ -2137,7 +2137,6 @@ Controls whether or not the SQL statement that causes an error condition will al
 
 Controls which message levels are written to the server log. Each level includes all the levels that follow it. The later the level, the fewer messages are sent to the log.
 
-If the WarehousePG PL/Container extension is installed. This parameter also controls the PL/Container log level. For information about the extension, see [PL/pgSQL Language](../../analytics/pl_container.html).
 
 |Value Range|Default|Set Classifications|
 |-----------|-------|-------------------|

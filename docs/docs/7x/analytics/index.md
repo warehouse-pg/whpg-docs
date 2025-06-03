@@ -26,7 +26,6 @@ The [Apache MADlib extension](madlib.html) allows WarehousePG users to run diffe
 
 WarehousePG supports a variety of procedural languages that you can use for programming database analytics. Refer to the linked documentation for installation and usage instructions.
 
--   [PL/Container](pl_container.html)
 -   [PL/Java](pl_java.html)
 -   [PL/Perl](pl_perl.html)
 -   [PL/pgSQL](pl_sql.html)

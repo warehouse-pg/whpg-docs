@@ -7,8 +7,6 @@ You can deploy WarehousePG without a single point of failure by mirroring compon
 
 > **Important** When data loss is not acceptable for a WarehousePG cluster, WarehousePG coordinator and segment mirroring is recommended. If mirroring is not enabled then WarehousePG stores only one copy of the data, so the underlying storage media provides the only guarantee for data availability and correctness in the event of a hardware failure.
 
-The WarehousePG on vSphere virtualized environment ensures the enforcement of anti-affinity rules required for WarehousePG mirroring solutions and fully supports mirrorless deployments. Other virtualized or containerized deployment environments are generally not supported for production use unless both WarehousePG coordinator and segment mirroring are enabled.
-
 ## <a id="segment_mirroring"></a>About Segment Mirroring
 
 When you deploy your WarehousePG cluster, you can configure *mirror* segment instances. Mirror segments allow database queries to fail over to a backup segment if the primary segment becomes unavailable. The mirror segment is kept current by a transaction log replication process, which synchronizes the data between the primary and mirror instances. Mirroring is strongly recommended for production systems and required for WarehousePG support.
