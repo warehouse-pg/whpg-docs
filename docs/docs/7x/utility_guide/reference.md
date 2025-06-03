@@ -49,8 +49,6 @@ WarehousePG provides the following utility programs. Superscripts identify those
 - [pgbouncer](ref/pgbouncer.html)
 - [pgbouncer.ini](ref/pgbouncer-ini.html)
 - [pgbouncer-admin](ref/pgbouncer-admin.html)
-- [plcontainer](ref/plcontainer.html)
-- [plcontainer Configuration File](ref/plcontainer-configuration.html)
 - [psql](ref/psql.html)<sup>1</sup>
 - [pxf](ref/pxf.html)
 - [pxf cluster](ref/ref-pxf-cluster.html)

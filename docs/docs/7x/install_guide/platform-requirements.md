@@ -143,11 +143,6 @@ This table lists the versions of the WarehousePG Extensions that are compatible 
 <td class="entry cell-norowborder" style="vertical-align:top;" headers="d78288e689 "> </td>
 </tr>
 <tr class="row">
-<td class="entry nocellnorowborder" style="vertical-align:top;" headers="d78288e683 "><a class="xref" href="../analytics/pl_container.html">PL/Container</a></td>
-<td class="entry nocellnorowborder" style="vertical-align:top;" headers="d78288e686 ">2.2.1</td>
-<td class="entry cell-norowborder" style="vertical-align:top;" headers="d78288e689 "> </td>
-</tr>
-<tr class="row">
 <td class="entry nocellnorowborder" style="vertical-align:top;" headers="d78288e683 ">PL/Container Image for R </td>
 <td class="entry nocellnorowborder" style="vertical-align:top;" headers="d78288e686 ">2.1.2</td>
 <td class="entry cell-norowborder" style="vertical-align:top;" headers="d78288e689 ">R 3.6.3</td>
@@ -179,13 +174,6 @@ These WarehousePG extensions are installed with WarehousePG
 -   Fuzzy String Match Extension
 -   PL/Python Extension
 -   pgcrypto Extension
-
-### <a id="topic_xpf_25b_hbb"></a>Data Connectors
-
--   WarehousePG Platform Extension Framework \(PXF\) - PXF provides access to Hadoop, object store, and SQL external data stores. Refer to [Accessing External Data with PXF](../admin_guide/external/pxf-overview.html) in the *WarehousePG Administrator Guide* for PXF configuration and usage information.
--   WarehousePG Connector for Apache Spark v1.6.2 - The WarehousePG Connector for Apache Spark supports high speed, parallel data transfer between WarehousePG and an Apache Spark cluster using Spark’s Scala API.
--   WarehousePG Connector for Apache NiFi v1.0.0 - The WarehousePG Connector for Apache NiFi enables you to set up a NiFi dataflow to load record-oriented data from any source into WarehousePG.
--   R2B X-LOG v5.x and v6.x - Real-time data replication solution that achieves high-speed database replication through the use of Redo Log Capturing method.
 
 
 

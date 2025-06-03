@@ -7,7 +7,6 @@ The available WarehousePG procedural languages are typically packaged as extensi
 
 The WarehousePG distribution supports the following procedural languages; refer to the linked language documentation for installation and usage instructions:
 
--   [PL/Container](pl_container.html)
 -   [PL/Java](pl_java.html)
 -   [PL/Perl](pl_perl.html)
 -   [PL/pgSQL](pl_sql.html)

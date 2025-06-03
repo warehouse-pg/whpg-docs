@@ -13,8 +13,6 @@ This topic describes how to unload data from WarehousePG using parallel unload \
 
 -   **[Unloading Data Using COPY](../../load/topics/g-unloading-data-using-copy.html)**  
 
--   **[Unloading File Data Using WarehousePG Streaming Server](../../load/topics/g-unloading-data-using-gpss.html)**
-
 
 **Parent topic:** [Loading and Unloading Data](../../load/topics/g-loading-and-unloading-data.html)
 

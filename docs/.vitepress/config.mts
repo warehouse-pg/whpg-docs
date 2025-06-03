@@ -50,7 +50,7 @@ export default defineConfig(
         link: "/docs/7x/" ,
         collapsed: false,
         items: [
-          { text: "Release Notes", link: "/docs/7x/" },
+          { text: "Release Notes", link: "/docs/7x/release_notes" },
           { text: "Install Guide", link: "/docs/7x/install_guide/" },
           { text: "Admin Guide", link: "/docs/7x/admin_guide/" },
           { text: "Utility Guide", link: "/docs/7x/utility_guide/reference.md" },         

@@ -360,7 +360,7 @@ If you restore from an incremental backup set, all the required files in the bac
 The following `gprestore` command specifies the timestamp `20250521040000` (Wednesday). The incremental backup with the timestamps `20250520030000` (Tuesday),  `20250519020000` (Monday) and the full backup `20250518010000` (Sunday) must be available to perform a restore.
 
 ```
-gprestore --timestamp 20250521040000 --redirect-db customer_incra --create-db
+$ gprestore --timestamp 20250521040000 --redirect-db customer_incra --create-db
 ```
 
 ## <a id="See Also "></a>See Also 
