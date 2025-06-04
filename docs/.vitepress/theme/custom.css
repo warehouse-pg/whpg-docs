@@ -62,24 +62,18 @@
   
   --vp-c-bg: #ffffff;
 
-
-
   /* side bar & search box background */
   --vp-c-bg-alt:  rgba(222, 222, 222 , 0.15);
 
   /* home page boxes, copy code icon, table header and alternating rows */
   --vp-c-bg-soft:  rgba(222, 222, 222, 0.25);
 
-
   /* code lines background color, and outlines for emojis on homepage */
   --vp-c-default-soft:  rgba(222, 222, 222, 0.55);
-
 
   --vp-c-default-1:rgba(218, 19, 132, 0.15);
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
-
-
 
   --vp-c-default-1:rgba(218, 19, 132, 0.15);
   --vp-c-default-2: var(--vp-c-gray-2);
@@ -93,9 +87,6 @@
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
 
-
-
-
   --vp-c-brand-1: #1868A0;
   --vp-c-brand-2: #A5A6A5;
   --vp-c-brand-3:  #545454;
@@ -103,7 +94,6 @@
 
   --vp-code-block-color: rgba(7, 8, 9, 0.95);
   --vp-code-block-bg:  rgba(165, 166, 165 , 0.20);
-
 
   --vp-c-warning-soft:  rgba(234, 179, 8, 0.20);
   --vp-c-danger-soft: rgba(244, 63, 94, 0.22);
@@ -196,9 +186,6 @@
 
 
 
-
-
-
 /**
  * Component: Button
  * -------------------------------------------------------------------------- */
@@ -249,16 +236,9 @@
 
 */
 
-
-
- --vp-home-hero-name-color: transparent;
-
-
-
+  --vp-home-hero-name-color: transparent;
   --vp-home-hero-image-filter: blur(44px);
 }
-
-
 
 @media (min-width: 640px) {
   :root {
@@ -280,4 +260,3 @@
 .DocSearch {
   --docsearch-primary-color: var(--vp-c-brand-1) !important;
 }
-
