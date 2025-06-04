@@ -62,18 +62,23 @@
   
   --vp-c-bg: #ffffff;
 
+
+
   /* side bar & search box background */
   --vp-c-bg-alt:  rgba(222, 222, 222 , 0.15);
 
-  /* drop down list background */
-  --vp-c-bg-alt:  rgba(222, 222, 222 , 0.15);
-
-  /* home page boxes, copy code icon */
-  --vp-c-bg-soft:  rgba(222, 222, 222 , 0.25);
+  /* home page boxes, copy code icon, table header and alternating rows */
+  --vp-c-bg-soft:  rgba(222, 222, 222, 0.25);
 
 
   /* code lines background color, and outlines for emojis on homepage */
-  --vp-c-default-soft:  rgba(222, 222, 222 , 0.55);
+  --vp-c-default-soft:  rgba(222, 222, 222, 0.55);
+
+
+  --vp-c-default-1:rgba(218, 19, 132, 0.15);
+  --vp-c-default-2: var(--vp-c-gray-2);
+  --vp-c-default-3: var(--vp-c-gray-3);
+
 
 
   --vp-c-default-1:rgba(218, 19, 132, 0.15);
@@ -88,17 +93,7 @@
   --vp-c-default-2: var(--vp-c-gray-2);
   --vp-c-default-3: var(--vp-c-gray-3);
 
-  --vp-c-text-1: #545454;
-  --vp-c-text-2: #1868A0;
-  --vp-c-text-3: #1868A0;
 
-  --vp-c-default-1:rgba(218, 19, 132, 0.15);
-  --vp-c-default-2: var(--vp-c-gray-2);
-  --vp-c-default-3: var(--vp-c-gray-3);
-
-  --vp-c-text-1: #545454;
-  --vp-c-text-2: #1868A0;
-  --vp-c-text-3: #1868A0;
 
 
   --vp-c-brand-1: #1868A0;
@@ -165,30 +160,42 @@
 
   
 .dark {
---vp-c-text-1: rgba(222, 222, 222 , 0.85);
+  --vp-c-text-1: rgba(255, 255, 255, 0.90);
+  --vp-c-text-2: rgba(222, 222, 222 , 0.95);
+  --vp-c-text-3:  rgba(222, 222, 222 , 0.95);
 
---vp-c-text-2: #1867a0;
---vp-c-text-3: #1868A0;
---vp-code-block-color:  rgba(165, 166, 165 , 0.75);
+  /** brand 1 = links and code snippet */
+  --vp-c-brand-1: rgba(255, 255, 255, 0.75);
+  --vp-c-brand-2: rgba(255, 255, 255, .25);
+  --vp-c-brand-3:  rgba(255, 255, 255, 0.15);
 
---vp-c-default-soft: rgba(165, 166, 165 , .18);
+  /** code lines background color, and outlines for emojis on homepage*/
 
+  --vp-c-default-soft:  rgba(255, 255, 255, 0.10);
 
+  --vp-code-block-color: rgba(255, 255, 255, 0.90);
+  --vp-code-block-bg:   rgba(255, 255, 255, 0.10);
 
---vp-code-block-color: rgba(7, 8, 9, 0.95);
---vp-code-block-bg:   rgba(222, 222, 222 , 0.75);
-
-
---vp-c-bg: #1b1b1f;
---vp-c-bg-alt: #161618;
---vp-c-bg-elv: #202127;
---vp-c-bg-soft: #202127;
-
+  --vp-c-bg: #1b1b1f;
+  --vp-c-bg-alt: #161618;
+  --vp-c-bg-elv: #202127;
+  --vp-c-bg-soft: #202127;
 
   --vp-c-border: rgba(222, 222, 222 , 0.85);
   --vp-c-divider: rgba(222, 222, 222 , 0.15);
   --vp-c-gutter: rgba(222, 222, 222 , 0.85);
-  }
+
+  --vp-custom-block-tip-border: rgba(24, 103, 160, 0.25);
+  --vp-custom-block-tip-text: rgba(222, 222, 222 , 0.95);
+  --vp-custom-block-tip-bg:  rgba(24, 103, 160, 0.25);
+  --vp-custom-block-tip-code-bg: rgba(255, 255, 255, 0.10);
+
+  --vp-c-warning-soft:  rgba(197, 192, 89, 0.756);
+  --vp-c-danger-soft: rgba(117, 22, 38, 0.935);
+}
+
+
+
 
 
 
