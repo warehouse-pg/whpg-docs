@@ -37,8 +37,8 @@ features:
     details: Powerful extensibility, allowing for unified querying across diverse external data sources 
     icon: 🪜
 
-  - title: Geospatial Analtyics
-    details: Supports spatial data types, indexing, functions and Geosptical querying
+  - title: Geospatial Analytics
+    details: Supports spatial data types, indexing, functions and Geospatial querying
     icon: 🚀
 
   - title: PolyMorphic Storage
