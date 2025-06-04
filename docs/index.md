@@ -74,5 +74,5 @@ git clone https://github.com/warehouse-pg/warehouse-pg.git
 
 
 <sup><i>Disclaimer: 
-Greenplum® is a registered trademark of Broadcom Inc. EDB and EDB Postgres AI are not affiliated with, endorsed by, or sponsored by Broadcom Inc. Any references to Greenplum are for comparative, educational, and interoperability purposes only.
+Greenplum® is a registered trademark of Broadcom Inc. WarehousePG is not affiliated with, endorsed by, or sponsored by Broadcom Inc. Any references to Greenplum are for comparative, educational, and interoperability purposes only.
 </i></sup>
