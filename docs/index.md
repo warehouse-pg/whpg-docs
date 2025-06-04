@@ -63,13 +63,9 @@ features:
 ## Clone WarehousePG today
 
 
-
-
-
 ```
 git clone https://github.com/warehouse-pg/warehouse-pg.git
 ```
-
 
 
 ![WarehousePG with MADlib](/fulllogo_transparent_small_buffer.png "WarehousePG, an open source alternative to Greenplum® "){width=250}
