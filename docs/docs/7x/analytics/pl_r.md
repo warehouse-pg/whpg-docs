@@ -138,9 +138,9 @@ The following `CREATE TABLE` command uses the `r_norm()` function to populate th
 
 ```
 CREATE TABLE test_norm_var
-  AS SELECT id, r_norm(10,0,1) as x
-  FROM (SELECT generate_series(1,30:: bigint) AS ID) foo
-  DISTRIBUTED BY (id);
+        AS SELECT id, r_norm(10,0,1) as x
+        FROM (SELECT generate_series(1,30:: bigint) AS ID) foo
+        DISTRIBUTED BY (id);
 ```
 
 #### <a id="topic11"></a>Example 2: Returning PL/R data.frames in Tabular Form
