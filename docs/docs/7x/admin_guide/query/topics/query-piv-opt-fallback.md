@@ -41,10 +41,10 @@ CREATE TABLE sales (trans_id int, date date,
     amount decimal(9,2), region text)
    DISTRIBUTED BY (trans_id)
    PARTITION BY RANGE (date)
-      (START (date '2016­01­01') 
-       INCLUSIVE END (date '2017­01­01') 
+      (START (date '20160101')
+       INCLUSIVE END (date '20170101')
        EXCLUSIVE EVERY (INTERVAL '1 month'),
-   DEFAULT PARTITION outlying_dates );
+   DEFAULT PARTITION outlying_dates );
 ```
 
 This query against the table is supported by GPORCA and does not generate errors in the log file:
