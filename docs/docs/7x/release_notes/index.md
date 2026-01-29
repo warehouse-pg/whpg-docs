@@ -42,7 +42,7 @@ WarehousePG 7.3.1 includes the following new features, enhancements, bug fixes, 
 - Removed the `guc_no_show_all` flag for the `archive_timeout` setting. 
 - Fixed an invalid escape sequence in the `recoveryinfo.py` script.
 - Resolved an intermittent failure case in the `pg_waldump` tests.
-- Corrected the return type of `gddctxgetmaxvid(`) to use `distributedtransactionid`.)
+- Corrected the return type of `gddctxgetmaxvid()` to use `DistributedTransactionId(uint64)`.
 - Removed the deprecated `pkg_resources` dependency from the Python environment.
 
 
@@ -149,7 +149,6 @@ WarehousePG 7.2.1 includes the following new features, enhancements, bug fixes, 
 - Included a fix for [CVE-2023-5869](https://github.com/advisories/GHSA-9625-p7pg-3cxg).
 - Included a fix for [CVE-2024-7348](https://github.com/advisories/GHSA-3c6g-7v4g-5xcm).
 - Included a fix for [CVE-2024-10979](https://github.com/advisories/GHSA-2r9h-x757-8j9q).
-- Included a fix for [CVE-2023-5869](https://github.com/advisories/GHSA-9625-p7pg-3cxg).
 - Included a fix for [CVE-2024-10976](https://github.com/advisories/GHSA-9cv8-8vgq-fg45).
 - Included a fix for [CVE-2022-41862](https://github.com/advisories/GHSA-fr68-cm8v-7vv6).
 - Included a fix for [CVE-2023-39417](https://github.com/advisories/GHSA-jx3x-j983-74m3).
