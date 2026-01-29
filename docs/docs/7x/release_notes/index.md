@@ -18,37 +18,32 @@ WarehousePG 7.3.1 includes the following new features, enhancements, bug fixes, 
 
 ### Enhancements
 
-- **Parallel snapshots:** Allowed parallel workers to retrieve combo command ids and distributed snapshots directly from dynamic shared memory.
-- **Data integrity:** Fixed a critical issue with shared snapshots in DSM to prevent potential data loss.
-- **Concurrency optimization:** Replaced `spinlocks` with `lwlocks` at the instrumentation header to reduce CPU contention.
-- **Process signaling:** Implemented pipes instead of sockets to terminate `poll()` blocking immediately for faster process signaling.
-- **Custom scan support:** Added native support for executing `customscans` within the engine.
-- **FDW flexibility:** Made the `rescanforeignscan` callback optional for foreign data wrappers to improve FDW compatibility.
-- **Deadlock coordination:** Configured GDD to push transaction ids into waitgxids so the query dispatcher can wait on them effectively.
-- **Type safety:** Corrected the return type of `gddctxgetmaxvid(`) to use `distributedtransactionid`.)
-- **Coordinator tables:** Implemented distributed coordinator only tables for specialized data workloads.
-- **Version identification:** Appended the WarehousePG name to the end of the version string for better identification.
+- Allowed parallel workers to retrieve combo command ids and distributed snapshots directly from Dynamic Shared Memory (DSM).
+- Implemented pipes instead of sockets to terminate `poll()` blocking immediately for faster process signaling.
+- Added native support for executing `customscans` within the engine.
+- Made the `rescanforeignscan` callback optional for foreign data wrappers to improve FDW compatibility.
+- Configured GDD to push transaction ids into waitgxids so the query dispatcher can wait on them effectively.
+- Appended the WarehousePG name to the end of the version string for better identification.
+- Replaced `spinlocks` with `lwlocks` at the instrumentation header to reduce CPU contention.
+- Implemented pipes instead of sockets to terminate `poll()` blocking immediately for faster process signaling.
+- Updated the build instructions for RHEL8 and RHEL9 systems.
+- Updated regression test outputs to reflect recent FDW rescan changes.
+
 
 ### Bug fixes
 
+- Fixed a critical issue with shared snapshots in DSM to prevent potential data loss.
 - Resolved a crash in ORCA when processing percentile aggregates.
 - Fixed a crash and incorrect results when using distinct qualified aggregates (DQA) with a filter clause.
 - Initialized missing `plannedstmt` fields in ORCA to prevent execution errors. 
 - Corrected the handling of required but unused columns during DXL translation.
 - Fixed an incorrect join type assignment when pulling up expression sub-links.
-- Adjusted the severity level to warning in f`tsprobe.c` under specific conditions to reduce log noise.
+- Adjusted the severity level to warning in `ftsprobe.c` under specific conditions to reduce log noise.
 - Removed the `guc_no_show_all` flag for the `archive_timeout` setting. 
-- Corrected a typo in the source code where `transaction` was misspelled.
 - Fixed an invalid escape sequence in the `recoveryinfo.py` script.
 - Resolved an intermittent failure case in the `pg_waldump` tests.
-
-
-### Improvements
-
-- Updated the build instructions for RHEL8 and RHEL9 systems.
+- Corrected the return type of `gddctxgetmaxvid(`) to use `distributedtransactionid`.)
 - Removed the deprecated `pkg_resources` dependency from the Python environment.
-- Added file and directory existence checks before parsing DXL in `gporca_test`.
-- Updated regression test outputs to reflect recent FDW rescan changes.
 
 
 ## WarehousePG 7.3.0
@@ -59,13 +54,17 @@ WarehousePG 7.3.0 includes the following new features, enhancements, bug fixes, 
 
 ### Enhancements
 
-- **Parallel indexing:** Enabled parallel workers context for index builds to improve creation speed. 
-- **JIT compilation:** Merged Postgres 12 `llvm` changes and implemented explicit `llvmcontextref` for inlining. 
-- **WAL resilience:** Configured the system to insert WAL records uncompressed if compression fails, ensuring write continuity.
-- **Diagnostic accuracy:** Updated the copy utility to print the specific `errno` for program pipes. 
-- **Resource optimization:** Prevented the sorting of in-memory tuples when a process has already been interrupted.
-- **Extension support:** Enabled builds for the `intarray` and `unaccent` extensions. 
-- **Concurrency:** Updated `waitgxids` to use `int64` for better handling of transaction ids. 
+- Enabled parallel workers context for index builds to improve creation speed. 
+- Merged Postgres 12 `llvm` changes and implemented explicit `llvmcontextref` for JIT inlining. 
+- Configured the system to insert WAL records uncompressed if compression fails, ensuring write continuity.
+- Updated the copy utility to print the specific `errno` for program pipes. 
+- Prevented the sorting of in-memory tuples when a process has already been interrupted.
+- Enabled builds for the `intarray` and `unaccent` extensions. 
+- Updated `waitgxids` to use `int64` for better handling of transaction ids. 
+- Added support for PL/Python2 testing.
+- Improved the reliability of error detection in status_check cases. 
+- Updated the PR template and `.editorconfig` settings. 
+
 
 ### Bug fixes
 
@@ -81,18 +80,12 @@ WarehousePG 7.3.0 includes the following new features, enhancements, bug fixes, 
 - Stopped reporting `compresstype`, `zlib`, or `zstd` errors when not in the validation phase.
 - Fixed inconsistent test cases for `REINDEX TABLE`, `REINDEX INDEX`, and `EXPLAIN FORMAT`.
 - Fixed the `gpcheckcat` `mix_distribution_policy` test.
+- Replaced the deprecated Python pipes module. 
+- Removed `gsutil` from developer requirements. 
 
 ### Security
 
 - Included a fix for [CVE-2025-1094](https://github.com/advisories/GHSA-mhw9-x46c-v6q4).  
-
-### Improvements
-
-- Added support for PL/Python2 testing.
-- Replaced the deprecated Python pipes module. 
-- Improved the reliability of error detection in status_check cases. 
-- Removed `gsutil` from developer requirements. 
-- Updated the PR template and `.editorconfig` settings. 
 
 ## WarehousePG 7.2.2
 
@@ -102,12 +95,14 @@ WarehousePG 7.2.2 includes the following new features, enhancements, bug fixes, 
 
 ### Enhancements
 
-- **Parallel index builds:** Enabled parallel workers context for index builds to reduce execution time.
-- **Resource optimization:** Optimized resource usage by skipping the sorting of in-memory tuples when a process is interrupted.
-- **Write-ahead log resilience**: Configured WAL records to be inserted uncompressed as a fallback if compression fails.
-- **Diagnostic improvements:** Enhanced diagnostic output by printing the specific `errno` for copy program pipes.
-- **Concurrency & data types:** Improved concurrency handling by using `int64` for `waitgxids`.
-- **Extension support:** Enabled the `unaccent` extension by default.
+- Enabled parallel workers context for index builds to reduce execution time.
+- Optimized resource usage by skipping the sorting of in-memory tuples when a process is interrupted.
+- Configured WAL records to be inserted uncompressed as a fallback if compression fails.
+- Enhanced diagnostic output by printing the specific `errno` for copy program pipes.
+- Improved concurrency handling by using `int64` for `waitgxids`.
+- Enabled the `unaccent` extension by default.
+- Added PL/Python2 testing support for WarehousePG 7 environments.
+- Improved the reliability of error detection for `status_check` operations.
 
 ### Bug fixes
 
@@ -125,16 +120,13 @@ WarehousePG 7.2.2 includes the following new features, enhancements, bug fixes, 
 - Resolved intermittent test failures in `REINDEX TABLE` and `REINDEX INDEX` cases.
 - Fixed an intermittent failure in the `explain_format` test case.
 - Fixed the `gpcheckcat` `mix_distribution_policy` test.
+- Removed the `gsutil` dependency from development requirements.
+
 
 ### Security
 
 - Included a fix for [CVE-2025-1094](https://github.com/advisories/GHSA-mhw9-x46c-v6q4).
 
-### Improvements
-
-- Added PL/Python2 testing support for WarehousePG 7 environments.
-- Improved the reliability of error detection for `status_check` operations.
-- Removed the `gsutil` dependency from development requirements.
 
 ## WarehousePG 7.2.1
 
@@ -143,7 +135,7 @@ WarehousePG 7.2.1 includes the following new features, enhancements, bug fixes, 
 
 ### Enhancements
 
-- **Memory management:** Fixed a `work_mem` reference in hash aggregates to ensure planned memory is fully utilized and reduce unnecessary disk spills.
+- Fixed a `work_mem` reference in hash aggregates to ensure planned memory is fully utilized and reduce unnecessary disk spills.
 
 ### Bug fixes
 
