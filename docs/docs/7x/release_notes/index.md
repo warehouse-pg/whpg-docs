@@ -4,17 +4,17 @@ The WarehousePG documentation describes the latest version of WarehousePG 7.
 
 | Version                     | Release date |
 |-----------------------------|--------------|
-| [7.3.1](#warehousepg-731)    | 30 January 2026  |
-| [7.3.0](#warehousepg-730)    | 14 November 2025  |
-| [7.2.2](#warehousepg-722)    | 17 November 2025 | 
-| [7.2.2](#warehousepg-721)    | 15 May 2025 | 
+| [7.3.1-WHPG](#warehousepg-731)    | 30 January 2026  |
+| [7.3.0-WHPG](#warehousepg-730)    | 14 November 2025  |
+| [7.2.2-WHPG](#warehousepg-722)    | 17 November 2025 | 
+| [7.2.2-WHPG](#warehousepg-721)    | 15 May 2025 | 
 
 
-## WarehousePG 7.3.1
+## WarehousePG 7.3.1-WHPG
 
 Released: 30 January 2026
 
-WarehousePG 7.3.1 includes the following new features, enhancements, bug fixes, and other changes:
+WarehousePG 7.3.1-WHPG includes the following new features, enhancements, bug fixes, and other changes:
 
 ### Enhancements
 
@@ -46,11 +46,11 @@ WarehousePG 7.3.1 includes the following new features, enhancements, bug fixes, 
 - Removed the deprecated `pkg_resources` dependency from the Python environment.
 
 
-## WarehousePG 7.3.0
+## WarehousePG 7.3.0-WHPG
 
 Released: 14 November 2025
 
-WarehousePG 7.3.0 includes the following new features, enhancements, bug fixes, and other changes:
+WarehousePG 7.3.0-WHPG includes the following new features, enhancements, bug fixes, and other changes:
 
 ### Enhancements
 
@@ -87,11 +87,11 @@ WarehousePG 7.3.0 includes the following new features, enhancements, bug fixes, 
 
 - Included a fix for [CVE-2025-1094](https://github.com/advisories/GHSA-mhw9-x46c-v6q4).  
 
-## WarehousePG 7.2.2
+## WarehousePG 7.2.2-WHPG
 
 Released: 17 November 2025
 
-WarehousePG 7.2.2 includes the following new features, enhancements, bug fixes, and other changes:
+WarehousePG 7.2.2-WHPG includes the following new features, enhancements, bug fixes, and other changes:
 
 ### Enhancements
 
@@ -128,10 +128,10 @@ WarehousePG 7.2.2 includes the following new features, enhancements, bug fixes, 
 - Included a fix for [CVE-2025-1094](https://github.com/advisories/GHSA-mhw9-x46c-v6q4).
 
 
-## WarehousePG 7.2.1
+## WarehousePG 7.2.1-WHPG
 
 Released: 15 May 2025
-WarehousePG 7.2.1 includes the following new features, enhancements, bug fixes, and other changes:
+WarehousePG 7.2.1-WHPG includes the following new features, enhancements, bug fixes, and other changes:
 
 ### Enhancements
 
@@ -157,5 +157,6 @@ WarehousePG 7.2.1 includes the following new features, enhancements, bug fixes, 
 - Included a fix for [CVE-2024-10977](https://github.com/advisories/GHSA-62q4-hc79-94qj).
 - Included a fix for [CVE-2023-5870](https://github.com/advisories/GHSA-5gp7-j4r7-g66f).
 - Included a fix for [CVE-2023-5868](https://github.com/advisories/GHSA-3f9w-7983-qcmq).
+- Included a fix for [CVE-2024-0985](https://github.com/advisories/GHSA-4828-5p9m-g4ff).
 
 
