@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarehousePG Memory Calculator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-light: #f0f9ff;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-heading: #0f172a;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .calc-wrapper {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .header-section {
+            padding: 32px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #fff;
+        }
+
+        h1 { margin: 0; font-size: 1.6rem; color: var(--text-heading); font-weight: 700; }
+        
+        .summary-box { 
+            margin-top: 20px; 
+            padding: 16px;
+            background-color: var(--primary-light);
+            border-radius: 6px;
+            border: 1px solid #bae6fd;
+        }
+        
+        .summary-box h2 { font-size: 1rem; color: #0369a1; margin: 0 0 8px 0; }
+        .summary-box p { margin: 0; font-size: 0.9rem; line-height: 1.5; color: #0c4a6e; }
+
+        .form-content { padding: 32px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+        .control-group { display: flex; flex-direction: column; }
+        label { font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-heading); }
+        
+        input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background-color: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        .results-panel {
+            background-color: #ffffff;
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .results-panel h5 { 
+            margin: 0 0 20px 0; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            color: var(--text-muted); 
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .result-item { margin-bottom: 24px; text-align: left; }
+        .result-item:last-child { margin-bottom: 0; }
+
+        .result-label { font-weight: 700; font-size: 1rem; display: block; color: var(--text-heading); }
+        .result-meta { font-size: 0.8rem; color: #64748b; margin-bottom: 8px; }
+
+        .tabs-nav { display: flex; background: #fff; border-bottom: 1px solid var(--border-color); }
+        .tab-btn { padding: 12px 24px; border: none; background: none; font-size: 0.9rem; font-weight: 600; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--primary-light); }
+
+        .tab-content { display: none; padding: 32px; }
+        .tab-content.active { display: block; }
+
+        .code-display {
+            background: #f1f5f9;
+            color: #0369a1;
+            padding: 14px;
+            border-radius: 6px;
+            font-family: "SFMono-Regular", Consolas, monospace;
+            font-size: 0.9rem;
+            display: block;
+            border: 1px solid #cbd5e1;
+            font-weight: 500;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-size: 0.95rem; width: 100%; margin-bottom: 30px; }
+        .btn-primary:hover { background-color: #0284c7; }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            padding: 30px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="calc-wrapper">
+    <header class="header-section">
+        <h1>WarehousePG Memory Calculator</h1>
+        <div class="summary-box">
+            <p>This tool calculates recommended memory limits for WarehousePG environments. It is designed to maximize database memory utilization while maintaining a conservative buffer for Linux kernel operations, ensuring system stability even under high concurrency or heavy workloads.</p>
+        </div>
+    </header>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab(event, 'calc-tab')">Memory Calculator</button>
+        <button class="tab-btn" onclick="openTab(event, 'adv-tab')">RQ Memory Calculator - version 6.X</button>
+    </nav>
+
+    <div id="calc-tab" class="tab-content active">
+        <div class="form-content" id="WHPG-ParamForm">
+            <div class="grid">
+                <div class="control-group">
+                    <label for="SystemMemory">System Memory (GB)</label>
+                    <input id="SystemMemory" type="number" value="64">
+                </div>
+                <div class="control-group">
+                    <label for="SwapMemory">Swap Memory (GB)</label>
+                    <input id="SwapMemory" type="number" value="32">
+                </div>
+                <div class="control-group">
+                    <label for="OtherMemory">Other Memory (MB)</label>
+                    <input id="OtherMemory" type="number" value="0">
+                </div>
+                <div class="control-group">
+                    <label for="SegsPerNode">Primary Segments</label>
+                    <input id="SegsPerNode" type="number" value="8">
+                </div>
+            </div>
+
+            <div class="results-panel">
+                <h5>Recommended Max Settings</h5>
+                <div class="result-item">
+                    <span class="result-label">gp_vmem_protect_limit</span><br/>
+                    <div class="result-meta">Value in MB | configured in postgresql.conf, controlled by the gpconfig command</div><br/>
+                    <code class="code-display" id="vmem-protect-value">gpconfig -c gp_vmem_protect_limit -v 11072</code>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">vm.overcommit_ratio</span><br/>
+                    <div class="result-meta">Percentage | configured in /etc/sysctl.conf</div><br/>
+                    <code class="code-display" id="vm-overcommit-ratio-value">vm.overcommit_ratio = 95</code>
+                </div>
+            </div>
+
+            <div id="notes">
+                <label>Notes</label>
+                <p>
+                    Choose the value for Primary Segments Per Node based on your mirroring strategy.
+                    See <a href="https://warehouse-pg.io/docs/7x/admin_guide/ha/overview-of-segment-mirroring.html#overview-of-segment-mirroring" target="_blank">WarehousePG Documentation</a> for more information on group and spread mirroring strategies.<br><br>
+                    <ul>
+                        <li>Given a configuration of 6 primaries and 6 mirrors, we should set Primary Segments Per Node to 6+6=12 when using group mirroring.</li>
+                        <li>Using the same configuration example for spread mirroring, the value would be 6+2=8.</li>
+                    </ul>
+
+                    For more information on memory, please refer to the <a href="https://warehouse-pg.io/docs/7x/admin_guide/wlmgmt_intro.html#warehousepg-memory-overview" target="_blank">WarehousePG Memory Overview</a>.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="adv-tab" class="tab-content">
+        <div class="form-content" id="WHPG-RQForm">
+            <div class="grid">
+                <div class="control-group">
+                    <label>Segment Host Physical Memory (GB)</label>
+                    <input id="adv_ram" type="number" value="512">
+                </div>
+                <div class="control-group">
+                    <label>Segment Host Swap Space (GB)</label>
+                    <input id="adv_swap" type="number" value="32">
+                </div>
+                <div class="control-group">
+                    <label>Primary Segments per Host</label>
+                    <input id="adv_segs" type="number" value="10">
+                </div>
+                <div class="control-group">
+                    <label>Avg Concurrent Queries</label>
+                    <input id="adv_queries" type="number" value="50">
+                </div>
+            </div>
+
+            <div id="advanced-results">
+                <div class="results-panel">
+                    <h5>Recommended Configuration</h5>
+
+                    <div class="result-item">
+                        <span class="result-label">vm.overcommit_ratio</span><br/>
+                        <div class="result-meta">Kernel parameter sets % RAM used for app processes</div><br/>
+                        <code class="code-display" id="res_ratio">--</code>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">gp_vmem_protect_limit</span><br/>
+                        <div class="result-meta">Memory limit (MB) for an active segment instance</div><br/>
+                        <code class="code-display" id="res_protect">--</code>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">statement_mem</span><br/>
+                        <div class="result-meta">Standard query memory allocation</div><br/>
+                        <code class="code-display" id="res_stmt">--</code>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-label">max_statement_mem</span><br/>
+                        <div class="result-meta">Maximum allowable query memory allocation</div><br/>
+                        <code class="code-display" id="res_max_stmt">--</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer" style="margin-top: 30px; text-align: center; font-size: 0.8rem; color: #94a3b8;">
+        <p>WarehousePG Memory Calculator</p>
+    </footer>
+</div>
+
+
+
+<script>
+    function openTab(evt, tabName) {
+        $(".tab-content").removeClass("active");
+        $(".tab-btn").removeClass("active");
+        $("#" + tabName).addClass("active");
+        $(evt.currentTarget).addClass("active");
+    }
+
+   function TriggerEvents() {
+        jQuery( "#WHPG-ParamForm" ).change(function() {
+                 CalcVmem();
+        });
+
+        jQuery( "#WHPG-RQForm" ).change(function() {
+                 calculateAdvanced();
+        });
+    }
+function CalcVmem() {
+        var WHPGOtherMem = (parseInt(jQuery('#OtherMemory').val())) ? parseInt(jQuery('#OtherMemory').val()) : 0;
+
+        var RAM =  (parseInt(jQuery('#SystemMemory').val())) ? parseInt(jQuery('#SystemMemory').val()) * 1024 : 0;
+        var SWAP = (parseInt(jQuery('#SwapMemory').val())) ? parseInt(jQuery('#SwapMemory').val()) * 1024 : 0;
+        var NumOfSegs = (parseInt(jQuery('#SegsPerNode').val())) ? parseInt(jQuery('#SegsPerNode').val()) : 0;
+        var USERMEM = (RAM + SWAP - ((7.5 * 1024) + (RAM * 0.05)));
+
+        var MemSegPercent = .5882;
+        if (RAM > 262144){
+           MemSegPercent = .85;
+        }
+        var KERNELMEM = (0.026 * (USERMEM / 1.7));
+        var OvercommitRatio = Math.floor((((RAM - KERNELMEM) / RAM) * 100) / 5) * 5;
+
+        var SuggestedVmem = Math
+           .round( Math.ceil(((((USERMEM - WHPGOtherMem) * MemSegPercent) / NumOfSegs))));
+
+
+        if ( SuggestedVmem <=0 || OvercommitRatio <=0 ) {
+            jQuery('#vmem-protect-value').html("Invalid Parameters");
+            jQuery('#vm-overcommit-ratio-value').html("Invalid Parameters");
+        } else {
+            jQuery('#vmem-protect-value').html("gpconfig -c gp_vmem_protect_limit -v " + SuggestedVmem );
+            jQuery('#vm-overcommit-ratio-value').html("vm.overcommit_ratio = " + OvercommitRatio );
+        }
+
+        jQuery('#vmem-protect-value').animate({opacity: ".05"}, "slow");
+        jQuery('#vm-overcommit-ratio-value').animate({opacity: ".05"}, "slow");
+
+        jQuery('#vmem-protect-value').animate({opacity: "1"}, "slow");
+        jQuery('#vm-overcommit-ratio-value').animate({opacity: "1"}, "slow");
+    }
+
+    function calculateAdvanced() {
+        const RAM = parseFloat($('#adv_ram').val()) || 0;
+        const SWAP = parseFloat($('#adv_swap').val()) || 0;
+        const SEGS = parseFloat($('#adv_segs').val()) || 1;
+        const QUERIES = parseFloat($('#adv_queries').val()) || 1;
+
+        let rq;
+        if (RAM < 256) {
+            rq = ((SWAP + RAM) - (7.5 + (0.05 * RAM))) / 1.7;
+        } else {
+            rq = ((SWAP + RAM) - (7.5 + (0.05 * RAM))) / 1.17;
+        }
+
+        const ratio = Math.floor(((RAM - (0.026 * rq)) / RAM) * 100);
+        const protectLimit = Math.floor((rq * 1024) / SEGS);
+        const stmtMem = Math.floor((protectLimit * 0.9) / QUERIES);
+        const maxStmtMem = Math.floor((RAM * 1024) / QUERIES);
+
+        $('#res_ratio').html(`vm.overcommit_ratio = ${ratio}`);
+        $('#res_protect').html(`gpconfig -c gp_vmem_protect_limit -v ${protectLimit}`);
+        $('#res_stmt').html(`statement_mem = ${stmtMem}MB`);
+        $('#res_max_stmt').html(`max_statement_mem = ${maxStmtMem}MB`);
+
+        jQuery('#res_ratio').animate({opacity: ".05"}, "slow");
+        jQuery('#res_protect').animate({opacity: ".05"}, "slow");
+        jQuery('#res_stmt').animate({opacity: ".05"}, "slow");
+        jQuery('#res_max_stmt').animate({opacity: ".05"}, "slow");
+
+        jQuery('#res_ratio').animate({opacity: "1"}, "slow");
+        jQuery('#res_protect').animate({opacity: "1"}, "slow");
+        jQuery('#res_stmt').animate({opacity: "1"}, "slow");
+        jQuery('#res_max_stmt').animate({opacity: "1"}, "slow");
+    }
+
+    CalcVmem();
+    calculateAdvanced();
+    TriggerEvents();
+</script>
+
+</body>
+</html>
