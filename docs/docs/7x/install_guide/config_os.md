@@ -366,13 +366,13 @@ The XFS options can also be set in the `/etc/fstab` file. This example entry fro
 
     A typical Linux disk I/O scheduler supports multiple access policies. The optimal policy selection depends on the underlying storage infrastructure. The recommended scheduler policy settings for WarehousePG clusters for specific OSs and storage device types follow:
 
-| Storage Device Type | OS | Recommended Scheduler Policy |
-| :--- | :--- | :--- |
-| Non-Volatile Memory Express (NVMe) | RHEL 7<br />RHEL 8<br />RHEL 9<br />Ubuntu | `none` |
-| Solid-State Drives (SSD) | RHEL 7 | `noop` |
-| Solid-State Drives (SSD) | RHEL 8<br />RHEL 9<br />Ubuntu | `none` |
-| Other | RHEL 7 | `deadline` |
-| Other | RHEL 8<br />RHEL 9<br />Ubuntu | `mq-deadline` |
+    | Storage Device Type | OS | Recommended Scheduler Policy |
+    | :--- | :--- | :--- |
+    | Non-Volatile Memory Express (NVMe) | RHEL 7<br />RHEL 8<br />RHEL 9<br />Ubuntu | `none` |
+    | Solid-State Drives (SSD) | RHEL 7 | `noop` |
+    | Solid-State Drives (SSD) | RHEL 8<br />RHEL 9<br />Ubuntu | `none` |
+    | Other | RHEL 7 | `deadline` |
+    | Other | RHEL 8<br />RHEL 9<br />Ubuntu | `mq-deadline` |
 
     To specify a scheduler until the next system reboot, run the following:
 
