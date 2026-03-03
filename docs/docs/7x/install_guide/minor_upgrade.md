@@ -8,7 +8,7 @@ An upgrade involves stopping the WHPG cluster, updating the software binaries ac
 In this guide:
 
 - `7.origin` refers to your current version.
-- `7.target `refers to the version you are upgrading to.
+- `7.target` refers to the version you are upgrading to.
 
 ## Process overview
 
@@ -78,15 +78,15 @@ Establish the baseline for the current environment.
 
 1. **Check installed packages:** Inventory WHPG packages on the coordinator and segments.
 
-- For RHEL 8, RHEL 9: `sudo rpm -qa | grep whpg`
+    - For RHEL 8, RHEL 9: `sudo rpm -qa | grep whpg`
 
-- For RHEL 7: `sudo yum list installed | grep whpg`
+    - For RHEL 7: `sudo yum list installed | grep whpg`
 
 1. **Check component versions:** Verify versions of any additionally installed components, such as PXF, or PgBouncer. For example:
 
-- Check PXF version: `pxf --version`
+    - Check PXF version: `pxf --version`
 
-- Check pgBouncer version: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHOW VERSION;`.
+    - Check pgBouncer version: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHOW VERSION;`.
 
 1. **Perform a smoke test:** Query a PXF external table to ensure pre-upgrade connectivity is functional. For example:
 
@@ -100,9 +100,9 @@ Perform a final cleanup of the running database instance.
 
 1. **Stop exernal services:** Shut down the PXF service on all nodes and stop the PgBouncer connection pooler.
 
-- Stop PXF: `pxf cluster stop`
+    - Stop PXF: `pxf cluster stop`
 
-- Stop pgBouncer: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHUTDOWN;`.
+    - Stop pgBouncer: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHUTDOWN;`.
     
 1. **Terminate sessions and check queries:** Ensure no active user queries remain. Forcefully terminate any remaining client backends.
 
@@ -125,7 +125,7 @@ Perform a final cleanup of the running database instance.
 
 Perform the following steps as the `gpadmin` user.
 
-1. Back up old WHPG binaries on all hosts:
+1. On the coordinator, back up old WHPG binaries:
 
     ```bash
     sudo cp -R /usr/local/greenplum-db-7.origin-WHPG /usr/local/greenplum-db-7.origin-WHPG_save
@@ -149,7 +149,7 @@ Perform the following steps as the `gpadmin` user.
     sdw3
     ```
 
-- On the coordinator, create a directory for the binaries on all hosts and transfer the new package:
+1. From the coordinator, create a directory for the binaries on all hosts and transfer the new package:
 
     ```bash
     gpssh -f hostfile_without_coord -e "mkdir -p /tmp/binary"
@@ -158,41 +158,41 @@ Perform the following steps as the `gpadmin` user.
 
 1. Install WHPG `7.target` on the coordinator and re-own directories:
 
-- For RHEL 8, RHEL 9:
+    - For RHEL 8, RHEL 9:
 
-    ```bash 
-    sudo rpm -U <warehouse-pg-7.target.rpm> -v
-    sudo chown -R gpadmin. /usr/local/greenplum-db
-    sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG
-    ```
+        ```bash 
+        sudo rpm -U <warehouse-pg-7.target.rpm> -v
+        sudo chown -R gpadmin. /usr/local/greenplum-db
+        sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG
+        ```
 
-- For RHEL 7: 
+    - For RHEL 7: 
 
-    ```bash 
-    sudo yum install -y <warehouse-pg-7.target.rpm>
-    sudo chown -R gpadmin. /usr/local/greenplum-db
-    sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG
-    ```
+        ```bash 
+        sudo yum install -y <warehouse-pg-7.target.rpm>
+        sudo chown -R gpadmin. /usr/local/greenplum-db
+        sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG
+        ```
 
 1. **Install WHPG `7.target` on segments:** From the coordinator, run:
 
-- For RHEL 8, RHEL 9:
+    - For RHEL 8, RHEL 9:
 
-    ```bash 
-    source /home/gpadmin/.bashrc
-    gpssh -f hostfile_without_coord -e "sudo rpm -U <warehouse-pg-7.target.rpm> -v"    
-    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db" 
-    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG"    
-    ```
+        ```bash 
+        source /home/gpadmin/.bashrc
+        gpssh -f hostfile_without_coord -e "sudo rpm -U <warehouse-pg-7.target.rpm> -v"    
+        gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db" 
+        gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG"    
+        ```
 
-- For RHEL 7: 
+    - For RHEL 7: 
 
-    ```bash 
-    source /home/gpadmin/.bashrc
-    gpssh -f hostfile_without_coord -e "sudo yum install -y <warehouse-pg-7.target.rpm>"    
-    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db" 
-    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG"    
-    ```
+        ```bash 
+        source /home/gpadmin/.bashrc
+        gpssh -f hostfile_without_coord -e "sudo yum install -y <warehouse-pg-7.target.rpm>"    
+        gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db" 
+        gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG"    
+        ```
 
 1. **Verify symbolic links:** On the coordinator, ensure `/usr/local/greenplum-db` points to the new target directory across the cluster and that `gpadmin` is the owner of the installation directories:
 
@@ -223,7 +223,7 @@ Start the WHPG cluster on the target version. After the cluster is back online, 
 
     ```bash
     psql -d postgres -c "select version();"
-    psql -d postgres -c "select distinct  version() from gp_dist_random('pg_class') where relname = 'pg_class';"
+    psql -d postgres -c "select distinct  version() from gp_dist_random('gp_id');"
     ```
 
 ## Restoring automation and connectivity
