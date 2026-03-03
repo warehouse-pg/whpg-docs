@@ -93,7 +93,7 @@ npm install
 To run the developemnt server with hot-reload, simply:
 
 ```bash
-npm docs:dev
+npm run docs:dev
 ```
 
 Then you can access the development site at the URL printed in your terminal,
