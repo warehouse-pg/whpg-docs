@@ -1,0 +1,261 @@
+# Performing a minor upgrade
+---
+
+Perform a minor version upgrade to a newer WarehousePG (WHPG) 7.x release. Because minor versions are binary-compatible, this process replaces the software binaries without requiring a full data migration.
+
+An upgrade involves stopping the WHPG cluster, updating the software binaries across all nodes, and restarting the services.
+
+In this guide:
+
+- `7.origin` refers to your current version.
+- `7.target `refers to the version you are upgrading to.
+
+## Process overview
+
+The following high-level steps summarize the upgrade lifecycle:
+
+1. [Prepare for maintenance:](#preparing-for-maintenance) Isolate the cluster and secure a full backup.
+1. [Clear automation:](#clearing-automation-and-system-handover) Disable scheduled tasks and coordinate infrastructure snapshots.
+1. [Validate baseline:](#validating-software-and-connections) Verify current software versions and run smoke tests.
+1. [Quiesce the database:](#quiescing-the-database) Stop peripheral services and the WHPG cluster.
+1. [Replace binaries:](#replacing-binaries-and-restarting-whpg) Install the new software package across all cluster nodes.
+1. [Restore services:](#restoring-services-and-finalizing-the-upgrade) Restart the cluster and verify health.
+1. [Re-establish connectivity:](#restoring-automation-and-connectivity) Restore automation, connection pooling, and federation.
+1. [Hand back:](#handing-back-the-system) Resume normal business operations and monitoring.
+
+## Preparing for maintenance
+
+These steps isolate the cluster from external traffic and automated scripts before the system handover.
+
+1. **Stop all monitoring applications:** Shut down all monitoring agents to prevent false alerts during the maintenance window.
+
+1. **Stop scheduled tasks:** Disable external schedulers that trigger jobs against the database.
+
+1. **Stop applications:** Notify users and shut down application servers, web services, and BI tools. Ensure no new connections are being initiated.
+
+1. **Perform a backup of all databases:** Execute a full backup. This is your final safety point before modifying the environment.
+
+    ```bash
+    gpbackup --all-databases --leaf-partition-data
+    ```
+
+## Clearing automation and system handover
+
+Once data is secure and traffic has ceased, prepare the operating system environment.
+
+1. **Hand over the for infrastructure maintenance:** Coordinate with your Infrastructure or Platform team to perform any required pre-upgrade safety measures. This may include creating environment snapshots, initiating virtual machine checkpoints, or performing hardware-level health checks to ensure the underlying platform is stable.
+
+1. **Save and remove crontab entries:** Perform these steps as the `root` user to prevent maintenance scripts from firing during the binary swap.
+
+    - Back up your `gpadmin` tasks from both the coordinator and standby nodes:
+
+        ```bash
+        crontab -l -u gpadmin > /home/gpadmin/crontab_backup_$(date +%F) 
+        ```
+
+    - Check for other user crontabs: 
+
+        ```bash
+        crontab -u <username> -l
+        for user in $(cut -f1 -d: /etc/passwd); do echo $user; crontab -u $user -l; done >crontab_all 2>crontab_all_no_cron
+        ```
+
+    - Remove current entries:
+
+        ```bash
+        crontab -r
+        ```
+
+    - Verify the list is empty (should return `no crontab for gpadmin`):
+
+        ```bash
+        crontab -l
+        ```
+
+## Validating software and connections
+
+Establish the baseline for the current environment.
+
+1. **Check installed packages:** Inventory WHPG packages on the coordinator and segments.
+
+- For RHEL 8, RHEL 9: `sudo rpm -qa | grep whpg`
+
+- For RHEL 7: `sudo yum list installed | grep whpg`
+
+1. **Check component versions:** Verify versions of any additionally installed components, such as PXF, or PgBouncer. For example:
+
+- Check PXF version: `pxf --version`
+
+- Check pgBouncer version: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHOW VERSION;`.
+
+1. **Perform a smoke test:** Query a PXF external table to ensure pre-upgrade connectivity is functional. For example:
+
+    ```bash
+    psql -x demo -c 'SELECT * FROM public.jsonb_events LIMIT 2;'
+    ```
+
+## Quiescing the database
+
+Perform a final cleanup of the running database instance.
+
+1. **Stop exernal services:** Shut down the PXF service on all nodes and stop the PgBouncer connection pooler.
+
+- Stop PXF: `pxf cluster stop`
+
+- Stop pgBouncer: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHUTDOWN;`.
+    
+1. **Terminate sessions and check queries:** Ensure no active user queries remain. Forcefully terminate any remaining client backends.
+
+    ```bash
+    # View active queries
+    psql -d postgres -c "SELECT * FROM pg_stat_activity where backend_type = 'client backend' and state <> 'idle';"
+    # Terminate a specific PID
+    psql -d postgres -c 'SELECT pg_cancel_backend(<procpid>);'
+    ```
+
+1. **Verify segment health:** Run `gpstate -m`. All segments must be in `Synchronized` status. If not, run `gprecoverseg -a` and wait for completion.
+
+1. **Stop the WHPG cluster:**
+
+    ```bash
+    gpstop -a -M fast
+    ```
+
+## Replacing binaries and restarting WHPG
+
+Perform the following steps as the `gpadmin` user.
+
+1. Back up old WHPG binaries on all hosts:
+
+    ```bash
+    sudo cp -R /usr/local/greenplum-db-7.origin-WHPG /usr/local/greenplum-db-7.origin-WHPG_save
+    sudo chown -R gpadmin /usr/local/greenplum-db-7.origin-WHPG_save
+    ```
+
+1.  Download your `7.target` package. See [Downloading the WarehousePG Server Software](install_whpg#installing-warehousepg-1) for details on how to download the packages. From your jump host, copy the new package to the coordinator:
+
+    ```bash
+    scp <warehouse-pg-7.target.rpm> gpadmin@coordinator_host:/tmp
+    ```
+
+    Where `<warehouse-pg-7.target.rpm>` is the package of the WarehousePG version to install.
+ 
+1. On the coordinator, create a file `hostfile_without_coord` that lists all hosts in the cluster except the coordinator. For example:
+
+    ```ini
+    scdw
+    sdw1
+    sdw2
+    sdw3
+    ```
+
+- On the coordinator, create a directory for the binaries on all hosts and transfer the new package:
+
+    ```bash
+    gpssh -f hostfile_without_coord -e "mkdir -p /tmp/binary"
+    gpsync -f hostfile_without_coord <warehouse-pg-7.target.rpm> =:/tmp/binary
+    ```
+
+1. Install WHPG `7.target` on the coordinator and re-own directories:
+
+- For RHEL 8, RHEL 9:
+
+    ```bash 
+    sudo rpm -U <warehouse-pg-7.target.rpm> -v
+    sudo chown -R gpadmin. /usr/local/greenplum-db
+    sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG
+    ```
+
+- For RHEL 7: 
+
+    ```bash 
+    sudo yum install -y <warehouse-pg-7.target.rpm>
+    sudo chown -R gpadmin. /usr/local/greenplum-db
+    sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG
+    ```
+
+1. **Install WHPG `7.target` on segments:** From the coordinator, run:
+
+- For RHEL 8, RHEL 9:
+
+    ```bash 
+    source /home/gpadmin/.bashrc
+    gpssh -f hostfile_without_coord -e "sudo rpm -U <warehouse-pg-7.target.rpm> -v"    
+    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db" 
+    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG"    
+    ```
+
+- For RHEL 7: 
+
+    ```bash 
+    source /home/gpadmin/.bashrc
+    gpssh -f hostfile_without_coord -e "sudo yum install -y <warehouse-pg-7.target.rpm>"    
+    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db" 
+    gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG"    
+    ```
+
+1. **Verify symbolic links:** On the coordinator, ensure `/usr/local/greenplum-db` points to the new target directory across the cluster and that `gpadmin` is the owner of the installation directories:
+
+    ```bash
+    ll /usr/local/'| grep 'greenplum-db ->' | sort
+    gpssh -f hostfile_without_coord  -e "ll /usr/local/'| grep 'greenplum-db ->' | sort"
+    ```
+
+## Restoring services and finalizing the upgrade
+
+Start the WHPG cluster on the target version. After the cluster is back online, restart the extension services and restore the operational environment.
+
+1. **Update environment:** Ensure `/home/gpadmin/.bashrc` on coordinator and standby points to the new path, then reload: 
+
+    ```bash
+    source /home/gpadmin/.bashrc
+    ```
+
+1. Start WHPG:
+
+    ```bash
+    gpstart -a
+    ```
+
+1. **Perform system health check:** Run `gpstate -f` and `gpstate -m` to ensure all segments are up and mirrors are synchronized.
+
+1. **Verify version:**
+
+    ```bash
+    psql -d postgres -c "select version();"
+    psql -d postgres -c "select distinct  version() from gp_dist_random('pg_class') where relname = 'pg_class';"
+    ```
+
+## Restoring automation and connectivity
+
+Once the core database services are back online, re-establish the secondary layers to return the cluster to a full operational state.
+
+1. **Restore crontabs:** Reload the saved files for `gpadmin` on coordinator and standby hosts. For example:
+
+    ```bash
+    crontab -u gpadmin /home/gpadmin/crontab_backup_YYYY-MM-DD
+    ```
+
+1. **Start PXF** and re-run the smoke test query:
+
+    ```bash
+    pxf cluster start
+    psql -x demo -c 'SELECT * FROM public.jsonb_events LIMIT 2;'
+    ```
+
+1. **Start PgBouncer:** Restart the connection pooler and verify client connections.
+
+    ```bash
+    pgbouncer -d /data/gpdata/pgbouncer/pgbouncer.ini
+    psql -p 6543 -U pgbouncer -d pgbouncer -c "SHOW CLIENTS;"
+    ```
+
+
+## Handing back the system
+
+With the upgrade verified and the infrastructure services restored, the final phase involves transitioning the environment back to the end-users and resuming normal business operations.
+
+1. **Applications:** Re-enable application traffic and BI tools.
+1. **Schedules:** Re-enable external schedulers.
+1. **Monitoring:** Resume all monitoring agents.
+1. **Handover:** Formally notify the Infrastructure or Platform teams that the cluster is stable on version `7.target`.
