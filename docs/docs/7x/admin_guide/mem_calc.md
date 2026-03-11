@@ -56,7 +56,8 @@ maxStmt: "max_statement_mem = " + mst + "MB"
 <button @click="activeTab = 'adv'" :class="{ active: activeTab === 'adv' }" class="tab-btn">RQ Memory Calculator (6.X)</button>
 </div>
 
-<div v-if="activeTab === 'calc'" class="tab-content active">
+<Transition name="fade" mode="out-in">
+<div v-if="activeTab === 'calc'" :key="'calc'" class="tab-content">
 <div class="grid">
 <div class="control-group"><label>System Memory (GB)</label><input v-model.number="sysMem" type="number"></div>
 <div class="control-group"><label>Swap Memory (GB)</label><input v-model.number="swapMem" type="number"></div>
@@ -82,7 +83,7 @@ maxStmt: "max_statement_mem = " + mst + "MB"
 </div>
 </div>
 
-<div v-if="activeTab === 'adv'" class="tab-content active">
+<div v-else-if="activeTab === 'adv'" :key="'adv'" class="tab-content">
 <div class="grid">
 <div class="control-group"><label>Segment Host Physical Memory (GB)</label><input v-model.number="advRam" type="number"></div>
 <div class="control-group"><label>Segment Host Swap Space (GB)</label><input v-model.number="advSwap" type="number"></div>
@@ -121,6 +122,7 @@ maxStmt: "max_statement_mem = " + mst + "MB"
 </div>
 </div>
 </div>
+</Transition>
 </div>
 </ClientOnly>
 
@@ -135,13 +137,27 @@ maxStmt: "max_statement_mem = " + mst + "MB"
 .control-group input { width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid var(--vp-c-divider); background: var(--vp-c-bg); color: var(--vp-c-text-1); }
 .results-panel { padding: 1.5rem; border: 1px solid var(--vp-c-brand-soft); border-radius: 8px; background: var(--vp-c-bg-soft); }
 .results-panel h5 { margin-top: 0; color: var(--vp-c-brand); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 1rem; }
-.code-display { display: block; padding: 1rem; background: #1e1e1e; color: #9cdcfe; border-radius: 4px; font-family: var(--vp-font-family-mono); font-size: 0.85rem; margin-top: 0.5rem; }
+.code-display { display: block; padding: 1rem; background: #1e1e1e; color: #9cdcfe; border-radius: 4px; font-family: var(--vp-font-family-mono); font-size: 0.85rem; margin-top: 0.5rem; transition: all 0.4s ease; }
 .result-label { font-weight: 600; color: var(--vp-c-text-1); }
 .result-meta { font-size: 0.8rem; opacity: 0.7; }
 .result-item { margin-bottom: 1.5rem; }
+
+/* Slow Motion Transitions */
+.fade-enter-active,
+.fade-leave-active {
+transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-enter-from {
+opacity: 0;
+transform: translateY(10px);
+}
+.fade-leave-to {
+opacity: 0;
+transform: translateY(-10px);
+}
+
 @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
 </style>
-
 
 Choose the value for **Primary Segments Per Node** based on your mirroring strategy.
 
