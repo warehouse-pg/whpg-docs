@@ -27,13 +27,13 @@ The following high-level steps summarize the upgrade lifecycle:
 
 These steps isolate the cluster from external traffic and automated scripts before the system handover.
 
-1. **Stop all monitoring applications:** Shut down all monitoring agents to prevent false alerts during the maintenance window.
+1. Stop all monitoring applications: Shut down all monitoring agents to prevent false alerts during the maintenance window.
 
-1. **Stop scheduled tasks:** Disable external schedulers that trigger jobs against the database.
+1. Stop scheduled tasks: Disable external schedulers that trigger jobs against the database.
 
-1. **Stop applications:** Notify users and shut down application servers, web services, and BI tools. Ensure no new connections are being initiated.
+1. Stop applications: Notify users and shut down application servers, web services, and BI tools. Ensure no new connections are being initiated.
 
-1. **Perform a backup of all databases:** Execute a full backup. This is your final safety point before modifying the environment.
+1. Perform a backup of all databases: Execute a full backup. This is your final safety point before modifying the environment.
 
     ```bash
     gpbackup --all-databases --leaf-partition-data
@@ -43,9 +43,9 @@ These steps isolate the cluster from external traffic and automated scripts befo
 
 Once data is secure and traffic has ceased, prepare the operating system environment.
 
-1. **Hand over the for infrastructure maintenance:** Coordinate with your Infrastructure or Platform team to perform any required pre-upgrade safety measures. This may include creating environment snapshots, initiating virtual machine checkpoints, or performing hardware-level health checks to ensure the underlying platform is stable.
+1. Hand over the for infrastructure maintenance: Coordinate with your Infrastructure or Platform team to perform any required pre-upgrade safety measures. This may include creating environment snapshots, initiating virtual machine checkpoints, or performing hardware-level health checks to ensure the underlying platform is stable.
 
-1. **Save and remove crontab entries:** Perform these steps as the `root` user to prevent maintenance scripts from firing during the binary swap.
+1. Save and remove crontab entries: Perform these steps as the `root` user to prevent maintenance scripts from firing during the binary swap.
 
     - Back up your `gpadmin` tasks from both the coordinator and standby nodes:
 
@@ -72,23 +72,23 @@ Once data is secure and traffic has ceased, prepare the operating system environ
         crontab -l
         ```
 
-## Validating software and connections
+## Establishing a pre-upgrade baseline
 
-Establish the baseline for the current environment.
+Before beginning the update, capture the current state of your environment. This baseline serves as a reference point to ensure that all software versions, configurations, and connectivity are restored correctly once the update is complete.
 
-1. **Check installed packages:** Inventory WHPG packages on the coordinator and segments.
+1. Inventory installed packages: Document the exact versions of the WHPG packages currently running on the coordinator and segments.
 
     - For RHEL 8, RHEL 9: `sudo rpm -qa | grep whpg`
 
     - For RHEL 7: `sudo yum list installed | grep whpg`
 
-1. **Check component versions:** Verify versions of any additionally installed components, such as PXF, or PgBouncer. For example:
+1. Record component versions: Document the versions of any additionally installed components, such as PXF, or PgBouncer. For example:
 
     - Check PXF version: `pxf --version`
 
-    - Check pgBouncer version: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHOW VERSION;`.
+    - Check pgBouncer version: Connect to the admin console with `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHOW VERSION;`.
 
-1. **Perform a smoke test:** Query a PXF external table to ensure pre-upgrade connectivity is functional. For example:
+1. Perform a PXF smoke test: Ensure pre-upgrade connectivity is functional to confirm any connectivity issues found after the upgrade were not pre-existing. For example:
 
     ```bash
     psql -x demo -c 'SELECT * FROM public.jsonb_events LIMIT 2;'
@@ -98,13 +98,13 @@ Establish the baseline for the current environment.
 
 Perform a final cleanup of the running database instance.
 
-1. **Stop exernal services:** Shut down the PXF service on all nodes and stop the PgBouncer connection pooler.
+1. Stop exernal services: Shut down the PXF service on all nodes and stop the PgBouncer connection pooler.
 
     - Stop PXF: `pxf cluster stop`
 
-    - Stop pgBouncer: Connect to the admin console: `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHUTDOWN;`.
+    - Stop pgBouncer: Connect to the admin console with `psql -p 6543 -U pgbouncer -d pgbouncer` and run `SHUTDOWN;`.
     
-1. **Terminate sessions and check queries:** Ensure no active user queries remain. Forcefully terminate any remaining client backends.
+1. Terminate sessions and check queries: Ensure no active user queries remain. Forcefully terminate any remaining client backends.
 
     ```bash
     # View active queries
@@ -113,9 +113,9 @@ Perform a final cleanup of the running database instance.
     psql -d postgres -c 'SELECT pg_cancel_backend(<procpid>);'
     ```
 
-1. **Verify segment health:** Run `gpstate -m`. All segments must be in `Synchronized` status. If not, run `gprecoverseg -a` and wait for completion.
+1. Verify segment health: Run `gpstate -m`. All segments must be in `Synchronized` status. If not, run `gprecoverseg -a` and wait for completion.
 
-1. **Stop the WHPG cluster:**
+1. Stop the WHPG cluster:
 
     ```bash
     gpstop -a -M fast
@@ -174,7 +174,7 @@ Perform the following steps as the `gpadmin` user.
         sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG
         ```
 
-1. **Install WHPG `7.target` on segments:** From the coordinator, run:
+1. Install WHPG `7.target` on segments: From the coordinator, run:
 
     - For RHEL 8, RHEL 9:
 
@@ -194,7 +194,7 @@ Perform the following steps as the `gpadmin` user.
         gpssh -f hostfile_without_coord -e "sudo chown -R gpadmin. /usr/local/greenplum-db-7.target-WHPG"    
         ```
 
-1. **Verify symbolic links:** On the coordinator, ensure `/usr/local/greenplum-db` points to the new target directory across the cluster and that `gpadmin` is the owner of the installation directories:
+1. Verify symbolic links: On the coordinator, ensure `/usr/local/greenplum-db` points to the new target directory across the cluster and that `gpadmin` is the owner of the installation directories:
 
     ```bash
     ll /usr/local/'| grep 'greenplum-db ->' | sort
@@ -205,7 +205,7 @@ Perform the following steps as the `gpadmin` user.
 
 Start the WHPG cluster on the target version. After the cluster is back online, restart the extension services and restore the operational environment.
 
-1. **Update environment:** Ensure `/home/gpadmin/.bashrc` on coordinator and standby points to the new path, then reload: 
+1. Update environment: Ensure `/home/gpadmin/.bashrc` on coordinator and standby points to the new path, then reload: 
 
     ```bash
     source /home/gpadmin/.bashrc
@@ -217,9 +217,9 @@ Start the WHPG cluster on the target version. After the cluster is back online, 
     gpstart -a
     ```
 
-1. **Perform system health check:** Run `gpstate -f` and `gpstate -m` to ensure all segments are up and mirrors are synchronized.
+1. Perform system health check: Run `gpstate -f` and `gpstate -m` to ensure all segments are up and mirrors are synchronized.
 
-1. **Verify version:**
+1. Verify the installed version:
 
     ```bash
     psql -d postgres -c "select version();"
@@ -230,20 +230,20 @@ Start the WHPG cluster on the target version. After the cluster is back online, 
 
 Once the core database services are back online, re-establish the secondary layers to return the cluster to a full operational state.
 
-1. **Restore crontabs:** Reload the saved files for `gpadmin` on coordinator and standby hosts. For example:
+1. Restore crontabs: Reload the saved files for `gpadmin` on coordinator and standby hosts. For example:
 
     ```bash
     crontab -u gpadmin /home/gpadmin/crontab_backup_YYYY-MM-DD
     ```
 
-1. **Start PXF** and re-run the smoke test query:
+1. Start PXF and re-run the smoke test query:
 
     ```bash
     pxf cluster start
     psql -x demo -c 'SELECT * FROM public.jsonb_events LIMIT 2;'
     ```
 
-1. **Start PgBouncer:** Restart the connection pooler and verify client connections.
+1. Start PgBouncer: Restart the connection pooler and verify client connections.
 
     ```bash
     pgbouncer -d /data/gpdata/pgbouncer/pgbouncer.ini
@@ -255,7 +255,7 @@ Once the core database services are back online, re-establish the secondary laye
 
 With the upgrade verified and the infrastructure services restored, the final phase involves transitioning the environment back to the end-users and resuming normal business operations.
 
-1. **Applications:** Re-enable application traffic and BI tools.
-1. **Schedules:** Re-enable external schedulers.
-1. **Monitoring:** Resume all monitoring agents.
-1. **Handover:** Formally notify the Infrastructure or Platform teams that the cluster is stable on version `7.target`.
+1. Applications: Re-enable application traffic and BI tools.
+1. Schedules: Re-enable external schedulers.
+1. Monitoring: Resume all monitoring agents.
+1. Handover: Formally notify the Infrastructure or Platform teams that the cluster is stable on version `7.target`.
