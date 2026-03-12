@@ -7,6 +7,11 @@ A WarehousePG segment host runs multiple PostgreSQL instances, all sharing the h
 
 For best query throughput, the memory configuration should be managed carefully. There are memory configuration options at every level in WarehousePG, from operating system parameters, to managing resources with resource queues and resource groups, to setting the amount of memory allocated to an individual query.
 
+
+**Memory calculator tool**
+
+For an automated way to determine the required values based on your specific hardware, use the [WarehousePG memory calculator](mem_calc.md). Input your system's RAM, swap, and segment count to get the optimized `gp_vmem_protect_limit` and `vm.overcommit_ratio` values.
+
 ## <a id="seghost"></a>Segment Host Memory Overview
 
 On a WarehousePG segment host, the available host memory is shared among all the processes running on the computer, including the operating system, WarehousePG segment instances, and other application processes. Administrators must determine what WarehousePG and non-WarehousePG processes share the hosts' memory and configure the system to use the memory efficiently. It is equally important to monitor memory usage regularly to detect any changes in the way host memory is consumed by WarehousePG or other processes.
