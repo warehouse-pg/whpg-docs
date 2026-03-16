@@ -1,8 +1,4 @@
----
-title: Installing and Upgrading WarehousePG
-navigation:
-- platform-requirements
----
+# Installing and Upgrading WarehousePG
 
 Information about installing, configuring, and upgrading WarehousePG software and configuring WarehousePG host machines.
 

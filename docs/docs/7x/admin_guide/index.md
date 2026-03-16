@@ -1,11 +1,4 @@
----
-title: WarehousePG Administrator Guide
-navigation:
-- release_notes
-- overview 
-- installing
-- managing
----
+# WarehousePG Administrator Guide
 
 Information about configuring, managing and monitoring WarehousePG installations, and administering, monitoring, and working with databases. The guide also contains information about WarehousePG architecture and concepts such as parallel processing.
 
