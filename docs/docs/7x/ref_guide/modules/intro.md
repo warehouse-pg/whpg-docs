@@ -27,7 +27,6 @@ The following WarehousePG and PostgreSQL `contrib` modules are installed; refer 
 -   [pg_buffercache](pg_buffercache.html) - Provides access to five views for obtaining cluster-wide shared buffer metrics.
 -   [pgcrypto](pgcrypto.html) - Provides cryptographic functions for WarehousePG.
 -   [postgresml](postgresml.html) - Provides functions for using tens of thousands of pre-trained open source AI/machine learning models in WarehousePG.
--   [pgvector](pgvector/pgvector.html) - Provides vector similarity search capabilities for WarehousePG that enable searching, storing, and querying machine language-generated embeddings at large scale.
 -   [postgres\_fdw](postgres_fdw.html) - Provides a foreign data wrapper \(FDW\) for accessing data stored in an external PostgreSQL or WarehousePG.
 -   [postgresql-hll](postgresql-hll.html) - Provides HyperLogLog data types for PostgreSQL and WarehousePG.
 -   [sslinfo](sslinfo.html) - Provides information about the SSL certificate that the current client provided when connecting to WarehousePG.
