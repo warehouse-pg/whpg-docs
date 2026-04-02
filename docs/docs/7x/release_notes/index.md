@@ -4,11 +4,48 @@ The WarehousePG documentation describes the latest version of WarehousePG 7.
 
 | Version                     | Release date |
 |-----------------------------|--------------|
-| [7.3.1-WHPG](#warehousepg-731)    | 30 January 2026  |
-| [7.3.0-WHPG](#warehousepg-730)    | 14 November 2025  |
-| [7.2.2-WHPG](#warehousepg-722)    | 17 November 2025 | 
-| [7.2.1-WHPG](#warehousepg-721)    | 15 May 2025 | 
+| [7.4.0-WHPG](#warehousepg-7-4-0-whpg)    | 7 April 2026  |
+| [7.3.1-WHPG](#warehousepg-7-3-1-whpg)    | 30 January 2026  |
+| [7.3.0-WHPG](#warehousepg-7-3-0-whpg)    | 14 November 2025  |
+| [7.2.2-WHPG](#warehousepg-7-2-2-whpg)    | 17 November 2025 | 
+| [7.2.1-WHPG](#warehousepg-7-2-1-whpg)    | 15 May 2025 | 
 
+
+## WarehousePG 7.4.0-WHPG
+
+Released: 7 April 2026
+
+WarehousePG 7.4.0-WHPG includes the following new features, enhancements, bug fixes, and other changes:
+
+### New features
+
+- Introduced `pg_stat_statements` for WarehousePG, extending standard PostgreSQL statistics collection to include all segment nodes. 
+- Implemented `DISTRIBUTED COORDINATOR ONLY` tables to allow metadata to reside exclusively on the coordinator node, supporting specialized use cases where extensions must access data during early-stage query processing before distributed execution begins.
+
+### Enhancements
+
+- Standardized installation paths to `/usr/edb/whpg7`, aligning with WarehousePG with EDB ecosystem conventions while providing backward-compatible symlinks at /usr/local/greenplum-db and /usr/local/greenplum-db-clients.
+- Added automatic fallback to the Postgres planner when `vchord` indexes are present.
+- Simplified the `gp_stat_progress_copy_summary` view and corrected issues where `NULL` values were improperly handled.
+- Enabled the `get_ao_compression_ratio()` function to execute in query executors.
+- Optimized internal cluster communications by improving the performance of Interconnect (IC) UDP processes and eliminating stale file descriptor warnings, resulting in more stable and faster data exchange between nodes.
+
+### Bug fixes
+
+- Improved query planner accuracy for anti-joins and left anti-semi joins by resolving a double-calculation error in join selectivity. This fix resolves issues where underestimated join costs led to inefficient query plans, resulting in significantly faster performance for complex analytical workloads.
+- Resolved critical stability issues in the ORCA optimizer, including fixes for segmentation faults, infinite recursion, and improper motion creation on QE slices.
+- Fixed ORCA `regr_count` scalar subquery decorrelation to prevent planning errors during complex aggregations.
+- Resolved an issue where ORCA failed to handle views with unused CTEs after changes were made to underlying table structures.
+- Improved DXL translation by fixing the handling of required but unused columns.
+- Fixed `gpcheckcat` inconsistencies encountered when using the SCRAM-SHA-256 authentication algorithm.
+- Ensured `initdb` only evaluates `errno` when a system call explicitly fails, preventing successful directory operations from being incorrectly reported as errors due to residual error codes from previous tasks.
+- Ensured `isolation2` test compatibility for Python 3.14 by explicitly setting the subprocess start method to `fork`, preventing `cannot pickle TextIOWrapper` errors caused by the change in Python's default process spawning behavior on Linux.
+- Hardened `libpq` against buffer overflow vulnerabilities by implementing stricter `size_t` calculations and overflow checks for large inputs from untrusted sources, ensuring allocated buffers are sufficient for their intended contents.
+
+
+### Security
+
+- Mitigated SQL injection risks in `pg_dump` and `pg_dumpall` for [CVE-2025-8715](https://github.com/advisories/GHSA-xh8r-9824-53cf) by ensuring object names containing newlines are properly sanitized before being written as comments in backup files, preventing a vulnerability where maliciously crafted names could execute arbitrary SQL during the restore process.
 
 ## WarehousePG 7.3.1-WHPG
 
