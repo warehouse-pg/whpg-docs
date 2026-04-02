@@ -24,7 +24,6 @@ WarehousePG 7.4.0-WHPG includes the following new features, enhancements, bug fi
 
 ### Enhancements
 
-- Standardized installation paths to `/usr/edb/whpg7`, aligning with WarehousePG with EDB ecosystem conventions while providing backward-compatible symlinks at /usr/local/greenplum-db and /usr/local/greenplum-db-clients.
 - Added automatic fallback to the Postgres planner when `vchord` indexes are present.
 - Simplified the `gp_stat_progress_copy_summary` view and corrected issues where `NULL` values were improperly handled.
 - Enabled the `get_ao_compression_ratio()` function to execute in query executors.
