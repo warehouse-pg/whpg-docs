@@ -39,12 +39,11 @@ WarehousePG 7.4.0-WHPG includes the following new features, enhancements, bug fi
 - Fixed `gpcheckcat` inconsistencies encountered when using the SCRAM-SHA-256 authentication algorithm.
 - Ensured `initdb` only evaluates `errno` when a system call explicitly fails, preventing successful directory operations from being incorrectly reported as errors due to residual error codes from previous tasks.
 - Ensured `isolation2` test compatibility for Python 3.14 by explicitly setting the subprocess start method to `fork`, preventing `cannot pickle TextIOWrapper` errors caused by the change in Python's default process spawning behavior on Linux.
-- Hardened `libpq` against buffer overflow vulnerabilities by implementing stricter `size_t` calculations and overflow checks for large inputs from untrusted sources, ensuring allocated buffers are sufficient for their intended contents.
-
 
 ### Security
 
 - Mitigated SQL injection risks in `pg_dump` and `pg_dumpall` for [CVE-2025-8715](https://github.com/advisories/GHSA-xh8r-9824-53cf) by ensuring object names containing newlines are properly sanitized before being written as comments in backup files, preventing a vulnerability where maliciously crafted names could execute arbitrary SQL during the restore process.
+- Fixed a heap buffer overflow vulnerability in libpq for [CVE-2025-12818](https://github.com/advisories/GHSA-pr6x-gg24-6wfp) by hardening memory allocation against integer overflows. This change implements stricter `size_t` calculations for large, untrusted inputs to ensure allocated buffers are sufficient for their contents.
 
 ## WarehousePG 7.3.1-WHPG
 
