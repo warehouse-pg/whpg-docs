@@ -1,4 +1,6 @@
-# Defining Queries
+---
+title: Defining Queries
+
 ---
 
 WarehousePG is based on the PostgreSQL implementation of the SQL standard.
@@ -8,17 +10,21 @@ This topic describes how to construct SQL queries in WarehousePG.
 -   [SQL Lexicon](#topic3)
 -   [SQL Value Expressions](#topic4)
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+**Parent topic:** [SQL: Querying Data](index.md)
 
-## <a id="topic3"></a>SQL Lexicon
+<a id="topic3"></a>
 
-SQL is a standard language for accessing databases. The language consists of elements that enable data storage, retrieval, analysis, viewing, manipulation, and so on. You use SQL commands to construct queries and commands that the WarehousePG engine understands. SQL queries consist of a sequence of commands. Commands consist of a sequence of valid tokens in correct syntax order, terminated by a semicolon \(`;`\).
+## SQL Lexicon
 
-For more information about SQL commands, see [SQL Command Reference](../../../ref_guide/sql_commands/sql_ref.html).
+SQL is a standard language for accessing databases. The language consists of elements that enable data storage, retrieval, analysis, viewing, manipulation, and so on. You use SQL commands to construct queries and commands that the WarehousePG engine understands. SQL queries consist of a sequence of commands. Commands consist of a sequence of valid tokens in correct syntax order, terminated by a semicolon (`;`).
+
+For more information about SQL commands, see [SQL Command Reference](../../ref_guide/sql_commands/index.md).
 
 WarehousePG uses PostgreSQL's structure and syntax, with some exceptions. For more information about SQL rules and concepts in PostgreSQL, see "SQL Syntax" in the PostgreSQL documentation.
 
-## <a id="topic4"></a>SQL Value Expressions
+<a id="topic4"></a>
+
+## SQL Value Expressions
 
 SQL value expressions consist of one or more values, symbols, operators, SQL functions, and data. The expressions compare data or perform calculations and return a value as the result. Calculations include logical, arithmetic, and set operations.
 
@@ -42,9 +48,11 @@ The following are value expressions:
 -   A value expression in parentheses, useful to group sub-expressions and override precedence
 -   A window expression
 
-SQL constructs such as functions and operators are expressions but do not follow any general syntax rules. For more information about these constructs, see [Using Functions and Operators](functions-operators.html).
+SQL constructs such as functions and operators are expressions but do not follow any general syntax rules. For more information about these constructs, see [Using Functions and Operators](functions-operators.md).
 
-### <a id="topic5"></a>Column References
+<a id="topic5"></a>
+
+### Column References
 
 A column reference has the form:
 
@@ -54,7 +62,9 @@ A column reference has the form:
 
 Here, `<correlation>` is the name of a table (possibly qualified with a schema name) or an alias for a table defined with a `FROM` clause or one of the keywords `NEW` or `OLD`. `NEW` and `OLD` can appear only in rewrite rules, but you can use other correlation names in any SQL statement. If the column name is unique across all tables in the query, you can omit the `<correlation>` part of the column reference.
 
-### <a id="topic6"></a>Positional Parameters
+<a id="topic6"></a>
+
+### Positional Parameters
 
 Positional parameters are arguments to SQL statements or functions that you reference by their positions in a series of arguments. For example, `$1` refers to the first argument, `$2` to the second argument, and so on. The values of positional parameters are set from arguments external to the SQL statement or supplied when SQL functions are invoked. Some client libraries support specifying data values separately from the SQL command, in which case parameters refer to the out-of-line data values. A parameter reference has the form:
 
@@ -72,7 +82,9 @@ CREATE FUNCTION dept(text) RETURNS dept
 
 Here, the `$1` references the value of the first function argument whenever the function is invoked.
 
-### <a id="topic7"></a>Subscripts
+<a id="topic7"></a>
+
+### Subscripts
 
 If an expression yields a value of an array type, you can extract a specific element of the array value as follows:
 
@@ -108,9 +120,11 @@ $1[10:42]
 (arrayfunction(a,b))[42]
 ```
 
-### <a id="topic8"></a>Field Selection
+<a id="topic8"></a>
 
-If an expression yields a value of a composite type \(row type\), you can extract a specific field of the row as follows:
+### Field Selection
+
+If an expression yields a value of a composite type (row type), you can extract a specific field of the row as follows:
 
 ```
 <expression>.<fieldname>
@@ -132,7 +146,9 @@ $1.somecolumn
 
 A qualified column reference is a special case of field selection syntax.
 
-### <a id="topic9"></a>Operator Invocations
+<a id="topic9"></a>
+
+### Operator Invocations
 
 Operator invocations have the following possible syntaxes:
 
@@ -154,9 +170,11 @@ Where `operator` is an operator token, one of the key words `AND`, `OR`, or `NOT
 OPERATOR(<schema>.<operatorname>)
 ```
 
-Available operators and whether they are unary or binary depends on the operators that the system or user defines. For more information about built-in operators, see [Built-in Functions and Operators](functions-operators.html).
+Available operators and whether they are unary or binary depends on the operators that the system or user defines. For more information about built-in operators, see [Built-in Functions and Operators](functions-operators.md).
 
-### <a id="topic10"></a>Function Calls
+<a id="topic10"></a>
+
+### Function Calls
 
 The syntax for a function call is the name of a function (possibly qualified with a schema name), followed by its argument list enclosed in parentheses:
 
@@ -170,9 +188,11 @@ For example, the following function call computes the square root of 2:
 sqrt(2)
 ```
 
-See [Summary of Built-in Functions](../../../ref_guide/function-summary.html) for lists of the built-in functions by category. You can add custom functions, too.
+See [Summary of Built-in Functions](../../ref_guide/function-summary.md) for lists of the built-in functions by category. You can add custom functions, too.
 
-### <a id="topic11"></a>Aggregate Expressions
+<a id="topic11"></a>
+
+### Aggregate Expressions
 
 An aggregate expression applies an aggregate function across the rows that a query selects. An aggregate function performs a calculation on a set of values and returns a single value, such as the sum or average of the set of values. The syntax of an aggregate expression is one of the following:
 
@@ -198,7 +218,7 @@ FROM generate_series(1,10) AS s(i);
 (1 row)
 ```
 
-For predefined aggregate functions, see [Built-in Functions and Operators](functions-operators.html#topic29). You can also add custom aggregate functions.
+For predefined aggregate functions, see [Built-in Functions and Operators](functions-operators.md#built-in-functions-and-operators). You can also add custom aggregate functions.
 
 WarehousePG provides the `MEDIAN` aggregate function, which returns the fiftieth percentile of the `PERCENTILE_CONT` result and special aggregate expressions for inverse distribution functions as follows:
 
@@ -212,17 +232,21 @@ PERCENTILE_DISC(<percentage>) WITHIN GROUP (ORDER BY <expression>)
 
 Currently you can use only these two expressions with the keyword `WITHIN GROUP`.
 
-#### <a id="topic12"></a>Limitations of Aggregate Expressions
+<a id="topic12"></a>
+
+#### Limitations of Aggregate Expressions
 
 The following are current limitations of the aggregate expressions:
 
--   WarehousePG does not support the following keywords: `ALL`, `DISTINCT`, and `OVER`. See [Table 5](functions-operators.html#topic31__in2073121) for more details.
+-   WarehousePG does not support the following keywords: `ALL`, `DISTINCT`, and `OVER`. See [Table 5](functions-operators.md#advanced-aggregate-functions) for more details.
 -   An aggregate expression can appear only in the result list or `HAVING` clause of a `SELECT` command. It is forbidden in other clauses, such as `WHERE`, because those clauses are logically evaluated before the results of aggregates form. This restriction applies to the query level to which the aggregate belongs.
--   When an aggregate expression appears in a subquery, the aggregate is normally evaluated over the rows of the subquery. If the aggregate's arguments (and `filter_clause` if any) contain only outer-level variables, the aggregate belongs to the nearest such outer level and evaluates over the rows of that query. The aggregate expression as a whole is then an outer reference for the subquery in which it appears, and the aggregate expression acts as a constant over any one evaluation of that subquery. The restriction about appearing only in the result list or ``HAVING`` clause applies with respect to the query level at which the aggregate appears. See [Scalar Subqueries](#topic15) and [Table 3](functions-operators.html#topic29__in204913).
+-   When an aggregate expression appears in a subquery, the aggregate is normally evaluated over the rows of the subquery. If the aggregate's arguments (and `filter_clause` if any) contain only outer-level variables, the aggregate belongs to the nearest such outer level and evaluates over the rows of that query. The aggregate expression as a whole is then an outer reference for the subquery in which it appears, and the aggregate expression acts as a constant over any one evaluation of that subquery. The restriction about appearing only in the result list or `HAVING` clause applies with respect to the query level at which the aggregate appears. See [Scalar Subqueries](#topic15) and [Table 3](functions-operators.md#built-in-functions-and-operators).
 -   WarehousePG does not support specifying an aggregate function as an argument to another aggregate function.
 -   WarehousePG does not support specifying a window function as an argument to an aggregate function.
 
-### <a id="topic13"></a>Window Expressions
+<a id="topic13"></a>
+
+### Window Expressions
 
 Window expressions allow application developers to more easily compose complex online analytical processing (OLAP) queries using standard SQL commands. For example, with window expressions, users can calculate moving averages or sums over various intervals, reset aggregations and ranks as selected column values change, and express complex ratios in simple terms.
 
@@ -236,7 +260,7 @@ The syntax of a window expression is:
 <window_function> ( [<expression> [, ...]] ) [ FILTER ( WHERE <filter_clause> ) ] OVER ( <window_specification> )
 ```
 
-Where `<window_function>` is one of the functions listed in [Table 4](functions-operators.html#topic30__in164369) or a user-defined window function, `<expression>` is any value expression that does not contain a window expression, and `<window_specification>` is:
+Where `<window_function>` is one of the functions listed in [Table 4](functions-operators.md#window-functions) or a user-defined window function, `<expression>` is any value expression that does not contain a window expression, and `<window_specification>` is:
 
 ```
 [<window_name>]
@@ -290,35 +314,39 @@ A window specification has the following characteristics:
 
 > **Note** Columns of data types without a coherent ordering, such as `time`, are not good candidates for use in the `ORDER BY` clause of a window specification. `Time`, with or without a specified time zone, lacks a coherent ordering because addition and subtraction do not have the expected effects. For example, the following is not generally true: `x::time < x::time + '2 hour'::interval`
 
-- The `<frame_clause>` specifies the set of rows constituting the `<window frame>`, which is a subset of the current partition, for those window functions that act on the frame instead of the whole partition. The set of rows in the frame can vary depending on which row is the current row. The frame can be specified in `RANGE`, `ROWS` or `GROUPS` mode; in each case, it runs from the `<frame_start>` to the `<frame_end>`. If `<frame_end>` is omitted, the end defaults to `CURRENT ROW`.
+-   The `<frame_clause>` specifies the set of rows constituting the `<window frame>`, which is a subset of the current partition, for those window functions that act on the frame instead of the whole partition. The set of rows in the frame can vary depending on which row is the current row. The frame can be specified in `RANGE`, `ROWS` or `GROUPS` mode; in each case, it runs from the `<frame_start>` to the `<frame_end>`. If `<frame_end>` is omitted, the end defaults to `CURRENT ROW`.
 
-- A `<frame_start>` of `UNBOUNDED PRECEDING` means that the frame starts with the first row of the partition, and similarly a `<frame_end>` of `UNBOUNDED FOLLOWING` means that the frame ends with the last row of the partition.
+-   A `<frame_start>` of `UNBOUNDED PRECEDING` means that the frame starts with the first row of the partition, and similarly a `<frame_end>` of `UNBOUNDED FOLLOWING` means that the frame ends with the last row of the partition.
 
-- In `RANGE` or `GROUPS` mode, a `<frame_start>` of `CURRENT ROW` means the frame starts with the current row's first peer row (a row that the window's `ORDER BY` clause sorts as equivalent to the current row), while a `<frame_end>` of `CURRENT ROW` means the frame ends with the current row's last peer row. In `ROWS` mode, `CURRENT ROW` simply means the current row.
+-   In `RANGE` or `GROUPS` mode, a `<frame_start>` of `CURRENT ROW` means the frame starts with the current row's first peer row (a row that the window's `ORDER BY` clause sorts as equivalent to the current row), while a `<frame_end>` of `CURRENT ROW` means the frame ends with the current row's last peer row. In `ROWS` mode, `CURRENT ROW` simply means the current row.
 
-- In the `<offset> PRECEDING` and `<offset> FOLLOWING` frame options, the `<offset>` must be an expression not containing any variables, aggregate functions, or window functions. The meaning of the `<offset>` depends on the frame mode:
+-   In the `<offset> PRECEDING` and `<offset> FOLLOWING` frame options, the `<offset>` must be an expression not containing any variables, aggregate functions, or window functions. The meaning of the `<offset>` depends on the frame mode:
 
-    - In `ROWS` mode, the `<offset>` must yield a non-null, non-negative integer, and the option means that the frame starts or ends the specified number of rows before or after the current row.
+    -   In `ROWS` mode, the `<offset>` must yield a non-null, non-negative integer, and the option means that the frame starts or ends the specified number of rows before or after the current row.
 
-    - In `GROUPS` mode, the `<offset>` again must yield a non-null, non-negative integer, and the option means that the frame starts or ends the specified number of peer groups before or after the current row's peer group, where a peer group is a set of rows that are equivalent in the `ORDER BY` ordering. (There must be an `ORDER BY` clause in the window definition to use `GROUPS` mode).
+    -   In `GROUPS` mode, the `<offset>` again must yield a non-null, non-negative integer, and the option means that the frame starts or ends the specified number of peer groups before or after the current row's peer group, where a peer group is a set of rows that are equivalent in the `ORDER BY` ordering. (There must be an `ORDER BY` clause in the window definition to use `GROUPS` mode).
 
-    - In `RANGE` mode, these options require that the `ORDER BY` clause specifies exactly one column. The `<offset>` specifies the maximum difference between the value of that column in the current row and its value in preceding or following rows of the frame. The data type of the `<offset>` expression varies depending on the data type of the ordering column. For numeric ordering columns it is typically of the same type as the ordering column, but for datetime ordering columns it is an `interval`. For example, if the ordering column is of type `date` or `timestamp`, one could write `RANGE BETWEEN '1 day' PRECEDING AND '10 days' FOLLOWING`. The `<offset>` is still required to be non-null and non-negative, though the meaning of “non-negative” depends on its data type.
+    -   In `RANGE` mode, these options require that the `ORDER BY` clause specifies exactly one column. The `<offset>` specifies the maximum difference between the value of that column in the current row and its value in preceding or following rows of the frame. The data type of the `<offset>` expression varies depending on the data type of the ordering column. For numeric ordering columns it is typically of the same type as the ordering column, but for datetime ordering columns it is an `interval`. For example, if the ordering column is of type `date` or `timestamp`, one could write `RANGE BETWEEN '1 day' PRECEDING AND '10 days' FOLLOWING`. The `<offset>` is still required to be non-null and non-negative, though the meaning of “non-negative” depends on its data type.
 
-    In any case, the distance to the end of the frame is limited by the distance to the end of the partition, so that for rows near the partition ends the frame might contain fewer rows than elsewhere.
+        In any case, the distance to the end of the frame is limited by the distance to the end of the partition, so that for rows near the partition ends the frame might contain fewer rows than elsewhere.
 
-- Notice that in both `ROWS` and `GROUPS` mode, `0 PRECEDING` and `0 FOLLOWING` are equivalent to `CURRENT ROW`. This normally holds in `RANGE` mode as well, for an appropriate data-type-specific meaning of “zero”.
+-   Notice that in both `ROWS` and `GROUPS` mode, `0 PRECEDING` and `0 FOLLOWING` are equivalent to `CURRENT ROW`. This normally holds in `RANGE` mode as well, for an appropriate data-type-specific meaning of “zero”.
 
-- The `<frame_exclusion>` option allows rows around the current row to be excluded from the frame, even if they would be included according to the frame start and frame end options. `EXCLUDE CURRENT ROW` excludes the current row from the frame. `EXCLUDE GROUP` excludes the current row and its ordering peers from the frame. `EXCLUDE TIES` excludes any peers of the current row from the frame, but not the current row itself. `EXCLUDE NO OTHERS` simply specifies explicitly the default behavior of not excluding the current row or its peers.
+-   The `<frame_exclusion>` option allows rows around the current row to be excluded from the frame, even if they would be included according to the frame start and frame end options. `EXCLUDE CURRENT ROW` excludes the current row from the frame. `EXCLUDE GROUP` excludes the current row and its ordering peers from the frame. `EXCLUDE TIES` excludes any peers of the current row from the frame, but not the current row itself. `EXCLUDE NO OTHERS` simply specifies explicitly the default behavior of not excluding the current row or its peers.
 
-- The default framing option is `RANGE UNBOUNDED PRECEDING`, which is the same as `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. With `ORDER BY`, this sets the frame to be all rows from the partition start up through the current row's last `ORDER BY` peer. Without `ORDER BY`, this means all rows of the partition are included in the window frame, since all rows become peers of the current row.
+-   The default framing option is `RANGE UNBOUNDED PRECEDING`, which is the same as `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`. With `ORDER BY`, this sets the frame to be all rows from the partition start up through the current row's last `ORDER BY` peer. Without `ORDER BY`, this means all rows of the partition are included in the window frame, since all rows become peers of the current row.
 
-- Restrictions are that `<frame_start>` cannot be `UNBOUNDED FOLLOWING`, `<frame_end>` cannot be `UNBOUNDED PRECEDING`, and the `<frame_end>` choice cannot appear earlier in the above list than the `<frame_start>` choice. for example `RANGE BETWEEN CURRENT ROW AND value PRECEDING` is not allowed.
+-   Restrictions are that `<frame_start>` cannot be `UNBOUNDED FOLLOWING`, `<frame_end>` cannot be `UNBOUNDED PRECEDING`, and the `<frame_end>` choice cannot appear earlier in the above list than the `<frame_start>` choice. for example `RANGE BETWEEN CURRENT ROW AND value PRECEDING` is not allowed.
 
-#### <a id="topic_qck_12r_2gb"></a>Window Examples
+<a id="topic_qck_12r_2gb"></a>
+
+#### Window Examples
 
 The following examples demonstrate using window functions with partitions and window frames.
 
-##### <a id="ex1"></a>Example 1 – Aggregate Window Function Over a Partition
+<a id="ex1"></a>
+
+##### Example 1 – Aggregate Window Function Over a Partition
 
 The `PARTITION BY` list in the `OVER` clause divides the rows into groups, or partitions, that have the same values as the specified expressions.
 
@@ -355,7 +383,9 @@ WINDOW mywindow AS (PARTITION BY depname);
 
 Defining a named window is useful when the select list has multiple window functions using the same window specification.
 
-##### <a id="ex2"></a>Example 2 – Ranking Window Function With an ORDER BY Clause
+<a id="ex2"></a>
+
+##### Example 2 – Ranking Window Function With an ORDER BY Clause
 
 An `ORDER BY` clause within the `OVER` clause controls the order in which rows are processed by window functions. The `ORDER BY` list for the window function does not have to match the output order of the query. This example uses the `rank()` window function to rank employees' salaries within their departments:
 
@@ -378,7 +408,9 @@ FROM empsalary;
 (10 rows)
 ```
 
-##### <a id="ex3"></a>Example 3 – Aggregate Function over a Row Window Frame
+<a id="ex3"></a>
+
+##### Example 3 – Aggregate Function over a Row Window Frame
 
 A `RANGE`, `ROWS` or `GROUPS` clause defines the window frame—a set of rows within a partition—that the window function includes in the calculation. `ROWS` specifies a physical set of rows to process, for example all rows from the beginning of the partition to the current row.
 
@@ -404,7 +436,9 @@ FROM empsalary ORDER BY depname, sum;
 (10 rows)
 ```
 
-##### <a id="ex4"></a>Example 4 – Aggregate Function for a Range or Groups Window Frame
+<a id="ex4"></a>
+
+##### Example 4 – Aggregate Function for a Range or Groups Window Frame
 
 `RANGE` and `GROUPS` modes specify logical values based on values of the `ORDER BY` expression in the `OVER` clause. This example demonstrates the difference between `ROWS` and `RANGE` or `GROUPS`. The frame contains all rows with salary values less than or equal to the current row. Unlike the previous example, for employees with the same salary, the sum is the same and includes the salaries of all of those employees.
 
@@ -450,7 +484,9 @@ FROM empsalary ORDER BY depname, sum;
 (10 rows)
 ```
 
-##### <a id="ex4"></a>Example 5 – Aggregate Function for a Range and a Groups Window Frame
+<a id="ex4"></a>
+
+##### Example 5 – Aggregate Function for a Range and a Groups Window Frame
 
 This example demonstrates the difference between `RANGE` and `GROUPS`. The table `sales` lists the sales a company's two shops during a period of four days. 
 
@@ -494,7 +530,9 @@ FROM sales ORDER BY shop, date;
 
 Note that the above outputs differ in the last row because `RANGE` mode uses the entries from the previous two days and there is no entry for `2022-01-08` for Shop 2, but `GROUPS` mode uses the previous two peer groups, which are `2022-01-07` and `2022-01-09`.
 
-### <a id="topic14"></a>Type Casts
+<a id="topic14"></a>
+
+### Type Casts
 
 A type cast specifies a conversion from one data type to another. A cast applied to a value expression of a known type is a run-time type conversion. The cast succeeds only if a suitable type conversion is defined. This differs from the use of casts with constants. A cast applied to a string literal represents the initial assignment of a type to a literal constant value, so it succeeds for any type if the contents of the string literal are acceptable input syntax for the data type.
 
@@ -509,7 +547,7 @@ WarehousePG supports three types of casts applied to a value expression:
 
     The `CAST` syntax conforms to SQL; the syntax using `::` is historical PostgreSQL usage.
 
--   *Assignment cast* - WarehousePG implicitly invokes a cast in assignment contexts, when assigning a value to a column of the target data type. For example, a [CREATE CAST](../../../ref_guide/sql_commands/CREATE_CAST.html) command with the `AS ASSIGNMENT` clause creates a cast that is applied implicitly in the assignment context. This example assignment cast assumes that `tbl1.f1` is a column of type `text`. The `INSERT` command is allowed because the value is implicitly cast from the `integer` to `text` type.
+-   *Assignment cast* - WarehousePG implicitly invokes a cast in assignment contexts, when assigning a value to a column of the target data type. For example, a [CREATE CAST](../../ref_guide/sql_commands/CREATE_CAST.md) command with the `AS ASSIGNMENT` clause creates a cast that is applied implicitly in the assignment context. This example assignment cast assumes that `tbl1.f1` is a column of type `text`. The `INSERT` command is allowed because the value is implicitly cast from the `integer` to `text` type.
 
     ```
     INSERT INTO tbl1 (f1) VALUES (42);
@@ -521,29 +559,38 @@ WarehousePG supports three types of casts applied to a value expression:
     SELECT * FROM tbl1 WHERE tbl1.c2 = (4.3 + tbl1.c1) ;
     ```
 
-
 You can usually omit an explicit type cast if there is no ambiguity about the type a value expression must produce (for example, when it is assigned to a table column); the system automatically applies a type cast. WarehousePG implicitly applies casts only to casts defined with a cast context of assignment or explicit in the system catalogs. Other casts must be invoked with explicit casting syntax to prevent unexpected conversions from being applied without the user's knowledge.
 
 You can display cast information with the `psql` meta-command `\dC`. Cast information is stored in the catalog table `pg_cast`, and type information is stored in the catalog table `pg_type`.
 
-### <a id="topic15"></a>Scalar Subqueries
+<a id="topic15"></a>
+
+### Scalar Subqueries
 
 A scalar subquery is a `SELECT` query in parentheses that returns exactly one row with one column. Do not use a `SELECT` query that returns multiple rows or columns as a scalar subquery. The query runs and uses the returned value in the surrounding value expression. A correlated scalar subquery contains references to the outer query block.
 
-### <a id="topic16"></a>Correlated Subqueries
+<a id="topic16"></a>
+
+### Correlated Subqueries
 
 A correlated subquery (CSQ) is a `SELECT` query with a `WHERE` clause or target list that contains references to the parent outer clause. CSQs efficiently express results in terms of results of another query. WarehousePG supports correlated subqueries that provide compatibility with many existing applications. A CSQ is a scalar or table subquery, depending on whether it returns one or multiple rows. WarehousePG does not support correlated subqueries with skip-level correlations.
 
-### <a id="topic17"></a>Correlated Subquery Examples
+<a id="topic17"></a>
 
-#### <a id="topic18"></a>Example 1 – Scalar correlated subquery
+### Correlated Subquery Examples
+
+<a id="topic18"></a>
+
+#### Example 1 – Scalar correlated subquery
 
 ```
 SELECT * FROM t1 WHERE t1.x 
             > (SELECT MAX(t2.x) FROM t2 WHERE t2.y = t1.y);
 ```
 
-#### <a id="topic19"></a>Example 2 – Correlated EXISTS subquery
+<a id="topic19"></a>
+
+#### Example 2 – Correlated EXISTS subquery
 
 ```
 SELECT * FROM t1 WHERE 
@@ -557,7 +604,9 @@ WarehousePG uses one of the following methods to run CSQs:
 
 The following examples illustrate how to rewrite some of these types of queries to improve performance.
 
-#### <a id="topic20"></a>Example 3 - CSQ in the Select List
+<a id="topic20"></a>
+
+#### Example 3 - CSQ in the Select List
 
 *Original Query*
 
@@ -580,7 +629,9 @@ SELECT t1.a, dt2 FROM t1
        ON (t1.x = csq_y);
 ```
 
-### <a id="topic21"></a>Example 4 - CSQs connected by OR Clauses
+<a id="topic21"></a>
+
+### Example 4 - CSQs connected by OR Clauses
 
 *Original Query*
 
@@ -603,9 +654,11 @@ SELECT * FROM t1
 WHERE x < (SELECT count(*) FROM t3 WHERE t1.y = t3.y)
 ```
 
-To view the query plan, use `EXPLAIN SELECT` or `EXPLAIN ANALYZE SELECT`. Subplan nodes in the query plan indicate that the query will run on every row of the outer query, and the query is a candidate for rewriting. For more information about these statements, see [Query Profiling](query-profiling.html).
+To view the query plan, use `EXPLAIN SELECT` or `EXPLAIN ANALYZE SELECT`. Subplan nodes in the query plan indicate that the query will run on every row of the outer query, and the query is a candidate for rewriting. For more information about these statements, see [Query Profiling](query-profiling.md).
 
-### <a id="topic23"></a>Array Constructors
+<a id="topic23"></a>
+
+### Array Constructors
 
 An array constructor is an expression that builds an array value from values for its member elements. A simple array constructor consists of the key word `ARRAY`, a left square bracket `[`, one or more expressions separated by commas for the array element values, and a right square bracket `]`. For example,
 
@@ -653,7 +706,9 @@ SELECT ARRAY(SELECT oid FROM pg_proc WHERE proname LIKE 'bytea%');
 
 The subquery must return a single column. The resulting one-dimensional array has an element for each row in the subquery result, with an element type matching that of the subquery's output column. The subscripts of an array value built with `ARRAY` always begin with `1`.
 
-### <a id="topic24"></a>Row Constructors
+<a id="topic24"></a>
+
+### Row Constructors
 
 A row constructor is an expression that builds a row value (also called a composite value) from values for its member fields. For example,
 
@@ -709,7 +764,9 @@ myrowtype));
 
 You can use row constructors to build composite values to be stored in a composite-type table column or to be passed to a function that accepts a composite parameter.
 
-### <a id="topic25"></a>Expression Evaluation Rules
+<a id="topic25"></a>
+
+### Expression Evaluation Rules
 
 The order of evaluation of subexpressions is undefined. The inputs of an operator or function are not necessarily evaluated left-to-right or in any other fixed order.
 
@@ -743,4 +800,3 @@ END;
 ```
 
 This `CASE` construct usage defeats optimization attempts; use it only when necessary.
-

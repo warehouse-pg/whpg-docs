@@ -1,14 +1,15 @@
-# About View Storage in WarehousePG
+---
+title: About View Storage in WarehousePG
+
 ---
 
-A view is similar to a table, both are relations - that is "something with columns". All such objects are stored in the catalog table [`pg_class`](../../ref_guide/system_catalogs/pg_class.html). These are the general differences:
+A view is similar to a table, both are relations - that is "something with columns". All such objects are stored in the catalog table [`pg_class`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_class.md). These are the general differences:
 
--   A view has no data files \(because it holds no data\).
+-   A view has no data files (because it holds no data).
 -   The value of `pg_class.relkind` for a view is `v` rather than `r`.
 -   A view has an `ON SELECT` query rewrite rule called `_RETURN`.
 
-    The rewrite rule contains the definition of the view and is stored in the `ev_action` column of the [`pg_rewrite`](../../ref_guide/system_catalogs/pg_rewrite.html) catalog table.
-
+    The rewrite rule contains the definition of the view and is stored in the `ev_action` column of the [`pg_rewrite`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_rewrite.md) catalog table.
 
 For more technical information about views, see the PostgreSQL documentation about [Views and the Rule System](https://www.postgresql.org/docs/12/rules-views.html).
 
@@ -20,15 +21,16 @@ Also, a view definition is *not* stored as a string, but in the form of a query 
 
 Note that the way WarehousePG handles views is quite different from the way WarehousePG handles functions: function bodies are stored as strings and are not parsed when they are created. Consequently, WarehousePG does not know on which objects a given function depends.
 
-## <a id="whereview"></a>Where View Dependency Information is Stored
+<a id="whereview"></a>
+
+## Where View Dependency Information is Stored
 
 These system catalog tables contain the information used to determine the tables on which a view depends.
 
--   [`pg_class`](../../ref_guide/system_catalogs/pg_class.html) - object information including tables and views. The `relkind` column describes the type of object.
--   [`pg_depend`](../../ref_guide/system_catalogs/pg_depend.html) - object dependency information for database-specific \(non-shared\) objects.
--   [`pg_rewrite`](../../ref_guide/system_catalogs/pg_rewrite.html) - rewrite rules for tables and views.
--   [`pg_attribute`](../../ref_guide/system_catalogs/pg_attribute.html) - information about table columns.
--   [`pg_namespace`](../../ref_guide/system_catalogs/pg_namespace.html) - information about schemas \(namespaces\).
+-   [`pg_class`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_class.md) - object information including tables and views. The `relkind` column describes the type of object.
+-   [`pg_depend`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_depend.md) - object dependency information for database-specific (non-shared) objects.
+-   [`pg_rewrite`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_rewrite.md) - rewrite rules for tables and views.
+-   [`pg_attribute`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_attribute.md) - information about table columns.
+-   [`pg_namespace`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_namespace.md) - information about schemas (namespaces).
 
 It is important to note that there is no direct dependency of a view on the objects it uses: the dependent object is actually the view's rewrite rule. That adds another layer of indirection to view dependency information.
-

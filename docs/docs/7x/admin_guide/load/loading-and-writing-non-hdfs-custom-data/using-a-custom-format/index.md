@@ -1,4 +1,9 @@
-# Using a Custom Format
+---
+title: Using a Custom Format
+navigation:
+  - importing-and-exporting-fixed-width-data
+  - examples-read-fixed-width-data
+
 ---
 
 You specify a custom data format in the `FORMAT` clause of `CREATE EXTERNAL TABLE`.
@@ -16,10 +21,8 @@ WarehousePG provides functions for formatting fixed-width data, but you must aut
 2.  Specify the shared library function with `CREATE FUNCTION` in WarehousePG.
 3.  Use the `formatter` parameter of `CREATE EXTERNAL TABLE`'s `FORMAT` clause to call the function.
 
--   **[Importing and Exporting Fixed Width Data](../../load/topics/g-importing-and-exporting-fixed-width-data.html)**  
+-   **[Importing and Exporting Fixed Width Data](importing-and-exporting-fixed-width-data.md)**  
 
--   **[Examples: Read Fixed-Width Data](../../load/topics/g-examples-read-fixed-width-data.html)**  
+-   **[Examples: Read Fixed-Width Data](examples-read-fixed-width-data.md)**  
 
-
-**Parent topic:** [Loading and Writing Non-HDFS Custom Data](../../load/topics/g-loading-and-writing-non-hdfs-custom-data.html)
-
+**Parent topic:** [Loading and Writing Non-HDFS Custom Data](../index.md)

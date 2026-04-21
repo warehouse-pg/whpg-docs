@@ -1,9 +1,11 @@
-# Restoring Coordinator Mirroring After a Recovery
+---
+title: Restoring Coordinator Mirroring After a Recovery
+
 ---
 
 After you activate a standby coordinator for recovery, the standby coordinator becomes the primary coordinator. You can continue running that instance as the primary coordinator if it has the same capabilities and dependability as the original coordinator host.
 
-You must initialize a new standby coordinator to continue providing coordinator mirroring unless you have already done so while activating the prior standby coordinator. Run [gpinitstandby](../../utility_guide/ref/gpinitstandby.html) on the active coordinator host to configure a new standby coordinator. See [Enabling Coordinator Mirroring](enabling-coordinator-mirroring.html).
+You must initialize a new standby coordinator to continue providing coordinator mirroring unless you have already done so while activating the prior standby coordinator. Run [gpinitstandby](../../../ref_guide/utility_guide/reference/gpinitstandby.md) on the active coordinator host to configure a new standby coordinator. See [Enabling Coordinator Mirroring](enabling-mirroring-in-warehousepg/enabling-coordinator-mirroring.md).
 
 You can restore the primary and standby coordinator instances on the original hosts. This process swaps the roles of the primary and standby coordinator hosts, and it should be performed only if you strongly prefer to run the coordinator instances on the same hosts they occupied prior to the recovery scenario.
 
@@ -11,11 +13,14 @@ You can restore the primary and standby coordinator instances on the original ho
 
 For information about the WarehousePG utilities, see the *WarehousePG Utility Guide*.
 
-**Parent topic:** [Recovering a Failed Coordinator](../ha/recovering-a-failed-coordinator.html)
+**Parent topic:** [Recovering a Failed Coordinator](recovering-a-failed-coordinator.md)
 
-## <a id="topic_us3_md4_npb"></a>To restore the coordinator mirroring after a recovery
+<a id="topic_us3_md4_npb"></a>
+
+## To restore the coordinator mirroring after a recovery
 
 1.  Ensure the original coordinator host is in dependable running condition; ensure the cause of the original failure is fixed.
+
 2.  On the original coordinator host, move or remove the data directory, `gpseg-1`. This example moves the directory to `backup_gpseg-1`:
 
     ```
@@ -30,7 +35,7 @@ For information about the WarehousePG utilities, see the *WarehousePG Utility Gu
     $ gpinitstandby -s cdw
     ```
 
-4.  After the initialization completes, check the status of standby coordinator, cdw. Run [gpstate](../../utility_guide/ref/gpstate.html) with the `-f` option to check the standby coordinator status:
+4.  After the initialization completes, check the status of standby coordinator, cdw. Run [gpstate](../../../ref_guide/utility_guide/reference/gpstate.md) with the `-f` option to check the standby coordinator status:
 
     ```
     $ gpstate -f
@@ -38,8 +43,9 @@ For information about the WarehousePG utilities, see the *WarehousePG Utility Gu
 
     The standby coordinator status should be `passive`, and the WAL sender state should be `streaming`.
 
+<a id="topic_dr3_ld4_npb"></a>
 
-## <a id="topic_dr3_ld4_npb"></a>To restore the coordinator and standby instances on original hosts \(optional\)
+## To restore the coordinator and standby instances on original hosts (optional)
 
 > **Note** Before performing the steps in this section, be sure you have followed the steps to restore coordinator mirroring after a recovery, as described in the [To restore the coordinator mirroring after a recovery](#topic_us3_md4_npb)previous section.
 
@@ -57,8 +63,8 @@ For information about the WarehousePG utilities, see the *WarehousePG Utility Gu
 
     Where the `-d` option specifies the data directory of the host you are activating.
 
-    >**NOTE**
-    >Before running `gpactivatestandby`, be sure to run `gpstate -f` to confirm that the standby coordinator is synchronized with the current coordinator node. If synchronized, the final line of the `gpstate -f` output will look similar to this: `20230607:06:50:06:004205 gpstate:test1-m:gpadmin-[INFO]:--Sync state: sync`
+    > **NOTE**
+    > Before running `gpactivatestandby`, be sure to run `gpstate -f` to confirm that the standby coordinator is synchronized with the current coordinator node. If synchronized, the final line of the `gpstate -f` output will look similar to this: `20230607:06:50:06:004205 gpstate:test1-m:gpadmin-[INFO]:--Sync state: sync`
 
 3.  After the utility completes, run `gpstate` with the `-b` option to display a summary of the system status:
 
@@ -84,8 +90,9 @@ For information about the WarehousePG utilities, see the *WarehousePG Utility Gu
 
     After the command completes, you can run the `gpstate -f` command on the primary coordinator host, to check the standby coordinator status.
 
+<a id="topic_i1h_kd4_npb"></a>
 
-## <a id="topic_i1h_kd4_npb"></a>To check the status of the coordinator mirroring process \(optional\)
+## To check the status of the coordinator mirroring process (optional)
 
 You can run the `gpstate` utility with the `-f` option to display details of the standby coordinator host.
 
@@ -95,5 +102,4 @@ $ gpstate -f
 
 The standby coordinator status should be `passive`, and the WAL sender state should be `streaming`.
 
-For information about the [gpstate](../../utility_guide/ref/gpstate.html) utility, see the *WarehousePG Utility Guide*.
-
+For information about the [gpstate](../../../ref_guide/utility_guide/reference/gpstate.md) utility, see the *WarehousePG Utility Guide*.

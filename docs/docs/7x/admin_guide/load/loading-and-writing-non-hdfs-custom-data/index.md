@@ -1,12 +1,15 @@
-# Loading and Writing Non-HDFS Custom Data
+---
+title: Loading and Writing Non-HDFS Custom Data
+navigation:
+  - using-a-custom-format
+  - using-a-custom-protocol
+
 ---
 
 WarehousePG supports `TEXT` and `CSV` formats for importing and exporting data through external tables. You can load and save data in other formats by defining a custom format or custom protocol or by setting up a transformation with the `gpfdist` parallel file server.
 
--   **[Using a Custom Format](../../load/topics/g-using-a-custom-format.html)**  
+-   **[Using a Custom Format](using-a-custom-format/index.md)**  
 
--   **[Using a Custom Protocol](../../load/topics/g-using-a-custom-protocol.html)**  
+-   **[Using a Custom Protocol](using-a-custom-protocol.md)**  
 
-
-**Parent topic:** [Loading and Unloading Data](../../load/topics/g-loading-and-unloading-data.html)
-
+**Parent topic:** [Loading and Unloading Data](index.md)

@@ -1,4 +1,6 @@
-# DML: Inserting, Updating and Deleting
+---
+title: 'DML: Inserting, Updating and Deleting'
+
 ---
 
 This section provides information about manipulating data and concurrent access in WarehousePG.
@@ -14,35 +16,39 @@ This topic includes the following subtopics:
 -   [Vacuuming the Database](#topic9)
 -   [Running Out of Locks](#topic11)
 
-**Parent topic:** [WarehousePG Administrator Guide](../admin_guide)
+**Parent topic:** [WarehousePG Administrator Guide](index.md)
 
-## <a id="topic2"></a>About Concurrency Control in WarehousePG
+<a id="topic2"></a>
 
-WarehousePG and PostgreSQL do not use locks for concurrency control. They maintain data consistency using a multiversion model, Multiversion Concurrency Control \(MVCC\). MVCC achieves transaction isolation for each database session, and each query transaction sees a snapshot of data. This ensures the transaction sees consistent data that is not affected by other concurrent transactions.
+## About Concurrency Control in WarehousePG
 
-Because MVCC does not use explicit locks for concurrency control, lock contention is minimized and WarehousePG maintains reasonable performance in multiuser environments. Locks acquired for querying \(reading\) data do not conflict with locks acquired for writing data.
+WarehousePG and PostgreSQL do not use locks for concurrency control. They maintain data consistency using a multiversion model, Multiversion Concurrency Control (MVCC). MVCC achieves transaction isolation for each database session, and each query transaction sees a snapshot of data. This ensures the transaction sees consistent data that is not affected by other concurrent transactions.
+
+Because MVCC does not use explicit locks for concurrency control, lock contention is minimized and WarehousePG maintains reasonable performance in multiuser environments. Locks acquired for querying (reading) data do not conflict with locks acquired for writing data.
 
 WarehousePG provides multiple lock modes to control concurrent access to data in tables. Most WarehousePG SQL commands automatically acquire the appropriate locks to ensure that referenced tables are not dropped or modified in incompatible ways while a command runs. For applications that cannot adapt easily to MVCC behavior, you can use the `LOCK` command to acquire explicit locks. However, proper use of MVCC generally provides better performance.
 
-|Lock Mode|Associated SQL Commands|Conflicts With|
-|---------|-----------------------|--------------|
-|ACCESS SHARE|`SELECT`|ACCESS EXCLUSIVE|
-|ROW SHARE|`SELECT...FOR lock_strength`|EXCLUSIVE, ACCESS EXCLUSIVE|
-|ROW EXCLUSIVE|`INSERT`, `COPY`|SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE|
-|SHARE UPDATE EXCLUSIVE|`VACUUM` \(without `FULL`\), `ANALYZE`|SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE|
-|SHARE|`CREATE INDEX`|ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE|
-|SHARE ROW EXCLUSIVE| |ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE|
-|EXCLUSIVE|`DELETE`, `UPDATE`, `SELECT...FOR lock_strength`, `REFRESH MATERIALIZED VIEW CONCURRENTLY`|ROW SHARE, ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE|
-|ACCESS EXCLUSIVE|`ALTER TABLE`, `DROP TABLE`, `TRUNCATE`, `REINDEX`, `CLUSTER`, `REFRESH MATERIALIZED VIEW` \(without `CONCURRENTLY`\), `VACUUM FULL`|ACCESS SHARE, ROW SHARE, ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE|
+| Lock Mode              | Associated SQL Commands                                                                                                            | Conflicts With                                                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| ACCESS SHARE           | `SELECT`                                                                                                                           | ACCESS EXCLUSIVE                                                                                                        |
+| ROW SHARE              | `SELECT...FOR lock_strength`                                                                                                       | EXCLUSIVE, ACCESS EXCLUSIVE                                                                                             |
+| ROW EXCLUSIVE          | `INSERT`, `COPY`                                                                                                                   | SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE                                                                 |
+| SHARE UPDATE EXCLUSIVE | `VACUUM` (without `FULL`), `ANALYZE`                                                                                               | SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE                                         |
+| SHARE                  | `CREATE INDEX`                                                                                                                     | ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE                                 |
+| SHARE ROW EXCLUSIVE    |                                                                                                                                    | ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE                          |
+| EXCLUSIVE              | `DELETE`, `UPDATE`, `SELECT...FOR lock_strength`, `REFRESH MATERIALIZED VIEW CONCURRENTLY`                                         | ROW SHARE, ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE               |
+| ACCESS EXCLUSIVE       | `ALTER TABLE`, `DROP TABLE`, `TRUNCATE`, `REINDEX`, `CLUSTER`, `REFRESH MATERIALIZED VIEW` (without `CONCURRENTLY`), `VACUUM FULL` | ACCESS SHARE, ROW SHARE, ROW EXCLUSIVE, SHARE UPDATE EXCLUSIVE, SHARE, SHARE ROW EXCLUSIVE, EXCLUSIVE, ACCESS EXCLUSIVE |
 
-> **Note** By default, the Global Deadlock Detector is deactivated, and WarehousePG acquires the more restrictive `EXCLUSIVE` lock \(rather than `ROW EXCLUSIVE` in PostgreSQL\) for `UPDATE`, `DELETE`, and `SELECT` queries with a locking clause \(`FOR lock_strength`\).
+> **Note** By default, the Global Deadlock Detector is deactivated, and WarehousePG acquires the more restrictive `EXCLUSIVE` lock (rather than `ROW EXCLUSIVE` in PostgreSQL) for `UPDATE`, `DELETE`, and `SELECT` queries with a locking clause (`FOR lock_strength`).
 
 When the Global Deadlock Detector is enabled:
 
 -   The lock mode for some `DELETE` and `UPDATE` operations on heap tables is `ROW EXCLUSIVE`. See [Global Deadlock Detector](#topic_gdd).
--   The lock mode for some queries with a locking clause \(`SELECT...FOR lock_strength`\) is `ROW SHARE`. See "The Locking Clause" in [SELECT](../ref_guide/sql_commands/SELECT.html).
+-   The lock mode for some queries with a locking clause (`SELECT...FOR lock_strength`) is `ROW SHARE`. See "The Locking Clause" in [SELECT](../ref_guide/sql_commands/SELECT.md).
 
-## <a id="topic3"></a>Inserting Rows
+<a id="topic3"></a>
+
+## Inserting Rows
 
 Use the `INSERT` command to create rows in a table. This command requires the table name and a value for each column in the table; you may optionally specify the column names in any order. If you do not specify column names, list the data values in the order of the columns in the table, separated by commas.
 
@@ -59,7 +65,7 @@ INSERT INTO products VALUES (1, 'Cheese', 9.99);
 
 ```
 
-Usually, the data values are literals \(constants\), but you can also use scalar expressions. For example:
+Usually, the data values are literals (constants), but you can also use scalar expressions. For example:
 
 ```
 INSERT INTO films SELECT * FROM tmp_films WHERE date_prod < 
@@ -79,11 +85,13 @@ INSERT INTO products (product_no, name, price) VALUES
 
 To insert data into a partitioned table, you specify the root partitioned table, which is the table created with the `CREATE TABLE` command. You also can specify a leaf partition in an `INSERT` command. An error is returned if the data is not valid for the specified leaf partition. Specifying a table that is not a leaf partition in the `INSERT` command is not supported.
 
-To insert large amounts of data, use external tables or the `COPY` command. These load mechanisms are more efficient than `INSERT` for inserting large quantities of rows. See [Loading and Unloading Data](load/topics/g-loading-and-unloading-data.html) for more information about bulk data loading.
+To insert large amounts of data, use external tables or the `COPY` command. These load mechanisms are more efficient than `INSERT` for inserting large quantities of rows. See [Loading and Unloading Data](load/index.md) for more information about bulk data loading.
 
 The storage model of append-optimized tables is optimized for bulk data loading. WarehousePG does not recommend single row `INSERT` statements for append-optimized tables. For append-optimized tables, WarehousePG supports a maximum of 127 concurrent `INSERT` transactions into a single append-optimized table.
 
-## <a id="topic4"></a>Updating Existing Rows
+<a id="topic4"></a>
+
+## Updating Existing Rows
 
 The `UPDATE` command updates rows in a table. You can update all rows, a subset of all rows, or individual rows in a table. You can update each column separately without affecting other columns.
 
@@ -106,7 +114,9 @@ Using `UPDATE` in WarehousePG has the following restrictions:
 -   If mirrors are enabled, you cannot use `STABLE` or `VOLATILE` functions in an `UPDATE` statement.
 -   WarehousePG partitioning columns cannot be updated.
 
-## <a id="topic5"></a>Deleting Rows
+<a id="topic5"></a>
+
+## Deleting Rows
 
 The `DELETE` command deletes rows from a table. Specify a `WHERE` clause to delete rows that match certain criteria. If you do not specify a `WHERE` clause, all rows in the table are deleted. The result is a valid, but empty, table. For example, to remove all rows from the products table that have a price of *10*:
 
@@ -126,7 +136,9 @@ Using `DELETE` in WarehousePG has similar restrictions to using `UPDATE`:
 
 -   If mirrors are enabled, you cannot use `STABLE` or `VOLATILE` functions in an `UPDATE` statement.
 
-### <a id="topic6"></a>Truncating a Table
+<a id="topic6"></a>
+
+### Truncating a Table
 
 Use the `TRUNCATE` command to quickly remove all rows in a table. For example:
 
@@ -137,7 +149,9 @@ TRUNCATE mytable;
 
 This command empties a table of all rows in one operation. Note that `TRUNCATE` does not scan the table, therefore it does not process inherited child tables or `ON DELETE` rewrite rules. The command truncates only rows in the named table.
 
-## <a id="topic7"></a>Working With Transactions
+<a id="topic7"></a>
+
+## Working With Transactions
 
 Transactions allow you to bundle multiple SQL statements in one all-or-nothing operation.
 
@@ -150,7 +164,9 @@ The following are the WarehousePG SQL transaction commands:
 -   `ROLLBACK TO SAVEPOINT` rolls back a transaction to a savepoint.
 -   `RELEASE SAVEPOINT` destroys a savepoint within a transaction.
 
-### <a id="topic8"></a>Transaction Isolation Levels
+<a id="topic8"></a>
+
+### Transaction Isolation Levels
 
 WarehousePG accepts the standard SQL transaction levels as follows:
 
@@ -159,7 +175,9 @@ WarehousePG accepts the standard SQL transaction levels as follows:
 
 The following information describes the behavior of the WarehousePG transaction levels.
 
-#### <a id="readunc"></a>Read Uncommitted and Read Committed
+<a id="readunc"></a>
+
+#### Read Uncommitted and Read Committed
 
 WarehousePG does not allow any command to see an uncommitted update in another concurrent transaction, so `READ UNCOMMITTED` behaves the same as `READ COMMITTED`. `READ COMMITTED` provides fast, simple, partial transaction isolation. `SELECT`, `UPDATE`, and `DELETE` commands operate on a snapshot of the database taken when the query started.
 
@@ -174,13 +192,15 @@ Successive `SELECT` queries in the same transaction can see different data if ot
 
 `READ COMMITTED` transaction isolation allows concurrent transactions to modify or lock a row before `UPDATE` or `DELETE` find the row. `READ COMMITTED` transaction isolation may be inadequate for applications that perform complex queries and updates and require a consistent view of the database.
 
-#### <a id="repread"></a>Repeatable Read and Serializable
+<a id="repread"></a>
+
+#### Repeatable Read and Serializable
 
 `SERIALIZABLE` transaction isolation, as defined by the SQL standard, ensures that transactions that run concurrently produce the same results as if they were run one after another. If you specify `SERIALIZABLE` WarehousePG falls back to `REPEATABLE READ`. `REPEATABLE READ` transactions prevent dirty reads, non-repeatable reads, and phantom reads without expensive locking, but WarehousePG does not detect all serializability interactions that can occur during concurrent transaction execution. Concurrent transactions should be examined to identify interactions that are not prevented by disallowing concurrent updates of the same data. You can prevent these interactions by using explicit table locks or by requiring the conflicting transactions to update a dummy row introduced to represent the conflict.
 
 With `REPEATABLE READ` transactions, a `SELECT` query:
 
--   Sees a snapshot of the data as of the start of the transaction \(not as of the start of the current query within the transaction\).
+-   Sees a snapshot of the data as of the start of the transaction (not as of the start of the current query within the transaction).
 -   Sees only data committed before the query starts.
 -   Sees updates run within the transaction.
 -   Does not see uncommitted data outside the transaction.
@@ -190,15 +210,17 @@ With `REPEATABLE READ` transactions, a `SELECT` query:
 
 The default transaction isolation level in WarehousePG is `READ COMMITTED`. To change the isolation level for a transaction, declare the isolation level when you `BEGIN` the transaction or use the `SET TRANSACTION` command after the transaction starts.
 
-## <a id="topic_gdd"></a>Global Deadlock Detector
+<a id="topic_gdd"></a>
 
-The WarehousePG Global Deadlock Detector background worker process collects lock information on all segments and uses a directed algorithm to detect the existence of local and global deadlocks. This algorithm allows WarehousePG to relax concurrent update and delete restrictions on heap tables. \(WarehousePG still employs table-level locking on AO/CO tables, restricting concurrent `UPDATE`, `DELETE`, and `SELECT...FOR lock_strength` operations.\)
+## Global Deadlock Detector
 
-By default, the Global Deadlock Detector is deactivated and WarehousePG runs the concurrent `UPDATE` and `DELETE` operations on a heap table serially. You can activate these concurrent updates and have the Global Deadlock Detector determine when a deadlock exists by setting the server configuration parameter [`gp_enable_global_deadlock_detector`](../ref_guide/config_params/guc-list.html).
+The WarehousePG Global Deadlock Detector background worker process collects lock information on all segments and uses a directed algorithm to detect the existence of local and global deadlocks. This algorithm allows WarehousePG to relax concurrent update and delete restrictions on heap tables. (WarehousePG still employs table-level locking on AO/CO tables, restricting concurrent `UPDATE`, `DELETE`, and `SELECT...FOR lock_strength` operations.)
 
-When the Global Deadlock Detector is enabled, the background worker process is automatically started on the coordinator host when you start WarehousePG. You configure the interval at which the Global Deadlock Detector collects and analyzes lock waiting data via the [gp\_global\_deadlock\_detector\_period](../ref_guide/config_params/guc-list.html) server configuration parameter.
+By default, the Global Deadlock Detector is deactivated and WarehousePG runs the concurrent `UPDATE` and `DELETE` operations on a heap table serially. You can activate these concurrent updates and have the Global Deadlock Detector determine when a deadlock exists by setting the server configuration parameter [`gp_enable_global_deadlock_detector`](../ref_guide/config_params/guc-list.md).
 
-If the Global Deadlock Detector determines that deadlock exists, it breaks the deadlock by cancelling one or more backend processes associated with the youngest transaction\(s\) involved.
+When the Global Deadlock Detector is enabled, the background worker process is automatically started on the coordinator host when you start WarehousePG. You configure the interval at which the Global Deadlock Detector collects and analyzes lock waiting data via the [gp_global_deadlock_detector_period](../ref_guide/config_params/guc-list.md) server configuration parameter.
+
+If the Global Deadlock Detector determines that deadlock exists, it breaks the deadlock by cancelling one or more backend processes associated with the youngest transaction(s) involved.
 
 When the Global Deadlock Detector determines a deadlock exists for the following types of transactions, only one of the transactions will succeed. The other transactions will fail with an error indicating that concurrent updates to the same row is not allowed.
 
@@ -206,9 +228,9 @@ When the Global Deadlock Detector determines a deadlock exists for the following
 -   Concurrent update transactions on the same distribution key of a heap table that are run by the Postgres-based planner.
 -   Concurrent update transactions on the same row of a hash table that are run by the GPORCA optimizer.
 
-> **Note** WarehousePG uses the interval specified in the [deadlock\_timeout](../ref_guide/config_params/guc-list.html) server configuration parameter for local deadlock detection. Because the local and global deadlock detection algorithms differ, the cancelled process\(es\) may differ depending upon which detector \(local or global\) WarehousePG triggers first.
+> **Note** WarehousePG uses the interval specified in the [deadlock_timeout](../ref_guide/config_params/guc-list.md) server configuration parameter for local deadlock detection. Because the local and global deadlock detection algorithms differ, the cancelled process(es) may differ depending upon which detector (local or global) WarehousePG triggers first.
 
-> **Note** If the [lock\_timeout](../ref_guide/config_params/guc-list.html) server configuration parameter is turned on and set to a value smaller than `deadlock_timeout` and `gp_global_deadlock_detector_period`, WarehousePG will cancel a statement before it would ever trigger a deadlock check in that session.
+> **Note** If the [lock_timeout](../ref_guide/config_params/guc-list.md) server configuration parameter is turned on and set to a value smaller than `deadlock_timeout` and `gp_global_deadlock_detector_period`, WarehousePG will cancel a statement before it would ever trigger a deadlock check in that session.
 
 To view lock waiting information for all segments, run the `gp_dist_wait_status()` user-defined function. You can use the output of this function to determine which transactions are waiting on locks, which transactions are holding locks, the lock types and mode, the waiter and holder session identifiers, and which segments are running the transactions. Sample output of the `gp_dist_wait_status()` function follows:
 
@@ -245,7 +267,9 @@ When it cancels a transaction to break a deadlock, the Global Deadlock Detector 
 ERROR:  canceling statement due to user request: "cancelled by global deadlock detector"
 ```
 
-### <a id="gdd_example"></a>Global Deadlock Detector UPDATE and DELETE Compatibility
+<a id="gdd_example"></a>
+
+### Global Deadlock Detector UPDATE and DELETE Compatibility
 
 The Global Deadlock Detector can manage concurrent updates for these types of `UPDATE` and `DELETE` commands on heap tables:
 
@@ -291,18 +315,19 @@ The Global Deadlock Detector can manage concurrent updates for these types of `U
     DELETE FROM t USING t1 WHERE t.c > t1.c;
     ```
 
-
 The following table shows the concurrent `UPDATE` or `DELETE` commands that are managed by the Global Deadlock Detector. For example, concurrent simple `UPDATE` commands on the same table row are managed by the Global Deadlock Detector. For a concurrent complex `UPDATE` and a simple `UPDATE`, only one `UPDATE` is performed, and an error is returned for the other `UPDATE`.
 
-|Command|Simple `UPDATE`|Simple `DELETE`|Split `UPDATE`|Complex `UPDATE`|Complex `DELETE`|
-|-------|---------------|---------------|--------------|----------------|----------------|
-|Simple `UPDATE`|YES|YES|NO|NO|NO|
-|Simple `DELETE`|YES|YES|NO|YES|YES|
-|Split `UPDATE`|NO|NO|NO|NO|NO|
-|Complex `UPDATE`|NO|YES|NO|NO|NO|
-|Complex `DELETE`|NO|YES|NO|NO|YES|
+| Command          | Simple `UPDATE` | Simple `DELETE` | Split `UPDATE` | Complex `UPDATE` | Complex `DELETE` |
+| ---------------- | --------------- | --------------- | -------------- | ---------------- | ---------------- |
+| Simple `UPDATE`  | YES             | YES             | NO             | NO               | NO               |
+| Simple `DELETE`  | YES             | YES             | NO             | YES              | YES              |
+| Split `UPDATE`   | NO              | NO              | NO             | NO               | NO               |
+| Complex `UPDATE` | NO              | YES             | NO             | NO               | NO               |
+| Complex `DELETE` | NO              | YES             | NO             | NO               | YES              |
 
-## <a id="topic9"></a>Vacuuming the Database
+<a id="topic9"></a>
+
+## Vacuuming the Database
 
 Deleted or updated data rows occupy physical space on disk even though new transactions cannot see them. Periodically running the `VACUUM` command removes these expired rows. For example:
 
@@ -311,11 +336,13 @@ VACUUM mytable;
 
 ```
 
-The `VACUUM` command collects table-level statistics such as the number of rows and pages. Vacuum all tables after loading data, including append-optimized tables. For information about recommended routine vacuum operations, see [Routine Vacuum and Analyze](managing/maintain.html).
+The `VACUUM` command collects table-level statistics such as the number of rows and pages. Vacuum all tables after loading data, including append-optimized tables. For information about recommended routine vacuum operations, see [Routine Vacuum and Analyze](managing/maintain.md).
 
 > **Important** The `VACUUM`, `VACUUM FULL`, and `VACUUM ANALYZE` commands should be used to maintain the data in a WarehousePG especially if updates and deletes are frequently performed on your database data. See the `VACUUM` command in the *WarehousePG Reference Guide* for information about using the command.
 
-## <a id="topic11"></a>Running Out of Locks
+<a id="topic11"></a>
+
+## Running Out of Locks
 
 WarehousePG can potentially run out of locks when a database operation accesses multiple tables in a single transaction. Backup and restore are examples of such operations.
 
@@ -328,5 +355,4 @@ When WarehousePG runs out of locks, the error message that you may observe refer
 
 > **Note** "shared memory" in this context refers to the shared memory of the internal object: the lock slots. "Out of shared memory" does *not* refer to exhaustion of system- or WarehousePG-level memory resources.
 
-As the hint describes, consider increasing the [`max_locks_per_transaction`](../ref_guide/config_params/guc-list.html) server configuration parameter when you encounter this error.
-
+As the hint describes, consider increasing the [`max_locks_per_transaction`](../ref_guide/config_params/guc-list.md) server configuration parameter when you encounter this error.

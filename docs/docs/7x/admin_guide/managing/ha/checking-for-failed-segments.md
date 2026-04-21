@@ -1,27 +1,33 @@
-# Checking for Failed Segments
+---
+title: Checking for Failed Segments
+
 ---
 
 With mirroring enabled, you can have failed segment instances in the system without interruption of service or any indication that a failure has occurred. You can verify the status of your system using the `gpstate` utility, by examing the contents of the `gp_segment_configuration` catalog table, or by checking log files.
 
-## <a id="use_gpstate"></a>Check for failed segments using gpstate
+<a id="use_gpstate"></a>
+
+## Check for failed segments using gpstate
 
 The `gpstate` utility provides the status of each individual component of a WarehousePG cluster, including primary segments, mirror segments, coordinator, and standby coordinator.
 
-On the coordinator host, run the [gpstate](../../utility_guide/ref/gpstate.html) utility with the `-e` option to show segment instances with error conditions:
+On the coordinator host, run the [gpstate](../../../ref_guide/utility_guide/reference/gpstate.md) utility with the `-e` option to show segment instances with error conditions:
 
 ```
 $ gpstate -e
 ```
 
-If the utility lists `Segments with Primary and Mirror Roles Switched`, the segment is not in its *preferred role* \(the role to which it was assigned at system initialization\). This means the system is in a potentially unbalanced state, as some segment hosts may have more active segments than is optimal for top system performance.
+If the utility lists `Segments with Primary and Mirror Roles Switched`, the segment is not in its *preferred role* (the role to which it was assigned at system initialization). This means the system is in a potentially unbalanced state, as some segment hosts may have more active segments than is optimal for top system performance.
 
 Segments that display the `Config status` as `Down` indicate the corresponding mirror segment is down.
 
-See [Recovering from Segment Failures](recovering-from-segment-failures.html) for instructions to fix this situation.
+See [Recovering from Segment Failures](recovering-from-segment-failures.md) for instructions to fix this situation.
 
-## <a id="select_from_table"></a>Check for failed segments using the gp\_segment\_configuration table
+<a id="select_from_table"></a>
 
-To get detailed information about failed segments, you can check the [gp\_segment\_configuration](../../ref_guide/system_catalogs/gp_segment_configuration.html) catalog table. For example:
+## Check for failed segments using the gp_segment_configuration table
+
+To get detailed information about failed segments, you can check the [gp_segment_configuration](../../../ref_guide/system_catalogs/system_catalogs_definitions/gp_segment_configuration.md) catalog table. For example:
 
 ```
 $ psql postgres -c "SELECT * FROM gp_segment_configuration WHERE status='d';"
@@ -33,13 +39,17 @@ For failed segment instances, note the host, port, preferred role, and data dire
 $ gpstate -m
 ```
 
-## <a id="check_log_files"></a>Check for failed segments by examining log files
+<a id="check_log_files"></a>
+
+## Check for failed segments by examining log files
 
 Log files can provide information to help determine an error's cause. The coordinator and segment instances each have their own log file in `log` of the data directory. The coordinator log file contains the most information and you should always check it first.
 
-Use the [gplogfilter](../../utility_guide/ref/gplogfilter.html) utility to check the WarehousePG log files for additional information. To check the segment log files, run `gplogfilter` on the segment hosts using [gpssh](../../utility_guide/ref/gpssh.html).
+Use the [gplogfilter](../../../ref_guide/utility_guide/reference/gplogfilter.md) utility to check the WarehousePG log files for additional information. To check the segment log files, run `gplogfilter` on the segment hosts using [gpssh](../../../ref_guide/utility_guide/reference/gpssh.md).
 
-## <a id="ki170080"></a>To check the log files
+<a id="ki170080"></a>
+
+## To check the log files
 
 1.  Use `gplogfilter` to check the coordinator log file for `WARNING`, `ERROR`, `FATAL` or `PANIC` log level messages:
 
@@ -51,11 +61,9 @@ Use the [gplogfilter](../../utility_guide/ref/gplogfilter.html) utility to check
 
     ```
     $ gpssh -f seg_hosts_file -e 'source 
-    /usr/local/greenplum-db/greenplum_path.sh ; gplogfilter -t 
+    /usr/edb/whpg7/greenplum_path.sh ; gplogfilter -t 
     /data1/primary/*/log/gpdb*.log' > seglog.out
-    
+
     ```
 
-
-**Parent topic:** [How WarehousePG Detects a Failed Segment](../ha/detecting-a-failed-segment.html)
-
+**Parent topic:** [How WarehousePG Detects a Failed Segment](detecting-a-failed-segment.md)

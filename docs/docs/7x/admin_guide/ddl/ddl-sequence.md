@@ -1,19 +1,23 @@
-# Creating and Using Sequences
+---
+title: Creating and Using Sequences
+
 ---
 
 A WarehousePG sequence object is a special single row table that functions as a number generator. You can use a sequence to generate unique integer identifiers for a row that you add to a table. Declaring a column of type `SERIAL` implicitly creates a sequence counter for use in that table column.
 
-WarehousePG provides commands to create, alter, and drop a sequence. WarehousePG also provides built-in functions to return the next value in the sequence \(`nextval()`\) or to set the sequence to a specific start value \(`setval()`\).
+WarehousePG provides commands to create, alter, and drop a sequence. WarehousePG also provides built-in functions to return the next value in the sequence (`nextval()`) or to set the sequence to a specific start value (`setval()`).
 
 > **Note** The PostgreSQL `currval()` and `lastval()` sequence functions are not supported in WarehousePG.
 
 Attributes of a sequence object include the name of the sequence, its increment value, and the last, minimum, and maximum values of the sequence counter. Sequences also have a special boolean attribute named `is_called` that governs the auto-increment behavior of a `nextval()` operation on the sequence counter. When a sequence's `is_called` attribute is `true`, `nextval()` increments the sequence counter before returning the value. When the `is_called` attribute value of a sequence is `false`, `nextval()` does not increment the counter before returning the value.
 
-**Parent topic:** [DDL: Defining Database Objects](../ddl/ddl.html)
+**Parent topic:** [DDL: Defining Database Objects](index.md)
 
-## <a id="topic87"></a>Creating a Sequence
+<a id="topic87"></a>
 
-The [CREATE SEQUENCE](../../ref_guide/sql_commands/CREATE_SEQUENCE.html) command creates and initializes a sequence with the given sequence name and optional start value. The sequence name must be distinct from the name of any other sequence, table, index, or view in the same schema. For example:
+## Creating a Sequence
+
+The [CREATE SEQUENCE](../../ref_guide/sql_commands/CREATE_SEQUENCE.md) command creates and initializes a sequence with the given sequence name and optional start value. The sequence name must be distinct from the name of any other sequence, table, index, or view in the same schema. For example:
 
 ```
 CREATE SEQUENCE myserial START 101;
@@ -22,11 +26,15 @@ CREATE SEQUENCE myserial START 101;
 
 When you create a new sequence, WarehousePG sets the sequence `is_called` attribute to `false`. Invoking `nextval()` on a newly-created sequence does not increment the sequence counter, but returns the sequence start value and sets `is_called` to `true`.
 
-## <a id="topic88"></a>Using a Sequence
+<a id="topic88"></a>
+
+## Using a Sequence
 
 After you create a sequence with the `CREATE SEQUENCE` command, you can examine the sequence and use the sequence built-in functions.
 
-### <a id="exseq"></a>Examining Sequence Attributes
+<a id="exseq"></a>
+
+### Examining Sequence Attributes
 
 To examine the current attributes of a sequence, query the sequence directly. For example, to examine a sequence named `myserial`:
 
@@ -34,7 +42,9 @@ To examine the current attributes of a sequence, query the sequence directly. Fo
 SELECT * FROM myserial;
 ```
 
-### <a id="retnex"></a>Returning the Next Sequence Counter Value
+<a id="retnex"></a>
+
+### Returning the Next Sequence Counter Value
 
 You can invoke the `nextval()` built-in function to return and use the next value in a sequence. The following command inserts the next value of the sequence named `myserial` into the first column of a table named `vendors`:
 
@@ -48,7 +58,9 @@ A `nextval()` operation is never rolled back. A fetched value is considered used
 
 > **Note** You cannot use the `nextval()` function in `UPDATE` or `DELETE` statements if mirroring is enabled in WarehousePG.
 
-### <a id="setseq"></a>Setting the Sequence Counter Value
+<a id="setseq"></a>
+
+### Setting the Sequence Counter Value
 
 You can use the WarehousePG `setval()` built-in function to set the counter value for a sequence. For example, the following command sets the counter value of the sequence named `myserial` to `201`:
 
@@ -68,7 +80,9 @@ SELECT setval('myserial', 201, false);
 
 `setval()` operations are never rolled back.
 
-### <a id="notes"></a> nextval() and setval() Caution
+<a id="notes"></a>
+
+### nextval() and setval() Caution
 
 To avoid blocking concurrent transactions that obtain numbers from the same sequence, the value obtained by `nextval()` is not reclaimed for re-use if the calling transaction later aborts. As such, transaction aborts or database crashes can result in gaps in the sequence of assigned values. This situation can occur without a transaction abort, also. For example, an `INSERT` with an `ON CONFLICT` clause will compute the to-be-inserted tuple, including invoking any required `nextval()` calls, before detecting any conflict that would cause it to follow the `ON CONFLICT` rule instead. Consequently, you cannot use WarehousePG sequence objects to obtain "gapless" sequences.
 
@@ -76,9 +90,11 @@ Similarly, sequence state changes made by `setval()` are immediately visible to 
 
 If the database cluster crashes before committing a transaction containing a `nextval()` or `setval()` call, the sequence state change may not have been propogated to persistent storage, so that it is uncertain whether the sequence has its original or updated state after the cluster restarts. This is harmless for usage of the sequence within the database, since other effects of uncommitted transactions are visible either. However, if you wish to use a sequence value for persistent outside-the-database purposes, ensure that the `nextval()` call has been committed before doing so.
 
-## <a id="topic89"></a>Altering a Sequence
+<a id="topic89"></a>
 
-The [ALTER SEQUENCE](../../ref_guide/sql_commands/ALTER_SEQUENCE.html) command changes the attributes of an existing sequence. You can alter the sequence start, minimum, maximum, and increment values. You can also restart the sequence at the start value or at a specified value.
+## Altering a Sequence
+
+The [ALTER SEQUENCE](../../ref_guide/sql_commands/ALTER_SEQUENCE.md) command changes the attributes of an existing sequence. You can alter the sequence start, minimum, maximum, and increment values. You can also restart the sequence at the start value or at a specified value.
 
 Any parameters not set in the `ALTER SEQUENCE` command retain their prior settings.
 
@@ -95,18 +111,22 @@ ALTER SEQUENCE myserial RESTART WITH 105;
 
 ```
 
-## <a id="topic90"></a>Dropping a Sequence
+<a id="topic90"></a>
 
-The [DROP SEQUENCE](../../ref_guide/sql_commands/DROP_SEQUENCE.html) command removes a sequence. For example, the following command removes the sequence named `myserial`:
+## Dropping a Sequence
+
+The [DROP SEQUENCE](../../ref_guide/sql_commands/DROP_SEQUENCE.md) command removes a sequence. For example, the following command removes the sequence named `myserial`:
 
 ```
 DROP SEQUENCE myserial;
 
 ```
 
-## <a id="topic91"></a>Specifying a Sequence as the Default Value for a Column
+<a id="topic91"></a>
 
-You can reference a sequence directly in the [CREATE TABLE](../../ref_guide/sql_commands/CREATE_TABLE.html) command in addition to using the `SERIAL` or `BIGSERIAL` types. For example:
+## Specifying a Sequence as the Default Value for a Column
+
+You can reference a sequence directly in the [CREATE TABLE](../../ref_guide/sql_commands/CREATE_TABLE.md) command in addition to using the `SERIAL` or `BIGSERIAL` types. For example:
 
 ```
 CREATE TABLE tablename ( id INT4 DEFAULT nextval('myserial'), name text );
@@ -120,9 +140,11 @@ ALTER TABLE tablename ALTER COLUMN id SET DEFAULT nextval('myserial');
 
 ```
 
-## <a id="topic92"></a>Sequence Wraparound
+<a id="topic92"></a>
 
-By default, a sequence does not wrap around. That is, when a sequence reaches the max value \(`+32767` for `SMALLSERIAL`, `+2147483647` for `SERIAL`, `+9223372036854775807` for `BIGSERIAL`\), every subsequent `nextval()` call produces an error. You can alter a sequence to make it cycle around and start at `1` again:
+## Sequence Wraparound
+
+By default, a sequence does not wrap around. That is, when a sequence reaches the max value (`+32767` for `SMALLSERIAL`, `+2147483647` for `SERIAL`, `+9223372036854775807` for `BIGSERIAL`), every subsequent `nextval()` call produces an error. You can alter a sequence to make it cycle around and start at `1` again:
 
 ```
 ALTER SEQUENCE myserial CYCLE;
@@ -133,4 +155,3 @@ You can also specify the wraparound behaviour when you create the sequence:
 ```
 CREATE SEQUENCE myserial CYCLE;
 ```
-

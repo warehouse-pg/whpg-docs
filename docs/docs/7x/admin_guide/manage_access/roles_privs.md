@@ -1,28 +1,34 @@
-# Managing Roles and Privileges
+---
+title: Managing Roles and Privileges
+
 ---
 
 The WarehousePG authorization mechanism stores roles and permissions to access database objects in the database and is administered using SQL statements or command-line utilities.
 
-WarehousePG manages database access permissions using *roles*. The concept of roles subsumes the concepts of *users* and *groups*. A role can be a database user, a group, or both. Roles can own database objects \(for example, tables\) and can assign privileges on those objects to other roles to control access to the objects. Roles can be members of other roles, thus a member role can inherit the object privileges of its parent role.
+WarehousePG manages database access permissions using *roles*. The concept of roles subsumes the concepts of *users* and *groups*. A role can be a database user, a group, or both. Roles can own database objects (for example, tables) and can assign privileges on those objects to other roles to control access to the objects. Roles can be members of other roles, thus a member role can inherit the object privileges of its parent role.
 
-Every WarehousePG cluster contains a set of database roles \(users and groups\). Those roles are separate from the users and groups managed by the operating system on which the server runs. However, for convenience you may want to maintain a relationship between operating system user names and WarehousePG role names, since many of the client applications use the current operating system user name as the default.
+Every WarehousePG cluster contains a set of database roles (users and groups). Those roles are separate from the users and groups managed by the operating system on which the server runs. However, for convenience you may want to maintain a relationship between operating system user names and WarehousePG role names, since many of the client applications use the current operating system user name as the default.
 
 In WarehousePG, users log in and connect through the coordinator instance, which then verifies their role and access privileges. The coordinator then issues commands to the segment instances behind the scenes as the currently logged in role.
 
 Roles are defined at the system level, meaning they are valid for all databases in the system.
 
-In order to bootstrap the WarehousePG cluster, a freshly initialized system always contains one predefined *superuser* role \(also referred to as the system user\). This role will have the same name as the operating system user that initialized the WarehousePG cluster. Customarily, this role is named `gpadmin`. In order to create more roles you first have to connect as this initial role.
+In order to bootstrap the WarehousePG cluster, a freshly initialized system always contains one predefined *superuser* role (also referred to as the system user). This role will have the same name as the operating system user that initialized the WarehousePG cluster. Customarily, this role is named `gpadmin`. In order to create more roles you first have to connect as this initial role.
 
-**Parent topic:** [Managing WarehousePG Access](getting_started)
+**Parent topic:** [Managing WarehousePG Access](index.md)
 
-## <a id="topic2"></a>Security Best Practices for Roles and Privileges
+<a id="topic2"></a>
 
--   **Secure the gpadmin system user.** WarehousePG requires a UNIX user id to install and initialize the WarehousePG cluster. This system user is referred to as `gpadmin` in the WarehousePG documentation. This `gpadmin` user is the default database superuser in WarehousePG, as well as the file system owner of the WarehousePG installation and its underlying data files. This default administrator account is fundamental to the design of WarehousePG. The system cannot run without it, and there is no way to limit the access of this gpadmin user id. Use roles to manage who has access to the database for specific purposes. You should only use the `gpadmin` account for system maintenance tasks such as expansion and upgrade. Anyone who logs on to a WarehousePG host as this user id can read, alter or delete any data; including system catalog data and database access rights. Therefore, it is very important to secure the gpadmin user id and only provide access to essential system administrators. Administrators should only log in to WarehousePG as `gpadmin` when performing certain system maintenance tasks \(such as upgrade or expansion\). Database users should never log on as `gpadmin`, and ETL or production workloads should never run as `gpadmin`.
--   **Assign a distinct role to each user that logs in.** For logging and auditing purposes, each user that is allowed to log in to WarehousePG should be given their own database role. For applications or web services, consider creating a distinct role for each application or service. See [Creating New Roles \(Users\)](#topic3).
+## Security Best Practices for Roles and Privileges
+
+-   **Secure the gpadmin system user.** WarehousePG requires a UNIX user id to install and initialize the WarehousePG cluster. This system user is referred to as `gpadmin` in the WarehousePG documentation. This `gpadmin` user is the default database superuser in WarehousePG, as well as the file system owner of the WarehousePG installation and its underlying data files. This default administrator account is fundamental to the design of WarehousePG. The system cannot run without it, and there is no way to limit the access of this gpadmin user id. Use roles to manage who has access to the database for specific purposes. You should only use the `gpadmin` account for system maintenance tasks such as expansion and upgrade. Anyone who logs on to a WarehousePG host as this user id can read, alter or delete any data; including system catalog data and database access rights. Therefore, it is very important to secure the gpadmin user id and only provide access to essential system administrators. Administrators should only log in to WarehousePG as `gpadmin` when performing certain system maintenance tasks (such as upgrade or expansion). Database users should never log on as `gpadmin`, and ETL or production workloads should never run as `gpadmin`.
+-   **Assign a distinct role to each user that logs in.** For logging and auditing purposes, each user that is allowed to log in to WarehousePG should be given their own database role. For applications or web services, consider creating a distinct role for each application or service. See [Creating New Roles (Users)](#topic3).
 -   **Use groups to manage access privileges.** See [Role Membership](#topic5).
 -   **Limit users who have the SUPERUSER role attribute.** Roles that are superusers bypass all access privilege checks in WarehousePG, as well as resource queuing. Only system administrators should be given superuser rights. See [Altering Role Attributes](#topic4).
 
-## <a id="topic3"></a>Creating New Roles \(Users\)
+<a id="topic3"></a>
+
+## Creating New Roles (Users)
 
 A user-level role is considered to be a database role that can log in to the database and initiate a database session. Therefore, when you create a new user-level role using the `CREATE ROLE` command, you must specify the `LOGIN` privilege. For example:
 
@@ -33,24 +39,26 @@ A user-level role is considered to be a database role that can log in to the dat
 
 A database role may have a number of attributes that define what sort of tasks that role can perform in the database. You can set these attributes when you create the role, or later using the `ALTER ROLE` command.
 
-### <a id="topic4"></a>Altering Role Attributes
+<a id="topic4"></a>
+
+### Altering Role Attributes
 
 A database role may have a number of attributes that define what sort of tasks that role can perform in the database.
 
-|Attributes|Description|
-|----------|-----------|
-|`SUPERUSER` or `NOSUPERUSER`|Determines if the role is a superuser. You must yourself be a superuser to create a new superuser. `NOSUPERUSER` is the default.|
-|`CREATEDB` or `NOCREATEDB`|Determines if the role is allowed to create databases. `NOCREATEDB` is the default.|
-|`CREATEROLE` or `NOCREATEROLE`|Determines if the role is allowed to create and manage other roles. `NOCREATEROLE` is the default.|
-|`INHERIT` or `NOINHERIT`|Determines whether a role inherits the privileges of roles it is a member of. A role with the `INHERIT` attribute can automatically use whatever database privileges have been granted to all roles it is directly or indirectly a member of. `INHERIT` is the default.|
-|`LOGIN` or `NOLOGIN`|Determines whether a role is allowed to log in. A role having the `LOGIN` attribute can be thought of as a user. Roles without this attribute are useful for managing database privileges \(groups\). `NOLOGIN` is the default.|
-|`CONNECTION LIMIT *connlimit*`|If role can log in, this specifies how many concurrent connections the role can make. -1 \(the default\) means no limit.|
-|`CREATEEXTTABLE` or `NOCREATEEXTTABLE`|Determines whether a role is allowed to create external tables. `NOCREATEEXTTABLE` is the default. For a role with the `CREATEEXTTABLE` attribute, the default external table `type` is `readable` and the default `protocol` is `gpfdist`. Note that external tables that use the `file` or `execute` protocols can only be created by superusers.|
-|`PASSWORD '*password*'`|Sets the role's password. If you do not plan to use password authentication you can omit this option. If no password is specified, the password will be set to null and password authentication will always fail for that user. A null password can optionally be written explicitly as `PASSWORD NULL`.|
-|`ENCRYPTED`|The password is always stored encrypted in the system catalogs. The `ENCRYPTED` keyword has no effect, but is accepted for backwards compatibility. The method of encryption is determined by the configuration parameter `password_encryption`. If the presented password string is already in MD5-encrypted or SCRAM-encrypted format, then it is stored as-is regardless of `password_encryption`, since the system cannot decrypt the specified encrypted password string, to encrypt it in a different format). This allows reloading of encrypted passwords during dump/restore.<br/>See [Protecting Passwords in WarehousePG](#topic9) for additional information about protecting login passwords. |
-|`VALID UNTIL 'timestamp'`|Sets a date and time after which the role's password is no longer valid. If omitted the password will be valid for all time.|
-|`RESOURCE QUEUE queue_name`|Assigns the role to the named resource queue for workload management. Any statement that role issues is then subject to the resource queue's limits. Note that the `RESOURCE QUEUE` attribute is not inherited; it must be set on each user-level \(`LOGIN`\) role.|
-|`DENY deny_interval` or `DENY deny_point` | Restricts access during an interval, specified by day or day and time. For more information see [Time-based Authentication](#topic13).|
+| Attributes                                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SUPERUSER` or `NOSUPERUSER`              | Determines if the role is a superuser. You must yourself be a superuser to create a new superuser. `NOSUPERUSER` is the default.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `CREATEDB` or `NOCREATEDB`                | Determines if the role is allowed to create databases. `NOCREATEDB` is the default.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `CREATEROLE` or `NOCREATEROLE`            | Determines if the role is allowed to create and manage other roles. `NOCREATEROLE` is the default.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `INHERIT` or `NOINHERIT`                  | Determines whether a role inherits the privileges of roles it is a member of. A role with the `INHERIT` attribute can automatically use whatever database privileges have been granted to all roles it is directly or indirectly a member of. `INHERIT` is the default.                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `LOGIN` or `NOLOGIN`                      | Determines whether a role is allowed to log in. A role having the `LOGIN` attribute can be thought of as a user. Roles without this attribute are useful for managing database privileges (groups). `NOLOGIN` is the default.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `CONNECTION LIMIT *connlimit*`            | If role can log in, this specifies how many concurrent connections the role can make. -1 (the default) means no limit.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `CREATEEXTTABLE` or `NOCREATEEXTTABLE`    | Determines whether a role is allowed to create external tables. `NOCREATEEXTTABLE` is the default. For a role with the `CREATEEXTTABLE` attribute, the default external table `type` is `readable` and the default `protocol` is `gpfdist`. Note that external tables that use the `file` or `execute` protocols can only be created by superusers.                                                                                                                                                                                                                                                                                                                                                         |
+| `PASSWORD '*password*'`                   | Sets the role's password. If you do not plan to use password authentication you can omit this option. If no password is specified, the password will be set to null and password authentication will always fail for that user. A null password can optionally be written explicitly as `PASSWORD NULL`.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `ENCRYPTED`                               | The password is always stored encrypted in the system catalogs. The `ENCRYPTED` keyword has no effect, but is accepted for backwards compatibility. The method of encryption is determined by the configuration parameter `password_encryption`. If the presented password string is already in MD5-encrypted or SCRAM-encrypted format, then it is stored as-is regardless of `password_encryption`, since the system cannot decrypt the specified encrypted password string, to encrypt it in a different format). This allows reloading of encrypted passwords during dump/restore.<br />See [Protecting Passwords in WarehousePG](#topic9) for additional information about protecting login passwords. |
+| `VALID UNTIL 'timestamp'`                 | Sets a date and time after which the role's password is no longer valid. If omitted the password will be valid for all time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `RESOURCE QUEUE queue_name`               | Assigns the role to the named resource queue for workload management. Any statement that role issues is then subject to the resource queue's limits. Note that the `RESOURCE QUEUE` attribute is not inherited; it must be set on each user-level (`LOGIN`) role.                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `DENY deny_interval` or `DENY deny_point` | Restricts access during an interval, specified by day or day and time. For more information see [Time-based Authentication](#topic13).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 You can set these attributes when you create the role, or later using the `ALTER ROLE` command. For example:
 
@@ -68,7 +76,9 @@ A role can also have role-specific defaults for many of the server configuration
 =# ALTER ROLE admin SET search_path TO myschema, public;
 ```
 
-## <a id="topic5"></a>Role Membership
+<a id="topic5"></a>
+
+## Role Membership
 
 It is frequently convenient to group users together to ease management of object privileges: that way, privileges can be granted to, or revoked from, a group as a whole. In WarehousePG this is done by creating a role that represents the group, and then granting membership in the group role to individual user roles.
 
@@ -79,7 +89,7 @@ Use the `CREATE ROLE` SQL command to create a new group role. For example:
 
 ```
 
-Once the group role exists, you can add and remove members \(user roles\) using the `GRANT` and `REVOKE` commands. For example:
+Once the group role exists, you can add and remove members (user roles) using the `GRANT` and `REVOKE` commands. For example:
 
 ```
 =# GRANT admin TO john, sally;
@@ -87,7 +97,7 @@ Once the group role exists, you can add and remove members \(user roles\) using 
 
 ```
 
-For managing object privileges, you would then grant the appropriate permissions to the group-level role only \(see [Managing Object Privileges](#topic6)\). The member user roles then inherit the object privileges of the group role. For example:
+For managing object privileges, you would then grant the appropriate permissions to the group-level role only (see [Managing Object Privileges](#topic6)). The member user roles then inherit the object privileges of the group role. For example:
 
 ```
 =# GRANT ALL ON TABLE mytable TO admin;
@@ -103,14 +113,16 @@ The role attributes `LOGIN`, `SUPERUSER`, `CREATEDB`, `CREATEROLE`, `CREATEEXTTA
 
 ```
 
-## <a id="topic6"></a>Managing Object Privileges
+<a id="topic6"></a>
 
-When an object \(table, view, sequence, database, function, language, schema, or tablespace\) is created, it is assigned an owner. The owner is normally the role that ran the creation statement. For most kinds of objects, the initial state is that only the owner \(or a superuser\) can do anything with the object. To allow other roles to use it, privileges must be granted. WarehousePG supports the following privileges for each object type:
+## Managing Object Privileges
 
-<table class="table" id="topic6__iq139925"><caption><span class="table--title-label">Table 2. </span><span class="title">Object Privileges</span></caption><colgroup><col style="width:66.66666666666666%"><col style="width:33.33333333333333%"></colgroup><thead class="thead">
+When an object (table, view, sequence, database, function, language, schema, or tablespace) is created, it is assigned an owner. The owner is normally the role that ran the creation statement. For most kinds of objects, the initial state is that only the owner (or a superuser) can do anything with the object. To allow other roles to use it, privileges must be granted. WarehousePG supports the following privileges for each object type:
+
+<table class="table" id="iq139925"><caption><span class="table--title-label">Table 2. </span><span class="title">Object Privileges</span></caption><colgroup><col style="width:66.66666666666666%" /><col style="width:33.33333333333333%" /></colgroup><thead class="thead">
             <tr class="row">
-              <th class="entry" id="topic6__iq139925__entry__1">Object Type</th>
-              <th class="entry" id="topic6__iq139925__entry__2">Privileges</th>
+              <th class="entry" id="iq139925__entry__1">Object Type</th>
+              <th class="entry" id="iq139925__entry__2">Privileges</th>
             </tr>
           </thead><tbody class="tbody">
             <tr class="row">
@@ -306,7 +318,7 @@ When an object \(table, view, sequence, database, function, language, schema, or
             </tr>
           </tbody></table>
 
-> **Note** You must grant privileges for each object individually. For example, granting `ALL` on a database does not grant full access to the objects within that database. It only grants all of the database-level privileges \(`CONNECT`, `CREATE`, `TEMPORARY`\) to the database itself.
+> **Note** You must grant privileges for each object individually. For example, granting `ALL` on a database does not grant full access to the objects within that database. It only grants all of the database-level privileges (`CONNECT`, `CREATE`, `TEMPORARY`) to the database itself.
 
 Use the `GRANT` SQL command to give a specified role privileges on an object. For example, to grant the role named `jsmith` insert privileges on the table named `mytable`:
 
@@ -327,7 +339,7 @@ To revoke privileges, use the `REVOKE` command. For example:
 
 ```
 
-You can also use the `DROP OWNED` and `REASSIGN OWNED` commands for managing objects owned by deprecated roles \(Note: only an object's owner or a superuser can drop an object or reassign ownership\). For example:
+You can also use the `DROP OWNED` and `REASSIGN OWNED` commands for managing objects owned by deprecated roles (Note: only an object's owner or a superuser can drop an object or reassign ownership). For example:
 
 ```
 =# REASSIGN OWNED BY sally TO bob;
@@ -335,7 +347,9 @@ You can also use the `DROP OWNED` and `REASSIGN OWNED` commands for managing obj
 
 ```
 
-## <a id="topic8"></a>Encrypting Data
+<a id="topic8"></a>
+
+## Encrypting Data
 
 WarehousePG is installed with an optional module of encryption/decryption functions called `pgcrypto`. The `pgcrypto` functions allow database administrators to store certain columns of data in encrypted form. This adds an extra layer of protection for sensitive data, as data stored in WarehousePG in encrypted form cannot be read by anyone who does not have the encryption key, nor can it be read directly from the disks.
 
@@ -349,7 +363,9 @@ psql -d testdb -c "CREATE EXTENSION pgcrypto"
 
 See [pgcrypto](https://www.postgresql.org/docs/12/pgcrypto.html) in the PostgreSQL documentation for more information about individual functions.
 
-## <a id="topic9"></a>Protecting Passwords in WarehousePG
+<a id="topic9"></a>
+
+## Protecting Passwords in WarehousePG
 
 In its default configuration, WarehousePG saves MD5 or SCRAM-SHA-256 hashes of login users' passwords in the `pg_authid` system catalog rather than saving clear text passwords. Anyone who is able to view the `pg_authid` table can see hash strings, but no passwords. This also ensures that passwords are obscured when the database is dumped to backup files.
 
@@ -377,9 +393,10 @@ To set `password_encryption` in a session, use the SQL `SET` command:
 SET password_encryption = 'md5';
 ```
 
-## <a id="topic13"></a>Time-based Authentication
+<a id="topic13"></a>
+
+## Time-based Authentication
 
 WarehousePG enables the administrator to restrict access to certain times by role. Use the `CREATE ROLE` or `ALTER ROLE` commands to specify time-based constraints.
 
 For details, refer to the *WarehousePG Security Configuration Guide*.
-

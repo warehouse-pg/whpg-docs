@@ -1,11 +1,15 @@
-# Just-in-Time Compilation (JIT)
+---
+title: Just-in-Time Compilation (JIT)
+
 ---
 
 This topic provides an explanation of what Just-in-Time compilation is and how to configure it in WarehousePG.
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+**Parent topic:** [SQL: Querying Data](index.md)
 
-## <a id="topic2"></a>What is JIT compilation?
+<a id="topic2"></a>
+
+## What is JIT compilation?
 
 Just-in-Time (JIT) compilation is the process of turning some form of interpreted program evaluation into a native program, and doing so at run time. For example, instead of using general-purpose code that can evaluate arbitrary SQL expressiones to evaluate a particular SQL predicate like `WHERE a.col=3`, it is possible to generate a function that is specific to that expression and can be natively executed by the CPU, resulting in faster execution.
 
@@ -13,7 +17,9 @@ WarehousePG uses LLVM for JIT compilation and it is enabled with all RPM distrib
 
 It is possible to use JIT with both GPORCA and Postgres-based planner. Since GPORCA and Postgres-based planner use different algorithms and the values for the calculated costs are different, you must tune the JIT thresholds according to your usage. See [When to JIT?](#topic3) for more information.
 
-### <a id="topic21"></a>JIT accelerated operations
+<a id="topic21"></a>
+
+### JIT accelerated operations
 
 Currently WarehousePG's JIT implementation supports for accelerating expression evaluation and tuple deforming.
 
@@ -21,15 +27,21 @@ Expression evaluation is used to evaluate `WHERE` clauses, target lists, aggrega
 
 Tuple deforming is the process of transforming an on-disk tuple into its in-memory representation. It can be accelerated by creating a function specific to the table layout and the number of columns to be extracted.
 
-### <a id="topic22"></a>In-line compilation (inlining)
+<a id="topic22"></a>
+
+### In-line compilation (inlining)
 
 WarehousePG is very extensible and allows new data types, functions, operators and other database objects to be defined. In fact, the built-in objects are implemented using nearly the same mechanisms. This extensibility implies some overhead, for example due to function calls. To reduce that overhead, JIT can use in-line compilation to fit the bodies of small functions into the expressions using them. That allows a significant percentage of the overhead to be optimized away.
 
-### <a id="topic23"></a>Optimization
+<a id="topic23"></a>
+
+### Optimization
 
 LLVM has support for optimizing generated code. Some of the optimizations are cheap enough to be performed whenever JIT is used, while others are only beneficial for longer-running queries. See the [LLVM Documentation](https://llvm.org/docs/Passes.html#transform-passes) for more details about optimizations.
 
-## <a id="topic3"></a>When to JIT?
+<a id="topic3"></a>
+
+## When to JIT?
 
 JIT compilation is beneficial primarily for long-running CPU-bound queries. Frequently these are analytical queries. For short queries the added overhead of performing JIT compilation will often be higher than the time it can save.
 
@@ -37,43 +49,45 @@ JIT compilation is beneficial primarily for long-running CPU-bound queries. Freq
 
 The internal workflow of JIT can be divided into three different stages:
 
-1. Planner Stage
-    
+1.  Planner Stage
+
     This stage takes place in the WarehousePG coordinator. The planner generates the plan tree of a query and its estimated cost. By default, WarehousePG uses GPORCA to generate a query plan. Otherwise it uses Postgres-based planner as a fallback method.
 
     The planner decides to trigger JIT compilation if:
 
-    - The server configuration parameter [jit](../../../ref_guide/config_params/guc-list.html#jit) is `true`.
-    - The estimated cost of the query is higher than the value of the configuration parameter [optimizer_jit_above_cost](../../../ref_guide/config_params/guc-list.html#optimizer_jit_above_cost) (or [jit_above_cost](../../../ref_guide/config_params/guc-list.html#jit_above_cost) for Postgres-based planner).  
+    -   The server configuration parameter [jit](../../ref_guide/config_params/guc-list.md#jit) is `true`.
+    -   The estimated cost of the query is higher than the value of the configuration parameter [optimizer_jit_above_cost](../../ref_guide/config_params/guc-list.md#optimizer_jit_above_cost) (or [jit_above_cost](../../ref_guide/config_params/guc-list.md#jit_above_cost) for Postgres-based planner).  
 
-    If the parameter [jit_expressions](../../../ref_guide/config_params/guc-list.html#jit_expressions) is enabled, the planner suggests to the executor to compile the expressions in JIT space. Additionally, the planner must make other decisions; if the estimated cost is more than the setting of [optimizer_jit_inline_above_cost](../../../ref_guide/config_params/guc-list.html#optimizer_jit_inline_above_cost) (or [jit_inline_above_cost](../../../ref_guide/config_params/guc-list.html#jit_inline_above_cost) for Postgres-based planner), the planner compiles short functions and operators used in the query using in-line compilation. If the estimated cost is more than the setting of [optimizer_jit_optimize_above_cost](../../../ref_guide/config_params/guc-list.html#optimizer_jit_optimize_above_cost) (or [jit_optimize_above_cost](../../../ref_guide/config_params/guc-list.html#jit_optimize_above_cost) for Postgres-based planner), it applies expensive optimizations to improve the generated code. If the configuration parameter [jit_tuple_deforming](../../../ref_guide/config_params/guc-list.html#jit_tuple_deforming) is enabled, it generates a custom function to deform the target table. Each of these options increases the JIT compilation overhead, but can reduce query execution time considerably.
+    If the parameter [jit_expressions](../../ref_guide/config_params/guc-list.md#jit_expressions) is enabled, the planner suggests to the executor to compile the expressions in JIT space. Additionally, the planner must make other decisions; if the estimated cost is more than the setting of [optimizer_jit_inline_above_cost](../../ref_guide/config_params/guc-list.md#optimizer_jit_inline_above_cost) (or [jit_inline_above_cost](../../ref_guide/config_params/guc-list.md#jit_inline_above_cost) for Postgres-based planner), the planner compiles short functions and operators used in the query using in-line compilation. If the estimated cost is more than the setting of [optimizer_jit_optimize_above_cost](../../ref_guide/config_params/guc-list.md#optimizer_jit_optimize_above_cost) (or [jit_optimize_above_cost](../../ref_guide/config_params/guc-list.md#jit_optimize_above_cost) for Postgres-based planner), it applies expensive optimizations to improve the generated code. If the configuration parameter [jit_tuple_deforming](../../ref_guide/config_params/guc-list.md#jit_tuple_deforming) is enabled, it generates a custom function to deform the target table. Each of these options increases the JIT compilation overhead, but can reduce query execution time considerably.
 
     Verify the values of these configuration parameters for both GPORCA and Postgres-based planner, as the meaning of cost is different. When using GPORCA, WarehousePG may sometimes fall back to Postgres-based planner for some operations. Note that setting the JIT cost parameters to ‘0’ forces all queries to be JIT-compiled and, as a result, slows down queries. Setting them to a negative value will disable the feature the parameter provides.
 
     When the plan is ready, the planner provides the plan trees and JIT flags to the executor.
 
-1. Executor Initialization Stage
+2.  Executor Initialization Stage
 
     This stage takes place in the WarehousePG segments. WarehousePG creates the expression evaluation steps. If JIT is used, it re-writes the steps as functions in the JIT space. The decisions made at plan time determine whether or not JIT compilation is adviced to be triggered in execution stage, along with the JIT strategy to apply if it is triggered. However, it is at execution time when WarehousePG makes the decision of using JIT if the configuration parameter `jit` is enabled and the JIT libraries are loaded successfully. The executor may ignore the cached decisions if `jit` or `jit_expression` has been changed to `false` between planner and execution stages or if it encounters an error.
 
     Additionally, the executor checks the following developer configuration parameters:
 
-    - [jit_provider](../../../ref_guide/config_params/guc-list.html#jit_provider) : Specifies the name of the JIT provider library to be used.
-    - [jit_dump_bitcode](../../../ref_guide/config_params/guc-list.html#jit_dump_bitcode): Writes the generated LLVM IR out to the file system, inside [data_directory](../../../install_guide/create_data_dirs.html).
-    - [jit_profiling_support](../../../ref_guide/config_params/guc-list.html#jit_profiling_support): If LLVM has the required functionality, emits the data needed to allow `perf` command to profile functions generated by JIT.
-    - [jit_debugging_support](../../../ref_guide/config_params/guc-list.html#jit_debugging_support): If LLVM has the required functionality, registers generated functions with GDB. 
+    -   [jit_provider](../../ref_guide/config_params/guc-list.md#jit_provider) : Specifies the name of the JIT provider library to be used.
+    -   [jit_dump_bitcode](../../ref_guide/config_params/guc-list.md#jit_dump_bitcode): Writes the generated LLVM IR out to the file system, inside [data_directory](../../install_guide/create_data_dirs.md).
+    -   [jit_profiling_support](../../ref_guide/config_params/guc-list.md#jit_profiling_support): If LLVM has the required functionality, emits the data needed to allow `perf` command to profile functions generated by JIT.
+    -   [jit_debugging_support](../../ref_guide/config_params/guc-list.md#jit_debugging_support): If LLVM has the required functionality, registers generated functions with GDB. 
 
-1. Executor Run Stage
+3.  Executor Run Stage
 
     This stage also occurs in the WarehousePG segments which execute the steps provided by the initialization stage. The functions in JIT space are combined as a whole before the first call.
 
 The JIT workflow can also handle executor fault tolerance: if JIT fails to load on the segments, the execution mode fails back to non-JIT.
 
-## <a id="topic4"></a>Examples
+<a id="topic4"></a>
+
+## Examples
 
 In the examples below, the configuration parameter `optimizer_jit_above_cost`/`jit_above_cost` was modified so it would trigger JIT compilation. Note that the use of JIT might add more overhead than the potential savings. JIT was used, but inlining and expensive optimization were not. If `optimizer_jit_inline_above_cost`/`jit_inline_above_cost` or `optimizer_jit_optimize_above_cost`/`jit_optimize_above_cost` were also lowered, they could be triggered.
 
-You may enable the configuration parameter [gp_explain_jit](../../../ref_guide/config_params/guc-list.html#gp_explain_jit) to display summarized JIT information from all query executions when running the `EXPLAIN` command. You must turn it off when running regression tests.
+You may enable the configuration parameter [gp_explain_jit](../../ref_guide/config_params/guc-list.md#gp_explain_jit) to display summarized JIT information from all query executions when running the `EXPLAIN` command. You must turn it off when running regression tests.
 
 Note that the output from `EXPLAIN` provides information on JIT such as the slice average timing spent in JIT, what segment the maximum vector comes from, or how many JIT functions are created and total time spent in JIT tasks. This information can be helpful when tuning JIT or debugging a timing problem. Run `EXPLAIN (ANALYZE, VERBOSE)` to view this information.
 

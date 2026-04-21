@@ -1,16 +1,19 @@
-# pg_stat_last_operation 
+---
+title: pg_stat_last_operation
 
-The pg\_stat\_last\_operation table contains metadata tracking information about database objects \(tables, views, etc.\).
+---
 
-|column|type|references|description|
-|------|----|----------|-----------|
-|`classid`|oid|pg\_class.oid|OID of the system catalog containing the object.|
-|`objid`|oid|any OID column|OID of the object within its system catalog.|
-|`staactionname`|name| |The action that was taken on the object.|
-|`stasysid`|oid|pg\_authid.oid|A foreign key to pg\_authid.oid.|
-|`stausename`|name| |The name of the role that performed the operation on this object.|
-|`stasubtype`|text| |The type of object operated on or the subclass of operation performed.|
-|`statime`|timestamp with timezone| |The timestamp of the operation. This is the same timestamp that is written to the WarehousePG server log files in case you need to look up more detailed information about the operation in the logs.|
+The pg_stat_last_operation table contains metadata tracking information about database objects (tables, views, etc.).
+
+| column          | type                    | references     | description                                                                                                                                                                                           |
+| --------------- | ----------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `classid`       | oid                     | pg_class.oid   | OID of the system catalog containing the object.                                                                                                                                                      |
+| `objid`         | oid                     | any OID column | OID of the object within its system catalog.                                                                                                                                                          |
+| `staactionname` | name                    |                | The action that was taken on the object.                                                                                                                                                              |
+| `stasysid`      | oid                     | pg_authid.oid  | A foreign key to pg_authid.oid.                                                                                                                                                                       |
+| `stausename`    | name                    |                | The name of the role that performed the operation on this object.                                                                                                                                     |
+| `stasubtype`    | text                    |                | The type of object operated on or the subclass of operation performed.                                                                                                                                |
+| `statime`       | timestamp with timezone |                | The timestamp of the operation. This is the same timestamp that is written to the WarehousePG server log files in case you need to look up more detailed information about the operation in the logs. |
 
 The `pg_stat_last_operation` table contains metadata tracking information about operations on database objects. This information includes the object id, DDL action, user, type of object, and operation timestamp. WarehousePG updates this table when a database object is created, altered, truncated, vacuumed, analyzed, or partitioned, and when privileges are granted to an object.
 
@@ -31,7 +34,6 @@ testdb=# SELECT * FROM pg_stat_last_operation WHERE objid='trial'::regclass::oid
 (2 rows)
 ```
 
-Notice that the `pg_stat_last_operation` table entry for the view `REPLACE` operation specifies the `ALTER` action \(`staactionname`\) and the `SET` subtype \(`stasubtype`\).
+Notice that the `pg_stat_last_operation` table entry for the view `REPLACE` operation specifies the `ALTER` action (`staactionname`) and the `SET` subtype (`stasubtype`).
 
-**Parent topic:** [System Catalogs Definitions](../system_catalogs/catalog_ref-html.html)
-
+**Parent topic:** [System Catalogs Definitions](index.md)

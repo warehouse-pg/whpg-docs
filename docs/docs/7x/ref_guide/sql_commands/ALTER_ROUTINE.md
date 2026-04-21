@@ -1,10 +1,17 @@
-# ALTER ROUTINE 
+---
+title: ALTER ROUTINE
+
+---
 
 Changes the definition of a routine.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER ROUTINE <name> [ ( [ [<argmode>] [<argname>] <argtype> [, ...] ] ) ] 
    <action> [, ... ] [RESTRICT]
 
@@ -35,12 +42,15 @@ where <action> is one of (depending on the type of routine):
     RESET ALL
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`ALTER ROUTINE` changes the definition of a routine, which can be an aggregate function, a normal function, or a procedure. Refer to [ALTER AGGREGATE](ALTER_AGGREGATE.html), [ALTER FUNCTION](ALTER_FUNCTION.html), and [ALTER PROCEDURE](ALTER_PROCEDURE.html) for the description of the parameters, more examples, and further details.
+## Description
 
+`ALTER ROUTINE` changes the definition of a routine, which can be an aggregate function, a normal function, or a procedure. Refer to [ALTER AGGREGATE](ALTER_AGGREGATE.md), [ALTER FUNCTION](ALTER_FUNCTION.md), and [ALTER PROCEDURE](ALTER_PROCEDURE.md) for the description of the parameters, more examples, and further details.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 To rename the routine `foo` for type `integer` to `foobar`:
 
@@ -50,13 +60,16 @@ ALTER ROUTINE foo(integer) RENAME TO foobar;
 
 This command will work independent of whether `foo` is an aggregate, function, or procedure.
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-This statement is partially compatible with the `ALTER ROUTINE` statement in the SQL standard. Refer to [ALTER FUNCTION](ALTER_FUNCTION.html) and [ALTER PROCEDURE](ALTER_PROCEDURE.html) for more details. Allowing routine names to refer to aggregate functions is a WarehousePG extension.
+## Compatibility
 
-## <a id="section8"></a>See Also 
+This statement is partially compatible with the `ALTER ROUTINE` statement in the SQL standard. Refer to [ALTER FUNCTION](ALTER_FUNCTION.md) and [ALTER PROCEDURE](ALTER_PROCEDURE.md) for more details. Allowing routine names to refer to aggregate functions is a WarehousePG extension.
 
-[ALTER AGGREGATE](ALTER_AGGREGATE.html), [ALTER FUNCTION](ALTER_FUNCTION.html), [ALTER PROCEDURE](ALTER_PROCEDURE.html), [DROP ROUTINE](DROP_ROUTINE.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[ALTER AGGREGATE](ALTER_AGGREGATE.md), [ALTER FUNCTION](ALTER_FUNCTION.md), [ALTER PROCEDURE](ALTER_PROCEDURE.md), [DROP ROUTINE](DROP_ROUTINE.md)
+
+**Parent topic:** [SQL Commands](index.md)

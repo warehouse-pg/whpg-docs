@@ -1,27 +1,40 @@
-# RELEASE SAVEPOINT 
+---
+title: RELEASE SAVEPOINT
+
+---
 
 Destroys a previously defined savepoint.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 RELEASE [SAVEPOINT] <savepoint_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `RELEASE SAVEPOINT` destroys a savepoint previously defined in the current transaction.
 
-Destroying a savepoint makes it unavailable as a rollback point, but it has no other user visible behavior. It does not undo the effects of commands run after the savepoint was established. \(To do that, see [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.html).\) Destroying a savepoint when it is no longer needed may allow the system to reclaim some resources earlier than transaction end.
+Destroying a savepoint makes it unavailable as a rollback point, but it has no other user visible behavior. It does not undo the effects of commands run after the savepoint was established. (To do that, see [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.md).) Destroying a savepoint when it is no longer needed may allow the system to reclaim some resources earlier than transaction end.
 
 `RELEASE SAVEPOINT` also destroys all savepoints that were established *after* the named savepoint was established.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-savepoint\_name
+## Parameters
+
+savepoint_name
 The name of the savepoint to destroy.
 
-## <a id="section_notes"></a>Notes
+<a id="section_notes"></a>
+
+## Notes
 
 Specifying a savepoint name that was not previously defined is an error.
 
@@ -29,7 +42,9 @@ It is not possible to release a savepoint when the transaction is in an aborted 
 
 If multiple savepoints have the same name, WarehousePG releases only the most recently defined unreleased savepoint. Repeated commands release progressively older savepoints.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 To establish and later destroy a savepoint:
 
@@ -44,13 +59,16 @@ COMMIT;
 
 The above transaction inserts both 3 and 4.
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 This command conforms to the SQL standard. The standard specifies that the key word `SAVEPOINT` is mandatory, but WarehousePG allows it to be omitted.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[BEGIN](BEGIN.html), [COMMIT](COMMIT.html), [ROLLBACK](ROLLBACK.html), [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.html), [SAVEPOINT](SAVEPOINT.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[BEGIN](BEGIN.md), [COMMIT](COMMIT.md), [ROLLBACK](ROLLBACK.md), [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.md), [SAVEPOINT](SAVEPOINT.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,4 +1,6 @@
-# Configuring Kerberos For Windows Clients
+---
+title: Configuring Kerberos For Windows Clients
+
 ---
 
 You can configure Microsoft Windows client applications to connect to a WarehousePG cluster that is configured to authenticate with Kerberos.
@@ -13,11 +15,13 @@ This section contains the following information.
 -   [Creating a Kerberos Keytab File](#topic_win_keytab)
 -   [Issues and Possible Solutions](#topic_win_kerberos_issues)
 
-These topics assume that the WarehousePG cluster is configured to authenticate with Kerberos. For information about configuring WarehousePG with Kerberos authentication, refer to [Using Kerberos Authentication](kerberos.html).
+These topics assume that the WarehousePG cluster is configured to authenticate with Kerberos. For information about configuring WarehousePG with Kerberos authentication, refer to [Using Kerberos Authentication](kerberos.md).
 
-**Parent topic:** [Configuring Client Authentication](client_auth.html)
+**Parent topic:** [Configuring Client Authentication](index.md)
 
-## <a id="topic_win_kerberos_install"></a>Installing and Configuring Kerberos on a Windows System
+<a id="topic_win_kerberos_install"></a>
+
+## Installing and Configuring Kerberos on a Windows System
 
 The `kinit`, `kdestroy`, and `klist` MIT Kerberos Windows client programs and supporting libraries are installed on your system when you install the WarehousePG Client and Load Tools package:
 
@@ -28,6 +32,7 @@ The `kinit`, `kdestroy`, and `klist` MIT Kerberos Windows client programs and su
 You must configure Kerberos on the Windows client to authenticate with WarehousePG:
 
 1.  Copy the Kerberos configuration file `/etc/krb5.conf` from the WarehousePG coordinator to the Windows system, rename it to `krb5.ini`, and place it in the default Kerberos location on the Windows system, `C:\ProgramData\MIT\Kerberos5\krb5.ini`. This directory may be hidden. This step requires administrative privileges on the Windows client system. You may also choose to place the `/etc/krb5.ini` file in a custom location. If you choose to do this, you must configure and set a system environment variable named `KRB5_CONFIG` to the custom location.
+
 2.  Locate the `[libdefaults]` section of the `krb5.ini` file, and remove the entry identifying the location of the Kerberos credentials cache file, `default_ccache_name`. This step requires administrative privileges on the Windows client system.
 
     This is an example configuration file with `default_ccache_name` removed. The `[logging]` section is also removed.
@@ -42,13 +47,13 @@ You must configure Kerberos on the Windows client to authenticate with Warehouse
      ticket_lifetime = 24h
      renew_lifetime = 7d
      forwardable = true
-    
+
     [realms]
      EXAMPLE.LOCAL = {
       kdc =bocdc.example.local
       admin_server = bocdc.example.local
      }
-    
+
     [domain_realm]
      .example.local = EXAMPLE.LOCAL
      example.local = EXAMPLE.LOCAL
@@ -61,13 +66,14 @@ You must configure Kerberos on the Windows client to authenticate with Warehouse
     ```
 
 4.  Obtain your Kerberos principal and password or keytab file from your system administrator.
+
 5.  Generate a Kerberos ticket using a password or a keytab. For example, to generate a ticket using a password:
 
     ```
     kinit [<principal>]
     ```
 
-    To generate a ticket using a keytab \(as described in [Creating a Kerberos Keytab File](#topic_win_keytab)\):
+    To generate a ticket using a keytab (as described in [Creating a Kerberos Keytab File](#topic_win_keytab)):
 
     ```
     kinit -k -t <keytab_filepath> [<principal>]
@@ -80,8 +86,9 @@ You must configure Kerberos on the Windows client to authenticate with Warehouse
     "c:\Program Files\WarehousePG\greenplum-clients\greenplum_clients_path.bat"
     ```
 
+<a id="topic_win_psql_kerb"></a>
 
-## <a id="topic_win_psql_kerb"></a>Running the psql Utility
+## Running the psql Utility
 
 After you configure Kerberos and generate the Kerberos ticket on a Windows system, you can run the WarehousePG command line client `psql`.
 
@@ -105,13 +112,15 @@ psql (9.4.20)
 Type "help" for help.
 ```
 
-## <a id="topic_win_keytab"></a>Creating a Kerberos Keytab File
+<a id="topic_win_keytab"></a>
 
-You can create and use a Kerberos `keytab` file to avoid entering a password at the command line or listing a password in a script file when you connect to a WarehousePG cluster, perhaps when automating a scheduled WarehousePG task such as `gpload`. You can create a keytab file with the Java JRE keytab utility `ktab`. If you use AES256-CTS-HMAC-SHA1-96 encryption, you need to download and install the Java extension *Java Cryptography Extension \(JCE\) Unlimited Strength Jurisdiction Policy Files for JDK/JRE* from Oracle.
+## Creating a Kerberos Keytab File
+
+You can create and use a Kerberos `keytab` file to avoid entering a password at the command line or listing a password in a script file when you connect to a WarehousePG cluster, perhaps when automating a scheduled WarehousePG task such as `gpload`. You can create a keytab file with the Java JRE keytab utility `ktab`. If you use AES256-CTS-HMAC-SHA1-96 encryption, you need to download and install the Java extension *Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy Files for JDK/JRE* from Oracle.
 
 > **Note** You must enter the password to create a keytab file. The password is visible onscreen as you enter it.
 
-This example runs the Java `ktab.exe` program to create a keytab file \(`-a` option\) and list the keytab name and entries \(`-l` `-e` `-t` options\).
+This example runs the Java `ktab.exe` program to create a keytab file (`-a` option) and list the keytab name and entries (`-l` `-e` `-t` options).
 
 ```
 C:\Users\dev1>"\Program Files\Java\jre1.8.0_77\bin"\ktab -a dev1
@@ -141,7 +150,9 @@ or
 kinit -kt %USERPROFILE%\krb5.keytab dev1
 ```
 
-## <a id="topic_win_gpload_kerb"></a>Example gpload YAML File
+<a id="topic_win_gpload_kerb"></a>
+
+## Example gpload YAML File
 
 When you initiate a `gpload` job to a WarehousePG cluster using Kerberos authentication, you omit the `USER:` property and value from the YAML control file.
 
@@ -187,7 +198,9 @@ gpload.bat -f test.yaml
 2016-04-10 16:54:13|INFO|gpload succeeded
 ```
 
-## <a id="topic_win_kerberos_issues"></a>Issues and Possible Solutions
+<a id="topic_win_kerberos_issues"></a>
+
+## Issues and Possible Solutions
 
 -   This message indicates that Kerberos cannot find your Kerberos credentials cache file:
 
@@ -211,5 +224,3 @@ gpload.bat -f test.yaml
     ```
 
     Confirm that the full path and filename for the Kerberos keytab file is correct.
-
-

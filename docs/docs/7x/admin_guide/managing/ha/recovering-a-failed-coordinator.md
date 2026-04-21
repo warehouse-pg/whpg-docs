@@ -1,11 +1,15 @@
-# Recovering a Failed Coordinator
+---
+title: Recovering a Failed Coordinator
+
 ---
 
-If the primary coordinator fails, the WarehousePG cluster is not accessible and WAL replication stops. Use [gpactivatestandby](../../utility_guide/ref/gpactivatestandby.html) to activate the standby coordinator. Upon activation of the standby coordinator, WarehousePG reconstructs the coordinator host state at the time of the last successfully committed transaction.
+If the primary coordinator fails, the WarehousePG cluster is not accessible and WAL replication stops. Use [gpactivatestandby](../../../ref_guide/utility_guide/reference/gpactivatestandby.md) to activate the standby coordinator. Upon activation of the standby coordinator, WarehousePG reconstructs the coordinator host state at the time of the last successfully committed transaction.
 
-These steps assume a standby coordinator host is configured for the system. See [Enabling Coordinator Mirroring](enabling-coordinator-mirroring.html).
+These steps assume a standby coordinator host is configured for the system. See [Enabling Coordinator Mirroring](enabling-mirroring-in-warehousepg/enabling-coordinator-mirroring.md).
 
-## <a id="ki181117"></a>To activate the standby coordinator
+<a id="ki181117"></a>
+
+## To activate the standby coordinator
 
 1.  Run the `gpactivatestandby` utility from the standby coordinator host you are activating. For example:
 
@@ -18,8 +22,8 @@ These steps assume a standby coordinator host is configured for the system. See 
 
     After you activate the standby, it becomes the *active* or *primary* coordinator for your WarehousePG cluster.
 
-    >**NOTE**
-    >Before running `gpactivatestandby`, be sure to run `gpstate -f` to confirm that the standby coordinator is synchronized with the current coordinator node. If synchronized, the final line of the `gpstate -f` output will look similar to this: `20230607:06:50:06:004205 gpstate:test1-m:gpadmin-[INFO]:--Sync state: sync`
+    > **NOTE**
+    > Before running `gpactivatestandby`, be sure to run `gpstate -f` to confirm that the standby coordinator is synchronized with the current coordinator node. If synchronized, the final line of the `gpstate -f` output will look similar to this: `20230607:06:50:06:004205 gpstate:test1-m:gpadmin-[INFO]:--Sync state: sync`
 
 
 2.  After the utility completes, run `gpstate` with the `-b` option to display a summary of the system status:
@@ -34,11 +38,8 @@ These steps assume a standby coordinator host is configured for the system. See 
 
     > **Important** You must initialize a new standby coordinator to continue providing coordinator mirroring.
 
-    For information about restoring the original coordinator and standby coordinator configuration, see [Restoring Coordinator Mirroring After a Recovery](restoring-coordinator-mirroring-after-a-recovery.html).
+    For information about restoring the original coordinator and standby coordinator configuration, see [Restoring Coordinator Mirroring After a Recovery](restoring-coordinator-mirroring-after-a-recovery.md).
 
+-   **[Restoring Coordinator Mirroring After a Recovery](restoring-coordinator-mirroring-after-a-recovery.md)**  
 
--   **[Restoring Coordinator Mirroring After a Recovery](../ha/restoring-coordinator-mirroring-after-a-recovery.html)**  
-
-
-**Parent topic:** [Enabling High Availability and Data Consistency Features](../ha/enabling-high-availability-features.html)
-
+**Parent topic:** [Enabling High Availability and Data Consistency Features](index.md)

@@ -1,10 +1,17 @@
-# CREATE MATERIALIZED VIEW 
+---
+title: CREATE MATERIALIZED VIEW
+
+---
 
 Defines a new materialized view.
 
-## <a id="section1"></a>Synopsis 
+<a id="section1"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CREATE MATERIALIZED VIEW [ IF  NOT EXISTS ] <table_name>
     [ (<column_name> [, ...] ) ]
     [ USING <method> ]
@@ -15,50 +22,58 @@ CREATE MATERIALIZED VIEW [ IF  NOT EXISTS ] <table_name>
     [DISTRIBUTED {| BY <column> [<opclass>], [ ... ] | RANDOMLY | REPLICATED }]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`CREATE MATERIALIZED VIEW` defines a materialized view of a query. The query is run and used to populate the view at the time the command is issued \(unless `WITH NO DATA` is used\) and can be refreshed later using [REFRESH MATERIALIZED VIEW](REFRESH_MATERIALIZED_VIEW.html).
+## Description
+
+`CREATE MATERIALIZED VIEW` defines a materialized view of a query. The query is run and used to populate the view at the time the command is issued (unless `WITH NO DATA` is used) and can be refreshed later using [REFRESH MATERIALIZED VIEW](REFRESH_MATERIALIZED_VIEW.md).
 
 `CREATE MATERIALIZED VIEW` is similar to `CREATE TABLE AS`, except that it also remembers the query used to initialize the view, so that it can be refreshed later upon demand. To refresh materialized view data, use the `REFRESH MATERIALIZED VIEW` command. A materialized view has many of the same properties as a table, but there is no support for temporary materialized views.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF NOT EXISTS
 Do not throw an error if a materialized view with the same name already exists. A notice is issued in this case. Note that there is no guarantee that the existing materialized view is anything like the one that would have been created.
 
-table\_name
-The name \(optionally schema-qualified\) of the materialized view to be created.
+table_name
+The name (optionally schema-qualified) of the materialized view to be created.
 
-column\_name
+column_name
 The name of a column in the new materialized view. The column names are assigned based on position. The first column name is assigned to the first column of the query result, and so on. If a column name is not provided, it is taken from the output column names of the query.
 
 USING method
-This optional clause specifies the table access method to use to store the contents for the new materialized view; the method needs be an access method of type `TABLE`. If this option is not specified, the default table access method is chosen for the new materialized view. See [default_table_access_method](../config_params/guc-list.html) for more information.
+This optional clause specifies the table access method to use to store the contents for the new materialized view; the method needs be an access method of type `TABLE`. If this option is not specified, the default table access method is chosen for the new materialized view. See [default_table_access_method](../config_params/guc-list.md) for more information.
 
-WITH \( storage\_parameter \[= value\] \[, ... \] \)
-This clause specifies optional storage parameters for the materialized view. All parameters supported for `CREATE TABLE` are also supported for `CREATE MATERIALIZED VIEW`. See [CREATE TABLE](CREATE_TABLE.html) for more information.
+WITH ( storage_parameter \[= value] \[, ... ] )
+This clause specifies optional storage parameters for the materialized view. All parameters supported for `CREATE TABLE` are also supported for `CREATE MATERIALIZED VIEW`. See [CREATE TABLE](CREATE_TABLE.md) for more information.
 
-TABLESPACE tablespace\_name
-The tablespace\_name is the name of the tablespace in which the new materialized view is to be created. If not specified, server configuration parameter [default\_tablespace](../config_params/guc-list.html) is consulted.
+TABLESPACE tablespace_name
+The tablespace_name is the name of the tablespace in which the new materialized view is to be created. If not specified, server configuration parameter [default_tablespace](../config_params/guc-list.md) is consulted.
 
 query
-A [SELECT](SELECT.html), [TABLE](SELECT.html#table-command), or [VALUES](VALUES.html) command. This query will run within a security-restricted operation; in particular, calls to functions that themselves create temporary tables will fail.
+A [SELECT](SELECT.md), [TABLE](SELECT.md#table-command), or [VALUES](VALUES.md) command. This query will run within a security-restricted operation; in particular, calls to functions that themselves create temporary tables will fail.
 
-WITH \[ NO \] DATA
+WITH \[ NO ] DATA
 This clause specifies whether or not the materialized view should be populated with data at creation time. `WITH DATA` is the default, populate the materialized view. For `WITH NO DATA`, the materialized view is not populated with data, is flagged as unscannable, and cannot be queried until `REFRESH MATERIALIZED VIEW` is used to populate the materialized view.
 
-DISTRIBUTED BY \(column \[opclass\], \[ ... \] \)
+DISTRIBUTED BY (column \[opclass], \[ ... ] )
 DISTRIBUTED RANDOMLY
 DISTRIBUTED REPLICATED
-Used to declare the WarehousePG distribution policy for the materialized view data. For information about a table distribution policy, see [CREATE TABLE](CREATE_TABLE.html).
+Used to declare the WarehousePG distribution policy for the materialized view data. For information about a table distribution policy, see [CREATE TABLE](CREATE_TABLE.md).
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 Materialized views are read only. The system will not allow an `INSERT`, `UPDATE`, or `DELETE` on a materialized view. Use `REFRESH MATERIALIZED VIEW` to update the materialized view data.
 
 If you want the data to be ordered upon generation, you must use an `ORDER BY` clause in the materialized view query. However, if a materialized view query contains an `ORDER BY` or `SORT` clause, the data is not guaranteed to be ordered or sorted if `SELECT` is performed on the materialized view.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Create a view consisting of all comedy films:
 
@@ -76,13 +91,16 @@ CREATE MATERIALIZED VIEW topten AS SELECT name, rank, gender, year FROM
 names, rank WHERE rank < '11' AND names.id=rank.id;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 `CREATE MATERIALIZED VIEW` is a WarehousePG extension of the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[SELECT](SELECT.html), [VALUES](VALUES.html), [CREATE VIEW](CREATE_VIEW.html), [ALTER MATERIALIZED VIEW](ALTER_MATERIALIZED_VIEW.html), [DROP MATERIALIZED VIEW](DROP_MATERIALIZED_VIEW.html), [REFRESH MATERIALIZED VIEW](REFRESH_MATERIALIZED_VIEW.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[SELECT](SELECT.md), [VALUES](VALUES.md), [CREATE VIEW](CREATE_VIEW.md), [ALTER MATERIALIZED VIEW](ALTER_MATERIALIZED_VIEW.md), [DROP MATERIALIZED VIEW](DROP_MATERIALIZED_VIEW.md), [REFRESH MATERIALIZED VIEW](REFRESH_MATERIALIZED_VIEW.md)
 
+**Parent topic:** [SQL Commands](index.md)

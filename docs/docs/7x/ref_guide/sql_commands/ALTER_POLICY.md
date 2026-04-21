@@ -1,10 +1,17 @@
-# ALTER POLICY 
+---
+title: ALTER POLICY
+
+---
 
 Changes the definition of a row-level security policy.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER POLICY <name> ON <table_name> RENAME TO <new_name>
 
 ALTER POLICY <name ON table_name>
@@ -13,41 +20,48 @@ ALTER POLICY <name ON table_name>
     [ WITH CHECK ( <check_expression> ) ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER POLICY` changes the definition of an existing row-level security policy. Note that `ALTER POLICY` only allows the set of roles to which the policy applies and the `USING` and `WITH CHECK` expressions to be modified. To change other properties of a policy, such as the command to which it applies or whether it is permissive or restrictive, the policy must be dropped and recreated.
 
 To use `ALTER POLICY`, you must own the table to which the policy applies.
 
-In the second form of `ALTER POLICY`, the role list, using\_expression, and check\_expression are replaced independently if specified. When one of those clauses is omitted, the corresponding part of the policy is unchanged.
+In the second form of `ALTER POLICY`, the role list, using_expression, and check_expression are replaced independently if specified. When one of those clauses is omitted, the corresponding part of the policy is unchanged.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
 The name of an existing policy to alter.
 
-table\_name
-The name \(optionally schema-qualified\) of the table that the policy is on.
+table_name
+The name (optionally schema-qualified) of the table that the policy is on.
 
-new\_name
+new_name
 The new name for the policy.
 
-role\_name
-The role\(s\) to which the policy applies. Multiple roles can be specified at one time. To apply the policy to all roles, use `PUBLIC`.
+role_name
+The role(s) to which the policy applies. Multiple roles can be specified at one time. To apply the policy to all roles, use `PUBLIC`.
 
-using\_expression
-The `USING` expression for the policy. See [CREATE POLICY](CREATE_POLICY.html) for details.
+using_expression
+The `USING` expression for the policy. See [CREATE POLICY](CREATE_POLICY.md) for details.
 
-check\_expression
-The `WITH CHECK` expression for the policy. See [CREATE POLICY](CREATE_POLICY.html) for details.
+check_expression
+The `WITH CHECK` expression for the policy. See [CREATE POLICY](CREATE_POLICY.md) for details.
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 `ALTER POLICY` is a WarehousePG extension to the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE POLICY](CREATE_POLICY.html), [DROP POLICY](DROP_POLICY.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE POLICY](CREATE_POLICY.md), [DROP POLICY](DROP_POLICY.md)
 
+**Parent topic:** [SQL Commands](index.md)

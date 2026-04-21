@@ -1,13 +1,17 @@
-# Loading Data with gpload
+---
+title: Loading Data with gpload
+
 ---
 
-The WarehousePG `gpload` utility loads data using readable external tables and the WarehousePG parallel file server \(gpfdist or `gpfdists`\). It handles parallel file-based external table setup and allows users to configure their data format, external table definition, and gpfdist or `gpfdists` setup in a single configuration file.
+The WarehousePG `gpload` utility loads data using readable external tables and the WarehousePG parallel file server (gpfdist or `gpfdists`). It handles parallel file-based external table setup and allows users to configure their data format, external table definition, and gpfdist or `gpfdists` setup in a single configuration file.
 
 > **Note** `gpfdist` and `gpload` are compatible only with the WarehousePG major version in which they are shipped. For example, a `gpfdist` utility that is installed with WarehousePG 6.x cannot be used with WarehousePG 7.x.
 
-> **Note** `MERGE` and `UPDATE` operations are not supported if the target table column name is a reserved keyword, has capital letters, or includes any character that requires quotes \(" "\) to identify the column.
+> **Note** `MERGE` and `UPDATE` operations are not supported if the target table column name is a reserved keyword, has capital letters, or includes any character that requires quotes (" ") to identify the column.
 
-## <a id="du168147"></a>To use gpload
+<a id="du168147"></a>
+
+## To use gpload
 
 1.  Ensure that your environment is set up to run `gpload`. Some dependent files from your WarehousePG installation are required, such as gpfdist and Python 3, as well as network access to the WarehousePG segment hosts. On Windows clients, `gpload` also requires that you install the following packages:
     ```
@@ -56,16 +60,14 @@ The WarehousePG `gpload` utility loads data using readable external tables and t
     SQL:
        - BEFORE: "INSERT INTO audit VALUES('start', current_timestamp)"
        - AFTER: "INSERT INTO audit VALUES('end', current_timestamp)"
-    
+
     ```
 
 3.  Run `gpload`, passing in the load control file. For example:
 
     ```
     gpload -f my_load.yml
-    
+
     ```
 
-
-**Parent topic:** [Loading and Unloading Data](../../load/topics/g-loading-and-unloading-data.html)
-
+**Parent topic:** [Loading and Unloading Data](index.md)

@@ -1,10 +1,17 @@
-# ALTER GROUP 
+---
+title: ALTER GROUP
+
+---
 
 Changes a role name or membership.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER GROUP <role_specification> ADD USER <user_name> [, ... ]
 
 ALTER GROUP <role_specification> DROP USER <user_name> [, ... ]
@@ -18,26 +25,32 @@ where <role_specification> can be:
 ALTER GROUP <group_name> RENAME TO <new_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER GROUP` changes the attributes of a user group. This is an obsolete command, though still accepted for backwards compatibility, because users and groups are superseded by the more general concept of roles.
 
-The first two variants add users to a group or remove them from a group. \(Any role can play the part of either a "user" or "group" for this purpose. These variants are effectively equivalent to granting or revoking membership in the role named as the "group"; so, the preferred way to do this is to use [GRANT](GRANT.html) or [REVOKE](REVOKE.html).
+The first two variants add users to a group or remove them from a group. (Any role can play the part of either a "user" or "group" for this purpose. These variants are effectively equivalent to granting or revoking membership in the role named as the "group"; so, the preferred way to do this is to use [GRANT](GRANT.md) or [REVOKE](REVOKE.md).
 
-The third variant changes the name of the group. This is exactly equivalent to renaming the role with [ALTER ROLE](ALTER_ROLE.html).
+The third variant changes the name of the group. This is exactly equivalent to renaming the role with [ALTER ROLE](ALTER_ROLE.md).
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-group\_name
-The name of the group \(role\) to modify.
+## Parameters
 
-user\_name
-Users \(roles\) that are to be added to or removed from the group. The users \(roles\) must already exist; `ALTER GROUP` does not create or drop users.
+group_name
+The name of the group (role) to modify.
 
-new\_name
+user_name
+Users (roles) that are to be added to or removed from the group. The users (roles) must already exist; `ALTER GROUP` does not create or drop users.
+
+new_name
 The new name of the group.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 To add users to a group:
 
@@ -51,13 +64,16 @@ To remove a user from a group:
 ALTER GROUP workers DROP USER beth;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 There is no `ALTER GROUP` statement in the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[ALTER ROLE](ALTER_ROLE.html), [GRANT](GRANT.html), [REVOKE](REVOKE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER ROLE](ALTER_ROLE.md), [GRANT](GRANT.md), [REVOKE](REVOKE.md)
 
+**Parent topic:** [SQL Commands](index.md)

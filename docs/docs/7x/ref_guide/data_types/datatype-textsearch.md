@@ -1,14 +1,19 @@
-# Text Search Data Types 
+---
+title: Text Search Data Types
 
-WarehousePG provides two data types that are designed to support full text search, which is the activity of searching through a collection of natural-language *documents* to locate those that best match a *query*. The `tsvector` type represents a document in a form optimized for text search; the `tsquery` type similarly represents a text query. [Using Full Text Search](../admin_guide/textsearch/full-text-search.html) provides a detailed explanation of this facility, and [Text Search Functions and Operators](function-summary.html) summarizes the related functions and operators.
+---
+
+WarehousePG provides two data types that are designed to support full text search, which is the activity of searching through a collection of natural-language *documents* to locate those that best match a *query*. The `tsvector` type represents a document in a form optimized for text search; the `tsquery` type similarly represents a text query. [Using Full Text Search](../../admin_guide/query/textsearch/index.md) provides a detailed explanation of this facility, and [Text Search Functions and Operators](../function-summary.md) summarizes the related functions and operators.
 
 The `tsvector` and `tsquery` types cannot be part of the distribution key of a WarehousePG table.
 
-**Parent topic:** [Data Types](data_types.html)
+**Parent topic:** [Data Types](index.md)
 
-## <a id="topic_mzv_44c_qfb"></a>tsvector 
+<a id="topic_mzv_44c_qfb"></a>
 
-A `tsvector` value is a sorted list of distinct *lexemes*, which are words that have been *normalized* to merge different variants of the same word \(see [Using Full Text Search](../admin_guide/textsearch/full-text-search.html) for details\). Sorting and duplicate-elimination are done automatically during input, as shown in this example:
+## tsvector
+
+A `tsvector` value is a sorted list of distinct *lexemes*, which are words that have been *normalized* to merge different variants of the same word (see [Using Full Text Search](../../admin_guide/query/textsearch/index.md) for details). Sorting and duplicate-elimination are done automatically during input, as shown in this example:
 
 ```
 SELECT 'a fat cat sat on a mat and ate a fat rat'::tsvector;
@@ -26,7 +31,7 @@ SELECT $$the lexeme '    ' contains spaces$$::tsvector;
  '    ' 'contains' 'lexeme' 'spaces' 'the'
 ```
 
-\(We use dollar-quoted string literals in this example and the next one to avoid the confusion of having to double quote marks within the literals.\) Embedded quotes and backslashes must be doubled:
+(We use dollar-quoted string literals in this example and the next one to avoid the confusion of having to double quote marks within the literals.) Embedded quotes and backslashes must be doubled:
 
 ```
 SELECT $$the lexeme 'Joe''s' contains a quote$$::tsvector;
@@ -75,9 +80,11 @@ SELECT to_tsvector('english', 'The Fat Rats');
  'fat':2 'rat':3
 ```
 
-## <a id="topic_w2h_p4c_qfb"></a>tsquery 
+<a id="topic_w2h_p4c_qfb"></a>
 
-A `tsquery` value stores lexemes that are to be searched for, and combines them honoring the Boolean operators `&` \(AND\), `|` \(OR\), and `!` \(NOT\). Parentheses can be used to enforce grouping of the operators:
+## tsquery
+
+A `tsquery` value stores lexemes that are to be searched for, and combines them honoring the Boolean operators `&` (AND), `|` (OR), and `!` (NOT). Parentheses can be used to enforce grouping of the operators:
 
 ```
 SELECT 'fat & rat'::tsquery;
@@ -96,7 +103,7 @@ SELECT 'fat & rat & ! cat'::tsquery;
  'fat' & 'rat' & !'cat'
 ```
 
-In the absence of parentheses, `!` \(NOT\) binds most tightly, and `&` \(AND\) binds more tightly than `|` \(OR\).
+In the absence of parentheses, `!` (NOT) binds most tightly, and `&` (AND) binds more tightly than `|` (OR).
 
 Optionally, lexemes in a `tsquery` can be labeled with one or more weight letters, which restricts them to match only `tsvector` lexemes with matching weights:
 
@@ -146,4 +153,3 @@ SELECT to_tsquery('Fat:ab & Cats');
 ------------------
  'fat':AB & 'cat'
 ```
-

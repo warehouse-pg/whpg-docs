@@ -1,40 +1,55 @@
-# ALTER TEXT SEARCH TEMPLATE 
+---
+title: ALTER TEXT SEARCH TEMPLATE
+navTitle: Description
 
-## <a id="Description"></a>Description 
+---
+
+<a id="description"></a>
 
 Changes the definition of a text search template.
 
-## <a id="Synopsis"></a>Synopsis 
+<a id="synopsis"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER TEXT SEARCH TEMPLATE <name> RENAME TO <new_name>
 ALTER TEXT SEARCH TEMPLATE <name> SET SCHEMA <new_schema>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER TEXT SEARCH TEMPLATE` changes the definition of a text search parser. Currently, the only supported functionality is to change the template's name.
 
 You must be a superuser to use `ALTER TEXT SEARCH TEMPLATE`.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
-The name \(optionally schema-qualified\) of an existing text search template.
+The name (optionally schema-qualified) of an existing text search template.
 
-new\_name
+new_name
 The new name of the text search template.
 
-new\_schema
+new_schema
 The new schema for the text search template.
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 There is no `ALTER TEXT SEARCH TEMPLATE` statement in the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[CREATE TEXT SEARCH TEMPLATE](CREATE_TEXT_SEARCH_TEMPLATE.html), [DROP TEXT SEARCH TEMPLATE](DROP_TEXT_SEARCH_TEMPLATE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE TEXT SEARCH TEMPLATE](CREATE_TEXT_SEARCH_TEMPLATE.md), [DROP TEXT SEARCH TEMPLATE](DROP_TEXT_SEARCH_TEMPLATE.md)
 
+**Parent topic:** [SQL Commands](index.md)

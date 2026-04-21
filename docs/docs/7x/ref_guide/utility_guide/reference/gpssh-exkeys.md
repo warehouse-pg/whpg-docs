@@ -1,8 +1,13 @@
-# gpssh-exkeys 
+---
+title: gpssh-exkeys
+
+---
 
 Exchanges SSH public keys between hosts.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
+
+## Synopsis
 
 ```
 gpssh-exkeys -f <hostfile_exkeys> | -h <hostname> [-h <hostname> ...]
@@ -14,11 +19,13 @@ gpssh-exkeys -?
 gpssh-exkeys --version
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-The `gpssh-exkeys` utility exchanges SSH keys between the specified host names \(or host addresses\). This allows SSH connections between WarehousePG hosts and network interfaces without a password prompt. The utility is used to initially prepare a WarehousePG cluster for passwordless SSH access, and also to prepare additional hosts for passwordless SSH access when expanding a WarehousePG cluster.
+## Description
 
-Keys are exchanged as the currently logged in user. You run the utility on the coordinator host as the `gpadmin` user \(the user designated to own your WarehousePG installation\). WarehousePG management utilities require that the `gpadmin` user be created on all hosts in the WarehousePG cluster, and the utilities must be able to connect as that user to all hosts without a password prompt.
+The `gpssh-exkeys` utility exchanges SSH keys between the specified host names (or host addresses). This allows SSH connections between WarehousePG hosts and network interfaces without a password prompt. The utility is used to initially prepare a WarehousePG cluster for passwordless SSH access, and also to prepare additional hosts for passwordless SSH access when expanding a WarehousePG cluster.
+
+Keys are exchanged as the currently logged in user. You run the utility on the coordinator host as the `gpadmin` user (the user designated to own your WarehousePG installation). WarehousePG management utilities require that the `gpadmin` user be created on all hosts in the WarehousePG cluster, and the utilities must be able to connect as that user to all hosts without a password prompt.
 
 You can also use `gpssh-exkeys` to enable passwordless SSH for additional users, `root`, for example.
 
@@ -26,11 +33,11 @@ The `gpssh-exkeys` utility has the following prerequisites:
 
 -   The user must have an account on the coordinator, standby, and every segment host in the WarehousePG cluster.
 -   The user must have an `id_rsa` SSH key pair installed on the coordinator host.
--   The user must be able to connect with SSH from the coordinator host to every other host machine without entering a password. \(This is called "1-*n* passwordless SSH."\)
+-   The user must be able to connect with SSH from the coordinator host to every other host machine without entering a password. (This is called "1-*n* passwordless SSH.")
 
 You can enable 1-*n* passwordless SSH using the `ssh-copy-id` command to add the user's public key to each host's `authorized_keys` file. The `gpssh-exkeys` utility enables "*n*-*n* passwordless SSH," which allows the user to connect with SSH from any host to any other host in the cluster without a password.
 
-To specify the hosts involved in an SSH key exchange, use the `-f` option to specify a file containing a list of host names \(recommended\), or use the `-h` option to name single host names on the command-line. At least one host name \(`-h`\) or a host file \(`-f`\) is required. Note that the local host is included in the key exchange by default.
+To specify the hosts involved in an SSH key exchange, use the `-f` option to specify a file containing a list of host names (recommended), or use the `-h` option to name single host names on the command-line. At least one host name (`-h`) or a host file (`-f`) is required. Note that the local host is included in the key exchange by default.
 
 To specify new expansion hosts to be added to an existing WarehousePG cluster, use the `-e` and `-x` options. The `-e` option specifies a file containing a list of existing hosts in the system that have already exchanged SSH keys. The `-x` option specifies a file containing a list of new hosts that need to participate in the SSH key exchange.
 
@@ -40,29 +47,33 @@ The `gpssh-exkeys` utility performs key exchange using the following steps:
 -   Updates the `known_hosts` file of the current user with the host key of each host specified using the `-h`, `-f`, `-e`, and `-x` options.
 -   Connects to each host using `ssh` and obtains the user's `authorized_keys`, `known_hosts`, and `id_rsa.pub` files.
 -   Adds keys from the `id_rsa.pub` files obtained from each host to the `authorized_keys` file of the current user.
--   Updates the `authorized_keys`, `known_hosts`, and `id_rsa.pub` files on all hosts with new host information \(if any\).
+-   Updates the `authorized_keys`, `known_hosts`, and `id_rsa.pub` files on all hosts with new host information (if any).
 
-## <a id="section4"></a>Options 
+<a id="section4"></a>
 
--e hostfile\_exkeys
-When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses \(interface names\) for each host in your current WarehousePG cluster \(coordinator, standby coordinator, and segments\), one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-x`.
+## Options
 
--f hostfile\_exkeys
-Specifies the name and location of a file containing all configured host names and host addresses \(interface names\) for each host in your WarehousePG cluster \(coordinator, standby coordinator and segments\), one name per line without blank lines or extra spaces.
+\-e hostfile_exkeys
+When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses (interface names) for each host in your current WarehousePG cluster (coordinator, standby coordinator, and segments), one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-x`.
 
--h hostname
-Specifies a single host name \(or host address\) that will participate in the SSH key exchange. You can use the `-h` option multiple times to specify multiple host names and host addresses.
+\-f hostfile_exkeys
+Specifies the name and location of a file containing all configured host names and host addresses (interface names) for each host in your WarehousePG cluster (coordinator, standby coordinator and segments), one name per line without blank lines or extra spaces.
 
---version
+\-h hostname
+Specifies a single host name (or host address) that will participate in the SSH key exchange. You can use the `-h` option multiple times to specify multiple host names and host addresses.
+
+\--version
 Displays the version of this utility.
 
--x hostfile\_gpexpand
-When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses \(interface names\) for each new segment host you are adding to your WarehousePG cluster, one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-e`.
+\-x hostfile_gpexpand
+When doing a system expansion, this is the name and location of a file containing all configured host names and host addresses (interface names) for each new segment host you are adding to your WarehousePG cluster, one name per line without blank lines or extra spaces. Hosts specified in this file cannot be specified in the host file used with `-e`.
 
--? \(help\)
+\-? (help)
 Displays the online help.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Exchange SSH keys between all host names and addresses listed in the file `hostfile_exkeys`:
 
@@ -105,7 +116,8 @@ sdw5-2
 $ gpssh-exkeys -e hostfile_exkeys -x hostfile_gpexpand
 ```
 
-## <a id="section6"></a>See Also 
+<a id="section6"></a>
 
-[gpssh](gpssh.html), [gpsync](gpsync.html)
+## See Also
 
+[gpssh](gpssh.md), [gpsync](gpsync.md)

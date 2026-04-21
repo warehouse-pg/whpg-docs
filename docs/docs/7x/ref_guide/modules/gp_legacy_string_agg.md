@@ -1,4 +1,7 @@
-# gp\_legacy\_string\_agg 
+---
+title: gp_legacy_string_agg
+
+---
 
 The `gp_legacy_string_agg` module re-introduces the single-argument `string_agg()` function that was present in WarehousePG 5.
 
@@ -6,11 +9,15 @@ The `gp_legacy_string_agg` module is a WarehousePG extension.
 
 > **Note** Use this module to aid migration from WarehousePG 5 to the native, two-argument `string_agg()` function included in WarehousePG 6.
 
-## <a id="topic_reg"></a>Installing and Registering the Module 
+<a id="topic_reg"></a>
 
-The `gp_legacy_string_agg` module is installed when you install WarehousePG. Before you can use the function defined in the module, you must register the `gp_legacy_string_agg` extension in each database where you want to use the function. Refer to [Installing Extensions](../../install_guide/install_extensions.html) for more information about registering the module.
+## Installing and Registering the Module
 
-## <a id="topic_use"></a>Using the Module 
+The `gp_legacy_string_agg` module is installed when you install WarehousePG. Before you can use the function defined in the module, you must register the `gp_legacy_string_agg` extension in each database where you want to use the function. Refer to [Installing Extensions](../../install_guide/install_extensions.md) for more information about registering the module.
+
+<a id="topic_use"></a>
+
+## Using the Module
 
 The single-argument `string_agg()` function has the following signature:
 
@@ -44,7 +51,9 @@ WARNING:  Deprecated call to string_agg(text), use string_agg(text, text) instea
 (1 row)
 ```
 
-## <a id="topic_migrate"></a>Migrating to the Two-Argument string\_agg\(\) Function 
+<a id="topic_migrate"></a>
+
+## Migrating to the Two-Argument string_agg() Function
 
 WarehousePG 6 includes a native, two-argument, text input `string_agg()` function:
 
@@ -59,4 +68,3 @@ string_agg( text, '' )
 ```
 
 You can use this conversion when you are ready to migrate from this contrib module.
-

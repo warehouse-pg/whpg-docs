@@ -1,28 +1,39 @@
-# DROP TRANSFORM
+---
+title: DROP TRANSFORM
+
+---
 
 Removes a transform.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP TRANSFORM [IF EXISTS] FOR <type_name> LANGUAGE <lang_name> [CASCADE | RESTRICT]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `DROP TRANSFORM` removes a previously defined transform.
 
 To drop a transform, you must own the type and the language. These are the same privileges that are required to create a transform.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF EXISTS
 Do not throw an error if the transform does not exist. WarehousePG issues a notice in this case.
 
-type\_name
+type_name
 The name of the data type of the transform.
 
-lang\_name
+lang_name
 The name of the language of the transform.
 
 CASCADE
@@ -31,21 +42,26 @@ Automatically drop objects that depend on the transform, and in turn all objects
 RESTRICT
 Refuse to drop the transform if any objects depend on it. This is the default.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 To drop the transform for type `hstore` and language `plpython3u`:
 
-``` sql
+```sql
 DROP TRANSFORM FOR hstore LANGUAGE plpython3u;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
 
-This form of `DROP TRANSFORM` is a WarehousePG extension. See [CREATE TRANSFORM](CREATE_TRANSFORM.html) for details.
+## Compatibility
 
-## <a id="section7"></a>See Also 
+This form of `DROP TRANSFORM` is a WarehousePG extension. See [CREATE TRANSFORM](CREATE_TRANSFORM.md) for details.
 
-[CREATE TRANSFORM](CREATE_TRANSFORM.html)
+<a id="section7"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[CREATE TRANSFORM](CREATE_TRANSFORM.md)
+
+**Parent topic:** [SQL Commands](index.md)

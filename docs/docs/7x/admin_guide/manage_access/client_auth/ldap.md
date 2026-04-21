@@ -1,20 +1,24 @@
-# Using LDAP Authentication with TLS/SSL
+---
+title: Using LDAP Authentication with TLS/SSL
+
 ---
 
-You can control access to WarehousePG with an LDAP server and, optionally, secure the connection with encryption by adding parameters to pg\_hba.conf file entries.
+You can control access to WarehousePG with an LDAP server and, optionally, secure the connection with encryption by adding parameters to pg_hba.conf file entries.
 
 WarehousePG supports LDAP authentication with the TLS/SSL protocol to encrypt communication with an LDAP server:
 
--   LDAP authentication with STARTTLS and TLS protocol – STARTTLS starts with a clear text connection \(no encryption\) and upgrades it to a secure connection \(with encryption\).
--   LDAP authentication with a secure connection and TLS/SSL \(LDAPS\) – WarehousePG uses the TLS or SSL protocol based on the protocol that is used by the LDAP server.
+-   LDAP authentication with STARTTLS and TLS protocol – STARTTLS starts with a clear text connection (no encryption) and upgrades it to a secure connection (with encryption).
+-   LDAP authentication with a secure connection and TLS/SSL (LDAPS) – WarehousePG uses the TLS or SSL protocol based on the protocol that is used by the LDAP server.
 
 If no protocol is specified, WarehousePG communicates with the LDAP server with a clear text connection.
 
 To use LDAP authentication, the WarehousePG coordinator host must be configured as an LDAP client. See your LDAP documentation for information about configuring LDAP clients.
 
-## <a id="enldap"></a>Enabling LDAP Authentication with STARTTLS and TLS
+<a id="enldap"></a>
 
-To enable STARTTLS with the TLS protocol, in the pg\_hba.conf file, add an `ldap` line and specify the `ldaptls` parameter with the value 1. The default port is 389. In this example, the authentication method parameters include the `ldaptls` parameter.
+## Enabling LDAP Authentication with STARTTLS and TLS
+
+To enable STARTTLS with the TLS protocol, in the pg_hba.conf file, add an `ldap` line and specify the `ldaptls` parameter with the value 1. The default port is 389. In this example, the authentication method parameters include the `ldaptls` parameter.
 
 ```
 ldap ldapserver=myldap.com ldaptls=1 ldapprefix="uid=" ldapsuffix=",ou=People,dc=example,dc=com"
@@ -26,7 +30,9 @@ Specify a non-default port with the `ldapport` parameter. In this example, the a
 ldap ldapserver=myldap.com ldaptls=1 ldapport=500 ldapprefix="uid=" ldapsuffix=",ou=People,dc=example,dc=com"
 ```
 
-## <a id="enldapauth"></a>Enabling LDAP Authentication with a Secure Connection and TLS/SSL
+<a id="enldapauth"></a>
+
+## Enabling LDAP Authentication with a Secure Connection and TLS/SSL
 
 To enable a secure connection with TLS/SSL, add `ldaps://` as the prefix to the LDAP server name specified in the `ldapserver` parameter. The default port is 636.
 
@@ -36,15 +42,17 @@ This example `ldapserver` parameter specifies a secure connection and the TLS/SS
 ldapserver=ldaps://myldap.com
 ```
 
-To specify a non-default port, add a colon \(:\) and the port number after the LDAP server name. This example `ldapserver` parameter includes the `ldaps://` prefix and the non-default port 550.
+To specify a non-default port, add a colon (:) and the port number after the LDAP server name. This example `ldapserver` parameter includes the `ldaps://` prefix and the non-default port 550.
 
 ```
 ldapserver=ldaps://myldap.com:550
 ```
 
-## <a id="conauth"></a>Configuring Authentication with a System-wide OpenLDAP System
+<a id="conauth"></a>
 
-If you have a system-wide OpenLDAP system and logins are configured to use LDAP with TLS or SSL in the pg\_hba.conf file, logins may fail with the following message:
+## Configuring Authentication with a System-wide OpenLDAP System
+
+If you have a system-wide OpenLDAP system and logins are configured to use LDAP with TLS or SSL in the pg_hba.conf file, logins may fail with the following message:
 
 ```
 could not start LDAP TLS session: error code '-11'
@@ -53,6 +61,7 @@ could not start LDAP TLS session: error code '-11'
 To use an existing OpenLDAP system for authentication, WarehousePG must be set up to use the LDAP server's CA certificate to validate user certificates. Follow these steps on both the coordinator and standby hosts to configure WarehousePG:
 
 1.  Copy the base64-encoded root CA chain file from the Active Directory or LDAP server to the WarehousePG coordinator and standby coordinator hosts. This example uses the directory `/etc/pki/tls/certs`.
+
 2.  Change to the directory where you copied the CA certificate file and, as the root user, generate the hash for OpenLDAP:
 
     ```
@@ -75,27 +84,30 @@ To use an existing OpenLDAP system for authentication, WarehousePG must be set u
 
     > **Note** For certificate validation to succeed, the hostname in the certificate must match a hostname in the URI property. Otherwise, you must also add `TLS_REQCERT allow` to the file.
 
-4.  As the gpadmin user, edit `/usr/local/greenplum-db/greenplum_path.sh` and add the following line.
+4.  As the gpadmin user, edit `/usr/edb/whpg7/greenplum_path.sh` and add the following line.
 
     ```
     export LDAPCONF=/etc/openldap/ldap.conf
     ```
 
+<a id="notes2"></a>
 
-## <a id="notes2"></a>Notes
+## Notes
 
-WarehousePG logs an error if the following are specified in an pg\_hba.conf file entry:
+WarehousePG logs an error if the following are specified in an pg_hba.conf file entry:
 
 -   If both the `ldaps://` prefix and the `ldaptls=1` parameter are specified.
 -   If both the `ldaps://` prefix and the `ldapport` parameter are specified.
 
 Enabling encrypted communication for LDAP authentication only encrypts the communication between WarehousePG and the LDAP server.
 
-See [Encrypting Client/Server Connections](client_auth.html) for information about encrypting client connections.
+See [Encrypting Client/Server Connections](index.md) for information about encrypting client connections.
 
-## <a id="exams"></a>Examples
+<a id="exams"></a>
 
-These are example entries from an pg\_hba.conf file.
+## Examples
+
+These are example entries from an pg_hba.conf file.
 
 This example specifies LDAP authentication with no encryption between WarehousePG and the LDAP server.
 
@@ -121,5 +133,4 @@ This example also specifies LDAP authentication with a secure connection and TLS
 host all ldapsuser 0.0.0.0/0 ldap ldapurl=ldaps://myldap.com ldapprefix="uid=" ldapsuffix=",ou=People,dc=example,dc=com" 
 ```
 
-**Parent topic:** [Configuring Client Authentication](client_auth.html)
-
+**Parent topic:** [Configuring Client Authentication](index.md)

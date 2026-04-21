@@ -1,4 +1,6 @@
-# Testing and Debugging Text Search
+---
+title: Testing and Debugging Text Search
+
 ---
 
 This topic introduces the WarehousePG functions you can use to test and debug a search configuration or the individual parser and dictionaries specified in a configuration.
@@ -11,7 +13,9 @@ This section contains the following subtopics:
 -   [Parser Testing](#parser)
 -   [Dictionary Testing](#dictionary)
 
-## <a id="configuration"></a>Configuration Testing
+<a id="configuration"></a>
+
+## Configuration Testing
 
 The function `ts_debug` allows easy testing of a text search configuration.
 
@@ -35,7 +39,7 @@ ts_debug([<config> regconfig, ] <document> text,
 -   `*token* text`— text of the token
 -   `*dictionaries* regdictionary[]` — the dictionaries selected by the configuration for this token type
 -   `*dictionary* regdictionary` — the dictionary that recognized the token, or `NULL` if none did
--   `*lexemes* text[]` — the lexeme\(s\) produced by the dictionary that recognized the token, or `NULL` if none did; an empty array \(`{}`\) means it was recognized as a stop word
+-   `*lexemes* text[]` — the lexeme(s) produced by the dictionary that recognized the token, or `NULL` if none did; an empty array (`{}`) means it was recognized as a stop word
 
 Here is a simple example:
 
@@ -96,9 +100,9 @@ SELECT * FROM ts_debug('public.english', 'The Brightest supernovaes');
  asciiword | Word, all ASCII | supernovaes | {english_ispell,english_stem} | english_stem   | {supernova}
 ```
 
-In this example, the word `Brightest` was recognized by the parser as an `ASCII` word \(alias `asciiword`\). For this token type the dictionary list is `english_ispell` and `english_stem`. The word was recognized by `english_ispell`, which reduced it to the noun `bright`. The word `supernovaes` is unknown to the `english_ispell` dictionary so it was passed to the next dictionary, and, fortunately, was recognized \(in fact, `english_stem` is a Snowball dictionary which recognizes everything; that is why it was placed at the end of the dictionary list\).
+In this example, the word `Brightest` was recognized by the parser as an `ASCII` word (alias `asciiword`). For this token type the dictionary list is `english_ispell` and `english_stem`. The word was recognized by `english_ispell`, which reduced it to the noun `bright`. The word `supernovaes` is unknown to the `english_ispell` dictionary so it was passed to the next dictionary, and, fortunately, was recognized (in fact, `english_stem` is a Snowball dictionary which recognizes everything; that is why it was placed at the end of the dictionary list).
 
-The word `The` was recognized by the `english_ispell` dictionary as a stop word \([Stop Words](dictionaries.html#stop-words)\) and will not be indexed. The spaces are discarded too, since the configuration provides no dictionaries at all for them.
+The word `The` was recognized by the `english_ispell` dictionary as a stop word ([Stop Words](dictionaries.md#stop-words)) and will not be indexed. The spaces are discarded too, since the configuration provides no dictionaries at all for them.
 
 You can reduce the width of the output by explicitly specifying which columns you want to see:
 
@@ -113,7 +117,9 @@ SELECT alias, token, dictionary, lexemes FROM ts_debug('public.english', 'The Br
  asciiword | supernovaes | english_stem   | {supernova}
 ```
 
-## <a id="parser"></a>Parser Testing
+<a id="parser"></a>
+
+## Parser Testing
 
 The following functions allow direct testing of a text search parser.
 
@@ -176,7 +182,9 @@ SELECT * FROM ts_token_type('default');
     23 | entity          | XML entity
 ```
 
-## <a id="dictionary"></a>Dictionary Testing
+<a id="dictionary"></a>
+
+## Dictionary Testing
 
 The `ts_lexize` function facilitates dictionary testing.
 
@@ -218,5 +226,4 @@ SELECT plainto_tsquery('supernovae stars');
  'sn'
 ```
 
-**Parent topic:** [Using Full Text Search](../textsearch/full-text-search.html)
-
+**Parent topic:** [Using Full Text Search](index.md)

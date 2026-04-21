@@ -1,14 +1,21 @@
-# FETCH 
+---
+title: FETCH
+
+---
 
 Retrieves rows from a query using a cursor.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 FETCH [ <forward_direction> { FROM | IN } ] <cursor_name>
 ```
 
-where <forward_direction> can be empty or one of:
+where &lt;forward_direction> can be empty or one of:
 
 ```
     NEXT
@@ -22,11 +29,13 @@ where <forward_direction> can be empty or one of:
     FORWARD ALL
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `FETCH` retrieves rows using a previously-created cursor.
 
-> **Note** You cannot `FETCH` from a `PARALLEL RETRIEVE CURSOR`, you must [RETRIEVE](RETRIEVE.html) the rows from it.
+> **Note** You cannot `FETCH` from a `PARALLEL RETRIEVE CURSOR`, you must [RETRIEVE](RETRIEVE.md) the rows from it.
 
 A cursor has an associated position, which is used by `FETCH`. The cursor position can be before the first row of the query result, on any particular row of the result, or after the last row of the result. When created, a cursor is positioned before the first row. After fetching some rows, the cursor is positioned on the row most recently retrieved. If `FETCH` runs off the end of the available rows then the cursor is left positioned after the last row. `FETCH ALL` will always leave the cursor positioned after the last row.
 
@@ -35,23 +44,25 @@ A cursor has an associated position, which is used by `FETCH`. The cursor positi
 
 The forms `NEXT`, `FIRST`, `ABSOLUTE`, `RELATIVE` fetch a single row after moving the cursor appropriately. If there is no such row, an empty result is returned, and the cursor is left positioned before the first row or after the last row as appropriate.
 
-The forms using `FORWARD` retrieve the indicated number of rows moving in the forward direction, leaving the cursor positioned on the last-returned row \(or after all rows, if the count exceeds the number of rows available\).
+The forms using `FORWARD` retrieve the indicated number of rows moving in the forward direction, leaving the cursor positioned on the last-returned row (or after all rows, if the count exceeds the number of rows available).
 
 `RELATIVE 0` and `FORWARD 0` request fetching the current row without moving the cursor, that is, re-fetching the most recently fetched row. This will succeed unless the cursor is positioned before the first row or after the last row, in which case no row is returned.
 
 > **Note**
-> This page describes usage of cursors at the SQL command level. If you are trying to use cursors inside a PL/pgSQL function, the rules are different. See [PL/pgSQL function](../../analytics/pl_sql.html#topic1).
+> This page describes usage of cursors at the SQL command level. If you are trying to use cursors inside a PL/pgSQL function, the rules are different. See [PL/pgSQL function](../../admin_guide/analytics/procedural_languages/pl_sql.md).
 
-## <a id="section5"></a>Parameters 
+<a id="section5"></a>
 
-forward\_direction
+## Parameters
+
+forward_direction
 Defines the fetch direction and number of rows to fetch. Only forward fetches are allowed in WarehousePG. It can be one of the following:
 
 NEXT
 Fetch the next row. This is the default if direction is omitted.
 
 FIRST
-Fetch the first row of the query \(same as `ABSOLUTE 1`\). Only allowed if it is the first `FETCH` operation using this cursor.
+Fetch the first row of the query (same as `ABSOLUTE 1`). Only allowed if it is the first `FETCH` operation using this cursor.
 
 ABSOLUTE count
 Fetch the specified row of the query. Position after last row if count is out of range. Only allowed if the row specified by count moves the cursor position forward.
@@ -60,13 +71,13 @@ RELATIVE count
 Fetch the specified row of the query count rows ahead of the current cursor position. `RELATIVE 0` re-fetches the current row, if any. Only allowed if count moves the cursor position forward.
 
 count
-Fetch the next count number of rows \(same as `FORWARD count`\).
+Fetch the next count number of rows (same as `FORWARD count`).
 
 ALL
-Fetch all remaining rows \(same as `FORWARD ALL`\).
+Fetch all remaining rows (same as `FORWARD ALL`).
 
 FORWARD
-Fetch the next row \(same as `NEXT`\).
+Fetch the next row (same as `NEXT`).
 
 FORWARD count
 Fetch the next count number of rows. `FORWARD 0` re-fetches the current row.
@@ -74,10 +85,12 @@ Fetch the next count number of rows. `FORWARD 0` re-fetches the current row.
 FORWARD ALL
 Fetch all remaining rows.
 
-cursor\_name
+cursor_name
 The name of an open cursor.
 
-## <a id="section5a"></a>Outputs
+<a id="section5a"></a>
+
+## Outputs
 
 On successful completion, a `FETCH` command returns a command tag of the form
 
@@ -85,9 +98,11 @@ On successful completion, a `FETCH` command returns a command tag of the form
 FETCH <count>
 ```
 
-The count is the number of rows fetched \(possibly zero\). Note that in `psql`, the command tag will not actually be displayed, since `psql` displays the fetched rows instead.
+The count is the number of rows fetched (possibly zero). Note that in `psql`, the command tag will not actually be displayed, since `psql` displays the fetched rows instead.
 
-## <a id="section6"></a>Notes 
+<a id="section6"></a>
+
+## Notes
 
 WarehousePG does not support scrollable cursors, so you can only use `FETCH` to move the cursor position forward.
 
@@ -95,7 +110,9 @@ WarehousePG does not support scrollable cursors, so you can only use `FETCH` to 
 
 `DECLARE` is used to define a cursor. Use `MOVE` to change cursor position without retrieving data.
 
-## <a id="section7"></a>Examples 
+<a id="section7"></a>
+
+## Examples
 
 Start the transaction:
 
@@ -135,7 +152,9 @@ Change the `kind` column of the table `films` in the row at the `c_films` cursor
 UPDATE films SET kind = 'Dramatic' WHERE CURRENT OF c_films;
 ```
 
-## <a id="section8"></a>Compatibility 
+<a id="section8"></a>
+
+## Compatibility
 
 SQL standard allows cursors only in embedded SQL and in modules. WarehousePG permits cursors to be used interactively.
 
@@ -145,9 +164,10 @@ The `FETCH` forms involving `FORWARD`, as well as the forms `FETCH` count and `F
 
 The SQL standard allows only `FROM` preceding the cursor name; the option to use `IN`, or to leave them out altogether, is an extension.
 
-## <a id="section9"></a>See Also 
+<a id="section9"></a>
 
-[DECLARE](DECLARE.html), [CLOSE](CLOSE.html), [MOVE](MOVE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[DECLARE](DECLARE.md), [CLOSE](CLOSE.md), [MOVE](MOVE.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,4 +1,6 @@
-# psql Support
+---
+title: psql Support
+
 ---
 
 The psql command-line utility provides a meta-command to display information about WarehousePG full text search configurations.
@@ -33,7 +35,7 @@ The optional parameter `PATTERN` can be the name of a text search object, option
 The available commands are:
 
 `\dF[+] [PATTERN]`
-List text search configurations \(add `+` for more detail\).
+List text search configurations (add `+` for more detail).
 
 ```
 => \dF russian
@@ -69,7 +71,7 @@ Parser: "pg_catalog.default"
 ```
 
 `\dFd[+] [PATTERN]`
-List text search dictionaries \(add `+` for more detail\).
+List text search dictionaries (add `+` for more detail).
 
 ```
 => \dFd
@@ -100,8 +102,8 @@ List text search dictionaries \(add `+` for more detail\).
  pg_catalog | turkish_stem    | snowball stemmer for turkish language
 ```
 
-\\dFp\[+\] \[PATTERN\]
-List text search parsers \(add `+` for more detail\).
+\\dFp\[+] \[PATTERN]
+List text search parsers (add `+` for more detail).
 
 ```
 => \dFp
@@ -149,7 +151,7 @@ List text search parsers \(add `+` for more detail\).
 ```
 
 `\dFt[+] [PATTERN]`
-List text search templates \(add + for more detail\).
+List text search templates (add + for more detail).
 
 ```
 => \dFt
@@ -163,5 +165,4 @@ List text search templates \(add + for more detail\).
  pg_catalog | thesaurus | thesaurus dictionary: phrase by phrase substitution
 ```
 
-**Parent topic:** [Using Full Text Search](../textsearch/full-text-search.html)
-
+**Parent topic:** [Using Full Text Search](index.md)

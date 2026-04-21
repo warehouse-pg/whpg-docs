@@ -1,4 +1,6 @@
-# PL/Python Language
+---
+title: PL/Python Language
+
 ---
 
 This section contains an overview of the WarehousePG PL/Python Language.
@@ -11,25 +13,33 @@ This section contains an overview of the WarehousePG PL/Python Language.
 -   [Examples](#topic11)
 -   [References](#topic12)
 
-## <a id="topic2"></a>About WarehousePG PL/Python
+<a id="topic2"></a>
+
+## About WarehousePG PL/Python
 
 PL/Python is a loadable procedural language. With the WarehousePG PL/Python extensions, you can write WarehousePG user-defined functions and procedures in Python that take advantage of Python features and modules to quickly build robust database applications.
 
-You can run PL/Python code blocks as anonymous code blocks. See the [DO](../ref_guide/sql_commands/DO.html) command in the *WarehousePG Reference Guide*.
+You can run PL/Python code blocks as anonymous code blocks. See the [DO](../../../ref_guide/sql_commands/DO.md) command in the *WarehousePG Reference Guide*.
 
 The WarehousePG PL/Python extension is installed by default with WarehousePG. `plpython3u` supports developing functions using Python 3.11. The WarehousePG installation process installs a Python 3.11 environment to your system as one of its dependencies.
 
-### <a id="topic3"></a>WarehousePG PL/Python Limitations
+<a id="topic3"></a>
+
+### WarehousePG PL/Python Limitations
 
 -   WarehousePG does not support PL/Python triggers.
 -   PL/Python is available only as a WarehousePG untrusted language.
--   Updatable cursors \(`UPDATE...WHERE CURRENT OF` and `DELETE...WHERE CURRENT OF`\) are not supported.
+-   Updatable cursors (`UPDATE...WHERE CURRENT OF` and `DELETE...WHERE CURRENT OF`) are not supported.
 
-## <a id="topic4"></a>Enabling and Removing PL/Python support
+<a id="topic4"></a>
 
-The PL/Python language is installed with WarehousePG. To create and run a PL/Python user-defined function \(UDF\) in a database, you must register the PL/Python language with the database.
+## Enabling and Removing PL/Python support
 
-### <a id="topic5"></a>Enabling PL/Python Support
+The PL/Python language is installed with WarehousePG. To create and run a PL/Python user-defined function (UDF) in a database, you must register the PL/Python language with the database.
+
+<a id="topic5"></a>
+
+### Enabling PL/Python Support
 
 For each database that requires its use, register the PL/Python language with the SQL command `CREATE EXTENSION`. Because PL/Python is an untrusted language, only superusers can register PL/Python with a database.
 
@@ -41,8 +51,9 @@ $ psql -d testdb -c 'CREATE EXTENSION plpython3u;'
 
 PL/Python is registered as an untrusted language.
 
-### <a id="topic6"></a>Removing PL/Python Support
+<a id="topic6"></a>
 
+### Removing PL/Python Support
 
 Run this command as the `gpadmin` user to remove support for PL/Python for Python 3.11:
 
@@ -50,25 +61,29 @@ Run this command as the `gpadmin` user to remove support for PL/Python for Pytho
 $ psql -d testdb -c 'DROP EXTENSION plpython3u;'
 ```
 
-The default command fails if any existing objects \(such as functions\) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/Python.
+The default command fails if any existing objects (such as functions) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/Python.
 
-## <a id="topic7"></a>Developing Functions with PL/Python
+<a id="topic7"></a>
+
+## Developing Functions with PL/Python
 
 The body of a PL/Python user-defined function is a Python script. When the function is called, its arguments are passed as elements of the array `args[]`. Named arguments are also passed as ordinary variables to the Python script. The result is returned from the PL/Python function with `return` statement, or `yield` statement in case of a result-set statement. If you do not provide a return value, Python returns the default `None`. PL/Python translates Python's `None` into the SQL null value.
 
-### <a id="topic_datatypemap"></a>Data Type Mapping
+<a id="topic_datatypemap"></a>
+
+### Data Type Mapping
 
 The WarehousePG to Python data type mapping follows.
 
-|WarehousePG Primitive Type|Python Data Type|
-|------------------------|----------------|
-|boolean<sup>1</sup>|bool|
-|bytea|bytes|
-|smallint, bigint, oid|int|
-|real, double|float|
-|numeric|decimal|
-|*other primitive types*|string|
-|SQL null value|None|
+| WarehousePG Primitive Type | Python Data Type |
+| -------------------------- | ---------------- |
+| boolean<sup>1</sup>        | bool             |
+| bytea                      | bytes            |
+| smallint, bigint, oid      | int              |
+| real, double               | float            |
+| numeric                    | decimal          |
+| *other primitive types*    | string           |
+| SQL null value             | None             |
 
 <sup>1</sup> When the UDF return type is `boolean`, the WarehousePG evaluates the return value for truth according to Python rules. That is, `0` and empty string are `false`, but notably `'f'` is `true`.
 
@@ -91,7 +106,9 @@ SELECT pybool_func(-1);
 
 ```
 
-### <a id="topic1113"></a>Arrays and Lists
+<a id="topic1113"></a>
+
+### Arrays and Lists
 
 You pass SQL array values into PL/Python functions with a Python list. Similarly, PL/Python functions return SQL array values as a Python list. In the typical PL/Python usage pattern, you will specify an array with `[]`.
 
@@ -134,11 +151,13 @@ CONTEXT:  PL/Python function "return_multidim_py_type"
 
 PL/Python also accepts other Python sequences, such as tuples, as function arguments for backwards compatibility with WarehousePG versions where multi-dimensional arrays were not supported. In such cases, the Python sequences are always treated as one-dimensional arrays because they are ambiguous with composite types.
 
-### <a id="topic1117"></a>Composite Types
+<a id="topic1117"></a>
+
+### Composite Types
 
 You pass composite-type arguments to a PL/Python function using Python mappings. The element names of the mapping are the attribute names of the composite types. If an attribute has the null value, its mapping value is `None`.
 
-You can return a composite type result as a sequence type \(tuple or list\). You must specify a composite type as a tuple, rather than a list, when it is used in a multi-dimensional array. You cannot return an array of composite types as a list because it would be ambiguous to determine whether the list represents a composite type or another array dimension. In the typical usage pattern, you will specify composite type tuples with `()`.
+You can return a composite type result as a sequence type (tuple or list). You must specify a composite type as a tuple, rather than a list, when it is used in a multi-dimensional array. You cannot return an array of composite types as a list because it would be ambiguous to determine whether the list represents a composite type or another array dimension. In the typical usage pattern, you will specify composite type tuples with `()`.
 
 In the following example, you create a composite type and a PL/Python function that returns an array of the composite type:
 
@@ -163,9 +182,11 @@ SELECT * FROM composite_type_as_list();
 
 Refer to the PostgreSQL [Arrays, Lists](https://www.postgresql.org/docs/12/plpython-data.html#PLPYTHON-ARRAYS) documentation for additional information on PL/Python handling of arrays and composite types.
 
-### <a id="topic_setresult"></a>Set-Returning Functions
+<a id="topic_setresult"></a>
 
-A Python function can return a set of scalar or composite types from any sequence type \(for example: tuple, list, set\).
+### Set-Returning Functions
+
+A Python function can return a set of scalar or composite types from any sequence type (for example: tuple, list, set).
 
 In the following example, you create a composite type and a Python function that returns a `SETOF` of the composite type:
 
@@ -191,15 +212,19 @@ select greet('hello');
 (2 rows)
 ```
 
-### <a id="topic8"></a>Running and Preparing SQL Queries
+<a id="topic8"></a>
+
+### Running and Preparing SQL Queries
 
 The PL/Python `plpy` module provides two Python functions to run an SQL query and prepare an execution plan for a query, `plpy.execute` and `plpy.prepare`. Preparing the execution plan for a query is useful if you run the query from multiple Python functions.
 
 PL/Python also supports the `plpy.subtransaction()` function to help manage `plpy.execute` calls in an explicit subtransaction. See [Explicit Subtransactions](https://www.postgresql.org/docs/12/plpython-subtransaction.html) in the PostgreSQL documentation for additional information about `plpy.subtransaction()`.
 
-#### <a id="topic_jnf_45f_zt"></a>plpy.execute
+<a id="topic_jnf_45f_zt"></a>
 
-Calling `plpy.execute` with a query string and an optional limit argument causes the query to be run and the result to be returned in a Python result object. The result object emulates a list or dictionary object. The rows returned in the result object can be accessed by row number and column name. The result set row numbering starts with 0 \(zero\). The result object can be modified. The result object has these additional methods:
+#### plpy.execute
+
+Calling `plpy.execute` with a query string and an optional limit argument causes the query to be run and the result to be returned in a Python result object. The result object emulates a list or dictionary object. The rows returned in the result object can be accessed by row number and column name. The result set row numbering starts with 0 (zero). The result object can be modified. The result object has these additional methods:
 
 -   `nrows` that returns the number of rows returned by the query.
 -   `status` which is the `SPI_execute()` return value.
@@ -218,7 +243,9 @@ my_col_data = rv[i]["my_column"]
 
 Since the function returns a maximum of 5 rows, the index `i` can be an integer between 0 and 4.
 
-#### <a id="topic_jwf_p5f_zt"></a>plpy.prepare
+<a id="topic_jwf_p5f_zt"></a>
+
+#### plpy.prepare
 
 The function `plpy.prepare` prepares the execution plan for a query. It is called with a query string and a list of parameter types, if you have parameter references in the query. For example, this statement can be in a PL/Python user-defined function:
 
@@ -235,7 +262,7 @@ rv = plpy.execute(plan, [ "Fred" ], 5)
 
 The third argument is the limit for the number of rows returned and is optional.
 
-When you prepare an execution plan using the PL/Python module the plan is automatically saved. See the Postgres Server Programming Interface \(SPI\) documentation for information about the execution plans [https://www.postgresql.org/docs/12/spi.html](https://www.postgresql.org/docs/12/spi.html).
+When you prepare an execution plan using the PL/Python module the plan is automatically saved. See the Postgres Server Programming Interface (SPI) documentation for information about the execution plans [https://www.postgresql.org/docs/12/spi.html](https://www.postgresql.org/docs/12/spi.html).
 
 To make effective use of saved plans across function calls you use one of the Python persistent storage dictionaries `SD` or `GD`.
 
@@ -258,7 +285,9 @@ CREATE FUNCTION usesavedplan() RETURNS trigger AS $$
 $$ LANGUAGE plpython3u;
 ```
 
-### <a id="topic_s3d_vc4_xt"></a>Handling Python Errors and Messages
+<a id="topic_s3d_vc4_xt"></a>
+
+### Handling Python Errors and Messages
 
 The Python module `plpy` implements these functions to manage errors and messages:
 
@@ -275,7 +304,9 @@ The message functions `plpy.error` and `plpy.fatal` raise a Python exception whi
 
 Whether messages of a particular priority are reported to the client, written to the server log, or both is controlled by the WarehousePG server configuration parameters `log_min_messages` and `client_min_messages`. For information about the parameters see the *WarehousePG Reference Guide*.
 
-### <a id="topic_hfj_dgg_mjb"></a>Using the dictionary GD To Improve PL/Python Performance
+<a id="topic_hfj_dgg_mjb"></a>
+
+### Using the dictionary GD To Improve PL/Python Performance
 
 In terms of performance, importing a Python module is an expensive operation and can affect performance. If you are importing the same module frequently, you can use Python global variables to load the module on the first invocation and not require importing the module on subsequent calls. The following PL/Python function uses the GD persistent storage dictionary to avoid importing a module if it has already been imported and is in the GD.
 
@@ -288,15 +319,17 @@ CREATE FUNCTION pytest() returns text as $$
 $$ LANGUAGE plpython3u;
 ```
 
-## <a id="topic7a"></a>About PL/Python Procedures
+<a id="topic7a"></a>
 
-A PL/Python procedure is similar to a PL/Python function. Refer to [User-Defined Procedures](../admin_guide/query/topics/functions-operators.html#topic28a) for more information on procedures in WarehousePG and how they differ from functions.
+## About PL/Python Procedures
+
+A PL/Python procedure is similar to a PL/Python function. Refer to [User-Defined Procedures](../../query/functions-operators.md#user-defined-procedures) for more information on procedures in WarehousePG and how they differ from functions.
 
 In a PL/Python procedure, the result from the Python code must be `None` (typically achieved by ending the procedure without a `return` statement or by using a `return` statement without argument); otherwise, an error will be raised.
 
 You can pass back output parameters of a PL/Python procedure in the same way that you do for a function. For example:
 
-``` sql
+```sql
 CREATE PROCEDURE python_triple(INOUT a integer, INOUT b integer) AS $$
 return (a * 3, b * 3)
 $$ LANGUAGE plpython3u;
@@ -304,13 +337,15 @@ $$ LANGUAGE plpython3u;
 CALL python_triple(5, 10);
 ```
 
-### <a id="proc_transmgmt"></a>About Transaction Management in Procedures
+<a id="proc_transmgmt"></a>
+
+### About Transaction Management in Procedures
 
 In a procedure called from the top level or an anonymous code block (`DO` command) called from the top level it is possible to control transactions. To commit the current transaction, call `plpy.commit()`. To roll back the current transaction, call `plpy.rollback()`. (Note that it is not possible to run the SQL commands `COMMIT` or `ROLLBACK` via `plpy.execute()` or similar. You must commit or rollback using these functions.) After a transaction is ended, a new transaction is automatically started, so there is no separate function for that.
 
 Here is an example:
 
-``` sql
+```sql
 CREATE PROCEDURE transaction_test1()
 LANGUAGE plpython3u
 AS $$
@@ -327,11 +362,13 @@ CALL transaction_test1();
 
 A transaction cannot be ended when an explicit subtransaction is active.
 
-## <a id="topic10"></a>Installing Python Modules
+<a id="topic10"></a>
+
+## Installing Python Modules
 
 When you install a Python module for development with PL/Python, the WarehousePG Python environment must have the module added to it across all segment hosts and mirror hosts in the cluster. When expanding WarehousePG, you must add the Python modules to the new segment hosts.
 
-WarehousePG provides a collection of data science-related Python modules that you can use to easily develop PL/Python functions in WarehousePG.  See [Python Data Science Module Packages](/oss/install_guide/install_python_dsmod.html) for installation instructions and descriptions of the provided modules.
+WarehousePG provides a collection of data science-related Python modules that you can use to easily develop PL/Python functions in WarehousePG.  See [Python Data Science Module Packages](../../../install_guide/data_sci_pkgs/install_python_dsmod.md) for installation instructions and descriptions of the provided modules.
 
 To develop with modules that are not part of the Python Data Science Module packages, you can use WarehousePG utilities such as `gpssh` and `gpsync` to run commands or copy files to all hosts in the WarehousePG cluster. These sections describe how to use those utilities to install and use additional Python modules:
 
@@ -341,7 +378,9 @@ To develop with modules that are not part of the Python Data Science Module pack
 -   [Building and Installing Python Modules Locally](#topic_j53_5jq_rt)
 -   [Testing Installed Python Modules](#topic_e4p_gcw_vt)
 
-### <a id="about_python_env"></a>Verifying the Python Environment
+<a id="about_python_env"></a>
+
+### Verifying the Python Environment
 
 The plpython3u is built with Python 3.11. To check the Python environment, you can use the `which` command:
 
@@ -371,18 +410,21 @@ $ gpssh -s -h sdw1
 $
 ```
 
-### <a id="topic_yx3_yjq_rt"></a>Installing Python pip
+<a id="topic_yx3_yjq_rt"></a>
+
+### Installing Python pip
 
 The Python utility `pip` installs Python packages that contain Python modules and other resource files from versioned archive files.
 
 For Python 3.11, use:
+
 ```
 python3.11 -m ensurepip --default-pip
 ```
 
-The command runs the `ensurepip` module to bootstrap \(install and configure\) the `pip` utility from the local Python installation.
+The command runs the `ensurepip` module to bootstrap (install and configure) the `pip` utility from the local Python installation.
 
-You can run this command to ensure the `pip`, `setuptools` and `wheel` projects are current. Current Python projects ensure that you can install Python packages from source distributions or pre-built distributions \(wheels\).
+You can run this command to ensure the `pip`, `setuptools` and `wheel` projects are current. Current Python projects ensure that you can install Python packages from source distributions or pre-built distributions (wheels).
 
 ```
 python3.11 -m pip install --upgrade pip setuptools wheel
@@ -419,7 +461,6 @@ The utility displays the output from each host.
 
 For more information about installing Python packages, see [https://packaging.python.org/tutorials/installing-packages/](https://packaging.python.org/tutorials/installing-packages/).
 
-
 ```
 python3.11 -m pip install --user numpy scipy
 ```
@@ -430,7 +471,9 @@ You can use `gpssh` to run the command on the WarehousePG hosts.
 
 For information about these and other Python packages, see [References](#topic12).
 
-### <a id="pip311"></a>Installing Python Packages to a Non-Standard Location
+<a id="pip311"></a>
+
+### Installing Python Packages to a Non-Standard Location
 
 You can optionally install Python 3.11 modules to a non-standard location by using the `--prefix` option with `pip`. For example:
 
@@ -450,7 +493,7 @@ testdb=# SET plpython3.python_path='/home/gpadmin/my_python';
 
 WarehousePG uses the value of `plpython3.python_path` to set `PYTHONPATH` in the environment used to create or call `plpython3u` functions.
 
-Ensure that you configure `plpython3.python_path` _before_ you create or call `plpython3` functions in a session. If you set or change the parameter after `plpython3u` is initialized you receive the error:
+Ensure that you configure `plpython3.python_path` *before* you create or call `plpython3` functions in a session. If you set or change the parameter after `plpython3u` is initialized you receive the error:
 
 ```
 ERROR: SET PYTHONPATH failed, the GUC value can only be changed before initializing the python interpreter.
@@ -465,7 +508,9 @@ gpconfig -c plpython3.python_path \
 gpstop -u
 ```
 
-### <a id="topic_j53_5jq_rt"></a>Building and Installing Python Modules Locally
+<a id="topic_j53_5jq_rt"></a>
+
+### Building and Installing Python Modules Locally
 
 If you are building a Python module, you must ensure that the build creates the correct executable. For example on a Linux system, the build should create a 64-bit executable.
 
@@ -473,9 +518,11 @@ Before building a Python module to be installed, ensure that the appropriate sof
 
 You can use the WarehousePG utilities `gpssh` and `gpsync` to run commands on WarehousePG hosts and to copy files to the hosts.
 
-### <a id="topic_e4p_gcw_vt"></a>Testing Installed Python Modules
+<a id="topic_e4p_gcw_vt"></a>
 
-You can create a simple PL/Python user-defined function \(UDF\) to validate that Python a module is available in the WarehousePG. This example tests the NumPy module.
+### Testing Installed Python Modules
+
+You can create a simple PL/Python user-defined function (UDF) to validate that Python a module is available in the WarehousePG. This example tests the NumPy module.
 
 This PL/Python UDF imports the NumPy module. The function returns `SUCCESS` if the module is imported, and `FAILURE` if an import error occurs.
 
@@ -516,7 +563,9 @@ If `FAILURE` is returned, these are some possible causes:
 
 -   The `plpython3.python_path` has not been set to the correct location.
 
-## <a id="topic11"></a>Examples
+<a id="topic11"></a>
+
+## Examples
 
 This PL/Python function example uses Python 3.11 and returns the value of pi using the `numpy` module:
 
@@ -626,12 +675,16 @@ DO $$
 $$ language plpython3u;
 ```
 
-## <a id="topic12"></a>References
+<a id="topic12"></a>
 
-### <a id="topic13"></a>Technical References
+## References
+
+<a id="topic13"></a>
+
+### Technical References
 
 For information about the Python language, see [https://www.python.org/](https://www.python.org/).
 
 For information about PL/Python see the PostgreSQL documentation at [https://www.postgresql.org/docs/12/plpython.html](https://www.postgresql.org/docs/12/plpython.html).
 
-For information about Python Package Index \(PyPI\), see [https://pypi.python.org/pypi](https://pypi.python.org/pypi).
+For information about Python Package Index (PyPI), see [https://pypi.python.org/pypi](https://pypi.python.org/pypi).

@@ -1,11 +1,13 @@
-# Text Search Configuration Example
+---
+title: Text Search Configuration Example
+
 ---
 
 This topic shows how to create a customized text search configuration to process document and query text.
 
-A text search configuration specifies all options necessary to transform a document into a `tsvector`: the parser to use to break text into tokens, and the dictionaries to use to transform each token into a lexeme. Every call of `to_tsvector` or `to_tsquery` needs a text search configuration to perform its processing. The configuration parameter [default\_text\_search\_config](../../ref_guide/config_params/guc-list.html) specifies the name of the default configuration, which is the one used by text search functions if an explicit configuration parameter is omitted. It can be set in `postgresql.conf` using the `gpconfig` command-line utility, or set for an individual session using the `SET` command.
+A text search configuration specifies all options necessary to transform a document into a `tsvector`: the parser to use to break text into tokens, and the dictionaries to use to transform each token into a lexeme. Every call of `to_tsvector` or `to_tsquery` needs a text search configuration to perform its processing. The configuration parameter [default_text_search_config](../../../ref_guide/config_params/guc-list.md) specifies the name of the default configuration, which is the one used by text search functions if an explicit configuration parameter is omitted. It can be set in `postgresql.conf` using the `gpconfig` command-line utility, or set for an individual session using the `SET` command.
 
-Several predefined text search configurations are available, and you can create custom configurations easily. To facilitate management of text search objects, a set of SQL commands is available, and there are several psql commands that display information about text search objects \([psql Support](psql-support.html)\).
+Several predefined text search configurations are available, and you can create custom configurations easily. To facilitate management of text search objects, a set of SQL commands is available, and there are several psql commands that display information about text search objects ([psql Support](psql-support.md)).
 
 As an example we will create a configuration `pg`, starting by duplicating the built-in `english` configuration:
 
@@ -85,5 +87,4 @@ SHOW default_text_search_config;
  public.pg
 ```
 
-**Parent topic:** [Using Full Text Search](../textsearch/full-text-search.html)
-
+**Parent topic:** [Using Full Text Search](index.md)

@@ -1,30 +1,37 @@
-# pgcrypto 
+---
+title: pgcrypto
+
+---
 
 WarehousePG is installed with an optional module of encryption/decryption functions called `pgcrypto`. The `pgcrypto` functions allow database administrators to store certain columns of data in encrypted form. This adds an extra layer of protection for sensitive data, as data stored in WarehousePG in encrypted form cannot be read by anyone who does not have the encryption key, nor can it be read directly from the disks.
 
 > **Note** The `pgcrypto` functions run inside the database server, which means that all the data and passwords move between `pgcrypto` and the client application in clear-text. For optimal security, consider also using SSL connections between the client and the WarehousePG coordinator server.
 
-## <a id="topic_reg"></a>Installing and Registering the Module 
+<a id="topic_reg"></a>
 
-The `pgcrypto` module is installed when you install WarehousePG. Before you can use any of the functions defined in the module, you must register the `pgcrypto` extension in each database in which you want to use the functions. Refer to [Installing Extensions](../../install_guide/install_extensions.html) for more information.
+## Installing and Registering the Module
 
-## <a id="configuring-fips-encryption"></a>Configuring FIPS Encryption 
+The `pgcrypto` module is installed when you install WarehousePG. Before you can use any of the functions defined in the module, you must register the `pgcrypto` extension in each database in which you want to use the functions. Refer to [Installing Extensions](../../install_guide/install_extensions.md) for more information.
 
-Starting with WarehousePG 6.22, the `pgcrypto` extension provides a module-specific configuration parameter, `pgcrypto.fips`. This parameter configures WarehousePG support for a limited set of FIPS encryption functionality \(*Federal Information Processing Standard* \(FIPS\) 140-2\). For information about FIPS, see [https://www.nist.gov/itl/popular-links/federal-information-processing-standards-fips](https://www.nist.gov/itl/popular-links/federal-information-processing-standards-fips). The default setting is `off`, FIPS encryption is not enabled.
+<a id="configuring-fips-encryption"></a>
+
+## Configuring FIPS Encryption
+
+Starting with WarehousePG 6.22, the `pgcrypto` extension provides a module-specific configuration parameter, `pgcrypto.fips`. This parameter configures WarehousePG support for a limited set of FIPS encryption functionality (*Federal Information Processing Standard* (FIPS) 140-2). For information about FIPS, see [https://www.nist.gov/itl/popular-links/federal-information-processing-standards-fips](https://www.nist.gov/itl/popular-links/federal-information-processing-standards-fips). The default setting is `off`, FIPS encryption is not enabled.
 
 Before enabling this parameter, ensure that FIPS is enabled on all WarehousePG cluster hosts.
 
 When this parameter is enabled, these changes occur:
 
 -   FIPS mode is initialized in the OpenSSL library
--   The functions `digest()` and `hmac()` allow only the SHA encryption algorithm \(MD5 is not allowed\)
--   The functions for the crypt and gen\_salt algorithms are disabled
--   PGP encryption and decryption functions support only AES and 3DES encryption algorithms \(other algorithms such as blowfish are not allowed\)
--   RAW encryption and decryption functions support only AES and 3DES \(other algorithms such as blowfish are not allowed\)
+-   The functions `digest()` and `hmac()` allow only the SHA encryption algorithm (MD5 is not allowed)
+-   The functions for the crypt and gen_salt algorithms are disabled
+-   PGP encryption and decryption functions support only AES and 3DES encryption algorithms (other algorithms such as blowfish are not allowed)
+-   RAW encryption and decryption functions support only AES and 3DES (other algorithms such as blowfish are not allowed)
 
-**To enable `pgcrypto.fips`**
+### To enable `pgcrypto.fips`
 
-1.  Enable the `pgcrypto` functions as an extension if it is not enabled. See [Installing Extensions](../../install_guide/install_extensions.html). This example `psql` command creates the `pgcrypto` extension in the database `testdb`.
+1.  Enable the `pgcrypto` functions as an extension if it is not enabled. See [Installing Extensions](../../install_guide/install_extensions.md). This example `psql` command creates the `pgcrypto` extension in the database `testdb`.
 
     ```
     psql -d testdb -c 'CREATE EXTENSION pgcrypto'
@@ -53,6 +60,7 @@ When this parameter is enabled, these changes occur:
     ```
     psql -d postgres
     ```
+
     ```
     ALTER DATABASE testdb SET pgcrypto.fips TO on;
     ```
@@ -65,8 +73,7 @@ When this parameter is enabled, these changes occur:
     \c testdb
     ```
 
-
-**To disable `pgcrypto.fips`**
+### To disable `pgcrypto.fips`
 
 1.  If the database does not use `pgcrypto` functions, disable the `pgcrypto` extension. This example `psql` command drops the `pgcrypto` extension in the database `testdb`.
 
@@ -88,7 +95,8 @@ When this parameter is enabled, these changes occur:
     gpstop -ra 
     ```
 
-## <a id="topic_info"></a>Additional Module Documentation 
+<a id="topic_info"></a>
+
+## Additional Module Documentation
 
 Refer to [pgcrypto](https://www.postgresql.org/docs/12/pgcrypto.html) in the PostgreSQL documentation for more information about the individual functions in this module.
-

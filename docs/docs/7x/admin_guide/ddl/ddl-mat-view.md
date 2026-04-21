@@ -1,4 +1,6 @@
-# Creating and Managing Materialized Views
+---
+title: Creating and Managing Materialized Views
+
 ---
 
 Materialized views are similar to views. A materialized view enables you to save a frequently used or complex query, then access the query results in a `SELECT` statement as if they were a table. Materialized views persist the query results in a table-like form. While access to the data stored in a materialized view can be much faster than accessing the underlying tables directly or through a view, the data is not always current.
@@ -31,9 +33,11 @@ One use of a materialized view is to allow faster access to data brought in from
 
 If a subquery is associated with a single query, consider using the `WITH` clause of the `SELECT` command instead of creating a seldom-used materialized view.
 
-**Parent topic:** [DDL: Defining Database Objects](../ddl/ddl.html)
+**Parent topic:** [DDL: Defining Database Objects](index.md)
 
-## <a id="topic_hn3_xy5_kjb"></a>Creating Materialized Views
+<a id="topic_hn3_xy5_kjb"></a>
+
+## Creating Materialized Views
 
 The `CREATE MATERIALIZED VIEW`command defines a materialized view based on a query.
 
@@ -43,7 +47,9 @@ CREATE MATERIALIZED VIEW us_users AS SELECT u.id, u.name, a.zone FROM users u, a
 
 If a materialized view query contains an `ORDER BY` or `SORT` clause, the clause is ignored when a `SELECT` is performed on the materialized query.
 
-## <a id="topic_vwd_zy5_kjb"></a>Refreshing or Deactivating Materialized Views
+<a id="topic_vwd_zy5_kjb"></a>
+
+## Refreshing or Deactivating Materialized Views
 
 The `REFRESH MATERIALIZED VIEW` command updates the materialized view data.
 
@@ -57,7 +63,9 @@ With the `WITH NO DATA` clause, the current data is removed, no new data is gene
 REFRESH MATERIALIZED VIEW us_users WITH NO DATA;
 ```
 
-## <a id="topic_in3_xy5_kjb"></a>Dropping Materialized Views
+<a id="topic_in3_xy5_kjb"></a>
+
+## Dropping Materialized Views
 
 The `DROP MATERIALIZED VIEW` command removes a materialized view definition and data. For example:
 
@@ -66,4 +74,3 @@ DROP MATERIALIZED VIEW us_users;
 ```
 
 The `DROP MATERIALIZED VIEW ... CASCADE` command also removes all dependent objects. For example, if another materialized view depends on the materialized view which is about to be dropped, the other materialized view will be dropped as well. Without the `CASCADE` option, the `DROP MATERIALIZED VIEW` command fails.
-

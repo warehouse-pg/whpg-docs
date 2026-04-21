@@ -1,4 +1,6 @@
-# Loading Data Using an External Table
+---
+title: Loading Data Using an External Table
+
 ---
 
 Use SQL commands such as `INSERT` and `SELECT` to query a readable external table, the same way that you query a regular database table. For example, to load travel expense data from an external table, `ext_expenses`, into a database table, `expenses_travel`:
@@ -16,5 +18,4 @@ To load all data into a new database table:
 
 ```
 
-**Parent topic:** [Loading and Unloading Data](../../load/topics/g-loading-and-unloading-data.html)
-
+**Parent topic:** [Loading and Unloading Data](index.md)

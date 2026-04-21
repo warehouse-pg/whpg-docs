@@ -1,9 +1,11 @@
-# Example Ansible Playbook
+---
+title: Example Ansible Playbook
+
 ---
 
 A sample Ansible playbook to install a WarehousePG software release onto the hosts that will comprise a WarehousePG cluster.
 
-This Ansible playbook shows how tasks described in [Installing WarehousePG](\) might be automated using [Ansible](https://docs.ansible.com).
+This Ansible playbook shows how tasks described in [Installing WarehousePG]\() might be automated using [Ansible](https://docs.ansible.com).
 
 > **Important** This playbook is provided as an *example only* to illustrate how WarehousePG cluster configuration and software installation tasks can be automated using provisioning tools such as Ansible, Chef, or Puppet. Presented as an example.
 
@@ -14,7 +16,9 @@ You can revise the script to work with your operating system platform and to per
 Following are steps to use this Ansible playbook.
 
 1.  Install Ansible on the control node using your package manager. See the [Ansible documentation](https://docs.ansible.com) for help with installation.
+
 2.  Set up passwordless SSH from the control node to all hosts that will be a part of the WarehousePG cluster. You can use the `ssh-copy-id` command to install your public SSH key on each host in the cluster. Alternatively, your provisioning software may provide more convenient ways to securely install public keys on multiple hosts.
+
 3.  Create an Ansible inventory by creating a file called `hosts` with a list of the hosts that will comprise your WarehousePG cluster. For example:
 
     ```
@@ -27,15 +31,18 @@ Following are steps to use this Ansible playbook.
     This file can be edited and used with the WarehousePG `gpssh-exkeys` and `gpinitsystem` utilities later on.
 
 4.  Copy the playbook code below to a file `ansible-playbook.yml` on your Ansible control node.
+
 5.  Edit the playbook variables at the top of the playbook, such as the `gpadmin` administrative user and password to create, and the version of WarehousePG you are installing.
+
 6.  Run the playbook, passing the package to be installed to the `package_path` parameter.
 
     ```
     ansible-playbook ansible-playbook.yml -i hosts -e package_path=./greenplum-db-7.0.0-rhel8-x86_64.rpm
     ```
 
+<a id="fixme"></a>
 
-## <a id="fixme"></a>Ansible Playbook - WarehousePG Installation for RedHat
+## Ansible Playbook - WarehousePG Installation for RedHat
 
 ```
 
@@ -92,7 +99,7 @@ Following are steps to use this Ansible playbook.
         nofile: 524288
         nproc: 131072
     - name: find installed greenplum version
-      shell: . /usr/local/greenplum-db/greenplum_path.sh && /usr/local/greenplum-db/bin/postgres --gp-version
+      shell: . /usr/edb/whpg7/greenplum_path.sh && /usr/edb/whpg7/bin/postgres --gp-version
       register: postgres_gp_version
     - name: fail if the correct greenplum version is not installed
       fail:
@@ -101,7 +108,6 @@ Following are steps to use this Ansible playbook.
 
 ```
 
-When the playbook has run successfully, you can proceed with [Creating the Data Storage Areas](create_data_dirs.html) and [Initializing WarehousePG](init_whpg.html).
+When the playbook has run successfully, you can proceed with [Creating the Data Storage Areas](create_data_dirs.md) and [Initializing WarehousePG](init_whpg.md).
 
-**Parent topic:** [Installing and Upgrading WarehousePG](install_guide/)
-
+**Parent topic:** [Installing and Upgrading WarehousePG](index.md)

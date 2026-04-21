@@ -1,10 +1,17 @@
-# IMPORT FOREIGN SCHEMA 
+---
+title: IMPORT FOREIGN SCHEMA
+
+---
 
 Imports table definitions from a foreign server.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 IMPORT FOREIGN SCHEMA <remote_schema>
     [ { LIMIT TO | EXCEPT } ( <table_name> [, ...] ) ]
     FROM SERVER <server_name>
@@ -12,7 +19,9 @@ IMPORT FOREIGN SCHEMA <remote_schema>
     [ OPTIONS ( <option> '<value>' [, ... ] ) ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `IMPORT FOREIGN SCHEMA` creates foreign tables that represent tables existing on a foreign server. The new foreign tables will be owned by the user issuing the command and are created with the correct column definitions and options to match the remote tables.
 
@@ -22,28 +31,31 @@ To use `IMPORT FOREIGN SCHEMA`, the user must have `USAGE` privilege on the fore
 
 Support for importing foreign schemas is foreign-data wrapper-specific.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-remote\_schema
+## Parameters
+
+remote_schema
 The remote schema to import from. The specific meaning of a remote schema depends on the foreign data wrapper in use.
 
-LIMIT TO \( table\_name [, ...] \)
+LIMIT TO ( table_name [, ...] )
 Import only foreign tables matching one of the given table names. Other tables existing in the foreign schema will be ignored.
 
-EXCEPT \( table\_name [, ...] \)
+EXCEPT ( table_name [, ...] )
 Exclude specified foreign tables from the import. All tables existing in the foreign schema will be imported except the ones listed here.
 
-server\_name
+server_name
 The name of the foreign server from which to import the table definitions.
 
-local\_schema
+local_schema
 The schema in which WarehousePG will create the imported foreign tables.
 
-OPTIONS \( option 'value' \[, ... \] \)
+OPTIONS ( option 'value' \[, ... ] )
 The options to be used during the import. The allowed option names and values are specific to each foreign-data wrapper.
 
+<a id="section6"></a>
 
-## <a id="section6"></a>Examples 
+## Examples
 
 Import table definitions from a remote schema `foreign_films` on server `film_server`, creating the foreign tables in local schema `films`:
 
@@ -59,13 +71,16 @@ IMPORT FOREIGN SCHEMA foreign_films LIMIT TO (actors, directors)
     FROM SERVER film_server INTO films;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 The `IMPORT FOREIGN SCHEMA` command conforms to the SQL standard, except that the `OPTIONS` clause is a WarehousePG extension.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[CREATE FOREIGN TABLE](CREATE_FOREIGN_TABLE.html), [CREATE SERVER](CREATE_SERVER.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE FOREIGN TABLE](CREATE_FOREIGN_TABLE.md), [CREATE SERVER](CREATE_SERVER.md)
 
+**Parent topic:** [SQL Commands](index.md)

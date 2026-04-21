@@ -1,4 +1,6 @@
-# Preparing and Adding Hosts
+---
+title: Preparing and Adding Hosts
+
 ---
 
 Verify your new host systems are ready for integration into the existing WarehousePG cluster.
@@ -9,13 +11,15 @@ Run performance tests first on the new hosts and then all hosts. Run the tests o
 
 Generally, you should run performance tests when an administrator modifies host networking or other special conditions in the system. For example, if you will run the expanded system on two network clusters, run tests on each cluster.
 
-> **Note** Preparing host systems for use by a WarehousePG cluster assumes that the new hosts' operating system has been properly configured to match the existing hosts, described in [Configure Operating System](../../install_guide/config_os.html).
+> **Note** Preparing host systems for use by a WarehousePG cluster assumes that the new hosts' operating system has been properly configured to match the existing hosts, described in [Configure Operating System](../../../install_guide/config_os.md).
 
-**Parent topic:** [Expanding a WarehousePG cluster](../expand/expand-main.html)
+**Parent topic:** [Expanding a WarehousePG cluster](index.md)
 
-## <a id="topic18"></a>Adding New Hosts to the Trusted Host Environment
+<a id="topic18"></a>
 
-New hosts must exchange SSH keys with the existing hosts to enable WarehousePG administrative utilities to connect to all segments without a password prompt. Perform the key exchange process twice with the [gpssh-exkeys](../../utility_guide/ref/gpssh-exkeys.html) utility.
+## Adding New Hosts to the Trusted Host Environment
+
+New hosts must exchange SSH keys with the existing hosts to enable WarehousePG administrative utilities to connect to all segments without a password prompt. Perform the key exchange process twice with the [gpssh-exkeys](../../../ref_guide/utility_guide/reference/gpssh-exkeys.md) utility.
 
 First perform the process as `root`, for administration convenience, and then as the user `gpadmin`, for management utilities. Perform the following tasks in order:
 
@@ -23,11 +27,13 @@ First perform the process as `root`, for administration convenience, and then as
 2.  [To create the gpadmin user](#no160595)
 3.  [To exchange SSH keys as the gpadmin user](#sshexch_gpadmin)
 
-> **Note** The WarehousePG segment host naming convention is `sdwN` where `sdw` is a prefix and `N` is an integer \( `sdw1`, `sdw2` and so on\). For hosts with multiple interfaces, the convention is to append a dash \(`-`\) and number to the host name. For example, `sdw1-1` and `sdw1-2` are the two interface names for host `sdw1`.
+> **Note** The WarehousePG segment host naming convention is `sdwN` where `sdw` is a prefix and `N` is an integer ( `sdw1`, `sdw2` and so on). For hosts with multiple interfaces, the convention is to append a dash (`-`) and number to the host name. For example, `sdw1-1` and `sdw1-2` are the two interface names for host `sdw1`.
 
-### <a id="no160715"></a>To exchange SSH keys as root
+<a id="no160715"></a>
 
-1.  Create a host file with the existing host names in your array and a separate host file with the new expansion host names. For existing hosts, you can use the same host file used to set up SSH keys in the system. In the files, list all hosts \(coordinator, backup coordinator, and segment hosts\) with one name per line and no extra lines or spaces. Exchange SSH keys using the configured host names for a given host if you use a multi-NIC configuration. In this example, `cdw` is configured with a single NIC, and `sdw1`, `sdw2`, and `sdw3` are configured with 4 NICs:
+### To exchange SSH keys as root
+
+1.  Create a host file with the existing host names in your array and a separate host file with the new expansion host names. For existing hosts, you can use the same host file used to set up SSH keys in the system. In the files, list all hosts (coordinator, backup coordinator, and segment hosts) with one name per line and no extra lines or spaces. Exchange SSH keys using the configured host names for a given host if you use a multi-NIC configuration. In this example, `cdw` is configured with a single NIC, and `sdw1`, `sdw2`, and `sdw3` are configured with 4 NICs:
 
     ```
     cdw
@@ -49,7 +55,7 @@ First perform the process as `root`, for administration convenience, and then as
 
     ```
     $ su - 
-    # source /usr/local/greenplum-db/greenplum_path.sh
+    # source /usr/edb/whpg7/greenplum_path.sh
     ```
 
 3.  Run the `gpssh-exkeys` utility referencing the host list files. For example:
@@ -65,10 +71,11 @@ First perform the process as `root`, for administration convenience, and then as
     ***Enter password for root@<hostname>: <root_password>
     ```
 
+<a id="no160595"></a>
 
-### <a id="no160595"></a>To create the gpadmin user
+### To create the gpadmin user
 
-1.  Use [gpssh](../../utility_guide/ref/gpssh.html) to create the `gpadmin` user on all the new segment hosts \(if it does not exist already\). Use the list of new hosts you created for the key exchange. For example:
+1.  Use [gpssh](../../../ref_guide/utility_guide/reference/gpssh.md) to create the `gpadmin` user on all the new segment hosts (if it does not exist already). Use the list of new hosts you created for the key exchange. For example:
 
     ```
     # gpssh -f <new_hosts_file> '/usr/sbin/useradd gpadmin -d 
@@ -88,8 +95,9 @@ First perform the process as `root`, for administration convenience, and then as
     # gpssh -f <new_hosts_file> ls -l /home
     ```
 
+<a id="sshexch_gpadmin"></a>
 
-### <a id="sshexch_gpadmin"></a>To exchange SSH keys as the gpadmin user
+### To exchange SSH keys as the gpadmin user
 
 1.  Log in as `gpadmin` and run the `gpssh-exkeys` utility referencing the host list files. For example:
 
@@ -104,12 +112,15 @@ First perform the process as `root`, for administration convenience, and then as
     ***Enter password for gpadmin@<hostname>: <gpadmin_password>
     ```
 
+<a id="topic20"></a>
 
-## <a id="topic20"></a>Validating Disk I/O and Memory Bandwidth
+## Validating Disk I/O and Memory Bandwidth
 
-Use the [gpcheckperf](../../utility_guide/ref/gpcheckperf.html) utility to test disk I/O and memory bandwidth.
+Use the [gpcheckperf](../../../ref_guide/utility_guide/reference/gpcheckperf.md) utility to test disk I/O and memory bandwidth.
 
-### <a id="no159247"></a>To run gpcheckperf
+<a id="no159247"></a>
+
+### To run gpcheckperf
 
 1.  Run the `gpcheckperf` utility using the host file for new hosts. Use the `-d` option to specify the file systems you want to test on each host. You must have write access to these directories. For example:
 
@@ -121,7 +132,8 @@ Use the [gpcheckperf](../../utility_guide/ref/gpcheckperf.html) utility to test 
 
 For a network divided into subnets, repeat this procedure with a separate host file for each subnet.
 
-## <a id="topic21"></a>Integrating New Hardware into the System
+<a id="topic21"></a>
+
+## Integrating New Hardware into the System
 
 Before initializing the system with the new segments, shut down the system with `gpstop` to prevent user activity from skewing performance test results. Then, repeat the performance tests using host files that include *all* hosts, existing and new.
-

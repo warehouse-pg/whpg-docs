@@ -1,10 +1,17 @@
-# ALTER FOREIGN DATA WRAPPER 
+---
+title: ALTER FOREIGN DATA WRAPPER
+
+---
 
 Changes the definition of a foreign-data wrapper.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER FOREIGN DATA WRAPPER <name>
     [ HANDLER <handler_function> | NO HANDLER ]
     [ VALIDATOR <validator_function> | NO VALIDATOR ]
@@ -14,26 +21,32 @@ ALTER FOREIGN DATA WRAPPER <name> OWNER TO { <new_owner> | CURRENT_USER | SESSIO
 ALTER FOREIGN DATA WRAPPER <name> RENAME TO <new_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER FOREIGN DATA WRAPPER` changes the definition of a foreign-data wrapper. The first form of the command changes the support functions or generic options of the foreign-data wrapper. WarehousePG requires at least one clause. The second and third forms of the command change the owner or name of the foreign-data wrapper.
 
 Only superusers can alter foreign-data wrappers. Additionally, only superusers can own foreign-data wrappers
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
 The name of an existing foreign-data wrapper.
 
-HANDLER handler\_function
+HANDLER handler_function
 Specifies a new handler function for the foreign-data wrapper.
 
 NO HANDLER
 Specifies that the foreign-data wrapper should no longer have a handler function.
 
-    > **Note** You cannot access a foreign table that uses a foreign-data wrapper with no handler.
+```
+> **Note** You cannot access a foreign table that uses a foreign-data wrapper with no handler.
+```
 
-VALIDATOR validator\_function
+VALIDATOR validator_function
 Specifies a new validator function for the foreign-data wrapper.
 
 Note that it is possible that pre-existing options of the foreign-data wrapper, or of dependent servers, user mappings, or foreign tables, may become invalid when you change the validator function. WarehousePG does not check for this. You must make sure that these options are correct before using the modified foreign-data wrapper. However, WarehousePG will check any options specified in this `ALTER FOREIGN DATA WRAPPER` command using the new validator.
@@ -41,16 +54,18 @@ Note that it is possible that pre-existing options of the foreign-data wrapper, 
 NO VALIDATOR
 Specifies that the foreign-data wrapper should no longer have a validator function.
 
-OPTIONS \( \[ ADD \| SET \| DROP \] option \['value'\] \[, ... \] \)
+OPTIONS ( \[ ADD \| SET \| DROP ] option \['value'] \[, ... ] )
 Change the foreign-data wrapper's options. `ADD`, `SET`, and `DROP` specify the action to perform. If no operation is explicitly specified, the default operation is `ADD`. Option names must be unique. WarehousePG validates names and values using the foreign-data wrapper's validator function, if any.
 
-OWNER TO new\_owner
+OWNER TO new_owner
 Specifies the user name of the new owner of the foreign-data wrapper. Only superusers can own foreign-data wrappers.
 
-RENAME TO new\_name
+RENAME TO new_name
 Specifies the new name of the foreign-data wrapper.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Change the definition of a foreign-data wrapper named `dbi` by adding a new option named `foo`, and removing the option named `bar`:
 
@@ -64,13 +79,16 @@ Change the validator function for a foreign-data wrapper named `dbi` to `bob.myv
 ALTER FOREIGN DATA WRAPPER dbi VALIDATOR bob.myvalidator;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-`ALTER FOREIGN DATA WRAPPER` conforms to ISO/IEC 9075-9 \(SQL/MED\), with the exception that the `HANDLER`, `VALIDATOR`, `OWNER TO`, and `RENAME TO` clauses are WarehousePG extensions.
+## Compatibility
 
-## <a id="section8"></a>See Also 
+`ALTER FOREIGN DATA WRAPPER` conforms to ISO/IEC 9075-9 (SQL/MED), with the exception that the `HANDLER`, `VALIDATOR`, `OWNER TO`, and `RENAME TO` clauses are WarehousePG extensions.
 
-[CREATE FOREIGN DATA WRAPPER](CREATE_FOREIGN_DATA_WRAPPER.html), [DROP FOREIGN DATA WRAPPER](DROP_FOREIGN_DATA_WRAPPER.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[CREATE FOREIGN DATA WRAPPER](CREATE_FOREIGN_DATA_WRAPPER.md), [DROP FOREIGN DATA WRAPPER](DROP_FOREIGN_DATA_WRAPPER.md)
+
+**Parent topic:** [SQL Commands](index.md)

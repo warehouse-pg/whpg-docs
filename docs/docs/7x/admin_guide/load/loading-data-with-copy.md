@@ -1,4 +1,6 @@
-# Loading Data with COPY
+---
+title: Loading Data with COPY
+
 ---
 
 `COPY FROM` copies data from a file or standard input into a table and appends the data to the table contents. `COPY` is non-parallel: data is loaded in a single process using the WarehousePG coordinator instance. Using `COPY` is only recommended for very small data files.
@@ -7,9 +9,11 @@ The `COPY` source file must be accessible to the `postgres` process on the coord
 
 WarehousePG copies data from `STDIN` or `STDOUT` using the connection between the client and the coordinator server.
 
-**Parent topic:** [Loading and Unloading Data](../../load/topics/g-loading-and-unloading-data.html)
+**Parent topic:** [Loading and Unloading Data](index.md)
 
-## <a id="topic1"></a>Loading From a File
+<a id="topic1"></a>
+
+## Loading From a File
 
 The `COPY` command asks the `postgres` backend to open the specified file, read it and append it to the table. In order to be able to read the file, the backend needs to have read permissions on the file, and the file name must be specified using an absolute path on the coordinator host, or a relative path to the coordinator data directory.
 
@@ -17,27 +21,33 @@ The `COPY` command asks the `postgres` backend to open the specified file, read 
 COPY <table_name> FROM </path/to/filename>;
 ```
 
-## <a id="topic2"></a>Loading From STDIN
+<a id="topic2"></a>
 
-To avoid the problem of copying the data file to the coordinator host before loading the data, `COPY FROM STDIN` uses the Standard Input channel and feeds data directly into the `postgres` backend. After the `COPY FROM STDIN` command started, the backend will accept lines of data until a single line only contains a backslash-period \(\\.\).
+## Loading From STDIN
+
+To avoid the problem of copying the data file to the coordinator host before loading the data, `COPY FROM STDIN` uses the Standard Input channel and feeds data directly into the `postgres` backend. After the `COPY FROM STDIN` command started, the backend will accept lines of data until a single line only contains a backslash-period (\\.).
 
 ```
 COPY <table_name> FROM <STDIN>;
 ```
 
-## <a id="topic3"></a>Loading Data Using \\copy in psql
+<a id="topic3"></a>
+
+## Loading Data Using \\copy in psql
 
 Do not confuse the psql `\copy` command with the `COPY` SQL command. The `\copy` invokes a regular `COPY FROM STDIN` and sends the data from the psql client to the backend. Therefore any file must reside on the host where the psql client runs, and must be accessible to the user which runs the client.
 
-To avoid the problem of copying the data file to the coordinator host before loading the data, `COPY FROM STDIN` uses the Standard Input channel and feeds data directly into the `postgres` backend. After the `COPY FROM STDIN` command started, the backend will accept lines of data until a single line only contains a backslash-period \(\\.\). psql is wrapping all of this into the handy `\copy` command.
+To avoid the problem of copying the data file to the coordinator host before loading the data, `COPY FROM STDIN` uses the Standard Input channel and feeds data directly into the `postgres` backend. After the `COPY FROM STDIN` command started, the backend will accept lines of data until a single line only contains a backslash-period (\\.). psql is wrapping all of this into the handy `\copy` command.
 
 ```
 \copy <table_name> FROM <filename>;
 ```
 
-## <a id="topic4"></a>Input Format
+<a id="topic4"></a>
 
-`COPY FROM` accepts a `FORMAT` parameter, which specifies the format of the input data. The possible values are `TEXT`, `CSV` \(Comma Separated Values\), and `BINARY`.
+## Input Format
+
+`COPY FROM` accepts a `FORMAT` parameter, which specifies the format of the input data. The possible values are `TEXT`, `CSV` (Comma Separated Values), and `BINARY`.
 
 ```
 COPY <table_name> FROM </path/to/filename> WITH (FORMAT csv);
@@ -54,4 +64,3 @@ By default, the default client encoding is used, this can be changed with the `E
 ```
 COPY <table_name> FROM </path/to/filename> WITH (ENCODING 'latin1');
 ```
-

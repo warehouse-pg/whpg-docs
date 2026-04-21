@@ -1,4 +1,6 @@
-# PL/R Language
+---
+title: PL/R Language
+
 ---
 
 This chapter contains the following information:
@@ -14,17 +16,21 @@ This chapter contains the following information:
 -   [Loading R Modules at Startup](#topic_g12_gwt_3gb)
 -   [References](#topic15)
 
-## <a id="topic2"></a>About WarehousePG PL/R
+<a id="topic2"></a>
+
+## About WarehousePG PL/R
 
 PL/R is a procedural language. With the WarehousePG PL/R extension you can write database functions in the R programming language and use R packages that contain R functions and data sets.
 
 For information about supported PL/R versions, see the *WarehousePG Release Notes*.
 
-### <a id="topic_irz_m3l_v3b"></a>Installing R
+<a id="topic_irz_m3l_v3b"></a>
+
+### Installing R
 
 For RHEL/Oracle/Rocky, installing the PL/R package installs R in `$GPHOME/ext/R-<version>` and updates `$GPHOME/greenplum_path.sh` for WarehousePG to use R.
 
-> **Note** You can use the [gpssh](../utility_guide/ref/gpssh.html) utility to run bash shell commands on multiple remote hosts.
+> **Note** You can use the [gpssh](../../../ref_guide/utility_guide/reference/gpssh.md) utility to run bash shell commands on multiple remote hosts.
 
 1.  To install R, run these `apt` commands on all host systems.
 
@@ -54,29 +60,35 @@ For RHEL/Oracle/Rocky, installing the PL/R package installs R in `$GPHOME/ext/R-
     $ gpstop -r
     ```
 
+<a id="topic3"></a>
 
-### <a id="topic3"></a>Installing PL/R
+### Installing PL/R
 
 The PL/R extension is available as a package.
 
+<a id="topic4"></a>
 
-#### <a id="topic4"></a>Installing the Extension Package
+#### Installing the Extension Package
 
 Before you install the PL/R extension, make sure that your WarehousePG is running, you have sourced `greenplum_path.sh`, and that the `$COORDINATOR_DATA_DIRECTORY` and `$GPHOME` variables are set.
 
 1.  Download the PL/R extension package.
-3.  Copy the PL/R package to the WarehousePG coordinator host.
-4.  Install the software extension package
 
-5.  Source the file `$GPHOME/greenplum_path.sh`.
-6.  Restart WarehousePG.
+2.  Copy the PL/R package to the WarehousePG coordinator host.
+
+3.  Install the software extension package
+
+4.  Source the file `$GPHOME/greenplum_path.sh`.
+
+5.  Restart WarehousePG.
 
     ```
     $ gpstop -r
     ```
 
+<a id="topic5"></a>
 
-### <a id="topic5"></a>Enabling PL/R Language Support
+### Enabling PL/R Language Support
 
 For each database that requires its use, register the PL/R language with the SQL command `CREATE EXTENSION`. Because PL/R is an untrusted language, only superusers can register PL/R with a database. For example, run this command as the `gpadmin` user to register the language with the database named `testdb`:
 
@@ -86,15 +98,18 @@ $ psql -d testdb -c 'CREATE EXTENSION plr;'
 
 PL/R is registered as an untrusted language.
 
-### <a id="topic6"></a>Uninstalling PL/R
+<a id="topic6"></a>
+
+### Uninstalling PL/R
 
 -   [Remove PL/R Support for a Database](#topic7)
--   [Uninstall the Extension Package](#topic8)
--   [Uninstall R \(Ubuntu\)](#topic_ifv_tsf_w3b)
+-   [Uninstall R (Ubuntu)](#topic_ifv_tsf_w3b)
 
 When you remove PL/R language support from a database, the PL/R routines that you created in the database will no longer work.
 
-#### <a id="topic7"></a>Remove PL/R Support for a Database
+<a id="topic7"></a>
+
+#### Remove PL/R Support for a Database
 
 For a database that no longer requires the PL/R language, remove support for PL/R with the SQL command `DROP EXTENSION`. Because PL/R is an untrusted language, only superusers can remove support for the PL/R language from a database. For example, run this command as the `gpadmin` user to remove support for PL/R from the database named `testdb`:
 
@@ -102,10 +117,11 @@ For a database that no longer requires the PL/R language, remove support for PL/
 $ psql -d testdb -c 'DROP EXTENSION plr;'
 ```
 
-The default command fails if any existing objects \(such as functions\) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/R.
+The default command fails if any existing objects (such as functions) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/R.
 
+<a id="topic_ifv_tsf_w3b"></a>
 
-#### <a id="topic_ifv_tsf_w3b"></a>Uninstall R \(Ubuntu\)
+#### Uninstall R (Ubuntu)
 
 For Ubuntu systems, remove R from all WarehousePG host systems. These commands remove R from an Ubuntu system.
 
@@ -116,11 +132,15 @@ $ sudo apt remove r-base-core
 
 Removing `r-base` does not uninstall the R executable. Removing `r-base-core` uninstalls the R executable.
 
-### <a id="topic9"></a>Examples
+<a id="topic9"></a>
+
+### Examples
 
 The following are simple PL/R examples.
 
-#### <a id="topic10"></a>Example 1: Using PL/R for single row operators
+<a id="topic10"></a>
+
+#### Example 1: Using PL/R for single row operators
 
 This function generates an array of numbers with a normal distribution using the R function `rnorm()`.
 
@@ -143,7 +163,9 @@ CREATE TABLE test_norm_var
         DISTRIBUTED BY (id);
 ```
 
-#### <a id="topic11"></a>Example 2: Returning PL/R data.frames in Tabular Form
+<a id="topic11"></a>
+
+#### Example 2: Returning PL/R data.frames in Tabular Form
 
 Assuming your PL/R function returns an R `data.frame` as its output, unless you want to use arrays of arrays, some work is required to see your `data.frame` from PL/R as a simple SQL table:
 
@@ -159,10 +181,11 @@ Assuming your PL/R function returns an R `data.frame` as its output, unless you 
     ... RETURNS SET OF t1 AS ...
     ```
 
-
 Sample SQL for this is given in the next example.
 
-#### <a id="topic12"></a>Example 3: Hierarchical Regression using PL/R
+<a id="topic12"></a>
+
+#### Example 3: Hierarchical Regression using PL/R
 
 The SQL below defines a `TYPE` and runs hierarchical regression using PL/R:
 
@@ -205,17 +228,19 @@ CREATE TABLE wj_model_results_roi AS SELECT *
   FROM wj_plr_RE('{1,1,1}', '{"a", "b", "c"}');
 ```
 
-### <a id="topic13"></a>Downloading and Installing R Packages
+<a id="topic13"></a>
+
+### Downloading and Installing R Packages
 
 R packages are modules that contain R functions and data sets. You can install R packages to extend R and PL/R functionality in WarehousePG.
 
-WarehousePG provides a collection of data science-related R libraries that can be used with the WarehousePG PL/R language. For information about the libraries, see [R Data Science Library Package](../install_guide/install_r_dslib.html#topic1).
+WarehousePG provides a collection of data science-related R libraries that can be used with the WarehousePG PL/R language. For information about the libraries, see [R Data Science Library Package](../../../install_guide/data_sci_pkgs/install_r_dslib.md).
 
 > **Note** If you expand WarehousePG and add segment hosts, you must install the R packages in the R installation of the new hosts.
 
 1.  For an R package, identify all dependent R packages and each package web URL. The information can be found by selecting the given package from the following navigation page:
 
-    [https://cran.r-project.org/web/packages/available\_packages\_by\_name.html](https://cran.r-project.org/web/packages/available_packages_by_name.html)
+    [https://cran.r-project.org/web/packages/available_packages_by_name.html](https://cran.r-project.org/web/packages/available_packages_by_name.html)
 
     As an example, the page for the R package arm indicates that the package requires the following R libraries: Matrix, lattice, lme4, R2WinBUGS, coda, abind, foreign, and MASS.
 
@@ -233,7 +258,7 @@ WarehousePG provides a collection of data science-related R libraries that can b
     wget https://cran.r-project.org/src/contrib/Archive/Matrix/Matrix_0.9996875-1.tar.gz
     ```
 
-3.  Use the [gpsync](../utility_guide/ref/gpsync.html) utility and the `hosts_all` file to copy the `tar.gz` files to the same directory on all nodes of the WarehousePG cluster. The `hosts_all` file contains a list of all the WarehousePG segment hosts. You might require root access to do this.
+3.  Use the [gpsync](../../../ref_guide/utility_guide/reference/gpsync.md) utility and the `hosts_all` file to copy the `tar.gz` files to the same directory on all nodes of the WarehousePG cluster. The `hosts_all` file contains a list of all the WarehousePG segment hosts. You might require root access to do this.
 
     ```
     gpsync -f hosts_all Matrix_0.9996875-1.tar.gz =:/home/gpadmin 
@@ -243,13 +268,13 @@ WarehousePG provides a collection of data science-related R libraries that can b
     gpsync -f /hosts_all arm_1.5-03.tar.gz =:/home/gpadmin
     ```
 
-4.  Use the `gpssh` utility in interactive mode to log into each WarehousePG segment host \(`gpssh -f all_hosts`\). Install the packages from the command prompt using the `R CMD INSTALL` command. Note that this may require root access. For example, this R install command installs the packages for the arm package.
+4.  Use the `gpssh` utility in interactive mode to log into each WarehousePG segment host (`gpssh -f all_hosts`). Install the packages from the command prompt using the `R CMD INSTALL` command. Note that this may require root access. For example, this R install command installs the packages for the arm package.
 
     ```
     $R_HOME/bin/R CMD INSTALL Matrix_0.9996875-1.tar.gz   arm_1.5-03.tar.gz
     ```
 
-5.  Ensure that the package is installed in the `$R_HOME/library` directory on all the segments \(the `gpssh` can be used to install the package\). For example, this `gpssh` command list the contents of the R library directory.
+5.  Ensure that the package is installed in the `$R_HOME/library` directory on all the segments (the `gpssh` can be used to install the package). For example, this `gpssh` command list the contents of the R library directory.
 
     ```
     gpssh -s -f all_hosts "ls $R_HOME/library"
@@ -276,8 +301,9 @@ WarehousePG provides a collection of data science-related R libraries that can b
     SELECT R_test_require('arm');
     ```
 
+<a id="topic14"></a>
 
-### <a id="topic14"></a>Displaying R Library Information
+### Displaying R Library Information
 
 You can use the R command line to display information about the installed libraries and functions on the WarehousePG host. You can also add and remove libraries from the R installation. To start the R command line on the host, log into the host as the `gadmin` user and run the script R from the directory `$GPHOME/ext/R-3.3.3/bin`.
 
@@ -334,7 +360,9 @@ You can use the R command `-e` option to run functions from the command line. Fo
 $ R -e 'help("MASS")'
 ```
 
-### <a id="topic_g12_gwt_3gb"></a>Loading R Modules at Startup
+<a id="topic_g12_gwt_3gb"></a>
+
+### Loading R Modules at Startup
 
 PL/R can automatically load saved R code during interpreter initialization. To use this feature, you create the `plr_modules` database table and then insert the R modules you want to auto-load into the table. If the table exists, PL/R will load the code it contains into the interpreter.
 
@@ -349,7 +377,9 @@ CREATE TABLE public.plr_modules {
 
 See [https://www.joeconway.com/plr/doc/plr-module-funcs.html](https://www.joeconway.com/plr/doc/plr-module-funcs.html) for more information about using the PL/R auto-load feature.
 
-### <a id="topic15"></a>References
+<a id="topic15"></a>
+
+### References
 
 [https://www.r-project.org/](https://www.r-project.org/) - The R Project home page.
 
@@ -360,4 +390,3 @@ The following links highlight key topics from the [R documentation](https://www.
 -   R Functions and Arguments - [https://www.joeconway.com/doc/plr-funcs.html](https://www.joeconway.com/doc/plr-funcs.html)
 -   Passing Data Values in R - [https://www.joeconway.com/doc/plr-data.html](https://www.joeconway.com/doc/plr-data.html)
 -   Aggregate Functions in R - [https://www.joeconway.com/doc/plr-aggregate-funcs.html](https://www.joeconway.com/doc/plr-aggregate-funcs.html)
-

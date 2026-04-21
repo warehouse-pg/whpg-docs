@@ -1,4 +1,17 @@
-# Examples for Creating External Tables
+---
+title: Examples for Creating External Tables
+navigation:
+  - example-1-single-gpfdist-instance-on-single-nic-machine
+  - example-2-multiple-gpfdist-instances
+  - example-3-multiple-gpfdists-instances
+  - example-4-single-gpfdist-instance-with-error-logging
+  - example-5-text-format-on-a-hadoop-distributed-file-server
+  - example-6-multiple-files-in-csv-format-with-header-rows
+  - example-7-readable-web-external-table-with-script
+  - example-8-writable-external-table-with-gpfdist
+  - example-9-writable-external-web-table-with-script
+  - example-10-readable-and-writable-external-tables-with-xml-transformations
+
 ---
 
 These examples show how to define external data with different protocols. Each `CREATE EXTERNAL TABLE` command can contain only one protocol.
@@ -12,26 +25,24 @@ gpfdist -p 8081 -d /var/data/staging -l /home/gpadmin/log &
 
 ```
 
--   **[Example 1—Single gpfdist instance on single-NIC machine](../external/example-1-single-gpfdist-instance-on-single-nic-machine.html)**  
+-   **[Example 1—Single gpfdist instance on single-NIC machine](example-1-single-gpfdist-instance-on-single-nic-machine.md)**  
 
--   **[Example 2—Multiple gpfdist instances](../external/example-2-multiple-gpfdist-instances.html)**  
+-   **[Example 2—Multiple gpfdist instances](example-2-multiple-gpfdist-instances.md)**  
 
--   **[Example 3—Multiple gpfdists instances](../external/example-3-multiple-gpfdists-instances.html)**  
+-   **[Example 3—Multiple gpfdists instances](example-3-multiple-gpfdists-instances.md)**  
 
--   **[Example 4—Single gpfdist instance with error logging](../external/example-4-single-gpfdist-instance-with-error-logging.html)**  
+-   **[Example 4—Single gpfdist instance with error logging](example-4-single-gpfdist-instance-with-error-logging.md)**  
 
--   **[Example 5—TEXT Format on a Hadoop Distributed File Server](../external/example-5-text-format-on-a-hadoop-distributed-file-server.html)**  
+-   **[Example 5—TEXT Format on a Hadoop Distributed File Server](example-5-text-format-on-a-hadoop-distributed-file-server.md)**  
 
--   **[Example 6—Multiple files in CSV format with header rows](../external/example-6-multiple-files-in-csv-format-with-header-rows.html)**  
+-   **[Example 6—Multiple files in CSV format with header rows](example-6-multiple-files-in-csv-format-with-header-rows.md)**  
 
--   **[Example 7—Readable External Web Table with Script](../external/example-7-readable-web-external-table-with-script.html)**  
+-   **[Example 7—Readable External Web Table with Script](example-7-readable-web-external-table-with-script.md)**  
 
--   **[Example 8—Writable External Table with gpfdist](../external/example-8-writable-external-table-with-gpfdist.html)**  
+-   **[Example 8—Writable External Table with gpfdist](example-8-writable-external-table-with-gpfdist.md)**  
 
--   **[Example 9—Writable External Web Table with Script](../external/example-9-writable-external-web-table-with-script.html)**  
+-   **[Example 9—Writable External Web Table with Script](example-9-writable-external-web-table-with-script.md)**  
 
--   **[Example 10—Readable and Writable External Tables with XML Transformations](../external/example-10-readable-and-writable-external-tables-with-xml-transformations.html)**  
+-   **[Example 10—Readable and Writable External Tables with XML Transformations](example-10-readable-and-writable-external-tables-with-xml-transformations.md)**  
 
-
-**Parent topic:** [Defining External Tables](../external/external-tables.html)
-
+**Parent topic:** [Defining External Tables](../index.md)

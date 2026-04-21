@@ -1,10 +1,17 @@
-# REVOKE 
+---
+title: REVOKE
+
+---
 
 Removes access privileges.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 REVOKE [GRANT OPTION FOR]
        { {SELECT | INSERT | UPDATE | DELETE | REFERENCES | TRIGGER | TRUNCATE }
        [, ...] | ALL [PRIVILEGES] }
@@ -91,11 +98,13 @@ where <role_specification> can be:
   | SESSION_USER
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `REVOKE` command revokes previously granted privileges from one or more roles. The key word `PUBLIC` refers to the implicitly defined group of all roles.
 
-See the description of the [GRANT](GRANT.html) command for the meaning of the privilege types.
+See the description of the [GRANT](GRANT.md) command for the meaning of the privilege types.
 
 Note that any particular role will have the sum of privileges granted directly to it, privileges granted to any role it is presently a member of, and privileges granted to `PUBLIC`. Thus, for example, revoking `SELECT` privilege from `PUBLIC` does not necessarily mean that all roles have lost `SELECT` privilege on the object: those who have it granted directly or via another role will still have it. Similarly, revoking `SELECT` from a user might not prevent that user from using `SELECT` if `PUBLIC` or another membership role still has `SELECT` rights.
 
@@ -103,23 +112,27 @@ If `GRANT OPTION FOR` is specified, only the grant option for the privilege is r
 
 If a role holds a privilege with grant option and has granted it to other roles then the privileges held by those other roles are called dependent privileges. If the privilege or the grant option held by the first role is being revoked and dependent privileges exist, those dependent privileges are also revoked if `CASCADE` is specified, else the revoke action will fail. This recursive revocation only affects privileges that were granted through a chain of roles that is traceable to the role that is the subject of this `REVOKE` command. Thus, the affected roles may effectively keep the privilege if it was also granted through other roles.
 
-When you revoke privileges on a table, WarehousePG revokes the corresponding column privileges \(if any\) on each column of the table, as well. On the other hand, if a role has been granted privileges on a table, then revoking the same privileges from individual columns will have no effect.
+When you revoke privileges on a table, WarehousePG revokes the corresponding column privileges (if any) on each column of the table, as well. On the other hand, if a role has been granted privileges on a table, then revoking the same privileges from individual columns will have no effect.
 
 By default, when you revoke privileges on a partitioned table, WarehousePG recurses the operation to its child tables. To direct WarehousePG to perform the `REVOKE` on the partitioned table only, specify the `ONLY <table_name>` clause.
 
-When revoking membership in a role, `GRANT OPTION` is instead called `ADMIN OPTION`, but the behavior is similar. This form of the command also allows a `GRANTED BY` option, but that option is currently ignored \(except for checking the existence of the named role\). Note also that this form of the command does not allow the noise word `GROUP` in role\_specification.
+When revoking membership in a role, `GRANT OPTION` is instead called `ADMIN OPTION`, but the behavior is similar. This form of the command also allows a `GRANTED BY` option, but that option is currently ignored (except for checking the existence of the named role). Note also that this form of the command does not allow the noise word `GROUP` in role_specification.
 
-## <a id="section4a"></a>Parameters 
+<a id="section4a"></a>
 
-See [GRANT](GRANT.html).
+## Parameters
 
-## <a id="section4"></a>Notes 
+See [GRANT](GRANT.md).
+
+<a id="section4"></a>
+
+## Notes
 
 A user may revoke only those privileges directly granted by that user. If, for example, user A grants a privilege with grant option to user B, and user B has in turn granted it to user C, then user A cannot revoke the privilege directly from C. Instead, user A could revoke the grant option from user B and use the `CASCADE` option so that the privilege is in turn revoked from user C. For another example, if both A and B grant the same privilege to C, A can revoke their own grant but not B's grant, so C effectively still has the privilege.
 
-When a non-owner of an object attempts to `REVOKE` privileges on the object, the command fails outright if the user has no privileges whatsoever on the object. As long as some privilege is available, the command proceeds, but it will revoke only those privileges for which the user has grant options. The `REVOKE ALL PRIVILEGES` forms issue a warning message if no grant options are held, while the other forms issue a warning if grant options for any of the privileges specifically named in the command are not held. \(In principle these statements apply to the object owner as well, but since WarehousePG always treats the owner as holding all grant options, the cases can never occur.\)
+When a non-owner of an object attempts to `REVOKE` privileges on the object, the command fails outright if the user has no privileges whatsoever on the object. As long as some privilege is available, the command proceeds, but it will revoke only those privileges for which the user has grant options. The `REVOKE ALL PRIVILEGES` forms issue a warning message if no grant options are held, while the other forms issue a warning if grant options for any of the privileges specifically named in the command are not held. (In principle these statements apply to the object owner as well, but since WarehousePG always treats the owner as holding all grant options, the cases can never occur.)
 
-If a superuser chooses to issue a `GRANT` or `REVOKE` command, WarehousePG performs the command as though it were issued by the owner of the affected object. Since all privileges ultimately come from the object owner \(possibly indirectly via chains of grant options\), it is possible for a superuser to revoke all privileges, but this might require use of `CASCADE` as stated above.
+If a superuser chooses to issue a `GRANT` or `REVOKE` command, WarehousePG performs the command as though it were issued by the owner of the affected object. Since all privileges ultimately come from the object owner (possibly indirectly via chains of grant options), it is possible for a superuser to revoke all privileges, but this might require use of `CASCADE` as stated above.
 
 `REVOKE` may also be invoked by a role that is not the owner of the affected object, but is a member of the role that owns the object, or is a member of a role that holds privileges `WITH GRANT OPTION` on the object. In this case, WarehousePG performs the command as though it were issued by the containing role that actually owns the object or holds the privileges `WITH GRANT OPTION`. For example, if table `t1` is owned by role `g1`, of which role `u1` is a member, then `u1` can revoke privileges on `t1` that are recorded as being granted by `g1`. This includes grants made by `u1` as well as by other members of role `g1`.
 
@@ -127,7 +140,9 @@ If the role that runs `REVOKE` holds privileges indirectly via more than one rol
 
 Use `psql`'s `\dp` meta-command to obtain information about existing privileges for tables and columns. There are other `\d` meta-commands that you can use to display the privileges of non-table objects.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Revoke insert privilege for the public on table `films`:
 
@@ -135,7 +150,7 @@ Revoke insert privilege for the public on table `films`:
 REVOKE INSERT ON films FROM PUBLIC;
 ```
 
-Revoke all privileges from user `manuel` on view `kinds`. Note that this actually means revoke all privileges that the current role granted \(if not a superuser\).
+Revoke all privileges from user `manuel` on view `kinds`. Note that this actually means revoke all privileges that the current role granted (if not a superuser).
 
 ```
 REVOKE ALL PRIVILEGES ON kinds FROM manuel;
@@ -147,15 +162,18 @@ Revoke membership in role `admins` from user `joe`:
 REVOKE admins FROM joe;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
 
-The compatibility notes of the [GRANT](GRANT.html) command also apply to `REVOKE`.
+## Compatibility
+
+The compatibility notes of the [GRANT](GRANT.md) command also apply to `REVOKE`.
 
 Either `RESTRICT` or `CASCADE` is required according to the standard, but WarehousePG assumes `RESTRICT` by default.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[ALTER DEFAULT PRIVILEGES](ALTER_DEFAULT_PRIVILEGES.html), [GRANT](GRANT.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER DEFAULT PRIVILEGES](ALTER_DEFAULT_PRIVILEGES.md), [GRANT](GRANT.md)
 
+**Parent topic:** [SQL Commands](index.md)

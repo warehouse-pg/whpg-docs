@@ -1,36 +1,51 @@
-# CLOSE 
+---
+title: CLOSE
+
+---
 
 Closes a cursor.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CLOSE { <cursor_name> | ALL }
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `CLOSE` frees the resources associated with an open cursor. After the cursor is closed, no subsequent operations are allowed on it. A cursor should be closed when it is no longer needed.
 
 Every non-holdable open cursor is implicitly closed when a transaction is terminated by `COMMIT` or `ROLLBACK`. A holdable cursor is implicitly closed if the transaction that created it is prematurely ended via `ROLLBACK`. If the creating transaction successfully commits, the holdable cursor remains open until an explicit `CLOSE` is run, or the client disconnects.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-cursor\_name
+## Parameters
+
+cursor_name
 The name of an open cursor to close.
 
 ALL
 Close all open cursors.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-WarehousePG does not have an explicit `OPEN` cursor statement. A cursor is considered open when it is declared. Use the [DECLARE](DECLARE.html) statement to declare \(and open\) a cursor.
+## Notes
 
-You can see all available cursors by querying the [pg\_cursors](../system_catalogs/catalog_ref-views.html#pg_cursors) system view.
+WarehousePG does not have an explicit `OPEN` cursor statement. A cursor is considered open when it is declared. Use the [DECLARE](DECLARE.md) statement to declare (and open) a cursor.
+
+You can see all available cursors by querying the [pg_cursors](../system_catalogs/catalog_ref-views.md#pg_cursors) system view.
 
 If a cursor is closed after a savepoint which is later rolled back, the `CLOSE` is not rolled back; that is, the cursor remains closed.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Close the cursor `portala`:
 
@@ -38,13 +53,16 @@ Close the cursor `portala`:
 CLOSE portala;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 `CLOSE` is fully conforming with the SQL standard. `CLOSE ALL` is a WarehousePG extension.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[DECLARE](DECLARE.html), [FETCH](FETCH.html), [MOVE](MOVE.html), [RETRIEVE](RETRIEVE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[DECLARE](DECLARE.md), [FETCH](FETCH.md), [MOVE](MOVE.md), [RETRIEVE](RETRIEVE.md)
 
+**Parent topic:** [SQL Commands](index.md)

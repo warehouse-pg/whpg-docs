@@ -1,23 +1,25 @@
-# About Configuring Row-Level Security Policies
+---
+title: About Configuring Row-Level Security Policies
+
 ---
 
-In addition to the SQL-standard [privilege system](roles_privs.html#topic6) available through [GRANT](../ref_guide/sql_commands/GRANT.html), tables can have row security policies that restrict, on a per-user basis, which rows can be returned by normal queries or inserted, updated, or deleted by data modification commands. This feature is also known as *Row-Level Security*. By default, tables do not have any policies, so that if a user has access privileges to a table according to the SQL privilege system, all rows within it are equally available for querying or updating.
+In addition to the SQL-standard [privilege system](roles_privs.md#topic6) available through [GRANT](../../ref_guide/sql_commands/GRANT.md), tables can have row security policies that restrict, on a per-user basis, which rows can be returned by normal queries or inserted, updated, or deleted by data modification commands. This feature is also known as *Row-Level Security*. By default, tables do not have any policies, so that if a user has access privileges to a table according to the SQL privilege system, all rows within it are equally available for querying or updating.
 
-When row security is enabled on a table \(with `ALTER TABLE ... ENABLE ROW LEVEL SECURITY`\), all normal access to the table for selecting rows or modifying rows must be allowed by a row security policy. \(However, the table's owner is typically not subject to row security policies.\) If no policy exists for the table, a default-deny policy is used, meaning that no rows are visible or can be modified. Operations that apply to the whole table, such as `TRUNCATE` and `REFERENCES`, are not subject to row security.
+When row security is enabled on a table (with `ALTER TABLE ... ENABLE ROW LEVEL SECURITY`), all normal access to the table for selecting rows or modifying rows must be allowed by a row security policy. (However, the table's owner is typically not subject to row security policies.) If no policy exists for the table, a default-deny policy is used, meaning that no rows are visible or can be modified. Operations that apply to the whole table, such as `TRUNCATE` and `REFERENCES`, are not subject to row security.
 
 Row security policies can be specific to commands, or to roles, or to both. A policy can be specified to apply to `ALL` commands, or to `SELECT`, `INSERT`, `UPDATE`, or `DELETE`. Multiple roles can be assigned to a given policy, and normal role membership and inheritance rules apply.
 
-To specify which rows are visible or modifiable according to a policy, an expression is required that returns a Boolean result. This expression will be evaluated for each row prior to any conditions or functions coming from the user's query. \(The only exceptions to this rule are leakproof functions, which are guaranteed to not leak information; the optimizer may choose to apply such functions ahead of the row-security check.\) Rows for which the expression does not return true will not be processed. Separate expressions may be specified to provide independent control over the rows which are visible and the rows which are allowed to be modified. Policy expressions are run as part of the query and with the privileges of the user running the query, although security-definer functions can be used to access data not available to the calling user.
+To specify which rows are visible or modifiable according to a policy, an expression is required that returns a Boolean result. This expression will be evaluated for each row prior to any conditions or functions coming from the user's query. (The only exceptions to this rule are leakproof functions, which are guaranteed to not leak information; the optimizer may choose to apply such functions ahead of the row-security check.) Rows for which the expression does not return true will not be processed. Separate expressions may be specified to provide independent control over the rows which are visible and the rows which are allowed to be modified. Policy expressions are run as part of the query and with the privileges of the user running the query, although security-definer functions can be used to access data not available to the calling user.
 
 Superusers and roles with the `BYPASSRLS` attribute always bypass the row security system when accessing a table. Table owners normally bypass row security as well, though a table owner can choose to be subject to row security with `ALTER TABLE ... FORCE ROW LEVEL SECURITY`.
 
 Enabling and disabling row security, as well as adding policies to a table, is always the privilege of the table owner only.
 
-You create policies using the [CREATE POLICY](../ref_guide/sql_commands/CREATE_POLICY.html) command, alter policies using the [ALTER POLICY](../ref_guide/sql_commands/ALTER_POLICY.html) command, and drop policies using the [DROP POLICY](../ref_guide/sql_commands/DROP_POLICY.html) command. To enable and disable row security for a given table, use the [ALTER TABLE](../ref_guide/sql_commands/ALTER_TABLE.html) command.
+You create policies using the [CREATE POLICY](../../ref_guide/sql_commands/CREATE_POLICY.md) command, alter policies using the [ALTER POLICY](../../ref_guide/sql_commands/ALTER_POLICY.md) command, and drop policies using the [DROP POLICY](../../ref_guide/sql_commands/DROP_POLICY.md) command. To enable and disable row security for a given table, use the [ALTER TABLE](../../ref_guide/sql_commands/ALTER_TABLE.md) command.
 
 Each policy has a name, and you can define multiple policies for a table. As policies are table-specific, each policy for a table must have a unique name. Different tables may have policies with the same name.
 
-When multiple policies apply to a given query, they are combined using either `OR` \(for permissive policies, which are the default\) or using `AND` \(for restrictive policies\). This is similar to the rule that a given role has the privileges of all roles of which they are a member. Permissive vs. restrictive policies are discussed further below.
+When multiple policies apply to a given query, they are combined using either `OR` (for permissive policies, which are the default) or using `AND` (for restrictive policies). This is similar to the rule that a given role has the privileges of all roles of which they are a member. Permissive vs. restrictive policies are discussed further below.
 
 Here is a simple example that creates a policy on the `account` relation to allow only members of the `managers` role to access rows, and only rows of their accounts:
 
@@ -30,7 +32,7 @@ CREATE POLICY account_managers ON accounts TO managers
     USING (manager = current_user);
 ```
 
-The policy above implicitly provides a `WITH CHECK` clause identical to its `USING` clause, so that the constraint applies both to rows selected by a command \(so a manager cannot `SELECT`, `UPDATE`, or `DELETE` existing rows belonging to a different manager\) and to rows modified by a command \(so rows belonging to a different manager cannot be created via `INSERT` or `UPDATE`\).
+The policy above implicitly provides a `WITH CHECK` clause identical to its `USING` clause, so that the constraint applies both to rows selected by a command (so a manager cannot `SELECT`, `UPDATE`, or `DELETE` existing rows belonging to a different manager) and to rows modified by a command (so rows belonging to a different manager cannot be created via `INSERT` or `UPDATE`).
 
 If no role is specified, or the special user name `PUBLIC` is used, then the policy applies to all users on the system. To allow all users to access only their own row in a `users` table, you can create a simple policy as follows:
 
@@ -157,7 +159,7 @@ postgres=> update passwd set pwhash = 'abc';
 UPDATE 1
 ```
 
-All of the policies constructed thus far have been permissive policies; this means that when multiple policies are applied they are combined using the `OR` Boolean operator. While permissive policies can be constructed to only allow access to rows in the intended cases, it can be simpler to combine permissive policies with restrictive policies \(which the records must pass and which are combined using the `AND` Boolean operator\). Building on the example above, we add a restrictive policy to require the administrator to be connected over a local Unix socket to access the records of the `passwd` table:
+All of the policies constructed thus far have been permissive policies; this means that when multiple policies are applied they are combined using the `OR` Boolean operator. While permissive policies can be constructed to only allow access to rows in the intended cases, it can be simpler to combine permissive policies with restrictive policies (which the records must pass and which are combined using the `AND` Boolean operator). Building on the example above, we add a restrictive policy to require the administrator to be connected over a local Unix socket to access the records of the `passwd` table:
 
 ```
 CREATE POLICY admin_local_only ON passwd AS RESTRICTIVE TO admin
@@ -196,7 +198,7 @@ UPDATE 0
 
 Referential integrity checks, such as unique or primary key constraints and foreign key references, always bypass row security to ensure that data integrity is maintained. Take care when developing schemas and row-level policies to avoid "covert channel" leaks of information through such referential integrity checks.
 
-In some contexts, it is important to be sure that row security is not being applied. For example, when taking a backup, it could be disastrous if row security silently caused some rows to be omitted from the backup. In such a situation, you can set the [row\_security](../ref_guide/config_params/guc-list.html#row_security) configuration parameter to `off`. This does not in itself bypass row security; what it does is throw an error if any query's results would get filtered by a policy. You can then investigate the reason for the error and fix it.
+In some contexts, it is important to be sure that row security is not being applied. For example, when taking a backup, it could be disastrous if row security silently caused some rows to be omitted from the backup. In such a situation, you can set the [row_security](../../ref_guide/config_params/guc-list.md#row_security) configuration parameter to `off`. This does not in itself bypass row security; what it does is throw an error if any query's results would get filtered by a policy. You can then investigate the reason for the error and fix it.
 
 In the examples above, the policy expressions consider only the current values in the row to be accessed or updated. This is the simplest and best-performing case; when possible, it is best to design row security applications to work this way. If it is necessary to consult other rows or other tables to make a policy decision, that can be accomplished using sub-`SELECT`s, or functions that contain `SELECT`s, in the policy expressions. Be aware, however, that such accesses can create race conditions that could allow information leakage if care is not taken. As an example, consider the following table design:
 
@@ -264,11 +266,13 @@ SELECT * FROM information WHERE group_id = 2 FOR UPDATE;
 
 and her transaction is in `READ COMMITTED` mode, it is possible for her to see `"secret from mallory"`. That happens if her transaction reaches the information row just after `alice`'s does. It blocks waiting for `alice`'s transaction to commit, then fetches the updated row contents thanks to the `FOR UPDATE` clause. However, it does not fetch an updated row for the implicit `SELECT` from `users`, because that sub-`SELECT` did not have `FOR UPDATE`; instead the `users` row is read with the snapshot taken at the start of the query. Therefore, the policy expression tests the old value of `mallory`'s privilege level and allows her to see the updated row.
 
-There are several ways around this problem. One simple answer is to use `SELECT ... FOR SHARE` in sub-`SELECT`s in row security policies. However, that requires granting `UPDATE` privilege on the referenced table \(here `users`\) to the affected users, which might be undesirable. \(But another row security policy could be applied to prevent them from actually exercising that privilege; or the sub-`SELECT` could be embedded into a security definer function.\) Also, heavy concurrent use of row share locks on the referenced table could pose a performance problem, especially if updates of it are frequent. Another solution, practical if updates of the referenced table are infrequent, is to take an `ACCESS EXCLUSIVE` lock on the referenced table when updating it, so that no concurrent transactions could be examining old row values. Or one could just wait for all concurrent transactions to end after committing an update of the referenced table and before making changes that rely on the new security situation.
+There are several ways around this problem. One simple answer is to use `SELECT ... FOR SHARE` in sub-`SELECT`s in row security policies. However, that requires granting `UPDATE` privilege on the referenced table (here `users`) to the affected users, which might be undesirable. (But another row security policy could be applied to prevent them from actually exercising that privilege; or the sub-`SELECT` could be embedded into a security definer function.) Also, heavy concurrent use of row share locks on the referenced table could pose a performance problem, especially if updates of it are frequent. Another solution, practical if updates of the referenced table are infrequent, is to take an `ACCESS EXCLUSIVE` lock on the referenced table when updating it, so that no concurrent transactions could be examining old row values. Or one could just wait for all concurrent transactions to end after committing an update of the referenced table and before making changes that rely on the new security situation.
 
-For additional details see [CREATE POLICY](../ref_guide/sql_commands/CREATE_POLICY.html) and [ALTER TABLE](../ref_guide/sql_commands/ALTER_TABLE.html).
+For additional details see [CREATE POLICY](../../ref_guide/sql_commands/CREATE_POLICY.md) and [ALTER TABLE](../../ref_guide/sql_commands/ALTER_TABLE.md).
 
-## <a id="views"></a>About Row-Level Security for Views
+<a id="views"></a>
+
+## About Row-Level Security for Views
 
 You can simulate row-level access by using views to restrict the rows that are selected. You can simulate row-level labels by adding an extra column to the table to store sensitivity information, and then using views to control row-level access based on this column. You can then grant roles access to the views rather than to the base table.
 
@@ -282,4 +286,3 @@ CREATE VIEW phone_number WITH (security_barrier) AS
 Views created with the `security_barrier` attribute may perform far worse than views created without this option. In general, there is no way to avoid this: the fastest possible plan must be rejected if it may compromise security. For this reason, the `security_barrier` option is not enabled by default.
 
 Be sure to review [Rules and Privileges](https://www.postgresql.org/docs/12/rules-privileges.html) in the PostgreSQL documentation for detailed information about securing views.
-

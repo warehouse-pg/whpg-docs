@@ -1,4 +1,7 @@
-# pg_cast 
+---
+title: pg_cast
+
+---
 
 The `pg_cast` table stores data type conversion paths, both built-in paths and those defined with `CREATE CAST`.
 
@@ -10,14 +13,13 @@ It is legitimate to create a `pg_cast` entry in which the source and target type
 
 When a `pg_cast` entry has different source and target types and a function that takes more than one argument, the entry converts from one type to another and applies a length coercion in a single step. When no such entry is available, coercion to a type that uses a type modifier involves two steps, one to convert between data types and a second to apply the modifier.
 
-|column|type|references|description|
-|------|----|----------|-----------|
-|`oid`|oid||The object ID.|
-|`castsource`|oid|pg\_type.oid|OID of the source data type.|
-|`casttarget`|oid|pg\_type.oid|OID of the target data type.|
-|`castfunc`|oid|pg\_proc.oid|The OID of the function to use to perform this cast. Zero is stored if the cast method does not require a function.|
-|`castcontext`|char| |Indicates what contexts the cast may be invoked in. `e` means only as an explicit cast \(using `CAST` or `::` syntax\). `a` means implicitly in assignment to a target column, as well as explicitly. `i` means implicitly in expressions, as well as the other cases*.*|
-|`castmethod`|char| |Indicates how the cast is performed:<br/><br/>`f` - The function identified in the `castfunc` field is used.<br/><br/>`i` - The input/output functions are used.<br/><br/>`b` - The types are binary-coercible, and no conversion is required.|
+| column        | type | references  | description                                                                                                                                                                                                                                                            |
+| ------------- | ---- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `oid`         | oid  |             | The object ID.                                                                                                                                                                                                                                                         |
+| `castsource`  | oid  | pg_type.oid | OID of the source data type.                                                                                                                                                                                                                                           |
+| `casttarget`  | oid  | pg_type.oid | OID of the target data type.                                                                                                                                                                                                                                           |
+| `castfunc`    | oid  | pg_proc.oid | The OID of the function to use to perform this cast. Zero is stored if the cast method does not require a function.                                                                                                                                                    |
+| `castcontext` | char |             | Indicates what contexts the cast may be invoked in. `e` means only as an explicit cast (using `CAST` or `::` syntax). `a` means implicitly in assignment to a target column, as well as explicitly. `i` means implicitly in expressions, as well as the other cases*.* |
+| `castmethod`  | char |             | Indicates how the cast is performed:<br /><br />`f` - The function identified in the `castfunc` field is used.<br /><br />`i` - The input/output functions are used.<br /><br />`b` - The types are binary-coercible, and no conversion is required.                   |
 
-**Parent topic:** [System Catalogs Definitions](../system_catalogs/catalog_ref-html.html)
-
+**Parent topic:** [System Catalogs Definitions](index.md)

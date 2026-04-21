@@ -1,7 +1,9 @@
-# Example 2—Multiple gpfdist instances
+---
+title: Example 2—Multiple gpfdist instances
+
 ---
 
-Creates a readable external table, *ext\_expenses,* using the gpfdist protocol from all files with the *txt* extension. The column delimiter is a pipe \( \| \) and NULL \(' '\) is a space.
+Creates a readable external table, *ext_expenses,* using the gpfdist protocol from all files with the *txt* extension. The column delimiter is a pipe ( \| ) and NULL (' ') is a space.
 
 ```
 =# CREATE EXTERNAL TABLE ext_expenses ( name text, 
@@ -12,5 +14,4 @@ Creates a readable external table, *ext\_expenses,* using the gpfdist protocol f
 
 ```
 
-**Parent topic:** [Examples for Creating External Tables](../external/creating-external-tables---examples.html)
-
+**Parent topic:** [Examples for Creating External Tables](index.md)

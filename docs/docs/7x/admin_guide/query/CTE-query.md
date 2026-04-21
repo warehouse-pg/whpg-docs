@@ -1,18 +1,22 @@
-# WITH Queries (Common Table Expressions)
+---
+title: WITH Queries (Common Table Expressions)
+
 ---
 
 The `WITH` clause provides a way to write auxiliary statements for use in a larger query. These statements, which are often referred to as Common Table Expressions or CTEs, can be thought of as defining temporary tables that exist just for one query.
 
 > **Note** Limitations when using a `WITH` clause in WarehousePG include:
-> 
-> -   For a `SELECT` command that includes a `WITH` clause, the clause can contain at most a single clause that modifies table data \(`INSERT`, `UPDATE`, or `DELETE` command\).
-> -   For a data-modifying command \(`INSERT`, `UPDATE`, or `DELETE`\) that includes a `WITH` clause, the clause can only contain a `SELECT` command; it cannot contain a data-modifying command.
- 
-By default, WarehousePG enables the `RECURSIVE` keyword for the `WITH` clause. `RECURSIVE` can be deactivated by setting the server configuration parameter [gp\_recursive\_cte](../../../ref_guide/config_params/guc-list.html) to `false`.
+>
+> -   For a `SELECT` command that includes a `WITH` clause, the clause can contain at most a single clause that modifies table data (`INSERT`, `UPDATE`, or `DELETE` command).
+> -   For a data-modifying command (`INSERT`, `UPDATE`, or `DELETE`) that includes a `WITH` clause, the clause can only contain a `SELECT` command; it cannot contain a data-modifying command.
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+By default, WarehousePG enables the `RECURSIVE` keyword for the `WITH` clause. `RECURSIVE` can be deactivated by setting the server configuration parameter [gp_recursive_cte](../../ref_guide/config_params/guc-list.md) to `false`.
 
-## <a id="topic_xyn_dgh_5gb"></a>SELECT in a WITH Clause
+**Parent topic:** [SQL: Querying Data](index.md)
+
+<a id="topic_xyn_dgh_5gb"></a>
+
+## SELECT in a WITH Clause
 
 One use of CTEs is to break down complicated queries into simpler parts. The examples in this section show the `WITH` clause being used with a `SELECT` command. The example `WITH` clauses can be used the same manner with `INSERT`, `UPDATE`, or `DELETE`.
 
@@ -53,7 +57,7 @@ WITH RECURSIVE t(n) AS (
 SELECT sum(n) FROM t;
 ```
 
-The general form of a recursive `WITH` query always follows the pattern of: a *non-recursive term*, followed by a `UNION` \(or `UNION ALL`\), and then a *recursive term*, where only the *recursive term* can contain a reference to the query output.
+The general form of a recursive `WITH` query always follows the pattern of: a *non-recursive term*, followed by a `UNION` (or `UNION ALL`), and then a *recursive term*, where only the *recursive term* can contain a reference to the query output.
 
 ```
 <non_recursive_term> UNION [ ALL ] <recursive_term>
@@ -61,9 +65,10 @@ The general form of a recursive `WITH` query always follows the pattern of: a *n
 
 A recursive `WITH` query that contains a `UNION [ ALL ]` is evaluated as follows:
 
-1.  Evaluate the non-recursive term. For `UNION` \(but not `UNION ALL`\), discard duplicate rows. Include all remaining rows in the result of the recursive query, and also place them in a temporary *working table*.
+1.  Evaluate the non-recursive term. For `UNION` (but not `UNION ALL`), discard duplicate rows. Include all remaining rows in the result of the recursive query, and also place them in a temporary *working table*.
 2.  As long as the working table is not empty, repeat these steps:
-    1.  Evaluate the recursive term, substituting the current contents of the working table for the recursive self-reference. For `UNION` \(but not `UNION ALL`\), discard duplicate rows and rows that duplicate any previous result row. Include all remaining rows in the result of the recursive query, and also place them in a temporary *intermediate table*.
+
+    1.  Evaluate the recursive term, substituting the current contents of the working table for the recursive self-reference. For `UNION` (but not `UNION ALL`), discard duplicate rows and rows that duplicate any previous result row. Include all remaining rows in the result of the recursive query, and also place them in a temporary *intermediate table*.
     2.  Replace the contents of the *working table* with the contents of the *intermediate table*, then empty the *intermediate table*.
 
     > **Note** While `RECURSIVE` allows queries to be specified recursively, WarehousePG evaluates such queries iteratively internally.
@@ -162,7 +167,7 @@ If a `WITH` query is non-recursive and side-effect-free (that is, it is a `SELEC
 
 A simple example of these rules follows:
 
-``` sql
+```sql
 WITH w AS (
     SELECT * FROM big_table
 )
@@ -171,13 +176,13 @@ SELECT * FROM w WHERE key = 123;
 
 This `WITH` query will be folded, producing the same execution plan as:
 
-``` sql
+```sql
 SELECT * FROM big_table WHERE key = 123;
 ```
 
 In particular, if there's an index on `key`, WarehousePG uses it to fetch just the rows having `key = 123`. On the other hand, in:
 
-``` sql
+```sql
 WITH w AS (
     SELECT * FROM big_table
 )
@@ -187,7 +192,7 @@ WHERE w2.key = 123;
 
 the `WITH` query will be materialized, producing a temporary copy of `big_table` that is then joined with itself — without benefit of any index. This query will run much more efficiently if written as:
 
-``` sql
+```sql
 WITH w AS NOT MATERIALIZED (
     SELECT * FROM big_table
 )
@@ -199,7 +204,7 @@ so that the parent query's restrictions can be applied directly to scans of `big
 
 An example where `NOT MATERIALIZED` could be undesirable is:
 
-``` sql
+```sql
 WITH w AS (
     SELECT key, very_expensive_function(val) as f FROM some_table
 )
@@ -208,12 +213,13 @@ SELECT * FROM w AS w1 JOIN w AS w2 ON w1.f = w2.f;
 
 Here, materialization of the `WITH` query ensures that WarehousePG evaluations `very_expensive_function` only once per table row, not twice.
 
+<a id="topic_zg3_bgh_5gb"></a>
 
-## <a id="topic_zg3_bgh_5gb"></a>Data-Modifying Statements in a WITH clause
+## Data-Modifying Statements in a WITH clause
 
 For a `SELECT` command, you can use the data-modifying commands `INSERT`, `UPDATE`, or `DELETE` in a `WITH` clause. This allows you to perform several different operations in the same query.
 
-A data-modifying statement in a `WITH` clause is run exactly once, and always to completion, independently of whether the primary query reads all \(or indeed any\) of the output. This is different from the rule when using `SELECT` in a `WITH` clause, the execution of a `SELECT` continues only as long as the primary query demands its output.
+A data-modifying statement in a `WITH` clause is run exactly once, and always to completion, independently of whether the primary query reads all (or indeed any) of the output. This is different from the rule when using `SELECT` in a `WITH` clause, the execution of a `SELECT` continues only as long as the primary query demands its output.
 
 This simple CTE query deletes rows from `products`. The `DELETE` in the `WITH` clause deletes the specified rows from products, returning their contents by means of its `RETURNING` clause.
 
@@ -266,24 +272,24 @@ WITH t AS (
 SELECT * FROM t;
 ```
 
-Updating the same row twice in a single statement is not supported. The effects of such a statement will not be predictable. Only one of the modifications takes place, but it is not easy \(and sometimes not possible\) to predict which modification occurs.
+Updating the same row twice in a single statement is not supported. The effects of such a statement will not be predictable. Only one of the modifications takes place, but it is not easy (and sometimes not possible) to predict which modification occurs.
 
 Any table used as the target of a data-modifying statement in a `WITH` clause must not have a conditional rule, nor an `ALSO` rule, nor an `INSTEAD` rule that expands to multiple statements.
 
+<a id="consider"></a>
 
-## <a id="consider"></a>Considerations
+## Considerations
 
 When constructing `WITH` queries, keep the following in mind:
 
-- `SELECT FOR UPDATE` cannot be inlined.
-- WarehousePG inlines multiply-referenced CTEs only when requested (by specifying `NOT MATERIALIZED`).
-- Multiply-referenced CTEs cannot be inlined if they contain outer self-references.
-- WarehousePG does not inline when the CTE includes a volatile function.
-- An `ORDER BY` in the subquery or CTE does not force an ordering for the whole query.
-- WarehousePG always materializes a CTE term in a query. Due to this:
+-   `SELECT FOR UPDATE` cannot be inlined.
+-   WarehousePG inlines multiply-referenced CTEs only when requested (by specifying `NOT MATERIALIZED`).
+-   Multiply-referenced CTEs cannot be inlined if they contain outer self-references.
+-   WarehousePG does not inline when the CTE includes a volatile function.
+-   An `ORDER BY` in the subquery or CTE does not force an ordering for the whole query.
+-   WarehousePG always materializes a CTE term in a query. Due to this:
 
-    - A query that should touch a small amount of data may instead read a whole table, and possibly spill to a temporary file.
-    - `UPDATE` or `DELETE FROM` statements are not permitted in a CTE term, as it acts more like a read-only temporary table than a dynamic view. 
-- While inlining is generally a huge win, there are certain boundary cases where it is not; for example, when a non-trivial expression will be inlined in multiple places.
-- The GPORCA query optimizer does not support `[NOT] MATERIALIZED`.
-
+    -   A query that should touch a small amount of data may instead read a whole table, and possibly spill to a temporary file.
+    -   `UPDATE` or `DELETE FROM` statements are not permitted in a CTE term, as it acts more like a read-only temporary table than a dynamic view. 
+-   While inlining is generally a huge win, there are certain boundary cases where it is not; for example, when a non-trivial expression will be inlined in multiple places.
+-   The GPORCA query optimizer does not support `[NOT] MATERIALIZED`.

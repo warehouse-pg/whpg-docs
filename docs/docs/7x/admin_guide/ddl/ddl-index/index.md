@@ -1,15 +1,19 @@
-# Using Indexes in WarehousePG
+---
+title: Using Indexes in WarehousePG
+navigation:
+  - ddl-brin
+
 ---
 
-In most traditional databases, indexes can greatly improve data access times. However, in a distributed database such as WarehousePG, indexes should be used more sparingly. WarehousePG performs very fast sequential scans; indexes use a random seek pattern to locate records on disk. WarehousePG data is distributed across the segments, so each segment scans a smaller portion of the overall data to get the result. With table partitioning, the total data to scan may be even smaller. Because business intelligence \(BI\) query workloads generally return very large data sets, using indexes is not efficient.
+In most traditional databases, indexes can greatly improve data access times. However, in a distributed database such as WarehousePG, indexes should be used more sparingly. WarehousePG performs very fast sequential scans; indexes use a random seek pattern to locate records on disk. WarehousePG data is distributed across the segments, so each segment scans a smaller portion of the overall data to get the result. With table partitioning, the total data to scan may be even smaller. Because business intelligence (BI) query workloads generally return very large data sets, using indexes is not efficient.
 
 First try your query workload without adding indexes. Indexes are more likely to improve performance for OLTP workloads, where the query is returning a single record or a small subset of data. Indexes can also improve performance on compressed append-optimized tables for queries that return a targeted set of rows, as the optimizer can use an index access method rather than a full table scan when appropriate. For compressed data, an index access method means only the necessary rows are uncompressed.
 
 WarehousePG automatically creates `PRIMARY KEY` constraints for tables with primary keys. To create an index on a partitioned table, create an index on the partitioned table that you created. The index is propagated to all the child tables created by WarehousePG. Creating an index on a table that is created by WarehousePG for use by a partitioned table is not supported.
 
-Note that a `UNIQUE CONSTRAINT` \(such as a `PRIMARY KEY CONSTRAINT`\) implicitly creates a `UNIQUE INDEX` that must include all the columns of the distribution key and any partitioning key. The `UNIQUE CONSTRAINT` is enforced across the entire table, including all table partitions \(if any\).
+Note that a `UNIQUE CONSTRAINT` (such as a `PRIMARY KEY CONSTRAINT`) implicitly creates a `UNIQUE INDEX` that must include all the columns of the distribution key and any partitioning key. The `UNIQUE CONSTRAINT` is enforced across the entire table, including all table partitions (if any).
 
-Indexes add some database overhead — they use storage space and must be maintained when the table is updated. Ensure that the query workload uses the indexes that you create, and check that the indexes you add improve query performance \(as compared to a sequential scan of the table\). To determine whether indexes are being used, examine the query `EXPLAIN` plans. See [Query Profiling](../query/topics/query-profiling.html).
+Indexes add some database overhead — they use storage space and must be maintained when the table is updated. Ensure that the query workload uses the indexes that you create, and check that the indexes you add improve query performance (as compared to a sequential scan of the table). To determine whether indexes are being used, examine the query `EXPLAIN` plans. See [Query Profiling](../../query/query-profiling.md).
 
 Consider the following points when you create indexes.
 
@@ -18,15 +22,17 @@ Consider the following points when you create indexes.
 -   **Avoid indexes on frequently updated columns.** Creating an index on a column that is frequently updated increases the number of writes required when the column is updated.
 -   **Create selective B-tree indexes.** Index selectivity is a ratio of the number of distinct values a column has divided by the number of rows in a table. For example, if a table has 1000 rows and a column has 800 distinct values, the selectivity of the index is 0.8, which is considered good. Unique indexes always have a selectivity ratio of 1.0, which is the best possible. WarehousePG allows unique indexes only on distribution key columns.
 -   **Use Bitmap indexes for low selectivity columns.** The WarehousePG Bitmap index type is not available in regular PostgreSQL. See [About Bitmap Indexes](#topic93).
--   **Index columns used in joins.** An index on a column used for frequent joins \(such as a foreign key column\) can improve join performance by enabling more join methods for the query optimizer to use.
+-   **Index columns used in joins.** An index on a column used for frequent joins (such as a foreign key column) can improve join performance by enabling more join methods for the query optimizer to use.
 -   **Index columns frequently used in predicates.** Columns that are frequently referenced in `WHERE` clauses are good candidates for indexes.
 -   **Avoid overlapping indexes.** Indexes that have the same leading column are redundant.
 -   **Drop indexes for bulk loads.** For mass loads of data into a table, consider dropping the indexes and re-creating them after the load completes. This is often faster than updating the indexes.
 -   **Consider a clustered index.** Clustering an index means that the records are physically ordered on disk according to the index. If the records you need are distributed randomly on disk, the database has to seek across the disk to fetch the records requested. If the records are stored close together, the fetching operation is more efficient. For example, a clustered index on a date column where the data is ordered sequentially by date. A query against a specific date range results in an ordered fetch from the disk, which leverages fast sequential access.
 
-**Parent topic:** [DDL: Defining Database Objects](../ddl/ddl.html)
+**Parent topic:** [DDL: Defining Database Objects](../index.md)
 
-## <a id="im151772"></a>To cluster an index in WarehousePG
+<a id="im151772"></a>
+
+## To cluster an index in WarehousePG
 
 Using the `CLUSTER` command to physically reorder a table based on an index can take a long time with very large tables. To achieve the same results much faster, you can manually reorder the data on disk by creating an intermediate table and loading the data in the desired order. For example:
 
@@ -38,15 +44,20 @@ ALTER TABLE new_table RENAME TO old_table;
 CREATE INDEX myixcolumn_ix ON old_table;
 VACUUM ANALYZE old_table;
 ```
-## <a id="topic92"></a>Index Types
 
-WarehousePG supports the Postgres index types B-tree, hash, GiST, SP-GiST, GIN, and [BRIN](ddl-brin.html). Each index type uses a different algorithm that is best suited to different types of queries. B-tree indexes fit the most common situations and are the default index type. See [Index Types](https://www.postgresql.org/docs/12/indexes-types.html) in the PostgreSQL documentation for a description of these types.
+<a id="topic92"></a>
 
-> **Note** WarehousePG allows unique indexes only if the columns of the index key are the same as \(or a superset of\) the WarehousePG distribution key. On a partitioned table, a unique index cannot be enforced across all child tables; a unique index is supported only within a child partition.
+## Index Types
 
-### <a id="topic93"></a>About Bitmap Indexes
+WarehousePG supports the Postgres index types B-tree, hash, GiST, SP-GiST, GIN, and [BRIN](ddl-brin.md). Each index type uses a different algorithm that is best suited to different types of queries. B-tree indexes fit the most common situations and are the default index type. See [Index Types](https://www.postgresql.org/docs/12/indexes-types.html) in the PostgreSQL documentation for a description of these types.
 
-WarehousePG provides the Bitmap index type. Bitmap indexes are best suited to data warehousing applications and decision support systems with large amounts of data, many ad hoc queries, and few data modification \(DML\) transactions.
+> **Note** WarehousePG allows unique indexes only if the columns of the index key are the same as (or a superset of) the WarehousePG distribution key. On a partitioned table, a unique index cannot be enforced across all child tables; a unique index is supported only within a child partition.
+
+<a id="topic93"></a>
+
+### About Bitmap Indexes
+
+WarehousePG provides the Bitmap index type. Bitmap indexes are best suited to data warehousing applications and decision support systems with large amounts of data, many ad hoc queries, and few data modification (DML) transactions.
 
 An index provides pointers to the rows in a table that contain a given key value. A regular index stores a list of tuple IDs for each key corresponding to the rows with that key value. Bitmap indexes store a bitmap for each key value. Regular indexes can be several times larger than the data in the table, but bitmap indexes provide the same functionality as a regular index and use a fraction of the size of the indexed data.
 
@@ -54,13 +65,17 @@ Each bit in the bitmap corresponds to a possible tuple ID. If the bit is set, th
 
 Bitmap indexes are most effective for queries that contain multiple conditions in the `WHERE` clause. Rows that satisfy some, but not all, conditions are filtered out before the table is accessed. This improves response time, often dramatically.
 
-#### <a id="topic94"></a>When to Use Bitmap Indexes
+<a id="topic94"></a>
 
-Bitmap indexes are best suited to data warehousing applications where users query the data rather than update it. Bitmap indexes perform best for columns that have between 100 and 100,000 distinct values and when the indexed column is often queried in conjunction with other indexed columns. Columns with fewer than 100 distinct values, such as a gender column with two distinct values \(male and female\), usually do not benefit much from any type of index. On a column with more than 100,000 distinct values, the performance and space efficiency of a bitmap index decline.
+#### When to Use Bitmap Indexes
+
+Bitmap indexes are best suited to data warehousing applications where users query the data rather than update it. Bitmap indexes perform best for columns that have between 100 and 100,000 distinct values and when the indexed column is often queried in conjunction with other indexed columns. Columns with fewer than 100 distinct values, such as a gender column with two distinct values (male and female), usually do not benefit much from any type of index. On a column with more than 100,000 distinct values, the performance and space efficiency of a bitmap index decline.
 
 Bitmap indexes can improve query performance for ad hoc queries. `AND` and `OR` conditions in the `WHERE` clause of a query can be resolved quickly by performing the corresponding Boolean operations directly on the bitmaps before converting the resulting bitmap to tuple ids. If the resulting number of rows is small, the query can be answered quickly without resorting to a full table scan.
 
-#### <a id="topic95"></a>When Not to Use Bitmap Indexes
+<a id="topic95"></a>
+
+#### When Not to Use Bitmap Indexes
 
 Do not use bitmap indexes for unique columns or columns with high cardinality data, such as customer names or phone numbers. The performance gains and disk space advantages of bitmap indexes start to diminish on columns with 100,000 or more unique values, regardless of the number of rows in the table.
 
@@ -68,7 +83,9 @@ Bitmap indexes are not suitable for OLTP applications with large numbers of conc
 
 Use bitmap indexes sparingly. Test and compare query performance with and without an index. Add an index only if query performance improves with indexed columns.
 
-## <a id="topic96"></a>Creating an Index
+<a id="topic96"></a>
+
+## Creating an Index
 
 The `CREATE INDEX` command defines an index on a table. A B-tree index is the default index type. For example, to create a B-tree index on the column *gender* in the table *employee*:
 
@@ -82,7 +99,9 @@ To create a bitmap index on the column *title* in the table *films*:
 CREATE INDEX title_bmp_idx ON films USING bitmap (title);
 ```
 
-### <a id="topic_tfz_3vz_4fb"></a>Indexes on Expressions
+<a id="topic_tfz_3vz_4fb"></a>
+
+### Indexes on Expressions
 
 An index column need not be just a column of the underlying table, but can be a function or scalar expression computed from one or more columns of the table. This feature is useful to obtain fast access to tables based on the results of computations.
 
@@ -114,7 +133,9 @@ CREATE INDEX people_names ON people ((first_name || ' ' || last_name));
 
 The syntax of the `CREATE INDEX` command normally requires writing parentheses around index expressions, as shown in the second example. The parentheses can be omitted when the expression is just a function call, as in the first example.
 
-## <a id="topic97"></a>Examining Index Usage
+<a id="topic97"></a>
+
+## Examining Index Usage
 
 WarehousePG indexes do not require maintenance and tuning. You can check which indexes are used by the real-life query workload. Use the `EXPLAIN` command to examine index usage for a query.
 
@@ -132,13 +153,17 @@ You have to experiment to determine the indexes to create. Consider the followin
 -   Use real data for experimentation. Using test data for setting up indexes tells you what indexes you need for the test data, but that is all.
 -   Do not use very small test data sets as the results can be unrealistic or skewed.
 -   Be careful when developing test data. Values that are similar, completely random, or inserted in sorted order will skew the statistics away from the distribution that real data would have.
--   You can force the use of indexes for testing purposes by using run-time parameters to turn off specific plan types. For example, turn off sequential scans \(`enable_seqscan`\) and nested-loop joins \(`enable_nestloop`\), the most basic plans, to force the system to use a different plan. Time your query with and without indexes and use the `EXPLAIN ANALYZE` command to compare the results.
+-   You can force the use of indexes for testing purposes by using run-time parameters to turn off specific plan types. For example, turn off sequential scans (`enable_seqscan`) and nested-loop joins (`enable_nestloop`), the most basic plans, to force the system to use a different plan. Time your query with and without indexes and use the `EXPLAIN ANALYZE` command to compare the results.
 
-## <a id="topic98"></a>Managing Indexes
+<a id="topic98"></a>
+
+## Managing Indexes
 
 Use the `REINDEX` command to rebuild a poorly-performing index. `REINDEX` rebuilds an index using the data stored in the index's table, replacing the old copy of the index.
 
-### <a id="im143476"></a>To rebuild all indexes on a table
+<a id="im143476"></a>
+
+### To rebuild all indexes on a table
 
 ```
 REINDEX my_table;
@@ -148,7 +173,9 @@ REINDEX my_table;
 REINDEX my_index;
 ```
 
-## <a id="topic99"></a>Dropping an Index
+<a id="topic99"></a>
+
+## Dropping an Index
 
 The `DROP INDEX` command removes an index. For example:
 
@@ -158,8 +185,9 @@ DROP INDEX title_idx;
 
 When loading data, it can be faster to drop all indexes, load, then recreate the indexes.
 
+<a id="scan_cover"></a>
 
-## <a id="scan_cover"></a>About Indexes on Expressions
+## About Indexes on Expressions
 
 An index column need not be just a column of the underlying table, but can be a function or scalar expression computed from one or more columns of the table. This is useful to obtain fast access to a table based on the results of computations.
 
@@ -193,13 +221,17 @@ The syntax of the `CREATE INDEX` command normally requires writing parentheses a
 
 Index expressions are relatively expensive to maintain, because WarehousePG must compute the derived expression(s) for each row insertion and non-HOT update. However, WarehousePG does not recompute the index expressions during an indexed search, since they are already stored in the index. In both examples above, WarehousePG views the query as just `WHERE indexedcolumn = 'constant'` and so the speed of the search is equivalent to any other simple index query. Indexes on expressions are useful when retrieval speed is more important than insertion and update speed.
 
-## <a id="partial_index"></a>About Partial Indexes
+<a id="partial_index"></a>
+
+## About Partial Indexes
 
 A *partial index* is an index built over a subset of a table; the subset is defined by a conditional expression (called the predicate of the partial index). The index contains entries only for those table rows that satisfy the predicate. There are several situations in which a partial index is particularly useful.
 
 One common reason for using a partial index is to avoid indexing common values. Since a query searching for a common value (one that accounts for more than a few percent of all the table rows) will not use the index anyway, there is no point in keeping those rows in the index at all. This reduces the size of the index, which will speed up those queries that do use the index. It will also speed up many table update operations because the index does not need to be updated in all cases.
 
-### <a id="partial_index_ex1"></a>Example: Setting up a Partial Index to Exclude Common Values
+<a id="partial_index_ex1"></a>
+
+### Example: Setting up a Partial Index to Exclude Common Values
 
 Suppose you are storing web server access logs in a database. Most accesses originate from the IP address range of your organization but some are from elsewhere (say, employees on dial-up connections). If your searches by IP are primarily for outside accesses, you probably do not need to index the IP range that corresponds to your organization's subnet.
 
@@ -239,7 +271,9 @@ WHERE url = '/index.html' AND client_ip = inet '192.168.100.23';
 
 Observe that this kind of partial index requires that the common values be predetermined, so such partial indexes are best used for data distributions that do not change. Such indexes can be recreated occasionally to adjust for new data distributions, adding to the maintenance effort.
 
-### <a id="partial_index_ex2"></a>Example: Setting up a Partial Index to Exclude Uninteresting Values
+<a id="partial_index_ex2"></a>
+
+### Example: Setting up a Partial Index to Exclude Uninteresting Values
 
 Another use for a partial index is to exclude values from the index that the typical query workload is not interested in. This results in the same advantages as listed above, but it prevents the "uninteresting" values from being accessed via that index, even if an index scan might be profitable in that case. Setting up partial indexes for this kind of scenario requires a lot of care and experimentation.
 
@@ -272,9 +306,11 @@ SELECT * FROM orders WHERE order_nr = 3501;
 
 The order `3501` might be among the billed or unbilled orders.
 
-This example also illustrates that the indexed column and the column used in the predicate do not need to match. WarehousePG supports partial indexes with arbitrary predicates, so long as only columns of the table being indexed are involved. Keep in mind that the predicate must match the conditions used in the queries that are supposed to benefit from the index. To be precise, you can use a partial index in a query only if WarehousePG can recognize that the `WHERE` condition of the query mathematically implies the predicate of the index. WarehousePG cannot recognize mathematically equivalent expressions that are written in different forms. WarehousePG can recognize simple inequality implications, for example "x < 1" implies "x < 2"; otherwise the predicate condition must exactly match part of the query's `WHERE` condition or the index will not be recognized as usable. Matching takes place at query planning time, not at run time. As a result, parameterized query clauses do not work with a partial index. For example a prepared query with a parameter might specify "x < ?" which will never imply "x < 2" for all possible values of the parameter.
+This example also illustrates that the indexed column and the column used in the predicate do not need to match. WarehousePG supports partial indexes with arbitrary predicates, so long as only columns of the table being indexed are involved. Keep in mind that the predicate must match the conditions used in the queries that are supposed to benefit from the index. To be precise, you can use a partial index in a query only if WarehousePG can recognize that the `WHERE` condition of the query mathematically implies the predicate of the index. WarehousePG cannot recognize mathematically equivalent expressions that are written in different forms. WarehousePG can recognize simple inequality implications, for example "x &lt; 1" implies "x &lt; 2"; otherwise the predicate condition must exactly match part of the query's `WHERE` condition or the index will not be recognized as usable. Matching takes place at query planning time, not at run time. As a result, parameterized query clauses do not work with a partial index. For example a prepared query with a parameter might specify "x &lt; ?" which will never imply "x &lt; 2" for all possible values of the parameter.
 
-### <a id="partial_index_ex3"></a>Example: Setting up a Partial Unique Index
+<a id="partial_index_ex3"></a>
+
+### Example: Setting up a Partial Unique Index
 
 A third possible use for partial indexes does not require the index to be used in queries at all. The idea here is to create a unique index over a subset of a table. This enforces uniqueness among the rows that satisfy the index predicate, without constraining those that do not.
 
@@ -296,7 +332,9 @@ This is a particularly efficient approach when there are few successful tests an
 
 Finally, a partial index can also be used to override WarehousePG's query plan choices. Also, data sets with peculiar distributions might cause the system to use an index when it really should not. In that case the index can be set up so that it is not available for the offending query. Normally, WarehousePG makes reasonable choices about index usage (it avoids them when retrieving common values, so the earlier example really only saves index size, it is not required to avoid index usage), and grossly incorrect plan choices are cause for a bug report.
 
-### <a id="partial_index_ex4"></a>Example: Do Not Use Partial Indexes as a Substitute for Partitioning
+<a id="partial_index_ex4"></a>
+
+### Example: Do Not Use Partial Indexes as a Substitute for Partitioning
 
 Keep in mind that setting up a partial index indicates that you know at least as much as the query planner knows, in particular you know when an index might be profitable. Forming this knowledge requires experience and understanding of how indexes in WarehousePG work. In most cases, the advantage of a partial index over a regular index will be minimal. There are cases where they are quite counterproductive.
 
@@ -320,7 +358,9 @@ While a search in this larger index might have to descend through a couple more 
 
 If your table is large enough that a single index really is a bad idea, you should look into using partitioning instead. With that mechanism, WarehousePG does understand that the tables and indexes are non-overlapping, so far better performance is possible.
 
-## <a id="scan_cover"></a>Understanding Index-Only Scans and Covering Indexes
+<a id="scan_cover"></a>
+
+## Understanding Index-Only Scans and Covering Indexes
 
 > **Note** WarehousePG selects index-only and covering index scan options for a query plan only for new tables that you create in WarehousePG 7. WarehousePG does not select these plan types for tables that you have upgraded from WarehousePG 6.
 
@@ -328,9 +368,9 @@ All indexes in WarehousePG are secondary indexes, meaning that each index is sto
 
 WarehousePG supports index-only scans to address the performance issue. Index-only scans can answer queries from an index alone without any heap access. WarehousePG returns values directly out of each index entry instead of consulting the associated heap entry. There are two fundamental restrictions on when WarehousePG can use this method:
 
-1. The index type must support index-only scans. B-tree indexes always do. GiST and SP-GiST indexes support index-only scans for some operator classes but not others. Other index types have no support. The underlying requirement is that the index must physically store, or else be able to reconstruct, the original data value for each index entry. As a counterexample, GIN indexes cannot support index-only scans because each index entry typically holds only part of the original data value.
+1.  The index type must support index-only scans. B-tree indexes always do. GiST and SP-GiST indexes support index-only scans for some operator classes but not others. Other index types have no support. The underlying requirement is that the index must physically store, or else be able to reconstruct, the original data value for each index entry. As a counterexample, GIN indexes cannot support index-only scans because each index entry typically holds only part of the original data value.
 
-1. The query must reference only columns stored in the index. For example, given an index on columns `x` and `y` of a table that also has a column `z`, these queries could use index-only scans:
+2.  The query must reference only columns stored in the index. For example, given an index on columns `x` and `y` of a table that also has a column `z`, these queries could use index-only scans:
 
     ```
     SELECT x, y FROM tab WHERE x = 'key';
@@ -412,4 +452,3 @@ SELECT target FROM tests WHERE subject = 'some-subject' AND success;
 ```
 
 But there is a problem: the `WHERE` clause refers to success which is not available as a result column of the index. Nonetheless, an index-only scan is possible because the plan does not need to recheck that part of the `WHERE` clause at run time: all entries found in the index necessarily have `success = true` so this need not be explicitly checked in the plan. WarehousePG version 7 recognizes such cases and generates index-only scans, but older versions do not.
-

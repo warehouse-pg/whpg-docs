@@ -1,35 +1,42 @@
-# Configuring Database Authorization 
+---
+title: Configuring Database Authorization
+
+---
 
 Describes how to restrict authorization access to database data at the user level by using roles and permissions.
 
-**Parent topic:** [WarehousePG Security Configuration Guide](../security_guide/)
+**Parent topic:** [WarehousePG Security Configuration Guide](index.md)
 
-## <a id="topic_k35_qtx_kr"></a>Access Permissions and Roles 
+<a id="topic_k35_qtx_kr"></a>
 
-WarehousePG manages database access permissions using *roles*. The concept of roles subsumes the concepts of users and groups. A role can be a database user, a group, or both. Roles can own database objects \(for example, tables\) and can assign privileges on those objects to other roles to control access to the objects. Roles can be members of other roles, thus a member role can inherit the object privileges of its parent role.
+## Access Permissions and Roles
 
-Every WarehousePG cluster contains a set of database roles \(users and groups\). Those roles are separate from the users and groups managed by the operating system on which the server runs. However, for convenience you may want to maintain a relationship between operating system user names and WarehousePG role names, since many of the client applications use the current operating system user name as the default.
+WarehousePG manages database access permissions using *roles*. The concept of roles subsumes the concepts of users and groups. A role can be a database user, a group, or both. Roles can own database objects (for example, tables) and can assign privileges on those objects to other roles to control access to the objects. Roles can be members of other roles, thus a member role can inherit the object privileges of its parent role.
+
+Every WarehousePG cluster contains a set of database roles (users and groups). Those roles are separate from the users and groups managed by the operating system on which the server runs. However, for convenience you may want to maintain a relationship between operating system user names and WarehousePG role names, since many of the client applications use the current operating system user name as the default.
 
 In WarehousePG, users log in and connect through the coordinator instance, which verifies their role and access privileges. The coordinator then issues out commands to the segment instances behind the scenes using the currently logged in role.
 
 Roles are defined at the system level, so they are valid for all databases in the system.
 
-To bootstrap the WarehousePG cluster, a freshly initialized system always contains one predefined superuser role \(also referred to as the system user\). This role will have the same name as the operating system user that initialized the WarehousePG cluster. Customarily, this role is named `gpadmin`. To create more roles you first must connect as this initial role.
+To bootstrap the WarehousePG cluster, a freshly initialized system always contains one predefined superuser role (also referred to as the system user). This role will have the same name as the operating system user that initialized the WarehousePG cluster. Customarily, this role is named `gpadmin`. To create more roles you first must connect as this initial role.
 
-## <a id="managing_obj_priv"></a>Managing Object Privileges 
+<a id="managing_obj_priv"></a>
 
-When an object \(table, view, sequence, database, function, language, schema, or tablespace\) is created, it is assigned an owner. The owner is normally the role that ran the creation statement. For most kinds of objects, the initial state is that only the owner \(or a superuser\) can do anything with the object. To allow other roles to use it, privileges must be granted. WarehousePG supports the following privileges for each object type:
+## Managing Object Privileges
 
-|Object Type|Privileges|
-|:----------|:---------|
-|Tables, Views, Sequences|`SELECT`<br/>`INSERT`<br/>`UPDATE`<br/>`DELETE`<br/>`RULE`<br/>`ALL`|
-|External Tables|`SELECT`<br/>`RULE`<br/>`ALL`|
-|Databases|`CONNECT`<br/>`CREATE`<br/>`TEMPORARY` or `TEMP`<br/>`ALL`|
-|Functions|`EXECUTE`|
-|Procedural Languages|`USAGE`|
-|Schemas|`CREATE`<br/>`USAGE`<br/>`ALL`|
+When an object (table, view, sequence, database, function, language, schema, or tablespace) is created, it is assigned an owner. The owner is normally the role that ran the creation statement. For most kinds of objects, the initial state is that only the owner (or a superuser) can do anything with the object. To allow other roles to use it, privileges must be granted. WarehousePG supports the following privileges for each object type:
 
-Privileges must be granted for each object individually. For example, granting `ALL` on a database does not grant full access to the objects within that database. It only grants all of the database-level privileges \(`CONNECT`, `CREATE`, `TEMPORARY`\) to the database itself.
+| Object Type              | Privileges                                                                |
+| :----------------------- | :------------------------------------------------------------------------ |
+| Tables, Views, Sequences | `SELECT`<br />`INSERT`<br />`UPDATE`<br />`DELETE`<br />`RULE`<br />`ALL` |
+| External Tables          | `SELECT`<br />`RULE`<br />`ALL`                                           |
+| Databases                | `CONNECT`<br />`CREATE`<br />`TEMPORARY` or `TEMP`<br />`ALL`             |
+| Functions                | `EXECUTE`                                                                 |
+| Procedural Languages     | `USAGE`                                                                   |
+| Schemas                  | `CREATE`<br />`USAGE`<br />`ALL`                                          |
+
+Privileges must be granted for each object individually. For example, granting `ALL` on a database does not grant full access to the objects within that database. It only grants all of the database-level privileges (`CONNECT`, `CREATE`, `TEMPORARY`) to the database itself.
 
 Use the `GRANT` SQL command to give a specified role privileges on an object. For example:
 
@@ -43,14 +50,16 @@ To revoke privileges, use the `REVOKE` command. For example:
 =# REVOKE ALL PRIVILEGES ON mytable FROM jsmith; 
 ```
 
-You can also use the `DROP OWNED` and `REASSIGN OWNED` commands for managing objects owned by deprecated roles. \(Note: only an object's owner or a superuser can drop an object or reassign ownership.\) For example:
+You can also use the `DROP OWNED` and `REASSIGN OWNED` commands for managing objects owned by deprecated roles. (Note: only an object's owner or a superuser can drop an object or reassign ownership.) For example:
 
 ```
  =# REASSIGN OWNED BY sally TO bob;
  =# DROP OWNED BY visitor; 
 ```
 
-## <a id="time-based-restriction"></a>Restricting Access by Time 
+<a id="time-based-restriction"></a>
+
+## Restricting Access by Time
 
 WarehousePG enables the administrator to restrict access to certain times by role. Use the `CREATE ROLE` or `ALTER ROLE` commands to specify time-based constraints.
 
@@ -71,17 +80,17 @@ You can specify more than one restriction; for example, no access Wednesdays at 
 
 There are two ways to specify a day. Use the word `DAY` followed by either the English term for the weekday, in single quotation marks, or a number between 0 and 6, as shown in the table below.
 
-|English Term|Number|
-|:-----------|:-----|
-|DAY 'Sunday'|DAY 0|
-|DAY 'Monday'|DAY 1|
-|DAY 'Tuesday'|DAY 2|
-|DAY 'Wednesday'|DAY 3|
-|DAY 'Thursday'|DAY 4|
-|DAY 'Friday'|DAY 5|
-|DAY 'Saturday'|DAY 6|
+| English Term    | Number |
+| :-------------- | :----- |
+| DAY 'Sunday'    | DAY 0  |
+| DAY 'Monday'    | DAY 1  |
+| DAY 'Tuesday'   | DAY 2  |
+| DAY 'Wednesday' | DAY 3  |
+| DAY 'Thursday'  | DAY 4  |
+| DAY 'Friday'    | DAY 5  |
+| DAY 'Saturday'  | DAY 6  |
 
-A time of day is specified in either 12- or 24-hour format. The word `TIME` is followed by the specification in single quotation marks. Only hours and minutes are specified and are separated by a colon \( : \). If using a 12-hour format, add `AM` or `PM` at the end. The following examples show various time specifications.
+A time of day is specified in either 12- or 24-hour format. The word `TIME` is followed by the specification in single quotation marks. Only hours and minutes are specified and are separated by a colon ( : ). If using a 12-hour format, add `AM` or `PM` at the end. The following examples show various time specifications.
 
 ```
 TIME '14:00'     # 24-hour time implied
@@ -126,7 +135,9 @@ DENY DAY 'Sunday'
 
 The following examples demonstrate creating a role with time-based constraints and modifying a role to add time-based constraints. Only the statements needed for time-based constraints are shown. For more details on creating and altering roles see the descriptions of `CREATE ROLE` and `ALTER ROLE` in the *WarehousePG Reference Guide*.
 
-### <a id="ex1"></a>Example 1 – Create a New Role with Time-based Constraints 
+<a id="ex1"></a>
+
+### Example 1 – Create a New Role with Time-based Constraints
 
 No access is allowed on weekends.
 
@@ -137,7 +148,9 @@ No access is allowed on weekends.
  ... 
 ```
 
-### <a id="ex2"></a>Example 2 – Alter a Role to Add Time-based Constraints 
+<a id="ex2"></a>
+
+### Example 2 – Alter a Role to Add Time-based Constraints
 
 No access is allowed every night between 2:00 a.m. and 4:00 a.m.
 
@@ -153,7 +166,9 @@ ALTER ROLE generaluser
   ... 
 ```
 
-### <a id="ex3"></a>Excample 3 – Alter a Role to Add Time-based Constraints 
+<a id="ex3"></a>
+
+### Excample 3 – Alter a Role to Add Time-based Constraints
 
 No access is allowed Wednesdays or Fridays between 3:00 p.m. and 5:00 p.m.
 
@@ -164,7 +179,9 @@ ALTER ROLE generaluser
  
 ```
 
-## <a id="drop_timebased_restriction"></a>Dropping a Time-based Restriction 
+<a id="drop_timebased_restriction"></a>
+
+## Dropping a Time-based Restriction
 
 To remove a time-based restriction, use the ALTER ROLE command. Enter the keywords DROP DENY FOR followed by a day/time specification to drop.
 
@@ -183,4 +200,3 @@ Example 1 - Remove a Time-based Restriction from a Role
 ```
 
 This statement would remove all constraints that overlap with a Monday constraint for the role `generaluser` in Example 2, even if there are additional constraints.
-

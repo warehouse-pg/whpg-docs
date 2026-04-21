@@ -1,9 +1,16 @@
-# Handling Load Errors
+---
+title: Handling Load Errors
+navigation:
+  - define-an-external-table-with-single-row-error-isolation
+  - create-an-error-table-and-declare-a-reject-limit
+  - viewing-bad-rows-in-the-error-table-or-error-log
+  - moving-data-between-tables
+
 ---
 
 Readable external tables are most commonly used to select data to load into regular database tables. You use the `CREATE TABLE AS SELECT` or `INSERT INTO`commands to query the external table data. By default, if the data contains an error, the entire command fails and the data is not loaded into the target database table.
 
-The `SEGMENT REJECT LIMIT` clause allows you to isolate format errors in external table data and to continue loading correctly formatted rows. Use `SEGMENT REJECT LIMIT`to set an error threshold, specifying the reject limit `count` as number of `ROWS` \(the default\) or as a `PERCENT` of total rows \(1-100\).
+The `SEGMENT REJECT LIMIT` clause allows you to isolate format errors in external table data and to continue loading correctly formatted rows. Use `SEGMENT REJECT LIMIT`to set an error threshold, specifying the reject limit `count` as number of `ROWS` (the default) or as a `PERCENT` of total rows (1-100).
 
 The entire external table operation is cancelled, and no rows are processed, if the number of error rows reaches the `SEGMENT REJECT LIMIT`. The limit of error rows is per-segment, not per entire operation. The operation processes all good rows, and it discards and optionally logs formatting errors for erroneous rows, if the number of error rows does not reach the `SEGMENT REJECT LIMIT`.
 
@@ -19,14 +26,12 @@ When you set `SEGMENT REJECT LIMIT`, WarehousePG scans the external data in sing
 
 > **Note** When loading data with the `COPY` command or an external table, the value of the server configuration parameter `gp_initial_bad_row_limit` limits the initial number of rows that are processed that are not formatted properly. The default is to stop processing if the first 1000 rows contain formatting errors. See the *WarehousePG Reference Guide* for information about the parameter.
 
--   **[Define an External Table with Single Row Error Isolation](../../load/topics/g-define-an-external-table-with-single-row-error-isolation.html)**  
+-   **[Define an External Table with Single Row Error Isolation](define-an-external-table-with-single-row-error-isolation.md)**  
 
--   **[Capture Row Formatting Errors and Declare a Reject Limit](../../load/topics/g-create-an-error-table-and-declare-a-reject-limit.html)**  
+-   **[Capture Row Formatting Errors and Declare a Reject Limit](create-an-error-table-and-declare-a-reject-limit.md)**  
 
--   **[Viewing Bad Rows in the Error Log](../../load/topics/g-viewing-bad-rows-in-the-error-table-or-error-log.html)**  
+-   **[Viewing Bad Rows in the Error Log](viewing-bad-rows-in-the-error-table-or-error-log.md)**  
 
--   **[Moving Data between Tables](../../load/topics/g-moving-data-between-tables.html)**  
+-   **[Moving Data between Tables](moving-data-between-tables.md)**  
 
-
-**Parent topic:** [Loading and Unloading Data](../../load/topics/g-loading-and-unloading-data.html)
-
+**Parent topic:** [Loading and Unloading Data](index.md)

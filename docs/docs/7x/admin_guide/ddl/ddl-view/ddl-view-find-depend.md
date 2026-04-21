@@ -1,4 +1,6 @@
-# Working with View Dependencies
+---
+title: Working with View Dependencies
+
 ---
 
 If there are view dependencies on a table you must use the `CASCADE` keyword to drop it. Also, you cannot alter the table if there are view dependencies on it. This example shows a view dependency on a table.
@@ -22,7 +24,9 @@ As the previous example shows, altering a table can be quite a challenge if ther
 
 You can use view dependency information when you want to alter a table that is referenced by a view. For example, you might want to change a table's column data type from `integer` to `bigint` because you realize you need to store larger numbers. However, you cannot do that if there are views that use the column. You first have to drop those views, then change the column and then run all the `CREATE VIEW` statements to create the views again.
 
-## <a id="topic_find_v_examples"></a>Finding View Dependencies
+<a id="topic_find_v_examples"></a>
+
+## Finding View Dependencies
 
 The following example queries list view information on dependencies on tables and columns.
 
@@ -34,11 +38,13 @@ The following example queries list view information on dependencies on tables an
 
 The example output is based on the [Example Data](#example_data) at the end of this topic.
 
-Also, you can use the first example query [Finding Direct View Dependencies on a Table](#depend_table) to find dependencies on user-defined functions \(or procedures\). The query uses the catalog table `pg_class` that contains information about tables and views. For functions, you can use the catalog table [`pg_proc`](../../ref_guide/system_catalogs/pg_proc.html) to get information about functions.
+Also, you can use the first example query [Finding Direct View Dependencies on a Table](#depend_table) to find dependencies on user-defined functions (or procedures). The query uses the catalog table `pg_class` that contains information about tables and views. For functions, you can use the catalog table [`pg_proc`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_proc.md) to get information about functions.
 
-For detailed information about the system catalog tables that store view information, see [About View Storage in WarehousePG](ddl-view-storage.html).
+For detailed information about the system catalog tables that store view information, see [About View Storage in WarehousePG](ddl-view-storage.md).
 
-### <a id="depend_table"></a>Finding Direct View Dependencies on a Table
+<a id="depend_table"></a>
+
+### Finding Direct View Dependencies on a Table
 
 To find out which views directly depend on table `t1`, create a query that performs a join among the catalog tables that contain the dependency information, and qualify the query to return only view dependencies.
 
@@ -80,14 +86,16 @@ In some cases, the views are listed multiple times because the view references m
 You can alter the query to find views with direct dependencies on the function `f`.
 
 -   In the `SELECT` clause replace the name of the table `d.refobjid::regclass as ref_object` with the name of the function `d.refobjid::regproc as ref_object`
--   In the `WHERE` clause replace the catalog of the referenced object from `d.refclassid = 'pg_class'::regclass` for tables, to `d.refclassid = 'pg_proc'::regclass` for procedures \(functions\). Also change the object name from `d.refobjid = 't1'::regclass` to `d.refobjid = 'f'::regproc`
+-   In the `WHERE` clause replace the catalog of the referenced object from `d.refclassid = 'pg_class'::regclass` for tables, to `d.refclassid = 'pg_proc'::regclass` for procedures (functions). Also change the object name from `d.refobjid = 't1'::regclass` to `d.refobjid = 'f'::regproc`
 -   In the `WHERE` clause, replace the name of the table `refobjid = 't1'::regclass` with the name of the function `refobjid = 'f'::regproc`.
 
-In the example query, the changes have been commented out \(prefixed with `--`\). You can comment out the lines for the table and enable the lines for the function.
+In the example query, the changes have been commented out (prefixed with `--`). You can comment out the lines for the table and enable the lines for the function.
 
-### <a id="direct_column"></a>Finding Direct Dependencies on a Table Column
+<a id="direct_column"></a>
 
-You can modify the previous query to find those views that depend on a certain table column, which can be useful if you are planning to drop a column \(adding a column to the base table is never a problem\). The query uses the table column information in the [`pg_attribute`](../../ref_guide/system_catalogs/pg_attribute.html) catalog table.
+### Finding Direct Dependencies on a Table Column
+
+You can modify the previous query to find those views that depend on a certain table column, which can be useful if you are planning to drop a column (adding a column to the base table is never a problem). The query uses the table column information in the [`pg_attribute`](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_attribute.md) catalog table.
 
 This query finds the views that depend on the column `id` of table `t1`:
 
@@ -119,7 +127,9 @@ WHERE v.relkind = 'v'    -- filter views only
 (4 rows)
 ```
 
-### <a id="view_schema"></a>Listing View Schemas
+<a id="view_schema"></a>
+
+### Listing View Schemas
 
 If you have created views in multiple schemas, you can also list views, each view's schema, and the table referenced by the view. The query retrieves the schema from the catalog table `pg_namespace` and excludes the system schemas `pg_catalog`, `information_schema`, and `gp_toolkit`. Also, the query does not list a view if the view refers to itself.
 
@@ -159,7 +169,9 @@ WHERE v.relkind = 'v'          -- filter views only
 (11 rows)
 ```
 
-### <a id="view_defs"></a>Listing View Definitions
+<a id="view_defs"></a>
+
+### Listing View Definitions
 
 This query lists the views that depend on `t1`, the column referenced, and the view definition. The `CREATE VIEW` command is created by adding the appropriate text to the view definition.
 
@@ -201,7 +213,9 @@ WHERE NOT (v.oid = d.refobjid)
 (7 rows)
 ```
 
-### <a id="nested_views"></a>Listing Nested Views
+<a id="nested_views"></a>
+
+### Listing Nested Views
 
 This CTE query lists information about views that reference another view.
 
@@ -243,7 +257,9 @@ FROM views
  v2a  | mytest | v1       | public
 ```
 
-### <a id="example_data"></a>Example Data
+<a id="example_data"></a>
+
+### Example Data
 
 The output for the example queries is based on these database objects and data.
 
@@ -299,4 +315,3 @@ CREATE VIEW mytest.v2a AS
   FROM public.t1 JOIN public.v1 USING (id);
 
 ```
-

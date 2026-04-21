@@ -1,10 +1,17 @@
-# ALTER USER 
+---
+title: ALTER USER
+
+---
 
 Changes the definition of a database role.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER USER <role_specification> [WITH] <option> [ ... ]
 
 where option can be:
@@ -46,17 +53,22 @@ where <role_specification> can be:
   | SESSION_USER
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`ALTER USER` is an alias for [ALTER ROLE](ALTER_ROLE.html).
+## Description
 
-## <a id="section4"></a>Compatibility 
+`ALTER USER` is an alias for [ALTER ROLE](ALTER_ROLE.md).
+
+<a id="section4"></a>
+
+## Compatibility
 
 The `ALTER USER` statement is a WarehousePG extension. The SQL standard leaves the definition of users to the implementation.
 
-## <a id="section5"></a>See Also 
+<a id="section5"></a>
 
-[ALTER ROLE](ALTER_ROLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER ROLE](ALTER_ROLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

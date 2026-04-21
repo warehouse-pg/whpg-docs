@@ -1,4 +1,8 @@
-# About this Documentation
+---
+title: About this Documentation
+redirects:
+  - gpdb-features.html.md.erb
+
 ---
 
 <!--

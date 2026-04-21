@@ -1,4 +1,6 @@
-# Using Functions and Operators
+---
+title: Using Functions and Operators
+
 ---
 
 Description of user-defined and built-in functions and operators in WarehousePG.
@@ -10,42 +12,44 @@ Description of user-defined and built-in functions and operators in WarehousePG.
 -   [Window Functions](#wind)
 -   [Advanced Aggregate Functions](#agg)
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+**Parent topic:** [SQL: Querying Data](index.md)
 
-## <a id="using"></a>Using Functions in WarehousePG
+<a id="using"></a>
 
-When you invoke a function in WarehousePG, function attributes control the execution of the function. The volatility attributes \(`IMMUTABLE`, `STABLE`, `VOLATILE`\) and the `EXECUTE ON` attributes control two different aspects of function execution. In general, volatility indicates when the function is run, and `EXECUTE ON` indicates where it is run. The volatility attributes are PostgreSQL based attributes, the `EXECUTE ON` attributes are WarehousePG attributes.
+## Using Functions in WarehousePG
 
-For example, a function defined with the `IMMUTABLE` attribute can be run at query planning time, while a function with the `VOLATILE` attribute must be run for every row in the query. A function with the `EXECUTE ON COORDINATOR` attribute runs only on the coordinator instance, and a function with the `EXECUTE ON ALL SEGMENTS` attribute runs on all primary segment instances \(not the coordinator\).
+When you invoke a function in WarehousePG, function attributes control the execution of the function. The volatility attributes (`IMMUTABLE`, `STABLE`, `VOLATILE`) and the `EXECUTE ON` attributes control two different aspects of function execution. In general, volatility indicates when the function is run, and `EXECUTE ON` indicates where it is run. The volatility attributes are PostgreSQL based attributes, the `EXECUTE ON` attributes are WarehousePG attributes.
+
+For example, a function defined with the `IMMUTABLE` attribute can be run at query planning time, while a function with the `VOLATILE` attribute must be run for every row in the query. A function with the `EXECUTE ON COORDINATOR` attribute runs only on the coordinator instance, and a function with the `EXECUTE ON ALL SEGMENTS` attribute runs on all primary segment instances (not the coordinator).
 
 These tables summarize what WarehousePG assumes about function execution based on the attribute.
 
-|Function Attribute|WarehousePG Support|Description|Comments|
-|------------------|-----------------|-----------|--------|
-|IMMUTABLE|Yes|Relies only on information directly in its argument list. Given the same argument values, always returns the same result.| |
-|STABLE|Yes, in most cases|Within a single table scan, returns the same result for same argument values, but results change across SQL statements.|Results depend on database lookups or parameter values. `current_timestamp` family of functions is `STABLE`; values do not change within an execution.|
-|VOLATILE|Restricted|Function values can change within a single table scan. For example: `random()`, `timeofday()`. This is the default attribute.|Any function with side effects is volatile, even if its result is predictable. For example: `setval()`.|
+| Function Attribute | WarehousePG Support | Description                                                                                                                   | Comments                                                                                                                                               |
+| ------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| IMMUTABLE          | Yes                 | Relies only on information directly in its argument list. Given the same argument values, always returns the same result.     |                                                                                                                                                        |
+| STABLE             | Yes, in most cases  | Within a single table scan, returns the same result for same argument values, but results change across SQL statements.       | Results depend on database lookups or parameter values. `current_timestamp` family of functions is `STABLE`; values do not change within an execution. |
+| VOLATILE           | Restricted          | Function values can change within a single table scan. For example: `random()`, `timeofday()`. This is the default attribute. | Any function with side effects is volatile, even if its result is predictable. For example: `setval()`.                                                |
 
-|Function Attribute|Description|Comments|
-|------------------|-----------|--------|
-|EXECUTE ON ANY|Indicates that the function can be run on the coordinator, or any segment instance, and it returns the same result regardless of where it runs. This is the default attribute.|WarehousePG determines where the function runs.|
-|EXECUTE ON COORDINATOR|Indicates that the function must be run on the coordinator instance.|Specify this attribute if the user-defined function runs queries to access tables.|
-|EXECUTE ON ALL SEGMENTS|Indicates that for each invocation, the function must be run on all primary segment instances, but not the coordinator.| |
-|EXECUTE ON INITPLAN|Indicates that the function contains an SQL command that dispatches queries to the segment instances and requires special processing on the coordinator instance by WarehousePG when possible.| |
+| Function Attribute      | Description                                                                                                                                                                                    | Comments                                                                           |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| EXECUTE ON ANY          | Indicates that the function can be run on the coordinator, or any segment instance, and it returns the same result regardless of where it runs. This is the default attribute.                 | WarehousePG determines where the function runs.                                    |
+| EXECUTE ON COORDINATOR  | Indicates that the function must be run on the coordinator instance.                                                                                                                           | Specify this attribute if the user-defined function runs queries to access tables. |
+| EXECUTE ON ALL SEGMENTS | Indicates that for each invocation, the function must be run on all primary segment instances, but not the coordinator.                                                                        |                                                                                    |
+| EXECUTE ON INITPLAN     | Indicates that the function contains an SQL command that dispatches queries to the segment instances and requires special processing on the coordinator instance by WarehousePG when possible. |                                                                                    |
 
 You can display the function volatility and `EXECUTE ON` attribute information with the psql `\df+ function` command.
 
 Refer to the PostgreSQL [Function Volatility Categories](https://www.postgresql.org/docs/12/xfunc-volatility.html) documentation for additional information about the WarehousePG function volatility classifications.
 
-For more information about `EXECUTE ON` attributes, see [CREATE FUNCTION](../../../ref_guide/sql_commands/CREATE_FUNCTION.html).
+For more information about `EXECUTE ON` attributes, see [CREATE FUNCTION](../../ref_guide/sql_commands/CREATE_FUNCTION.md).
 
 In WarehousePG, data is divided up across segments — each segment is a distinct PostgreSQL database. To prevent inconsistent or unexpected results, do not run functions classified as `VOLATILE` at the segment level if they contain SQL commands or modify the database in any way. For example, functions such as `setval()` are not allowed to run on distributed data in WarehousePG because they can cause inconsistent data between segment instances.
 
-A function can run read-only queries on replicated tables \(`DISTRIBUTED REPLICATED`\) on the segments, but any SQL command that modifies data must run on the coordinator instance.
+A function can run read-only queries on replicated tables (`DISTRIBUTED REPLICATED`) on the segments, but any SQL command that modifies data must run on the coordinator instance.
 
-> **Note** The hidden system columns \(`ctid`, `cmin`, `cmax`, `xmin`, `xmax`, and `gp_segment_id`\) cannot be referenced in user queries on replicated tables because they have no single, unambiguous value. WarehousePG returns a `column does not exist` error for the query.
+> **Note** The hidden system columns (`ctid`, `cmin`, `cmax`, `xmin`, `xmax`, and `gp_segment_id`) cannot be referenced in user queries on replicated tables because they have no single, unambiguous value. WarehousePG returns a `column does not exist` error for the query.
 
-To ensure data consistency, you can safely use `VOLATILE` and `STABLE` functions in statements that are evaluated on and run from the coordinator. For example, the following statements run on the coordinator \(statements without a `FROM` clause\):
+To ensure data consistency, you can safely use `VOLATILE` and `STABLE` functions in statements that are evaluated on and run from the coordinator. For example, the following statements run on the coordinator (statements without a `FROM` clause):
 
 ```
 SELECT setval('myseq', 201);
@@ -58,13 +62,17 @@ If a statement has a `FROM` clause containing a distributed table *and* the func
 SELECT * from foo();
 ```
 
-WarehousePG does not support functions that return a table reference \(`rangeFuncs`\) or functions that use the `refCursor` data type.
+WarehousePG does not support functions that return a table reference (`rangeFuncs`) or functions that use the `refCursor` data type.
 
-### <a id="userfunc1"></a>Function Volatility and Plan Caching
+<a id="userfunc1"></a>
+
+### Function Volatility and Plan Caching
 
 There is relatively little difference between the `STABLE` and `IMMUTABLE` function volatility categories for simple interactive queries that are planned and immediately run. It does not matter much whether a function is run once during planning or once during query execution start up. But there is a big difference when you save the plan and reuse it later. If you mislabel a function `IMMUTABLE`, WarehousePG may prematurely fold it to a constant during planning, possibly reusing a stale value during subsequent execution of the plan. You may run into this hazard when using `PREPARE`d statements, or when using languages such as PL/pgSQL that cache plans.
 
-## <a id="userfunc"></a>User-Defined Functions
+<a id="userfunc"></a>
+
+## User-Defined Functions
 
 WarehousePG supports user-defined functions. See [Extending SQL](https://www.postgresql.org/docs/12/extend.html) in the PostgreSQL documentation for more information.
 
@@ -74,29 +82,33 @@ By default, user-defined functions are declared as `EXECUTE ON ANY`. A function 
 
 When you create user-defined functions, avoid using fatal errors or destructive calls. WarehousePG may respond to such errors with a sudden shutdown or restart.
 
-In WarehousePG, the shared library files for user-created functions must reside in the same library path location on every host in the WarehousePG cluster \(coordinators, segments, and mirrors\).
+In WarehousePG, the shared library files for user-created functions must reside in the same library path location on every host in the WarehousePG cluster (coordinators, segments, and mirrors).
 
-You can also create and run anonymous code blocks that are written in a WarehousePG procedural language such as PL/pgSQL. The anonymous blocks run as transient anonymous functions. For information about creating and running anonymous blocks, see the [`DO`](../../../ref_guide/sql_commands/DO.html) command.
+You can also create and run anonymous code blocks that are written in a WarehousePG procedural language such as PL/pgSQL. The anonymous blocks run as transient anonymous functions. For information about creating and running anonymous blocks, see the [`DO`](../../ref_guide/sql_commands/DO.md) command.
 
-## <a id="userproc"></a>User-Defined Procedures
+<a id="userproc"></a>
+
+## User-Defined Procedures
 
 A procedure is a database object similar to a function. The key differences are:
 
-- You define a procedure with the [CREATE PROCEDURE](../../../ref_guide/sql_commands/CREATE_PROCEDURE.html) command, not `CREATE FUNCTION`.
-- Procedures do not return a function value; hence `CREATE PROCEDURE` lacks a `RETURNS` clause. However, procedures can instead return data to their callers via output parameters.
-- While a function is called as part of a query or DML command, you call a procedure in isolation using the [CALL](../../../ref_guide/sql_commands/CALL.html) command.
-- A procedure can commit or roll back transactions during its execution \(then automatically beginning a new transaction\), so long as the invoking `CALL` command is not part of an explicit transaction block. A function cannot do that.
-- Certain function attributes, such as strictness, don't apply to procedures. Those attributes control how the function is used in a query, which isn't relevant to procedures.
+-   You define a procedure with the [CREATE PROCEDURE](../../ref_guide/sql_commands/CREATE_PROCEDURE.md) command, not `CREATE FUNCTION`.
+-   Procedures do not return a function value; hence `CREATE PROCEDURE` lacks a `RETURNS` clause. However, procedures can instead return data to their callers via output parameters.
+-   While a function is called as part of a query or DML command, you call a procedure in isolation using the [CALL](../../ref_guide/sql_commands/CALL.md) command.
+-   A procedure can commit or roll back transactions during its execution (then automatically beginning a new transaction), so long as the invoking `CALL` command is not part of an explicit transaction block. A function cannot do that.
+-   Certain function attributes, such as strictness, don't apply to procedures. Those attributes control how the function is used in a query, which isn't relevant to procedures.
 
-Collectively, functions and procedures are also known as routines. There are commands such as [ALTER ROUTINE](../../../ref_guide/sql_commands/ALTER_ROUTINE.html) and [DROP ROUTINE](../../../ref_guide/sql_commands/DROP_ROUTINE.html) that can operate on functions and procedures without having to know which kind it is. Note, however, that there is no `CREATE ROUTINE` command.
+Collectively, functions and procedures are also known as routines. There are commands such as [ALTER ROUTINE](../../ref_guide/sql_commands/ALTER_ROUTINE.md) and [DROP ROUTINE](../../ref_guide/sql_commands/DROP_ROUTINE.md) that can operate on functions and procedures without having to know which kind it is. Note, however, that there is no `CREATE ROUTINE` command.
 
-## <a id="buiiltin"></a>Built-in Functions and Operators
+<a id="buiiltin"></a>
+
+## Built-in Functions and Operators
 
 The following table lists the categories of built-in functions and operators supported by PostgreSQL. All functions and operators are supported in WarehousePG as in PostgreSQL with the exception of `STABLE` and `VOLATILE` functions, which are subject to the restrictions noted in [Using Functions in WarehousePG](#using). See the [Functions and Operators](https://www.postgresql.org/docs/12/functions.html) section of the PostgreSQL documentation for more information about these built-in functions and operators.
 
-WarehousePG includes JSON processing functions that manipulate values the `json` data type. For information about JSON data, see [Working with JSON Data](json-data.html).
+WarehousePG includes JSON processing functions that manipulate values the `json` data type. For information about JSON data, see [Working with JSON Data](json-data.md).
 
-<table class="table" id="buiiltin__in204913"><caption><span class="table--title-label">Table 3. </span><span class="title">Built-in functions and operators</span></caption><colgroup><col style="width:27.67527675276753%"><col style="width:18.45018450184502%"><col style="width:22.14022140221402%"><col style="width:31.73431734317343%"></colgroup><thead class="thead">
+<table class="table" id="buiiltin__in204913"><caption><span class="table--title-label">Table 3. </span><span class="title">Built-in functions and operators</span></caption><colgroup><col style="width:27.67527675276753%" /><col style="width:18.45018450184502%" /><col style="width:22.14022140221402%" /><col style="width:31.73431734317343%" /></colgroup><thead class="thead">
                         <tr class="row">
                             <th class="entry" id="buiiltin__in204913__entry__1">Operator/Function Category</th>
                             <th class="entry" id="buiiltin__in204913__entry__2">VOLATILE Functions</th>
@@ -368,7 +380,7 @@ WarehousePG includes JSON processing functions that manipulate values the `json`
                                 <p class="p">xml_is_well_formed(text)</p>
                                 <p class="p">xml_is_well_formed_document(text)</p>
                                 <p class="p">xml_is_well_formed_content(text)</p>
-                                <p class="p">xmlparse ( { DOCUMENT | CONTENT } value)</p>
+                                <p class="p">xmlparse ( &#123; DOCUMENT | CONTENT } value)</p>
                                 <p class="p">xpath(text, xml)</p>
                                 <p class="p">xpath(text, xml, text[])</p>
                                 <p class="p">xpath_exists(text, xml)</p>
@@ -376,7 +388,7 @@ WarehousePG includes JSON processing functions that manipulate values the `json`
                                 <p class="p">xmlpi(name target [, content])</p>
                                 <p class="p">xmlroot(xml, version text | no value [, standalone yes|no|no
                                     value])</p>
-                                <p class="p">xmlserialize ( { DOCUMENT | CONTENT } value AS type )</p>
+                                <p class="p">xmlserialize ( &#123; DOCUMENT | CONTENT } value AS type )</p>
                                 <p class="p">xml(text)</p>
                                 <p class="p">text(xml)</p>
                                 <p class="p">xmlcomment(xml)</p>
@@ -384,13 +396,13 @@ WarehousePG includes JSON processing functions that manipulate values the `json`
                             </td>
                             <td class="entry" headers="buiiltin__in204913__entry__4"></td>
                         </tr>
-                    </tbody></table>
+                    </tbody></table><a id="wind"></a>
 
-## <a id="wind"></a>Window Functions
+## Window Functions
 
-The following built-in window functions are WarehousePG extensions to the PostgreSQL database. All window functions are *immutable*. For more information about window functions, see [Window Expressions](defining-queries.html).
+The following built-in window functions are WarehousePG extensions to the PostgreSQL database. All window functions are *immutable*. For more information about window functions, see [Window Expressions](defining-queries.md).
 
-<table class="table" id="wind__in164369"><caption><span class="table--title-label">Table 4. </span><span class="title">Window functions</span></caption><colgroup><col style="width:22.86775087590859%"><col style="width:15.426449824818283%"><col style="width:39.21978769021597%"><col style="width:22.486011609057158%"></colgroup><thead class="thead">
+<table class="table" id="wind__in164369"><caption><span class="table--title-label">Table 4. </span><span class="title">Window functions</span></caption><colgroup><col style="width:22.86775087590859%" /><col style="width:15.426449824818283%" /><col style="width:39.21978769021597%" /><col style="width:22.486011609057158%" /></colgroup><thead class="thead">
                         <tr class="row">
                             <th class="entry" id="wind__in164369__entry__1">Function</th>
                             <th class="entry" id="wind__in164369__entry__2">Return Type</th>
@@ -577,18 +589,15 @@ The following built-in window functions are WarehousePG extensions to the Postgr
                                 applied (either each row in a window partition or each row of the
                                 query).</td>
                         </tr>
-                    </tbody></table>
+                    </tbody></table><a id="agg"></a>
 
-## <a id="agg"></a>Advanced Aggregate Functions
+## Advanced Aggregate Functions
 
 The following built-in advanced aggregate functions are WarehousePG extensions of the PostgreSQL database. These functions are *immutable*.
 
-> **Note** The WarehousePG MADlib Extension for Analytics provides additional advanced functions to perform statistical analysis and machine learning with WarehousePG data. See [WarehousePG MADlib Extension for Analytics](../../../analytics/madlib.html) in the *WarehousePG Reference Guide*.
+> **Note** The WarehousePG MADlib Extension for Analytics provides additional advanced functions to perform statistical analysis and machine learning with WarehousePG data. See [WarehousePG MADlib Extension for Analytics](../analytics/madlib.md) in the *WarehousePG Reference Guide*.
 
-
-
-
-<table class="table" id="agg__in2073121"><caption><span class="table--title-label">Table 5. </span><span class="title">Advanced Aggregate Functions</span></caption><colgroup><col style="width:23.00684070063499%"><col style="width:18.098714684499523%"><col style="width:31.2862357741035%"><col style="width:27.60820884076199%"></colgroup><thead class="thead">
+<table class="table" id="agg__in2073121"><caption><span class="table--title-label">Table 5. </span><span class="title">Advanced Aggregate Functions</span></caption><colgroup><col style="width:23.00684070063499%" /><col style="width:18.098714684499523%" /><col style="width:31.2862357741035%" /><col style="width:27.60820884076199%" /></colgroup><thead class="thead">
                         <tr class="row">
                             <th class="entry" id="agg__in2073121__entry__1">Function</th>
                             <th class="entry" id="agg__in2073121__entry__2">Return Type</th>
@@ -633,7 +642,7 @@ INSERT INTO mymatrix
 SELECT sum(myvalue) FROM mymatrix;
  sum 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
- {1,3},{4,4}</code></pre>
+ &#123;1,3},&#123;4,4}</code></pre>
                             </td>
                             <td class="entry" headers="agg__in2073121__entry__4">Performs matrix summation. Can take as input a
                                 two-dimensional array that is treated as a matrix.</td>
@@ -664,4 +673,3 @@ SELECT sum(myvalue) FROM mymatrix;
                                 PostgreSQL.</td>
                         </tr>
                     </tbody></table>
-

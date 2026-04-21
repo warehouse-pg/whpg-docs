@@ -1,7 +1,9 @@
-# Upgrading PXF When You Upgrade from a Previous WarehousePG 6.x Version
+---
+title: Upgrading PXF When You Upgrade from a Previous WarehousePG 6.x Version
+
 ---
 
-<div class="note"><b>Note:</b> Starting in WarehousePG version 6.19.0, the PXF software is no longer bundled in the WarehousePG Server distribution. You may be required to download and install the PXF <code>rpm</code> or <code>deb</code> package to use PXF in your WarehousePG cluster as described in the procedures below.</div>
+> **Note:** **Note:** Starting in WarehousePG version 6.19.0, the PXF software is no longer bundled in the WarehousePG Server distribution. You may be required to download and install the PXF `rpm` or `deb` package to use PXF in your WarehousePG cluster as described in the procedures below.
 
 If you are using PXF in your current WarehousePG 6.x installation, you must perform some PXF upgrade actions when you upgrade to a newer version of WarehousePG 6.x. This procedure uses *PXF.from* to refer to your currently-installed PXF version.
 
@@ -13,67 +15,68 @@ The PXF upgrade procedure has two parts. You perform one procedure before, and o
 -   Upgrade to a new WarehousePG version
 -   [Step 2: Upgrading PXF](#pxfup)
 
+<a id="pxfpre"></a>
 
-## <a id="pxfpre"></a>Step 1: PXF Pre-Upgrade Actions
+## Step 1: PXF Pre-Upgrade Actions
 
 Perform this procedure before you upgrade to a new version of WarehousePG:
 
-1. Log in to the WarehousePG coordinator node. For example:
+1.  Log in to the WarehousePG coordinator node. For example:
 
-    ``` shell
+    ```shell
     $ ssh gpadmin@<gpcoordinator>
     ```
 
-2. Identify and note the *PXF.from* version number. For example:
+2.  Identify and note the *PXF.from* version number. For example:
 
-    ``` shell
+    ```shell
     gpadmin@gpcoordinator$ pxf version
     ```
 
-2. Determine if *PXF.from* is a PXF `rpm` or `deb` installation (`/usr/local/pxf-gp<greenplum-major-version>`), or if you are running *PXF.from* from the WarehousePG server installation (`$GPHOME/pxf`), and note the answer.
+3.  Determine if *PXF.from* is a PXF `rpm` or `deb` installation (`/usr/local/pxf-gp<greenplum-major-version>`), or if you are running *PXF.from* from the WarehousePG server installation (`$GPHOME/pxf`), and note the answer.
 
-3. If the *PXF.from* version is 5.x, identify the file system location of the `$PXF_CONF` setting in your PXF 5.x PXF installation; you might need this later. If you are unsure of the location, you can find the value in `pxf-env-default.sh`.
+4.  If the *PXF.from* version is 5.x, identify the file system location of the `$PXF_CONF` setting in your PXF 5.x PXF installation; you might need this later. If you are unsure of the location, you can find the value in `pxf-env-default.sh`.
 
-2. Stop PXF on each segment host as described in Stopping PXF.
+5.  Stop PXF on each segment host as described in Stopping PXF.
 
-3. Upgrade to the new version of WarehousePG and then continue your PXF upgrade with [Step 2: Upgrading PXF](#pxfup).
+6.  Upgrade to the new version of WarehousePG and then continue your PXF upgrade with [Step 2: Upgrading PXF](#pxfup).
 
+<a id="pxfup"></a>
 
-## <a id="pxfup"></a>Step 2: Registering or Upgrading PXF
+## Step 2: Registering or Upgrading PXF
 
 After you upgrade to the new version of WarehousePG, perform the following procedure to configure the PXF software; you may be required to install the standalone PXF distribution:
 
-1. Log in to the WarehousePG coordinator node. For example:
+1.  Log in to the WarehousePG coordinator node. For example:
 
-    ``` shell
+    ```shell
     $ ssh gpadmin@<gpcoordinator>
     ```
 
-2. If you previously installed the PXF `rpm` or `deb` on your WarehousePG 6.x hosts, you must register it to continue using PXF:
-   
-    1. Copy the PXF extension files from the PXF installation directory to the new WarehousePG 6.x install directory:
+2.  If you previously installed the PXF `rpm` or `deb` on your WarehousePG 6.x hosts, you must register it to continue using PXF:
 
-        ``` shell
+    1.  Copy the PXF extension files from the PXF installation directory to the new WarehousePG 6.x install directory:
+
+        ```shell
         gpadmin@gpcoordinator pxf cluster register
         ```
 
-    2. Start PXF on each segment host as described in Starting PXF.
+    2.  Start PXF on each segment host as described in Starting PXF.
 
-    3. Skip the following steps and exit this procedure.
+    3.  Skip the following steps and exit this procedure.
 
-1. Starting in WarehousePG version 6.19.0, PXF is removed from the WarehousePG Server distribution. You must download and install the standalone PXF `rpm` or `deb` package as described in Installing PXF. 
+3.  Starting in WarehousePG version 6.19.0, PXF is removed from the WarehousePG Server distribution. You must download and install the standalone PXF `rpm` or `deb` package as described in Installing PXF. 
 
-3. Synchronize the PXF configuration from the coordinator host to the standby coordinator and each WarehousePG segment host. For example:
+4.  Synchronize the PXF configuration from the coordinator host to the standby coordinator and each WarehousePG segment host. For example:
 
-    ``` shell
+    ```shell
     gpadmin@gpcoordinator$ $GPHOME/pxf/bin/pxf cluster sync
     ```
- 
-4. Start PXF on each segment host:
 
-    ``` shell
+5.  Start PXF on each segment host:
+
+    ```shell
     gpadmin@gpcoordinator$ $GPHOME/pxf/bin/pxf cluster start
     ```
 
 Your WarehousePG cluster is now running the same version of PXF, but running it from the PXF installation directory (`/usr/local/pxf-gp<greenplum-major-version>`). Should you wish to upgrade PXF in the future, consult the PXF upgrade documentation.
-

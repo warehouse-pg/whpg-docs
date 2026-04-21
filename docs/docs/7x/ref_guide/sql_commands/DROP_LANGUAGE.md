@@ -1,18 +1,29 @@
-# DROP LANGUAGE 
+---
+title: DROP LANGUAGE
+
+---
 
 Removes a procedural language.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP [PROCEDURAL] LANGUAGE [IF EXISTS] <name> [CASCADE | RESTRICT]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `DROP LANGUAGE` removes the definition of the previously registered procedural language. You must be a superuser or owner of the language to drop a language.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 PROCEDURAL
 Optional keyword - has no effect.
@@ -24,12 +35,14 @@ name
 The name of an existing procedural language. For backward compatibility, the name may be enclosed by single quotes.
 
 CASCADE
-Automatically drop objects that depend on the language \(such as functions written in that language\), and in turn all objects that depend on those objects.
+Automatically drop objects that depend on the language (such as functions written in that language), and in turn all objects that depend on those objects.
 
 RESTRICT
 Refuse to drop the language if any objects depend on it. This is the default.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Remove the procedural language `plsample`:
 
@@ -37,13 +50,16 @@ Remove the procedural language `plsample`:
 DROP LANGUAGE plsample;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 There is no `DROP LANGUAGE` statement in the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[ALTER LANGUAGE](ALTER_LANGUAGE.html), [CREATE LANGUAGE](CREATE_LANGUAGE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER LANGUAGE](ALTER_LANGUAGE.md), [CREATE LANGUAGE](CREATE_LANGUAGE.md)
 
+**Parent topic:** [SQL Commands](index.md)

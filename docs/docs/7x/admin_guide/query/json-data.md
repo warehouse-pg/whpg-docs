@@ -1,9 +1,11 @@
-# Working with JSON Data
+---
+title: Working with JSON Data
+
 ---
 
-WarehousePG supports JSON as specified in the [RFC 7159](https://tools.ietf.org/html/rfc7159) document and enforces data validity according to the JSON rules. There are also JSON-specific functions and operators available for the `json` and `jsonb` data types. See [JSON Functions and Operators](../../../ref_guide/function-summary.html#topic_gn4_x3w_mq).
+WarehousePG supports JSON as specified in the [RFC 7159](https://tools.ietf.org/html/rfc7159) document and enforces data validity according to the JSON rules. There are also JSON-specific functions and operators available for the `json` and `jsonb` data types. See [JSON Functions and Operators](../../ref_guide/function-summary.md#topic_gn4_x3w_mq).
 
-WarehousePG offers two types for storing JSON \(JavaScript Object Notation\) data: `json` and `jsonb`. To implement efficient query mechanisms for these data types, WarehousePG also provides the `jsonpath` data type described in [jsonpath Type](#topic_jsonpath) later in this topic.
+WarehousePG offers two types for storing JSON (JavaScript Object Notation) data: `json` and `jsonb`. To implement efficient query mechanisms for these data types, WarehousePG also provides the `jsonpath` data type described in [jsonpath Type](#topic_jsonpath) later in this topic.
 
 This section contains the following topics:
 
@@ -15,9 +17,11 @@ This section contains the following topics:
 -   [Transforms](#topic_transforms)
 -   [jsonpath Type](#topic_jsonpath)
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+**Parent topic:** [SQL: Querying Data](index.md)
 
-## <a id="topic_upc_tcs_fz"></a>About JSON Data
+<a id="topic_upc_tcs_fz"></a>
+
+## About JSON Data
 
 The `json` and `jsonb` data types accept *almost* identical sets of values as input. The major difference is one of efficiency.
 
@@ -35,39 +39,45 @@ In general, JSON data should be stored as the `jsonb` data type unless there are
 
 WarehousePG allows only one character set encoding per database. It is therefore not possible for the JSON types to conform rigidly to the JSON specification unless the database encoding is UTF8. Attempts to directly include characters that cannot be represented in the database encoding will fail; conversely, characters that can be represented in the database encoding but not in UTF8 are allowed.
 
-### <a id="abuni"></a>About Unicode Characters in JSON Data
+<a id="abuni"></a>
+
+### About Unicode Characters in JSON Data
 
 The [RFC 7159](https://tools.ietf.org/html/rfc7159) document permits JSON strings to contain Unicode escape sequences denoted by `\uXXXX`.
 
--   The WarehousePG input function for the `json` data type allows Unicode escapes regardless of the database encoding and checks Unicode escapes only for syntactic correctness \(a `\u` followed by four hex digits\).
--   The WarehousePG input function for the `jsonb` data type is more strict. It does not allow Unicode escapes for non-ASCII characters \(those above `U+007F`\) unless the database encoding is UTF8. The `jsonb` type also rejects `\u0000`, which cannot be represented in the WarehousePG `text` type, and it requires that any use of Unicode surrogate pairs to designate characters outside the Unicode Basic Multilingual Plane be correct. Valid Unicode escapes, except for `\u0000`, are converted to the equivalent ASCII or UTF8 character for storage; this includes folding surrogate pairs into a single character.
+-   The WarehousePG input function for the `json` data type allows Unicode escapes regardless of the database encoding and checks Unicode escapes only for syntactic correctness (a `\u` followed by four hex digits).
+-   The WarehousePG input function for the `jsonb` data type is more strict. It does not allow Unicode escapes for non-ASCII characters (those above `U+007F`) unless the database encoding is UTF8. The `jsonb` type also rejects `\u0000`, which cannot be represented in the WarehousePG `text` type, and it requires that any use of Unicode surrogate pairs to designate characters outside the Unicode Basic Multilingual Plane be correct. Valid Unicode escapes, except for `\u0000`, are converted to the equivalent ASCII or UTF8 character for storage; this includes folding surrogate pairs into a single character.
 
-> **Note** Many of the JSON processing functions described in [JSON Functions and Operators](../../../ref_guide/function-summary.html#topic_gn4_x3w_mq) convert Unicode escapes to regular characters and will therefore throw the same types of errors just described even if their input is of type `json` not `jsonb`. The fact that the `json` input function does not make these checks may be considered a historical artifact, although it does allow for simple storage \(without processing\) of JSON Unicode escapes in a non-UTF8 database encoding. In general, it is best to avoid mixing Unicode escapes in JSON with a non-UTF8 database encoding, if possible.
+> **Note** Many of the JSON processing functions described in [JSON Functions and Operators](../../ref_guide/function-summary.md#topic_gn4_x3w_mq) convert Unicode escapes to regular characters and will therefore throw the same types of errors just described even if their input is of type `json` not `jsonb`. The fact that the `json` input function does not make these checks may be considered a historical artifact, although it does allow for simple storage (without processing) of JSON Unicode escapes in a non-UTF8 database encoding. In general, it is best to avoid mixing Unicode escapes in JSON with a non-UTF8 database encoding, if possible.
 
-### <a id="mapjson"></a>Mapping JSON Data Types to WarehousePG Data Types
+<a id="mapjson"></a>
+
+### Mapping JSON Data Types to WarehousePG Data Types
 
 When converting JSON text input into `jsonb` data, the primitive data types described by RFC 7159 are effectively mapped onto native WarehousePG data types, as shown in the following table.
 
-|JSON primitive data type|WarehousePG data type|Notes|
-|------------------------|----------------------------|-----|
-|`string`|`text`|`\u0000` is not allowed. Non-ASCII Unicode escapes are allowed only if database encoding is UTF8|
-|`number`|`numeric`|`NaN` and `infinity` values are disallowed|
-|`boolean`|`boolean`|Only lowercase `true` and `false` spellings are accepted|
-|`null`|\(none\)|The JSON `null` primitive type is different than the SQL `NULL`|
+| JSON primitive data type | WarehousePG data type | Notes                                                                                            |
+| ------------------------ | --------------------- | ------------------------------------------------------------------------------------------------ |
+| `string`                 | `text`                | `\u0000` is not allowed. Non-ASCII Unicode escapes are allowed only if database encoding is UTF8 |
+| `number`                 | `numeric`             | `NaN` and `infinity` values are disallowed                                                       |
+| `boolean`                | `boolean`             | Only lowercase `true` and `false` spellings are accepted                                         |
+| `null`                   | (none)                | The JSON `null` primitive type is different than the SQL `NULL`                                  |
 
 There are some minor constraints on what constitutes valid `jsonb` data that do not apply to the `json` data type, nor to JSON in the abstract, corresponding to limits on what can be represented by the underlying data type. Notably, when converting data to the `jsonb` data type, numbers that are outside the range of the WarehousePG `numeric` data type are rejected, while the `json` data type does not reject such numbers.
 
-Such implementation-defined restrictions are permitted by RFC 7159. However, in practice such problems might occur in other implementations, as it is common to represent the JSON `number` primitive type as IEEE 754 double precision floating point \(which RFC 7159 explicitly anticipates and allows for\).
+Such implementation-defined restrictions are permitted by RFC 7159. However, in practice such problems might occur in other implementations, as it is common to represent the JSON `number` primitive type as IEEE 754 double precision floating point (which RFC 7159 explicitly anticipates and allows for).
 
 When using JSON as an interchange format with other systems, be aware of the possibility of losing numeric precision compared to data originally stored by WarehousePG.
 
 Also, as noted in the previous table, there are some minor restrictions on the input format of JSON primitive types that do not apply to the corresponding WarehousePG data types.
 
-## <a id="topic_isn_ltw_mq"></a>JSON Input and Output Syntax
+<a id="topic_isn_ltw_mq"></a>
+
+## JSON Input and Output Syntax
 
 The input and output syntax for the `json` data type is as specified in RFC 7159.
 
-The following are all valid `json` \(or `jsonb`\) expressions:
+The following are all valid `json` (or `jsonb`) expressions:
 
 ```
 -- Simple scalar/primitive value
@@ -113,13 +123,17 @@ SELECT '{"reading": 1.230e-5}'::json, '{"reading": 1.230e-5}'::jsonb;
 
 However, the `jsonb` data type preserves trailing fractional zeroes, as seen in previous example, even though those are semantically insignificant for purposes such as equality checks.
 
-## <a id="topic_eyt_3tw_mq"></a>Designing JSON documents
+<a id="topic_eyt_3tw_mq"></a>
 
-Representing data as JSON can be considerably more flexible than the traditional relational data model, which is compelling in environments where requirements are fluid. It is quite possible for both approaches to co-exist and complement each other within the same application. However, even for applications where maximal flexibility is desired, it is still recommended that JSON documents have a somewhat fixed structure. The structure is typically unenforced \(though enforcing some business rules declaratively is possible\), but having a predictable structure makes it easier to write queries that usefully summarize a set of JSON documents \(datums\) in a table.
+## Designing JSON documents
+
+Representing data as JSON can be considerably more flexible than the traditional relational data model, which is compelling in environments where requirements are fluid. It is quite possible for both approaches to co-exist and complement each other within the same application. However, even for applications where maximal flexibility is desired, it is still recommended that JSON documents have a somewhat fixed structure. The structure is typically unenforced (though enforcing some business rules declaratively is possible), but having a predictable structure makes it easier to write queries that usefully summarize a set of JSON documents (datums) in a table.
 
 JSON data is subject to the same concurrency-control considerations as any other data type when stored in a table. Although storing large documents is practicable, keep in mind that any update acquires a row-level lock on the whole row. Consider limiting JSON documents to a manageable size in order to decrease lock contention among updating transactions. Ideally, JSON documents should each represent an atomic datum that business rules dictate cannot reasonably be further subdivided into smaller datums that could be modified independently.
 
-## <a id="topic_isx_2tw_mq"></a>jsonb Containment and Existence
+<a id="topic_isx_2tw_mq"></a>
+
+## jsonb Containment and Existence
 
 Testing *containment* is an important capability of `jsonb`. There is no parallel set of facilities for the `json` type. Containment tests whether one `jsonb` document has contained within it another one. These examples return `true` except as noted:
 
@@ -166,7 +180,7 @@ SELECT '["foo", "bar"]'::jsonb @> '"bar"'::jsonb;
 SELECT '"bar"'::jsonb @> '["bar"]'::jsonb;  -- yields false
 ```
 
-`jsonb` also has an *existence* operator, which is a variation on the theme of containment: it tests whether a string \(given as a `text` value\) appears as an object key or array element at the top level of the `jsonb` value. These examples return `true` except as noted:
+`jsonb` also has an *existence* operator, which is a variation on the theme of containment: it tests whether a string (given as a `text` value) appears as an object key or array element at the top level of the `jsonb` value. These examples return `true` except as noted:
 
 ```
 -- String exists as array element:
@@ -205,20 +219,24 @@ However, the second approach is less flexible and is often less efficient as wel
 
 On the other hand, the JSON existence operator is not nested: it will only look for the specified key or array element at top level of the JSON value.
 
-The various containment and existence operators, along with all other JSON operators and functions are documented in [JSON Functions and Operators](../../../ref_guide/function-summary.html#topic_gn4_x3w_mq).
+The various containment and existence operators, along with all other JSON operators and functions are documented in [JSON Functions and Operators](../../ref_guide/function-summary.md#topic_gn4_x3w_mq).
 
-## <a id="topic_aqt_1tw_mq"></a>jsonb Indexing
+<a id="topic_aqt_1tw_mq"></a>
+
+## jsonb Indexing
 
 The WarehousePG `jsonb` data type, supports GIN, btree, and hash indexes.
 
 -   [GIN Indexes on jsonb Data](#topic_yjx_dq2_rfb)
 -   [Btree and Hash Indexes on jsonb Data](#topic_ahb_5ly_wq)
 
-### <a id="topic_yjx_dq2_rfb"></a>GIN Indexes on jsonb Data
+<a id="topic_yjx_dq2_rfb"></a>
 
-GIN indexes can be used to efficiently search for keys or key/value pairs occurring within a large number of `jsonb` documents \(datums\). Two GIN operator classes are provided, offering different performance and flexibility trade-offs.
+### GIN Indexes on jsonb Data
 
-The default GIN operator class for jsonb supports queries with the `@>`, `?`, `?&` and `?|` operators. \(For details of the semantics that these operators implement, see [JSON Operators](../../../ref_guide/function-summary.html#topic_o5y_14w_2z).\) An example of creating an index with this operator class is:
+GIN indexes can be used to efficiently search for keys or key/value pairs occurring within a large number of `jsonb` documents (datums). Two GIN operator classes are provided, offering different performance and flexibility trade-offs.
+
+The default GIN operator class for jsonb supports queries with the `@>`, `?`, `?&` and `?|` operators. (For details of the semantics that these operators implement, see [JSON Operators](../../ref_guide/function-summary.md#json-operators).) An example of creating an index with this operator class is:
 
 ```
 CREATE INDEX idxgin ON api USING GIN (jdoc);
@@ -270,7 +288,7 @@ With appropriate use of expression indexes, the above query can use an index. If
 CREATE INDEX idxgintags ON api USING GIN ((jdoc -> 'tags'));
 ```
 
-Now, the `WHERE` clause `jdoc -> 'tags' ? 'qui'` is recognized as an application of the indexable operator `?` to the indexed expression `jdoc -> 'tags'`. For information about expression indexes, see [Indexes on Expressions](../../ddl/ddl-index.html).
+Now, the `WHERE` clause `jdoc -> 'tags' ? 'qui'` is recognized as an application of the indexable operator `?` to the indexed expression `jdoc -> 'tags'`. For information about expression indexes, see [Indexes on Expressions](../ddl/index.md).
 
 Another approach to querying JSON documents is to exploit containment, for example:
 
@@ -280,7 +298,7 @@ SELECT jdoc->'guid', jdoc->'name' FROM api WHERE jdoc @> '{"tags": ["qui"]}';
 
 ```
 
-A simple GIN index on the `jdoc` column can support this query. However, the index will store copies of every key and value in the `jdoc` column, whereas the expression index of the previous example stores only data found under the `tags` key. While the simple-index approach is far more flexible \(since it supports queries about any key\), targeted expression indexes are likely to be smaller and faster to search than a simple index.
+A simple GIN index on the `jdoc` column can support this query. However, the index will store copies of every key and value in the `jdoc` column, whereas the expression index of the previous example stores only data found under the `tags` key. While the simple-index approach is far more flexible (since it supports queries about any key), targeted expression indexes are likely to be smaller and faster to search than a simple index.
 
 GIN indexes also support the `@?` and `@@` operators, which perform `jsonpath` matching. Examples are:
 
@@ -300,11 +318,13 @@ The technical difference between a `jsonb_ops` and a `jsonb_path_ops` GIN index 
 
 > **Note** For this discussion, the term *value* includes array elements, though JSON terminology sometimes considers array elements distinct from values within objects.
 
-Basically, each `jsonb_path_ops` index item is a hash of the value and the key\(s\) leading to it; for example to index `{"foo": {"bar": "baz"}}`, a single index item would be created incorporating all three of `foo`, `bar`, and `baz` into the hash value. Thus a containment query looking for this structure would result in an extremely specific index search; but there is no way at all to find out whether `foo` appears as a key. On the other hand, a `jsonb_ops` index would create three index items representing `foo`, `bar`, and `baz` separately; then to do the containment query, it would look for rows containing all three of these items. While GIN indexes can perform such an `AND` search fairly efficiently, it will still be less specific and slower than the equivalent `jsonb_path_ops` search, especially if there are a very large number of rows containing any single one of the three index items.
+Basically, each `jsonb_path_ops` index item is a hash of the value and the key(s) leading to it; for example to index `{"foo": {"bar": "baz"}}`, a single index item would be created incorporating all three of `foo`, `bar`, and `baz` into the hash value. Thus a containment query looking for this structure would result in an extremely specific index search; but there is no way at all to find out whether `foo` appears as a key. On the other hand, a `jsonb_ops` index would create three index items representing `foo`, `bar`, and `baz` separately; then to do the containment query, it would look for rows containing all three of these items. While GIN indexes can perform such an `AND` search fairly efficiently, it will still be less specific and slower than the equivalent `jsonb_path_ops` search, especially if there are a very large number of rows containing any single one of the three index items.
 
 A disadvantage of the `jsonb_path_ops` approach is that it produces no index entries for JSON structures not containing any values, such as `{"a": {}}`. If a search for documents containing such a structure is requested, it will require a full-index scan, which is quite slow. `jsonb_path_ops` is ill-suited for applications that often perform such searches.
 
-### <a id="topic_ahb_5ly_wq"></a>Btree and Hash Indexes on jsonb Data
+<a id="topic_ahb_5ly_wq"></a>
+
+### Btree and Hash Indexes on jsonb Data
 
 `jsonb` also supports `btree` and `hash` indexes. These are usually useful only when it is important to check the equality of complete JSON documents.
 
@@ -338,7 +358,9 @@ element-1, element-2 ...
 
 Primitive JSON values are compared using the same comparison rules as for the underlying WarehousePG data type. Strings are compared using the default database collation.
 
-## <a id="topic_transforms"></a>Transforms
+<a id="topic_transforms"></a>
+
+## Transforms
 
 Additional extensions are available that implement transforms for the `jsonb` type for different procedural languages.
 
@@ -346,36 +368,38 @@ The extensions for PL/Perl are called `jsonb_plperl` and j`sonb_plperlu`. If you
 
 The extension for PL/Python is called `jsonb_plpython3u`. If you use it, `jsonb` values are mapped to Python dictionaries, lists, and scalars, as appropriate.
 
-## <a id="topic_jsonpath"></a>jsonpath Type
+<a id="topic_jsonpath"></a>
+
+## jsonpath Type
 
 The `jsonpath` type implements support for the SQL/JSON path language in WarehousePG to efficiently query JSON data. It provides a binary representation of the parsed SQL/JSON path expression that specifies the items to be retrieved by the path engine from the JSON data for further processing with the SQL/JSON query functions.
 
 The semantics of SQL/JSON path predicates and operators generally follow SQL. At the same time, to provide a most natural way of working with JSON data, SQL/JSON path syntax uses some of the JavaScript conventions:
 
-- Dot (`.`) is used for member access.
+-   Dot (`.`) is used for member access.
 
-- Square brackets (`[]`) are used for array access.
+-   Square brackets (`[]`) are used for array access.
 
-- SQL/JSON arrays are 0-relative, unlike regular SQL arrays that start from 1.
+-   SQL/JSON arrays are 0-relative, unlike regular SQL arrays that start from 1.
 
 An SQL/JSON path expression is typically written in an SQL query as an SQL character string literal, so it must be enclosed in single quotes, and any single quotes desired within the value must be doubled. Some forms of path expressions require string literals within them. These embedded string literals follow JavaScript/ECMAScript conventions: they must be surrounded by double quotes, and backslash escapes may be used within them to represent otherwise-hard-to-type characters. In particular, the way to write a double quote within an embedded string literal is `\"`, and to write a backslash itself, you must write `\\`. Other special backslash sequences include those recognized in JSON strings: `\b`, `\f`, `\n`, `\r`, `\t`, `\v` for various ASCII control characters, and `\uNNNN` for a Unicode character identified by its 4-hex-digit code point. The backslash syntax also includes two cases not allowed by JSON: `\xNN` for a character code written with only two hex digits, and `\u{N...}` for a character code written with 1 to 6 hex digits.
 
 A path expression consists of a sequence of path elements, which can be the following:
 
-- Path literals of JSON primitive types: Unicode text, numeric, true, false, or null.
+-   Path literals of JSON primitive types: Unicode text, numeric, true, false, or null.
 
-- Path variables listed in the **jsonpath Variables** table below.
+-   Path variables listed in the **jsonpath Variables** table below.
 
-- Accessor operators listed in the **jsonpath Accessors** table below.
+-   Accessor operators listed in the **jsonpath Accessors** table below.
 
-- `jsonpath` operators and methods listed in 
-[SQL/JSON Path Operators and Methods](../../../ref_guide/function-summary.html#topic_jsonpath_opsmeth).
+-   `jsonpath` operators and methods listed in 
+    [SQL/JSON Path Operators and Methods](../../ref_guide/function-summary.md#topic_jsonpath_opsmeth).
 
-- Parentheses, which can be used to provide filter expressions or define the order of path evaluation.
+-   Parentheses, which can be used to provide filter expressions or define the order of path evaluation.
 
-For details on using `jsonpath` expressions with SQL/JSON query functions, see [SQL/JSON Filter Expression Elements](../../../ref_guide/function-summary.html#topic_jsonpath_filtexp).
+For details on using `jsonpath` expressions with SQL/JSON query functions, see [SQL/JSON Filter Expression Elements](../../ref_guide/function-summary.md#topic_jsonpath_filtexp).
 
- <div class="table" id="TYPE-JSONPATH-VARIABLES">
+ <div class="table" id="type-jsonpath-variables">
       <p class="title"><strong><code class="type">jsonpath</code> Variables</strong></p>
       <div class="table-contents">
         <table class="table" summary="jsonpath Variables" border="1">
@@ -396,7 +420,7 @@ For details on using `jsonpath` expressions with SQL/JSON query functions, see [
             </tr>
             <tr class="row">
               <td class="entry nocellnorowborder"><code class="literal">$varname</code></td>
-              <td class="entry nocellnorowborder">A named variable. Its value can be set by the parameter <em class="parameter"><code>vars</code></em> of several JSON processing functions. See <a href="../../../ref_guide/function-summary.html#topic_z5d_snw_2z">JSON Processing Functions</a> and its notes for details.</td>
+              <td class="entry nocellnorowborder">A named variable. Its value can be set by the parameter <em class="parameter"><code>vars</code></em> of several JSON processing functions. See <a href="../../ref_guide/function-summary.md#json-processing-functions">JSON Processing Functions</a> and its notes for details.</td>
             </tr>
             <tr>
               <td class="entry nocellnorowborder"><code class="literal">@</code></td>
@@ -405,9 +429,7 @@ For details on using `jsonpath` expressions with SQL/JSON query functions, see [
           </tbody>
         </table>
       </div>
-    </div>
-
-<div class="table" id="TYPE-JSONPATH-ACCESSORS">
+    </div><div class="table" id="type-jsonpath-accessors">
       <p class="title"><strong><code class="type">jsonpath</code> Accessors</strong></p>
       <div class="table-contents">
         <table class="table" summary="jsonpath Accessors" border="1">
@@ -449,8 +471,8 @@ For details on using `jsonpath` expressions with SQL/JSON query functions, see [
             </tr>
             <tr class="row">
               <td class="entry nocellnorowborder">
-                <p><code class="literal">.**{<em class="replaceable"><code>level</code></em>}</code></p>
-                <p><code class="literal">.**{<em class="replaceable"><code>start_level</code></em> to <em class="replaceable"><code>end_level</code></em>}</code></p>
+                <p><code class="literal">.**&#123;<em class="replaceable"><code>level</code></em>}</code></p>
+                <p><code class="literal">.**&#123;<em class="replaceable"><code>start_level</code></em> to <em class="replaceable"><code>end_level</code></em>}</code></p>
               </td>
               <td class="entry nocellnorowborder">
                 <p>Same as <code class="literal">.**</code>, but with a filter over nesting levels of JSON hierarchy. Nesting levels are specified as integers. Zero level corresponds to the current object. To access the lowest nesting level, you can use the <code class="literal">last</code> keyword. This is a <span class="productname">WarehousePG</span> extension of the SQL/JSON standard.</p>
@@ -477,4 +499,3 @@ For details on using `jsonpath` expressions with SQL/JSON query functions, see [
         </table>
       </div>
     </div>
-

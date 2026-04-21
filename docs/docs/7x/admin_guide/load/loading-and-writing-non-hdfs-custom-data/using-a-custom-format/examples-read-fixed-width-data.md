@@ -1,9 +1,13 @@
-# Examples of Reading Fixed-Width Data
+---
+title: Examples of Reading Fixed-Width Data
+
 ---
 
 The following examples show how to read fixed-width data.
 
-## <a id="ex1"></a>Example 1 – Loading a table with all fields defined
+<a id="ex1"></a>
+
+## Example 1 – Loading a table with all fields defined
 
 ```
 CREATE READABLE EXTERNAL TABLE students (
@@ -14,7 +18,9 @@ FORMAT 'CUSTOM' (formatter=fixedwidth_in,
 
 ```
 
-## <a id="ex2"></a>Example 2 – Loading a table with PRESERVED\_BLANKS on
+<a id="ex2"></a>
+
+## Example 2 – Loading a table with PRESERVED_BLANKS on
 
 ```
 CREATE READABLE EXTERNAL TABLE students (
@@ -26,7 +32,9 @@ FORMAT 'CUSTOM' (formatter=fixedwidth_in,
 
 ```
 
-## <a id="ex3"></a>Example 3 – Loading data with no line delimiter
+<a id="ex3"></a>
+
+## Example 3 – Loading data with no line delimiter
 
 ```
 CREATE READABLE EXTERNAL TABLE students (
@@ -37,7 +45,9 @@ FORMAT 'CUSTOM' (formatter=fixedwidth_in,
 
 ```
 
-## <a id="ex4"></a>Example 4 – Create a writable external table with a \\r\\n line delimiter
+<a id="ex4"></a>
+
+## Example 4 – Create a writable external table with a \\r\\n line delimiter
 
 ```
 CREATE WRITABLE EXTERNAL TABLE students_out (
@@ -48,5 +58,4 @@ FORMAT 'CUSTOM' (formatter=fixedwidth_out,
 
 ```
 
-**Parent topic:** [Using a Custom Format](../../load/topics/g-using-a-custom-format.html)
-
+**Parent topic:** [Using a Custom Format](index.md)

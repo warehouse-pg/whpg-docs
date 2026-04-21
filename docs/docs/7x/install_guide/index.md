@@ -1,36 +1,64 @@
-# Installing and Upgrading WarehousePG
+---
+title: Installing and upgrading WarehousePG
+navTitle: Install guide
+navigation:
+  - platform-requirements
+  - capacity_planning
+  - config_os
+  - install_whpg
+  - create_data_dirs
+  - validate
+  - init_whpg
+  - data_sci_pkgs
+  - install_extensions
+  - localization
+  - 6x_7x_changes
+  - minor_upgrade
+  - upgrading_6_to_7
+  - migrate-classic-partitioning
+  - enable_iptables
+  - installation_utilities
+  - env_var
+redirects:
+  - install_guide
+
 ---
 
 Information about installing, configuring, and upgrading WarehousePG software and configuring WarehousePG host machines.
 
--   **[Platform Requirements](platform-requirements.html)**  
-This topic describes the WarehousePG 7 platform and operating system software requirements.
--   **[Estimating Storage Capacity](capacity_planning.html)**  
-To estimate how much data your WarehousePG cluster can accommodate, use these measurements as guidelines. Also keep in mind that you may want to have extra space for landing backup files and data load files on each segment host.
--   **[Configure Operating System](config_os.html)**  
-Describes how to prepare your operating system environment for WarehousePG software installation.
--   **[Installing WarehousePG](install_whpg.html)**  
-Describes how to install the WarehousePG software binaries on all of the hosts that will comprise your WarehousePG cluster, how to enable passwordless SSH for the `gpadmin` user, and how to verify the installation.
--   **[Creating the Data Storage Areas](create_data_dirs.html)**  
-Describes how to create the directory locations where WarehousePG data is stored for each coordinator, standby, and segment instance.
--   **[Validating the WHPG Cluster](validate.html)**  
-Validate your hardware and network performance.
--   **[Initializing WarehousePG](init_whpg.html)**  
-Describes how to initialize a WarehousePG database system.
--   **[Installing Optional Extensions](data_sci_pkgs.html)**  
-Information about installing optional WarehousePG extensions and packages, such as the Procedural Language extensions and the Python and R Data Science Packages.
--   **[Installing Extensions](install_extensions.html)**  
-The WarehousePG distribution includes several PostgreSQL- and WarehousePG-sourced `contrib` modules that you have the option to install.
--   **[Configuring Timezone and Localization Settings](localization.html)**  
-Describes the available timezone and localization features of WarehousePG.
--   **[Performing a minor upgrade](minor_upgrade.html)**  
-Explains how to upgrade to a newer version of WarehousePG 7.x. 
--   **[Upgrading from whpg 6 to whpg 7](upgrading_6_to_7.html)**  
-Explains how to upgrade from WarehousePG 6 to WarehousePG 7. 
--   **[Enabling iptables \(Optional\)](enable_iptables.html)**  
-On Linux systems, you can configure and enable the `iptables` firewall to work with WarehousePG.
--   **[Installation Utilities Reference](installation_utilities.html)**  
-References for the command-line management utilities used to install and initialize a WarehousePG cluster.
--   **[WarehousePG Environment Variables](env_var.html)**  
-Reference of the environment variables to set for WarehousePG.
-
+-   **[Platform Requirements](platform-requirements.md)**  
+    This topic describes the WarehousePG 7 platform and operating system software requirements.
+-   **[Estimating Storage Capacity](capacity_planning.md)**  
+    To estimate how much data your WarehousePG cluster can accommodate, use these measurements as guidelines. Also keep in mind that you may want to have extra space for landing backup files and data load files on each segment host.
+-   **[Configure Operating System](config_os.md)**  
+    Describes how to prepare your operating system environment for WarehousePG software installation.
+-   **[Installing WarehousePG](install_whpg.md)**  
+    Describes how to install the WarehousePG software binaries on all of the hosts that will comprise your WarehousePG cluster, how to enable passwordless SSH for the `gpadmin` user, and how to verify the installation.
+-   **[Creating the Data Storage Areas](create_data_dirs.md)**  
+    Describes how to create the directory locations where WarehousePG data is stored for each coordinator, standby, and segment instance.
+-   **[Validating the WHPG Cluster](validate.md)**  
+    Validate your hardware and network performance.
+-   **[Initializing WarehousePG](init_whpg.md)**  
+    Describes how to initialize a WarehousePG database system.
+-   **[Installing Optional Extensions](data_sci_pkgs/index.md)**  
+    Information about installing optional WarehousePG extensions and packages, such as the Procedural Language extensions and the Python and R Data Science Packages.
+-   **[Installing Extensions](install_extensions.md)**  
+    The WarehousePG distribution includes several PostgreSQL- and WarehousePG-sourced `contrib` modules that you have the option to install.
+-   **[Configuring Timezone and Localization Settings](localization.md)**  
+    Describes the available timezone and localization features of WarehousePG.
+-   **[Important Changes Between WHPG 6 and WHPG 7](6x_7x_changes.md)**
+    Describes the changes between WarehousePG 6 and WarehousePG 7 that could potentially affect your existing 6 application when you move to 7.
+-   **[Performing a minor upgrade](minor_upgrade.md)**  
+    Explains how to upgrade to a newer version of WarehousePG 7.x. 
+-   **[Upgrading from whpg 6 to whpg 7](upgrading_6_to_7.md)**  
+    Explains how to upgrade from WarehousePG 6 to WarehousePG 7. 
+-   **[Migrating Partition Maintenance Scripts to the New WarehousePG 7 Partitioning Catalogs](migrate-classic-partitioning.md)**
+    Provides guidance on migrating partition maintenance scripts that you may have written for WarehousePG 6 to use the new partitioning system catalogs in WarehousePG 7.
+-   **[Enabling iptables (Optional)](enable_iptables.md)**  
+    On Linux systems, you can configure and enable the `iptables` firewall to work with WarehousePG.
+-   **[Installation Utilities Reference](installation_utilities.md)**  
+    References for the command-line management utilities used to install and initialize a WarehousePG cluster.
+-   **[WarehousePG Environment Variables](env_var.md)**  
+    Reference of the environment variables to set for WarehousePG.
+-   **[Example Ansible Playbook](ansible-example.md)**
+    A sample Ansible playbook to install a Greenplum Database software release onto the hosts that will comprise a Greenplum Database system.

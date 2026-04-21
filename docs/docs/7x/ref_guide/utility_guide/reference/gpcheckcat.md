@@ -1,10 +1,15 @@
-# gpcheckcat 
+---
+title: gpcheckcat
+
+---
 
 The `gpcheckcat` utility tests WarehousePG catalog tables for inconsistencies.
 
 The utility is in `$GPHOME/bin/lib`.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
+
+## Synopsis
 
 ```
 gpcheckcat [ <options<] [ <dbname>] 
@@ -30,12 +35,14 @@ gpcheckcat -? | --help
 
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 The `gpcheckcat` utility runs multiple tests that check for database catalog inconsistencies. Some of the tests cannot be run concurrently with other workload statements or the results will not be usable. Restart the database in restricted mode when running `gpcheckcat`, otherwise `gpcheckcat` might report inconsistencies due to ongoing database operations rather than the actual number of inconsistencies. If you run `gpcheckcat` without stopping database activity, run it with `-O` option.
 
-::: tip Note
-Any time you run the utility, it checks for and deletes orphaned, temporary database schemas \(temporary schemas without a session ID\) in the specified databases. The utility displays the results of the orphaned, temporary schema check on the command line and also logs the results.
+:::tip Note
+Any time you run the utility, it checks for and deletes orphaned, temporary database schemas (temporary schemas without a session ID) in the specified databases. The utility displays the results of the orphaned, temporary schema check on the command line and also logs the results.
 :::
 
 Catalog inconsistencies are inconsistencies that occur between WarehousePG cluster tables. In general, there are three types of inconsistencies:
@@ -43,51 +50,61 @@ Catalog inconsistencies are inconsistencies that occur between WarehousePG clust
 -   Inconsistencies in system tables at the segment level. For example, an inconsistency between a system table that contains table data and a system table that contains column data. As another, a system table that contains duplicates in a column that should to be unique.
 
 -   Inconsistencies between same system table across segments. For example, a system table is missing row on one segment, but other segments have this row. As another example, the values of specific row column data are different across segments, such as table owner or table access privileges.
--   Inconsistency between a catalog table and the filesystem. For example, a file exists in database directory, but there is no entry for it in the pg\_class table.
 
-## <a id="section4"></a>Options 
+-   Inconsistency between a catalog table and the filesystem. For example, a file exists in database directory, but there is no entry for it in the pg_class table.
+
+<a id="section4"></a>
+
+## Options
 
 ##### -A
+
 Run `gpcheckcat` on all databases in the WarehousePG installation.
 
-##### -B <parallel\_processes\>
+##### -B &lt;parallel_processes>
+
 The number of processes to run in parallel.
 
-The `gpcheckcat` utility attempts to determine the number of simultaneous processes \(the batch size\) to use. The utility assumes it can use a buffer with a minimum of 20MB for each process. The maximum number of parallel processes is the number of WarehousePG segment instances. The utility displays the number of parallel processes that it uses when it starts checking the catalog.
+The `gpcheckcat` utility attempts to determine the number of simultaneous processes (the batch size) to use. The utility assumes it can use a buffer with a minimum of 20MB for each process. The maximum number of parallel processes is the number of WarehousePG segment instances. The utility displays the number of parallel processes that it uses when it starts checking the catalog.
 
-::: tip Note
+:::tip Note
 The utility might run out of memory if the number of errors returned exceeds the buffer size. If an out of memory error occurs, you can lower the batch size with the `-B` option. For example, if the utility displays a batch size of 936 and runs out of memory, you can specify `-B 468` to run 468 processes in parallel.
 :::
 
-##### -C catalog\_table
+##### -C catalog_table
+
 Run cross consistency, foreign key, and ACL tests for the specified catalog table.
 
-##### -g data\_directory
-Generate SQL scripts to fix catalog inconsistencies. The scripts are placed in data\_directory.
+##### -g data_directory
+
+Generate SQL scripts to fix catalog inconsistencies. The scripts are placed in data_directory.
 
 ##### -l
+
 List the `gpcheckcat` tests.
 
 ##### -O
-Run only the `gpcheckcat` tests that can be run in online \(not restricted\) mode.
+
+Run only the `gpcheckcat` tests that can be run in online (not restricted) mode.
 
 ##### -p port
+
 This option specifies the port that is used by the WarehousePG.
 
 ##### -P password
+
 The password of the user connecting to WarehousePG.
 
-##### -R test\_name \| 'test\_name1,test\_name2 \[, ...\]'
+##### -R test_name \| 'test_name1,test_name2 \[, ...]'
+
 Specify one or more tests to run. Specify multiple tests as a comma-delimited list of test names enclosed in quotes.
 
 Some tests can be run only when WarehousePG is in restricted mode.
 
-
-
-::: info These are the tests that can be performed:
+:::info These are the tests that can be performed:
 `acl` - Cross consistency check for access control privileges
 
-`aoseg_table` - Check that the vertical partition information \(vpinfo\) on segment instances is consistent with `pg_attribute` \(checks only append-optimized, column storage tables in the database\)
+`aoseg_table` - Check that the vertical partition information (vpinfo) on segment instances is consistent with `pg_attribute` (checks only append-optimized, column storage tables in the database)
 
 `duplicate` - Check for duplicate entries
 
@@ -103,50 +120,56 @@ Some tests can be run only when WarehousePG is in restricted mode.
 
 `orphaned_toast_tables` - Check for orphaned TOAST tables.
 
-`part_integrity` - Check *pg\_partition* branch integrity, partition with OIDs, partition distribution policy
+`part_integrity` - Check *pg_partition* branch integrity, partition with OIDs, partition distribution policy
 
 `unique_index_violation` - Check tables that have columns with the unique index constraint for duplicate entries
 
-`dependency` - Check for dependency on non-existent objects \(restricted mode only\)
+`dependency` - Check for dependency on non-existent objects (restricted mode only)
 
-`distribution_policy` - Check constraints on randomly distributed tables \(restricted mode only\)
+`distribution_policy` - Check constraints on randomly distributed tables (restricted mode only)
 
-`namespace` - Check for schemas with a missing schema definition \(restricted mode only\)
+`namespace` - Check for schemas with a missing schema definition (restricted mode only)
 
-`pgclass` - Check *pg\_class* entry that does not have any corresponding *pg\_attribute* entry \(restricted mode only\)
-
+`pgclass` - Check *pg_class* entry that does not have any corresponding *pg_attribute* entry (restricted mode only)
 :::
 
-::: tip Note
-There are several ways a TOAST table can become orphaned where a repair script cannot be generated and a manual catalog change is required. One way is if the `reltoastrelid` entry in *pg\_class* points to an incorrect TOAST table \(a TOAST table mismatch\). Another way is if both the `reltoastrelid` in *pg\_class* is missing and the `pg_depend` entry is missing \(a double orphan TOAST table\). If a manual catalog change is needed, `gpcheckcat` will display detailed steps you can follow to update the catalog. Contact Support if you need help with the catalog change.
+:::tip Note
+There are several ways a TOAST table can become orphaned where a repair script cannot be generated and a manual catalog change is required. One way is if the `reltoastrelid` entry in *pg_class* points to an incorrect TOAST table (a TOAST table mismatch). Another way is if both the `reltoastrelid` in *pg_class* is missing and the `pg_depend` entry is missing (a double orphan TOAST table). If a manual catalog change is needed, `gpcheckcat` will display detailed steps you can follow to update the catalog. Contact Support if you need help with the catalog change.
 :::
-
 
 ##### -s `test_name | 'test_name1, test_name2 [, ...]'`
+
 Specify one ore more tests to skip. Specify multiple tests as a comma-delimited list of test names enclosed in quotes.
 
-##### -S \{none \| only\}
-Specify this option to control the testing of catalog tables that are shared across all databases in the WarehousePG installation, such as *pg\_database*.
+##### -S {none \| only}
+
+Specify this option to control the testing of catalog tables that are shared across all databases in the WarehousePG installation, such as *pg_database*.
 
 The value `none` deactivates testing of shared catalog tables. The value `only` tests only the shared catalog tables.
 
-##### -U user\_name
+##### -U user_name
+
 The user connecting to WarehousePG.
 
 ##### -? \| --help
+
 Displays the online help.
 
-##### -v \(verbose\)
+##### -v (verbose)
+
 Displays detailed information about the tests that are performed.
 
 ##### -x `"<parameter_name>=<value>"`
+
 Set a server configuration parameter, such as `log_min_messages`, at a session level. To set multiple configuration parameters, use the `-x` option multiple times. 
 
-## <a id="notes"></a>Notes 
+<a id="notes"></a>
+
+## Notes
 
 The utility identifies tables with missing attributes and displays them in various locations in the output and in a non-standardized format. The utility also displays a summary list of tables with missing attributes in the format `<database>. <schema>. <table>. <segment_id>` after the output information is displayed.
 
-If `gpcheckcat` detects inconsistent OID \(Object ID\) information, it generates one or more verification files that contain an SQL query. You can run the SQL query to see details about the OID inconsistencies and investigate the inconsistencies. The files are generated in the directory where `gpcheckcat` is invoked.
+If `gpcheckcat` detects inconsistent OID (Object ID) information, it generates one or more verification files that contain an SQL query. You can run the SQL query to see details about the OID inconsistencies and investigate the inconsistencies. The files are generated in the directory where `gpcheckcat` is invoked.
 
 This is the format of the file:
 
@@ -154,7 +177,7 @@ This is the format of the file:
 gpcheckcat.verify.dbname.catalog\_table\_name.test\_name.TIMESTAMP.sql
 ```
 
-This is an example verification filename created by `gpcheckcat` when it detects inconsistent OID \(Object ID\) information in the catalog table *pg\_type* in the database `mydb`:
+This is an example verification filename created by `gpcheckcat` when it detects inconsistent OID (Object ID) information in the catalog table *pg_type* in the database `mydb`:
 
 ```
 gpcheckcat.verify.mydb.pg_type.missing_extraneous.20150420102715.sql
@@ -173,4 +196,3 @@ SELECT *
        ) alltyprelids
   GROUP BY relname, oid ORDER BY count(*) desc ;
 ```
-

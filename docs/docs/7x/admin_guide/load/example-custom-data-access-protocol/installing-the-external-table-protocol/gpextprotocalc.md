@@ -1,4 +1,6 @@
-# gpextprotocal.c
+---
+title: gpextprotocal.c
+
 ---
 
 ```
@@ -302,5 +304,4 @@ void FreeDemoUri(DemoUri *uri)
 }
 ```
 
-**Parent topic:** [Installing the External Table Protocol](../../load/topics/g-installing-the-external-table-protocol.html)
-
+**Parent topic:** [Installing the External Table Protocol](index.md)

@@ -1,4 +1,6 @@
-# Working with XML Data
+---
+title: Working with XML Data
+
 ---
 
 WarehousePG supports the `xml` data type that stores XML data.
@@ -18,9 +20,11 @@ This section contains the following topics:
 -   [Mapping Tables to XML](#topic_ucn_mkp_xz)
 -   [Using XML Functions and Expressions](#topic_gn4_x3w_mq)
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+**Parent topic:** [SQL: Querying Data](index.md)
 
-## <a id="topic_upc_tcs_fz"></a>Creating XML Values
+<a id="topic_upc_tcs_fz"></a>
+
+## Creating XML Values
 
 To produce a value of type `xml` from character data, use the function `xmlparse`:
 
@@ -42,7 +46,7 @@ xml '<foo>bar</foo>'
 '<foo>bar</foo>'::xml
 ```
 
-The `xml` type does not validate input values against a document type declaration \(DTD\), even when the input value specifies a DTD. There is also currently no built-in support for validating against other XML schema languages such as XML schema.
+The `xml` type does not validate input values against a document type declaration (DTD), even when the input value specifies a DTD. There is also currently no built-in support for validating against other XML schema languages such as XML schema.
 
 The inverse operation, producing a character string value from `xml`, uses the function `xmlserialize`:
 
@@ -50,7 +54,7 @@ The inverse operation, producing a character string value from `xml`, uses the f
 xmlserialize ( { DOCUMENT | CONTENT } <value> AS <type> )
 ```
 
-type can be `character`, `character varying`, or `text` \(or an alias for one of those\). Again, according to the SQL standard, this is the only way to convert between type `xml` and character types, but WarehousePG also allows you to simply cast the value.
+type can be `character`, `character varying`, or `text` (or an alias for one of those). Again, according to the SQL standard, this is the only way to convert between type `xml` and character types, but WarehousePG also allows you to simply cast the value.
 
 When a character string value is cast to or from type `xml` without going through `XMLPARSE` or `XMLSERIALIZE`, respectively, the choice of `DOCUMENT` versus `CONTENT` is determined by the `XML OPTION` session configuration parameter, which can be set using the standard command:
 
@@ -67,21 +71,27 @@ SET XML OPTION TO { DOCUMENT | CONTENT };
 
 The default is CONTENT, so all forms of XML data are allowed.
 
-## <a id="topic_eyt_3tw_mq"></a>Encoding Handling
+<a id="topic_eyt_3tw_mq"></a>
 
-Be careful when dealing with multiple character encodings on the client, server, and in the XML data passed through them. When using the text mode to pass queries to the server and query results to the client \(which is the normal mode\), WarehousePG converts all character data passed between the client and the server, and vice versa, to the character encoding of the respective endpoint; see [Character Set Support](../../../ref_guide/character_sets.html#ig167937). This includes string representations of XML values, such as in the above examples. Ordinarily, this means that encoding declarations contained in XML data can become invalid, as the character data is converted to other encodings while travelling between client and server, because the embedded encoding declaration is not changed. To cope with this behavior, encoding declarations contained in character strings presented for input to the `xml` type are ignored, and content is assumed to be in the current server encoding. Consequently, for correct processing, character strings of XML data must be sent from the client in the current client encoding. It is the responsibility of the client to either convert documents to the current client encoding before sending them to the server, or to adjust the client encoding appropriately. On output, values of type `xml` will not have an encoding declaration, and clients should assume all data is in the current client encoding.
+## Encoding Handling
 
-When using binary mode to pass query parameters to the server and query results back to the client, no character set conversion is performed, so the situation is different. In this case, an encoding declaration in the XML data will be observed, and if it is absent, the data will be assumed to be in UTF-8 \(as required by the XML standard; note that WarehousePG does not support UTF-16\). On output, data will have an encoding declaration specifying the client encoding, unless the client encoding is UTF-8, in which case it will be omitted.
+Be careful when dealing with multiple character encodings on the client, server, and in the XML data passed through them. When using the text mode to pass queries to the server and query results to the client (which is the normal mode), WarehousePG converts all character data passed between the client and the server, and vice versa, to the character encoding of the respective endpoint; see [Character Set Support](../../ref_guide/character_sets.md). This includes string representations of XML values, such as in the above examples. Ordinarily, this means that encoding declarations contained in XML data can become invalid, as the character data is converted to other encodings while travelling between client and server, because the embedded encoding declaration is not changed. To cope with this behavior, encoding declarations contained in character strings presented for input to the `xml` type are ignored, and content is assumed to be in the current server encoding. Consequently, for correct processing, character strings of XML data must be sent from the client in the current client encoding. It is the responsibility of the client to either convert documents to the current client encoding before sending them to the server, or to adjust the client encoding appropriately. On output, values of type `xml` will not have an encoding declaration, and clients should assume all data is in the current client encoding.
+
+When using binary mode to pass query parameters to the server and query results back to the client, no character set conversion is performed, so the situation is different. In this case, an encoding declaration in the XML data will be observed, and if it is absent, the data will be assumed to be in UTF-8 (as required by the XML standard; note that WarehousePG does not support UTF-16). On output, data will have an encoding declaration specifying the client encoding, unless the client encoding is UTF-8, in which case it will be omitted.
 
 > **Note** Processing XML data with WarehousePG will be less error-prone and more efficient if the XML data encoding, client encoding, and server encoding are the same. Because XML data is internally processed in UTF-8, computations will be most efficient if the server encoding is also UTF-8.
 
-## <a id="topic_kxv_4gq_vz"></a>Accessing XML Values
+<a id="topic_kxv_4gq_vz"></a>
+
+## Accessing XML Values
 
 The `xml` data type is unusual in that it does not provide any comparison operators. This is because there is no well-defined and universally useful comparison algorithm for XML data. One consequence of this is that you cannot retrieve rows by comparing an `xml` column against a search value. XML values should therefore typically be accompanied by a separate key field such as an ID. An alternative solution for comparing XML values is to convert them to character strings first, but note that character string comparison has little to do with a useful XML comparison method.
 
 Because there are no comparison operators for the `xml` data type, it is not possible to create an index directly on a column of this type. If speedy searches in XML data are desired, possible workarounds include casting the expression to a character string type and indexing that, or indexing an XPath expression. Of course, the actual query would have to be adjusted to search by the indexed expression.
 
-## <a id="topic_a4k_w33_xz"></a>Processing XML
+<a id="topic_a4k_w33_xz"></a>
+
+## Processing XML
 
 To process values of data type `xml`, WarehousePG offers the functions `xpath` and `xpath_exists`, which evaluate XPath 1.0 expressions.
 
@@ -90,11 +100,11 @@ xpath(<xpath>, <xml> [, <nsarray>])
 
 ```
 
-The function `xpath` evaluates the XPath expression `xpath` \(a text value\) against the XML value `xml`. It returns an array of XML values corresponding to the node set produced by the XPath expression.
+The function `xpath` evaluates the XPath expression `xpath` (a text value) against the XML value `xml`. It returns an array of XML values corresponding to the node set produced by the XPath expression.
 
 The second argument must be a well formed XML document. In particular, it must have a single root node element.
 
-The optional third argument of the function is an array of namespace mappings. This array should be a two-dimensional text array with the length of the second axis being equal to 2 \(i.e., it should be an array of arrays, each of which consists of exactly 2 elements\). The first element of each array entry is the namespace name \(alias\), the second the namespace URI. It is not required that aliases provided in this array be the same as those being used in the XML document itself \(in other words, both in the XML document and in the `xpath` function context, aliases are local\).
+The optional third argument of the function is an array of namespace mappings. This array should be a two-dimensional text array with the length of the second axis being equal to 2 (i.e., it should be an array of arrays, each of which consists of exactly 2 elements). The first element of each array entry is the namespace name (alias), the second the namespace URI. It is not required that aliases provided in this array be the same as those being used in the XML document itself (in other words, both in the XML document and in the `xpath` function context, aliases are local).
 
 Example:
 
@@ -109,7 +119,7 @@ SELECT xpath('/my:a/<text>()', '<my:a xmlns:my="http://example.com">test</my:a>'
 
 ```
 
-To deal with default \(anonymous\) namespaces, do something like this:
+To deal with default (anonymous) namespaces, do something like this:
 
 ```
 SELECT xpath('//mydefns:b/<text>()', '<a xmlns="http://example.com"><b>test</b></a>',
@@ -141,7 +151,9 @@ SELECT xpath_exists('/my:a/<text>()', '<my:a xmlns:my="http://example.com">test<
 (1 row)
 ```
 
-## <a id="topic_ucn_mkp_xz"></a>Mapping Tables to XML
+<a id="topic_ucn_mkp_xz"></a>
+
+## Mapping Tables to XML
 
 The following functions map the contents of relational tables to XML values. They can be thought of as XML export functionality:
 
@@ -218,7 +230,7 @@ cursor_to_xmlschema(cursor refcursor, nulls boolean, tableforest boolean, target
 
 It is essential that the same parameters are passed in order to obtain matching XML data mappings and XML schema documents.
 
-The following functions produce XML data mappings and the corresponding XML schema in one document \(or `forest`\), linked together. They can be useful where self-contained and self-describing results are desired:
+The following functions produce XML data mappings and the corresponding XML schema in one document (or `forest`), linked together. They can be useful where self-contained and self-describing results are desired:
 
 ```
 table_to_xml_and_xmlschema(tbl regclass, nulls boolean, tableforest boolean, targetns text)
@@ -328,15 +340,17 @@ The example below demonstrates using the output produced by these functions, The
 </xsl:stylesheet>
 ```
 
-## <a id="topic_gn4_x3w_mq"></a>XML Function Reference
+<a id="topic_gn4_x3w_mq"></a>
+
+## XML Function Reference
 
 The functions described in this section operate on values of type `xml`. The section [XML Predicates](#topic_zpg_jl2_wz)also contains information about the `xml` functions and function-like expressions.
 
-**Function:**
+### Function:
 
 `xmlcomment`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 xmlcomment(<text>)
@@ -354,11 +368,11 @@ SELECT xmlcomment('hello');
  <!--hello-->
 ```
 
-**Function:**
+### Function:
 
 `xmlconcat`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 xmlconcat(xml[, …])
@@ -395,11 +409,11 @@ SELECT xmlconcat('<?xml version="1.1"?><foo/>', '<?xml version="1.1" standalone=
  <?xml version="1.1"?><foo/><bar/>
 ```
 
-**Function:**
+### Function:
 
 `xmlelement`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 xmlelement(name name [, xmlattributes(value [AS attname] [, ... ])] [, content, ...])
@@ -466,19 +480,19 @@ SELECT xmlelement(name foo, xmlattributes('xyz' as bar),
  <foo bar="xyz"><abc/><!--test--><xyz/></foo>
 ```
 
-Content of other types will be formatted into valid XML character data. This means in particular that the characters `<`, `>`, and `&` will be converted to entities. Binary data \(data type `bytea`\) will be represented in base64 or hex encoding, depending on the setting of the configuration parameter [xmlbinary](https://www.postgresql.org/docs/12/runtime-config-client.html#GUC-XMLBINARY). The particular behavior for individual data types is expected to evolve in order to align the SQL and WarehousePG data types with the XML schema specification, at which point a more precise description will appear.
+Content of other types will be formatted into valid XML character data. This means in particular that the characters `<`, `>`, and `&` will be converted to entities. Binary data (data type `bytea`) will be represented in base64 or hex encoding, depending on the setting of the configuration parameter [xmlbinary](https://www.postgresql.org/docs/12/runtime-config-client.html#GUC-XMLBINARY). The particular behavior for individual data types is expected to evolve in order to align the SQL and WarehousePG data types with the XML schema specification, at which point a more precise description will appear.
 
-**Function:**
+### Function:
 
 `xmlforest`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 xmlforest(<content> [AS <name>] [, ...])
 ```
 
-The `xmlforest` expression produces an XML forest \(sequence\) of elements using the given names and content.
+The `xmlforest` expression produces an XML forest (sequence) of elements using the given names and content.
 
 Examples:
 
@@ -506,11 +520,11 @@ Element names that are not valid XML names are escaped as shown for `xmlelement`
 
 Note that XML forests are not valid XML documents if they consist of more than one element, so it might be useful to wrap `xmlforest` expressions in `xmlelement`.
 
-**Function:**
+### Function:
 
 `xmlpi`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 xmlpi(name <target> [, <content>])
@@ -528,11 +542,11 @@ SELECT xmlpi(name php, 'echo "hello world";');
  <?php echo "hello world";?>
 ```
 
-**Function:**
+### Function:
 
 `xmlroot`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 xmlroot(<xml>, version <text> | no value [, standalone yes|no|no value])
@@ -550,7 +564,7 @@ SELECT xmlroot(xmlparse(document '<?xml version="1.1"?><content>abc</content>'),
  <content>abc</content>
 ```
 
-**Function:**
+### Function:
 
 `xmlagg`
 
@@ -558,7 +572,7 @@ SELECT xmlroot(xmlparse(document '<?xml version="1.1"?><content>abc</content>'),
 xmlagg (<xml>)
 ```
 
-The function `xmlagg` is, unlike the other functions described here, an aggregate function. It concatenates the input values to the aggregate function call, much like `xmlconcat` does, except that concatenation occurs across rows rather than across expressions in a single row. See [Using Functions and Operators](functions-operators.html#in151167) for additional information about aggregate functions.
+The function `xmlagg` is, unlike the other functions described here, an aggregate function. It concatenates the input values to the aggregate function call, much like `xmlconcat` does, except that concatenation occurs across rows rather than across expressions in a single row. See [Using Functions and Operators](functions-operators.md#advanced-aggregate-functions) for additional information about aggregate functions.
 
 Example:
 
@@ -590,33 +604,35 @@ SELECT xmlagg(x) FROM (SELECT * FROM test ORDER BY y DESC) AS tab;
  <bar/><foo>abc</foo>
 ```
 
-## <a id="topic_zpg_jl2_wz"></a>XML Predicates
+<a id="topic_zpg_jl2_wz"></a>
+
+## XML Predicates
 
 The expressions described in this section check properties of `xml` values.
 
-**Expression:**
+### Expression:
 
 `IS DOCUMENT`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 <xml> IS DOCUMENT
 ```
 
-The expression `IS DOCUMENT` returns true if the argument XML value is a proper XML document, false if it is not \(that is, it is a content fragment\), or null if the argument is null.
+The expression `IS DOCUMENT` returns true if the argument XML value is a proper XML document, false if it is not (that is, it is a content fragment), or null if the argument is null.
 
-**Expression:**
+### Expression:
 
 `XMLEXISTS`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 XMLEXISTS(<text> PASSING [BY REF] <xml> [BY REF])
 ```
 
-The function `xmlexists` returns true if the XPath expression in the first argument returns any nodes, and false otherwise. \(If either argument is null, the result is null.\)
+The function `xmlexists` returns true if the XPath expression in the first argument returns any nodes, and false otherwise. (If either argument is null, the result is null.)
 
 Example:
 
@@ -632,11 +648,11 @@ SELECT xmlexists('//town[<text>() = ''Toronto'']' PASSING BY REF '<towns><town>T
 
 The `BY REF` clauses have no effect in WarehousePG, but are allowed for SQL conformance and compatibility with other implementations. Per SQL standard, the first `BY REF` is required, the second is optional. Also note that the SQL standard specifies the `xmlexists` construct to take an XQuery expression as first argument, but WarehousePG currently only supports XPath, which is a subset of XQuery.
 
-**Expression:**
+### Expression:
 
 `xml_is_well_formed`
 
-**Synopsis:**
+### Synopsis:
 
 ```
 xml_is_well_formed(<text>)
@@ -683,4 +699,3 @@ SELECT xml_is_well_formed_document('<pg:foo xmlns:pg="http://postgresql.org/stuf
 ```
 
 The last example shows that the checks include whether namespaces are correctly matched.
-

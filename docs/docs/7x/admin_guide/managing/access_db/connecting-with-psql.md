@@ -1,4 +1,6 @@
-# Connecting with psql
+---
+title: Connecting with psql
+
 ---
 
 Depending on the default values used or the environment variables you have set, the following examples show how to access a database via `psql`:
@@ -22,13 +24,13 @@ If a user-defined database has not yet been created, you can access the system b
 $ psql postgres
 ```
 
-After connecting to a database, `psql` provides a prompt with the name of the database to which `psql` is currently connected, followed by the string `=>` \(or `=#` if you are the database superuser\). For example:
+After connecting to a database, `psql` provides a prompt with the name of the database to which `psql` is currently connected, followed by the string `=>` (or `=#` if you are the database superuser). For example:
 
 ```
 gpdatabase=>
 ```
 
-At the prompt, you may type in SQL commands. A SQL command must end with a `;` \(semicolon\) in order to be sent to the server and run. For example:
+At the prompt, you may type in SQL commands. A SQL command must end with a `;` (semicolon) in order to be sent to the server and run. For example:
 
 ```
 => SELECT * FROM mytable;
@@ -36,5 +38,4 @@ At the prompt, you may type in SQL commands. A SQL command must end with a `;` \
 
 See the *WarehousePG Reference Guide* for information about using the `psql` client application and SQL commands and syntax.
 
-**Parent topic:** [Accessing the Database](../access_db/accessing-the-database.html)
-
+**Parent topic:** [Accessing the Database](index.md)

@@ -18,7 +18,7 @@ WarehousePG is based on **PostgreSQL open-source technology**. It is essentially
 
 ## Documentation
 
-[Release Notes](/docs/7x/release_notes)
+[Release Notes](/docs/7x/release_notes/index.md)
 
 
 [Install Guide](/docs/7x/install_guide/)
