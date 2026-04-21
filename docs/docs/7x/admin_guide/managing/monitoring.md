@@ -1,4 +1,8 @@
-# Recommended Monitoring and Maintenance Tasks
+---
+title: Recommended Monitoring and Maintenance Tasks
+redirects:
+  - monitoring
+
 ---
 
 This section lists monitoring and maintenance activities recommended to ensure high availability and consistent performance of your WarehousePG cluster.
@@ -7,11 +11,13 @@ The tables in the following sections suggest activities that a WarehousePG clust
 
 It is not necessary to implement all of these suggestions in every cluster; use the frequency and severity recommendations as a guide to implement measures according to your service requirements.
 
-**Parent topic:** [Managing a WarehousePG cluster](../managing/managing.html)
+**Parent topic:** [Managing a WarehousePG cluster](index.md)
 
-## <a id="drr_5bg_rp"></a>Database State Monitoring Activities
+<a id="drr_5bg_rp"></a>
 
-<table class="table frame-all" id="drr_5bg_rp__table_drr_5bg_rp"><caption><span class="table--title-label">Table 1. </span><span class="title">Database State Monitoring Activities</span></caption><colgroup><col><col><col></colgroup><thead class="thead">
+## Database State Monitoring Activities
+
+<table class="table frame-all" id="drr_5bg_rp__table_drr_5bg_rp"><caption><span class="table--title-label">Table 1. </span><span class="title">Database State Monitoring Activities</span></caption><colgroup><col /><col /><col /></colgroup><thead class="thead">
 <tr class="row">
 <th class="entry" id="drr_5bg_rp__table_drr_5bg_rp__entry__1">Activity</th>
 <th class="entry" id="drr_5bg_rp__table_drr_5bg_rp__entry__2">Procedure</th>
@@ -46,7 +52,7 @@ WHERE status = 'd';</code></pre></td>
 <td class="entry" headers="drr_5bg_rp__table_drr_5bg_rp__entry__2">
 <div class="p">Execute the following query in the <code class="ph codeph">postgres</code>
                                         database:<pre class="pre codeblock"><code>SELECT * FROM gp_segment_configuration
-WHERE mode = 'n' and status = 'u' and content &lt;&gt; -1;</code></pre></div>
+WHERE mode = 'n' and status = 'u' and content &#x3C;> -1;</code></pre></div>
 </td>
 <td class="entry" headers="drr_5bg_rp__table_drr_5bg_rp__entry__3">If the query returns rows then the segment might be in the process
                                     of moving from  <code class="ph codeph">Not In Sync</code> to
@@ -63,7 +69,7 @@ WHERE mode = 'n' and status = 'u' and content &lt;&gt; -1;</code></pre></div>
 <div class="p">Execute the following query in the <code class="ph codeph">postgres</code>
                                         database:
 <pre class="pre codeblock"><code>SELECT * FROM gp_segment_configuration 
-WHERE preferred_role &lt;&gt; role  and status = 'u' and mode = 's';</code></pre></div>
+WHERE preferred_role &#x3C;> role  and status = 'u' and mode = 's';</code></pre></div>
                                     
 </td>
 <td class="entry" headers="drr_5bg_rp__table_drr_5bg_rp__entry__3">
@@ -97,7 +103,7 @@ GROUP BY 1;</code></pre></div>
                                         minutes</p><p class="p">Severity: IMPORTANT</p></td>
 <td class="entry" headers="drr_5bg_rp__table_drr_5bg_rp__entry__2">
 <div class="p">Run the following <code class="ph codeph">psql</code>
-                                        command:<pre class="pre codeblock"><code>psql &lt;dbname&gt; -c 'SELECT pid, state FROM pg_stat_replication;'</code></pre></div>
+                                        command:<pre class="pre codeblock"><code>psql &#x3C;dbname> -c 'SELECT pid, state FROM pg_stat_replication;'</code></pre></div>
 </td>
 <td class="entry" headers="drr_5bg_rp__table_drr_5bg_rp__entry__3">
 <p class="p">Check the <span class="ph filepath">log</span> file from the coordinator
@@ -123,11 +129,11 @@ GROUP BY 1;</code></pre></div>
                                         coordinator as coordinator.</p>
 </td>
 </tr>
-</tbody></table>
+</tbody></table><a id="topic_y4c_4gg_rp"></a>
 
-## <a id="topic_y4c_4gg_rp"></a>Hardware and Operating System Monitoring
+## Hardware and Operating System Monitoring
 
-<table class="table frame-all" id="topic_y4c_4gg_rp__table_ls5_sgg_rp"><caption><span class="table--title-label">Table 2. </span><span class="title">Hardware and Operating System Monitoring Activities</span></caption><colgroup><col><col><col></colgroup><thead class="thead">
+<table class="table frame-all" id="topic_y4c_4gg_rp__table_ls5_sgg_rp"><caption><span class="table--title-label">Table 2. </span><span class="title">Hardware and Operating System Monitoring Activities</span></caption><colgroup><col /><col /><col /></colgroup><thead class="thead">
 <tr class="row">
 <th class="entry" id="topic_y4c_4gg_rp__table_ls5_sgg_rp__entry__1">Activity</th>
 <th class="entry" id="topic_y4c_4gg_rp__table_ls5_sgg_rp__entry__2">Procedure</th>
@@ -191,11 +197,11 @@ GROUP BY 1;</code></pre></div>
                                         faulty machines.</p>
 </td>
 </tr>
-</tbody></table>
+</tbody></table><a id="topic_gbp_jng_rp"></a>
 
-## <a id="topic_gbp_jng_rp"></a>Catalog Monitoring
+## Catalog Monitoring
 
-<table class="table frame-all" id="topic_gbp_jng_rp__table_pdq_lng_rp"><caption><span class="table--title-label">Table 3. </span><span class="title">Catalog Monitoring Activities</span></caption><colgroup><col><col><col></colgroup><thead class="thead">
+<table class="table frame-all" id="topic_gbp_jng_rp__table_pdq_lng_rp"><caption><span class="table--title-label">Table 3. </span><span class="title">Catalog Monitoring Activities</span></caption><colgroup><col /><col /><col /></colgroup><thead class="thead">
 <tr class="row">
 <th class="entry" id="topic_gbp_jng_rp__table_pdq_lng_rp__entry__1">Activity</th>
 <th class="entry" id="topic_gbp_jng_rp__table_pdq_lng_rp__entry__2">Procedure</th>
@@ -253,11 +259,11 @@ GROUP BY 1;</code></pre></div>
                                     database:<pre class="pre codeblock"><code>gpcheckcat -R dependency</code></pre></td>
 <td class="entry" headers="topic_gbp_jng_rp__table_pdq_lng_rp__entry__3">Run the repair scripts for any issues identified.</td>
 </tr>
-</tbody></table>
+</tbody></table><a id="maintentenance_check_scripts"></a>
 
-## <a id="maintentenance_check_scripts"></a>Data Maintenance
+## Data Maintenance
 
-<table class="table frame-all" id="maintentenance_check_scripts__table_tp4_nxg_rp"><caption><span class="table--title-label">Table 4. </span><span class="title">Data Maintenance Activities</span></caption><colgroup><col><col><col></colgroup><thead class="thead">
+<table class="table frame-all" id="maintentenance_check_scripts__table_tp4_nxg_rp"><caption><span class="table--title-label">Table 4. </span><span class="title">Data Maintenance Activities</span></caption><colgroup><col /><col /><col /></colgroup><thead class="thead">
 <tr class="row">
 <th class="entry" id="maintentenance_check_scripts__table_tp4_nxg_rp__entry__1">Activity</th>
 <th class="entry" id="maintentenance_check_scripts__table_tp4_nxg_rp__entry__2">Procedure</th>
@@ -285,11 +291,11 @@ GROUP BY 1;</code></pre></div>
                                     not require access to the tables, such as during a time of low
                                     activity, or during a maintenance window.</td>
 </tr>
-</tbody></table>
+</tbody></table><a id="topic_dld_23h_rp"></a>
 
-## <a id="topic_dld_23h_rp"></a>Database Maintenance
+## Database Maintenance
 
-<table class="table frame-all" id="topic_dld_23h_rp__table_vxx_f3h_rp"><caption><span class="table--title-label">Table 5. </span><span class="title">Database Maintenance Activities</span></caption><colgroup><col><col><col></colgroup><thead class="thead">
+<table class="table frame-all" id="topic_dld_23h_rp__table_vxx_f3h_rp"><caption><span class="table--title-label">Table 5. </span><span class="title">Database Maintenance Activities</span></caption><colgroup><col /><col /><col /></colgroup><thead class="thead">
 <tr class="row">
 <th class="entry" id="topic_dld_23h_rp__table_vxx_f3h_rp__entry__1">Activity</th>
 <th class="entry" id="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">Procedure</th>
@@ -302,7 +308,7 @@ GROUP BY 1;</code></pre></div>
                                             reused.<p class="p">Recommended frequency: daily</p><p class="p">Severity:
                                             CRITICAL</p></td>
 <td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">Vacuum user
-                                        tables:<pre class="pre codeblock"><code>VACUUM &lt;table&gt;;</code></pre></td>
+                                        tables:<pre class="pre codeblock"><code>VACUUM &#x3C;table>;</code></pre></td>
 <td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">Vacuum updated tables regularly to prevent bloating.
 </td>
 </tr>
@@ -312,7 +318,7 @@ GROUP BY 1;</code></pre></div>
                                             queries</p><p class="p">Severity: CRITICAL</p></td>
 <td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">Analyze user tables. You can use the
 <code class="ph codeph">analyzedb</code> management
-                                        utility:<pre class="pre codeblock"><code>analyzedb -d &lt;database&gt; -a</code></pre></td>
+                                        utility:<pre class="pre codeblock"><code>analyzedb -d &#x3C;database> -a</code></pre></td>
 <td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">Analyze updated tables regularly so that the optimizer
                                         can produce efficient query execution plans.</td>
 </tr>
@@ -341,9 +347,9 @@ GROUP BY 1;</code></pre></div>
                                                 database, or use the <code class="ph codeph">reindexdb</code>
                                                 command-line utility with the <code class="ph codeph">-s</code>
                                                 option:
-<pre class="pre codeblock"><code>reindexdb -s &lt;database&gt;</code></pre></li>
+<pre class="pre codeblock"><code>reindexdb -s &#x3C;database></code></pre></li>
 <li class="li"><code class="ph codeph">ANALYZE</code> each of the system
-                                                tables:<pre class="pre codeblock"><code>analyzedb -s pg_catalog -d &lt;database&gt;</code></pre></li>
+                                                tables:<pre class="pre codeblock"><code>analyzedb -s pg_catalog -d &#x3C;database></code></pre></li>
 </ol>
 </td>
 <td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">The optimizer retrieves information from the system
@@ -354,11 +360,11 @@ GROUP BY 1;</code></pre></div>
 <code class="ph codeph">REINDEX</code> leaves indexes with no
                                         statistics. </td>
 </tr>
-</tbody></table>
+</tbody></table><a id="topic_idx_smh_rp"></a>
 
-## <a id="topic_idx_smh_rp"></a>Patching and Upgrading
+## Patching and Upgrading
 
-<table class="table frame-all" id="topic_idx_smh_rp__table_td5_5mh_rp"><caption><span class="table--title-label">Table 6. </span><span class="title">Patch and Upgrade Activities</span></caption><colgroup><col style="width:33.003300330033%"><col style="width:33.66336633663366%"><col style="width:33.33333333333333%"></colgroup><thead class="thead">
+<table class="table frame-all" id="topic_idx_smh_rp__table_td5_5mh_rp"><caption><span class="table--title-label">Table 6. </span><span class="title">Patch and Upgrade Activities</span></caption><colgroup><col style="width:33.003300330033%" /><col style="width:33.66336633663366%" /><col style="width:33.33333333333333%" /></colgroup><thead class="thead">
 <tr class="row">
 <th class="entry" id="topic_idx_smh_rp__table_td5_5mh_rp__entry__1">Activity</th>
 <th class="entry" id="topic_idx_smh_rp__table_td5_5mh_rp__entry__2">Procedure</th>

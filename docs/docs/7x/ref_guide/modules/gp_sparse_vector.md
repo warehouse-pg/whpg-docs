@@ -1,14 +1,21 @@
-# gp\_sparse\_vector 
+---
+title: gp_sparse_vector
+
+---
 
 The `gp_sparse_vector` module implements a WarehousePG data type and associated functions that use compressed storage of zeros to make vector computations on floating point numbers faster.
 
 The `gp_sparse_vector` module is a WarehousePG extension.
 
-## <a id="topic_reg"></a>Installing and Registering the Module 
+<a id="topic_reg"></a>
 
-The `gp_sparse_vector` module is installed when you install WarehousePG. Before you can use any of the functions defined in the module, you must register the `gp_sparse_vector` extension in each database where you want to use the functions. Refer to [Installing Extensions](../../install_guide/install_extensions.html) for more information.
+## Installing and Registering the Module
 
-## <a id="topic_doc"></a>Using the gp\_sparse\_vector Module 
+The `gp_sparse_vector` module is installed when you install WarehousePG. Before you can use any of the functions defined in the module, you must register the `gp_sparse_vector` extension in each database where you want to use the functions. Refer to [Installing Extensions](../../install_guide/install_extensions.md) for more information.
+
+<a id="topic_doc"></a>
+
+## Using the gp_sparse_vector Module
 
 When you use arrays of floating point numbers for various calculations, you will often have long runs of zeros. This is common in scientific, retail optimization, and text processing applications. Each floating point number takes 8 bytes of storage in memory and/or disk. Saving those zeros is often impractical. There are also many computations that benefit from skipping over the zeros.
 
@@ -20,7 +27,7 @@ For example, suppose the following array of `double`s is stored as a `float8[]` 
 
 This type of array arises often in text processing, where a dictionary may have 40-100K terms and the number of words in a particular document is stored in a vector. This array would occupy slightly more than 320KB of memory/disk, most of it zeros. Any operation that you perform on this data works on 40,001 fields that are not important.
 
-The WarehousePG built-in `array` datatype utilizes a bitmap for null values, but it is a poor choice for this use case because it is not optimized for `float8[]` or for long runs of zeros instead of nulls, and the bitmap is not run-length-encoding- \(RLE\) compressed. Even if each zero were stored as a `NULL` in the array, the bitmap for nulls would use 5KB to mark the nulls, which is not nearly as efficient as it could be.
+The WarehousePG built-in `array` datatype utilizes a bitmap for null values, but it is a poor choice for this use case because it is not optimized for `float8[]` or for long runs of zeros instead of nulls, and the bitmap is not run-length-encoding- (RLE) compressed. Even if each zero were stored as a `NULL` in the array, the bitmap for nulls would use 5KB to mark the nulls, which is not nearly as efficient as it could be.
 
 The WarehousePG `gp_sparse_vector` module defines a data type and a simple RLE-based scheme that is biased toward being efficient for zero value bitmaps. This scheme uses only 6 bytes for bitmap storage.
 
@@ -34,7 +41,7 @@ SELECT ('{0, 13, 37, 53, 0, 71 }'::float8[])::svec;
 
 The `gp_sparse_vector` module supports the vector operators `<`, `>`, `*`, `**`, `/`, `=`, `+`, `sum()`, `vec_count_nonzero()`, and so on. These operators take advantage of the efficient sparse storage format, making computations on `svec`s faster.
 
-The plus \(`+`\) operator adds each of the terms of two vectors of the same dimension together. For example, if vector `a = {0,1,5}` and vector `b = {4,3,2}`, you would compute the vector addition as follows:
+The plus (`+`) operator adds each of the terms of two vectors of the same dimension together. For example, if vector `a = {0,1,5}` and vector `b = {4,3,2}`, you would compute the vector addition as follows:
 
 ```
 SELECT ('{0,1,5}'::float8[]::svec + '{4,3,2}'::float8[]::svec)::float8[];
@@ -43,7 +50,7 @@ SELECT ('{0,1,5}'::float8[]::svec + '{4,3,2}'::float8[]::svec)::float8[];
  {4,4,7}
 ```
 
-A vector dot product \(`%*%`\) between vectors `a` and `b` returns a scalar result of type `float8`. Compute the dot product \(`(0*4+1*3+5*2)=13`\) as follows:
+A vector dot product (`%*%`) between vectors `a` and `b` returns a scalar result of type `float8`. Compute the dot product (`(0*4+1*3+5*2)=13`) as follows:
 
 ```
 SELECT '{0,1,5}'::float8[]::svec %*% '{4,3,2}'::float8[]::svec;
@@ -69,17 +76,21 @@ SELECT vec_count_nonzero( a )::float8[] FROM listvecs;
 (1 row)
 ```
 
-## <a id="topic_info"></a>Additional Module Documentation 
+<a id="topic_info"></a>
+
+## Additional Module Documentation
 
 Refer to the `gp_sparse_vector` READMEs in the [WarehousePG github repository](https://github.com/greenplum-db/gpdb/tree/main/gpcontrib/gp_sparse_vector/README) for additional information about this module.
 
 Apache MADlib includes an extended implementation of sparse vectors. See the [MADlib Documentation](http://madlib.apache.org/docs/latest/group__grp__svec.html) for a description of this MADlib module.
 
-## <a id="topic_examples"></a>Example 
+<a id="topic_examples"></a>
+
+## Example
 
 A text classification example that describes a dictionary and some documents follows. You will create WarehousePG tables representing a dictionary and some documents. You then perform document classification using vector arithmetic on word counts and proportions of dictionary words in each document.
 
-Suppose that you have a dictionary composed of words in a text array. Create a table to store the dictionary data and insert some data \(words\) into the table. For example:
+Suppose that you have a dictionary composed of words in a text array. Create a table to store the dictionary data and insert some data (words) into the table. For example:
 
 ```
 CREATE TABLE features (dictionary text[][]) DISTRIBUTED RANDOMLY;
@@ -125,7 +136,7 @@ The SFV of the second document, "i am the second document in the corpus", is `{1
 
 `gp_extract_feature_histogram()` is very speed optimized - it is a single routine version of a hash join that processes large numbers of documents into their SFVs in parallel at the highest possible speeds.
 
-For the next part of the processing, generate a sparse vector of the dictionary dimension \(19\). The vectors that you generate for each document are referred to as the *corpus*.
+For the next part of the processing, generate a sparse vector of the dictionary dimension (19). The vectors that you generate for each document are referred to as the *corpus*.
 
 ```
 CREATE table corpus (docnum int, feature_vector svec) DISTRIBUTED RANDOMLY;
@@ -156,13 +167,13 @@ SELECT (sum(feature_vector))::float8[] AS sum_in_document FROM corpus;
  {1,1,1,1,2,4,1,2,2,2,1,1,1,1,1,5,2,1,1}
 ```
 
-The remainder of the classification process is vector math. The count is turned into a weight that reflects *Term Frequency / Inverse Document Frequency* \(tf/idf\). The calculation for a given term in a given document is:
+The remainder of the classification process is vector math. The count is turned into a weight that reflects *Term Frequency / Inverse Document Frequency* (tf/idf). The calculation for a given term in a given document is:
 
 ```
 #_times_term_appears_in_this_doc * log( #_docs / #_docs_the_term_appears_in )
 ```
 
-`#_docs` is the total number of documents \(4 in this case\). Note that there is one divisor for each dictionary word and its value is the number of times that word appears in the document.
+`#_docs` is the total number of documents (4 in this case). Note that there is one divisor for each dictionary word and its value is the number of times that word appears in the document.
 
 For example, the term "document" in document 1 would have a weight of `1 * log( 4/3 )`. In document 4, the term would have a weight of `2 * log( 4/3 )`. Terms that appear in every document would have weight `0`.
 
@@ -211,4 +222,3 @@ ORDER BY 1;
 ```
 
 You can see that the angular distance between document 1 and itself is 0 degrees, and between document 1 and 3 is 90 degrees because they share no features at all.
-

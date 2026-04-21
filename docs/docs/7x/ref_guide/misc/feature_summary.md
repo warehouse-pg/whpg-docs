@@ -1,69 +1,97 @@
-# Summary of WarehousePG Features 
+---
+title: Summary of WarehousePG Features
+
+---
 
 This section provides a high-level overview of the system requirements and feature set of WarehousePG. It contains the following topics:
 
 -   [WarehousePG SQL Standard Conformance](#topic2)
 -   [WarehousePG and PostgreSQL Compatibility](#topic8)
 
-## <a id="topic2"></a>WarehousePG SQL Standard Conformance 
+<a id="topic2"></a>
 
-The SQL language was first formally standardized in 1986 by the American National Standards Institute \(ANSI\) as SQL 1986. Subsequent versions of the SQL standard have been released by ANSI and as International Organization for Standardization \(ISO\) standards: SQL 1989, SQL 1992, SQL 1999, SQL 2003, SQL 2006, and finally SQL 2008, which is the current SQL standard. The official name of the standard is ISO/IEC 9075-14:2008. In general, each new version adds more features, although occasionally features are deprecated or removed.
+## WarehousePG SQL Standard Conformance
 
-It is important to note that there are no commercial database systems that are fully compliant with the SQL standard. WarehousePG is almost fully compliant with the SQL 1992 standard, with most of the features from SQL 1999. Several features from SQL 2003 have also been implemented \(most notably the SQL OLAP features\).
+The SQL language was first formally standardized in 1986 by the American National Standards Institute (ANSI) as SQL 1986. Subsequent versions of the SQL standard have been released by ANSI and as International Organization for Standardization (ISO) standards: SQL 1989, SQL 1992, SQL 1999, SQL 2003, SQL 2006, and finally SQL 2008, which is the current SQL standard. The official name of the standard is ISO/IEC 9075-14:2008. In general, each new version adds more features, although occasionally features are deprecated or removed.
 
-This section addresses the important conformance issues of WarehousePG as they relate to the SQL standards. For a feature-by-feature list of WarehousePG's support of the latest SQL standard, see [SQL 2008 Optional Feature Compliance](SQL2008_support.html).
+It is important to note that there are no commercial database systems that are fully compliant with the SQL standard. WarehousePG is almost fully compliant with the SQL 1992 standard, with most of the features from SQL 1999. Several features from SQL 2003 have also been implemented (most notably the SQL OLAP features).
 
-### <a id="topic3"></a>Core SQL Conformance 
+This section addresses the important conformance issues of WarehousePG as they relate to the SQL standards. For a feature-by-feature list of WarehousePG's support of the latest SQL standard, see [SQL 2008 Optional Feature Compliance](SQL2008_support.md).
+
+<a id="topic3"></a>
+
+### Core SQL Conformance
 
 In the process of building a parallel, shared-nothing database system and query optimizer, certain common SQL constructs are not currently implemented in WarehousePG. The following SQL constructs are not supported:
 
 1.  Some set returning subqueries in `EXISTS` or `NOT EXISTS` clauses that WarehousePG's parallel optimizer cannot rewrite into joins.
-2.  Backwards scrolling cursors, including the use of `FETCH PRIOR`, `FETCH FIRST`, `FETCH ABSOLUTE`, and `FETCH RELATIVE`.
-3.  In `CREATE TABLE` statements \(on hash-distributed tables\): a `UNIQUE` or `PRIMARY KEY` clause must include all of \(or a superset of\) the distribution key columns. Because of this restriction, only one `UNIQUE` clause or `PRIMARY KEY` clause is allowed in a `CREATE TABLE` statement. `UNIQUE` or `PRIMARY KEY` clauses are not allowed on randomly-distributed tables.
-4.  `CREATE UNIQUE INDEX` statements that do not contain all of \(or a superset of\) the distribution key columns. `CREATE UNIQUE INDEX` is not allowed on randomly-distributed tables.
 
-    Note that `UNIQUE INDEXES` \(but not `UNIQUE CONSTRAINTS`\) are enforced on a part basis within a partitioned table. They guarantee the uniqueness of the key within each part or sub-part.
+2.  Backwards scrolling cursors, including the use of `FETCH PRIOR`, `FETCH FIRST`, `FETCH ABSOLUTE`, and `FETCH RELATIVE`.
+
+3.  In `CREATE TABLE` statements (on hash-distributed tables): a `UNIQUE` or `PRIMARY KEY` clause must include all of (or a superset of) the distribution key columns. Because of this restriction, only one `UNIQUE` clause or `PRIMARY KEY` clause is allowed in a `CREATE TABLE` statement. `UNIQUE` or `PRIMARY KEY` clauses are not allowed on randomly-distributed tables.
+
+4.  `CREATE UNIQUE INDEX` statements that do not contain all of (or a superset of) the distribution key columns. `CREATE UNIQUE INDEX` is not allowed on randomly-distributed tables.
+
+    Note that `UNIQUE INDEXES` (but not `UNIQUE CONSTRAINTS`) are enforced on a part basis within a partitioned table. They guarantee the uniqueness of the key within each part or sub-part.
 
 5.  `VOLATILE` or `STABLE` functions cannot run on the segments, and so are generally limited to being passed literal values as the arguments to their parameters.
+
 6.  Triggers are not generally supported because they typically rely on the use of `VOLATILE` functions. PostgreSQL [Event Triggers](https://www.postgresql.org/docs/12/event-triggers.html) are supported because they capture only DDL events.
-7.  Referential integrity constraints \(foreign keys\) are not enforced in WarehousePG. Users can declare foreign keys and this information is kept in the system catalog, however.
+
+7.  Referential integrity constraints (foreign keys) are not enforced in WarehousePG. Users can declare foreign keys and this information is kept in the system catalog, however.
+
 8.  Sequence manipulation functions `CURRVAL` and `LASTVAL`.
 
-### <a id="topic4"></a>SQL 1992 Conformance 
+<a id="topic4"></a>
+
+### SQL 1992 Conformance
 
 The following features of SQL 1992 are not supported in WarehousePG:
 
-1.  `NATIONAL CHARACTER` \(`NCHAR`\) and `NATIONAL CHARACTER VARYING` \(`NVARCHAR`\). Users can declare the `NCHAR` and `NVARCHAR` types, however they are just synonyms for `CHAR` and `VARCHAR` in WarehousePG.
+1.  `NATIONAL CHARACTER` (`NCHAR`) and `NATIONAL CHARACTER VARYING` (`NVARCHAR`). Users can declare the `NCHAR` and `NVARCHAR` types, however they are just synonyms for `CHAR` and `VARCHAR` in WarehousePG.
 2.  `CREATE ASSERTION` statement.
 3.  `INTERVAL` literals are supported in WarehousePG, but do not conform to the standard.
 4.  `GET DIAGNOSTICS` statement.
 5.  `GLOBAL TEMPORARY TABLE`s and `LOCAL TEMPORARY TABLE`s. WarehousePG `TEMPORARY TABLE`s do not conform to the SQL standard, but many commercial database systems have implemented temporary tables in the same way. WarehousePG temporary tables are the same as `VOLATILE TABLE`s in Teradata.
 6.  `UNIQUE` predicate.
-7.  `MATCH PARTIAL` for referential integrity checks \(most likely will not be implemented in WarehousePG\).
+7.  `MATCH PARTIAL` for referential integrity checks (most likely will not be implemented in WarehousePG).
 
-### <a id="topic5"></a>SQL 1999 Conformance 
+<a id="topic5"></a>
+
+### SQL 1999 Conformance
 
 The following features of SQL 1999 are not supported in WarehousePG:
 
-1.  Large Object data types: `BLOB`, `CLOB`, `NCLOB`. However, the `BYTEA` and `TEXT` columns can store very large amounts of data in WarehousePG \(hundreds of megabytes\).
-2.  `MODULE` \(SQL client modules\).
-3.  `CREATE PROCEDURE` \(`SQL/PSM`\). This can be worked around in WarehousePG by creating a `FUNCTION` that returns `void`, and invoking the function as follows:
+1.  Large Object data types: `BLOB`, `CLOB`, `NCLOB`. However, the `BYTEA` and `TEXT` columns can store very large amounts of data in WarehousePG (hundreds of megabytes).
+
+2.  `MODULE` (SQL client modules).
+
+3.  `CREATE PROCEDURE` (`SQL/PSM`). This can be worked around in WarehousePG by creating a `FUNCTION` that returns `void`, and invoking the function as follows:
 
     ```
     SELECT *myfunc*(*args*);
-    
+
     ```
 
-4.  The PostgreSQL/WarehousePG function definition language \(`PL/PGSQL`\) is a subset of Oracle's `PL/SQL`, rather than being compatible with the `SQL/PSM` function definition language. WarehousePG also supports function definitions written in Python, Perl, Java, and R.
-5.  `BIT` and `BIT VARYING` data types \(intentionally omitted\). These were deprecated in SQL 2003, and replaced in SQL 2008.
+4.  The PostgreSQL/WarehousePG function definition language (`PL/PGSQL`) is a subset of Oracle's `PL/SQL`, rather than being compatible with the `SQL/PSM` function definition language. WarehousePG also supports function definitions written in Python, Perl, Java, and R.
+
+5.  `BIT` and `BIT VARYING` data types (intentionally omitted). These were deprecated in SQL 2003, and replaced in SQL 2008.
+
 6.  WarehousePG supports identifiers up to 63 characters long. The SQL standard requires support for identifiers up to 128 characters long.
-7.  Prepared transactions \(`PREPARE TRANSACTION`, `COMMIT PREPARED`, `ROLLBACK PREPARED`\). This also means WarehousePG does not support `XA` Transactions \(2 phase commit coordination of database transactions with external transactions\).
+
+7.  Prepared transactions (`PREPARE TRANSACTION`, `COMMIT PREPARED`, `ROLLBACK PREPARED`). This also means WarehousePG does not support `XA` Transactions (2 phase commit coordination of database transactions with external transactions).
+
 8.  `CHARACTER SET` option on the definition of `CHAR()` or `VARCHAR()` columns.
-9.  Specification of `CHARACTERS` or `OCTETS` \(`BYTES`\) on the length of a `CHAR()` or `VARCHAR()` column. For example, `VARCHAR(15 CHARACTERS)` or `VARCHAR(15 OCTETS)` or `VARCHAR(15 BYTES)`.
+
+9.  Specification of `CHARACTERS` or `OCTETS` (`BYTES`) on the length of a `CHAR()` or `VARCHAR()` column. For example, `VARCHAR(15 CHARACTERS)` or `VARCHAR(15 OCTETS)` or `VARCHAR(15 BYTES)`.
+
 10. `CREATE DISTINCT TYPE` statement. `CREATE DOMAIN` can be used as a work-around in WarehousePG.
+
 11. The *explicit table* construct.
 
-### <a id="topic6"></a>SQL 2003 Conformance 
+<a id="topic6"></a>
+
+### SQL 2003 Conformance
 
 The following features of SQL 2003 are not supported in WarehousePG:
 
@@ -73,15 +101,18 @@ The following features of SQL 2003 are not supported in WarehousePG:
 4.  `ROW` data type.
 5.  WarehousePG syntax for using sequences is non-standard. For example, `nextval('seq')` is used in WarehousePG instead of the standard `NEXT VALUE FOR seq`.
 6.  `GENERATED ALWAYS AS` columns. Views can be used as a work-around.
-7.  The sample clause \(`TABLESAMPLE`\) on `SELECT` statements. The `random()` function can be used as a work-around to get random samples from tables.
-8.  The *partitioned join tables* construct \(`PARTITION BY` in a join\).
+7.  The sample clause (`TABLESAMPLE`) on `SELECT` statements. The `random()` function can be used as a work-around to get random samples from tables.
+8.  The *partitioned join tables* construct (`PARTITION BY` in a join).
 9.  WarehousePG cluster data types are almost SQL standard compliant with some exceptions. Generally customers should not encounter any problems using them.
 
-### <a id="topic7"></a>SQL 2008 Conformance 
+<a id="topic7"></a>
+
+### SQL 2008 Conformance
 
 The following features of SQL 2008 are not supported in WarehousePG:
 
 1.  `BINARY` and `VARBINARY` data types. `BYTEA` can be used in place of `VARBINARY` in WarehousePG.
+
 2.  The `ORDER BY` clause is ignored in views and subqueries unless a `LIMIT` clause is also used. This is intentional, as the WarehousePG optimizer cannot determine when it is safe to avoid the sort, causing an unexpected performance impact for such `ORDER BY` clauses. To work around, you can specify a really large `LIMIT`. For example:
 
     ```
@@ -89,26 +120,30 @@ The following features of SQL 2008 are not supported in WarehousePG:
     ```
 
 3.  The *row subquery* construct is not supported.
+
 4.  `TRUNCATE TABLE` does not accept the `CONTINUE IDENTITY` and `RESTART IDENTITY` clauses.
 
-## <a id="topic8"></a>WarehousePG and PostgreSQL Compatibility 
+<a id="topic8"></a>
 
-WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and typical workload of a WarehousePG cluster, some SQL commands have been added or modified, and there are a few PostgreSQL features that are not supported. WarehousePG has also added features not found in PostgreSQL, such as physical data distribution, parallel query optimization, external tables, resource queues, and enhanced table partitioning. For full SQL syntax and references, see the [SQL Commands](sql_commands/sql_ref.html).
+## WarehousePG and PostgreSQL Compatibility
+
+WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and typical workload of a WarehousePG cluster, some SQL commands have been added or modified, and there are a few PostgreSQL features that are not supported. WarehousePG has also added features not found in PostgreSQL, such as physical data distribution, parallel query optimization, external tables, resource queues, and enhanced table partitioning. For full SQL syntax and references, see the [SQL Commands](../sql_commands/index.md).
 
 > **Note** WarehousePG does not support the PostgreSQL [large object facility](https://www.postgresql.org/docs/12/largeobjects.html) for streaming user data that is stored in large-object structures.
 
 > **Note** Unsupported: using `WITH OIDS` or `oids=TRUE` to assign an OID system column when creating or altering a table. This syntax is deprecated and will be removed in a future WarehousePG release.
 
-## <a id="sql"></a>WarehousePG and PostgreSQL Compatibility SQL Support 
+<a id="sql"></a>
 
+## WarehousePG and PostgreSQL Compatibility SQL Support
 
 <table>
-<tr>
+<tbody><tr>
 <th>SQL Command</th>
 <th>Supported in WarehousePG</th>
 <th>Modifications, Limitations, Exceptions</th>
 </tr>
-<tbody class="tbody">
+</tbody><tbody class="tbody">
 <tr>
 <td><code class="ph codeph">ALTER AGGREGATE</code></td>
 <td>YES</td>
@@ -147,7 +182,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">ALTER GROUP</code></td>
 <td>YES</td>
-<td>An alias for <a class="xref" href="sql_commands/ALTER_ROLE.html#topic1">ALTER ROLE</a></td>
+<td>An alias for <a class="xref" href="../sql_commands/ALTER_ROLE.md">ALTER ROLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">ALTER INDEX</code></td>
@@ -248,7 +283,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">ALTER USER</code></td>
 <td>YES</td>
-<td>An alias for <a class="xref" href="sql_commands/ALTER_ROLE.html#topic1">ALTER ROLE</a></td>
+<td>An alias for <a class="xref" href="../sql_commands/ALTER_ROLE.md">ALTER ROLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">ALTER VIEW</code></td>
@@ -375,7 +410,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">CREATE GROUP</code></td>
 <td>YES</td>
-<td>An alias for <a class="xref" href="sql_commands/CREATE_ROLE.html#topic1">CREATE ROLE</a></td>
+<td>An alias for <a class="xref" href="../sql_commands/CREATE_ROLE.md">CREATE ROLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">CREATE INDEX</code></td>
@@ -497,7 +532,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">CREATE TABLE AS</code></td>
 <td>YES</td>
-<td>See <a class="xref" href="sql_commands/CREATE_TABLE.html#topic1">CREATE TABLE</a></td>
+<td>See <a class="xref" href="../sql_commands/CREATE_TABLE.md">CREATE TABLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">CREATE TABLESPACE</code></td>
@@ -527,7 +562,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">CREATE USER</code></td>
 <td>YES</td>
-<td>An alias for <a class="xref" href="sql_commands/CREATE_ROLE.html#topic1">CREATE ROLE</a></td>
+<td>An alias for <a class="xref" href="../sql_commands/CREATE_ROLE.md">CREATE ROLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">CREATE VIEW</code></td>
@@ -595,13 +630,11 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <td><code class="ph codeph">DROP DOMAIN</code></td>
 <td>YES</td>
 <td></td>
-<tr>
+</tr><tr>
 <td><code class="ph codeph">DROP EVENT TRIGGER</code></td>
 <td>YES</td>
 <td></td>
-</tr>
-</tr>
-<tr>
+</tr><tr>
 <td><code class="ph codeph">DROP EXTENSION</code></td>
 <td>YES</td>
 <td>Removes an extension from WarehousePG – based on
@@ -621,7 +654,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">DROP GROUP</code></td>
 <td>YES</td>
-<td>An alias for <a class="xref" href="sql_commands/DROP_ROLE.html#topic1">DROP ROLE</a></td>
+<td>An alias for <a class="xref" href="../sql_commands/DROP_ROLE.md">DROP ROLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">DROP INDEX</code></td>
@@ -717,7 +750,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">DROP USER</code></td>
 <td>YES</td>
-<td>An alias for <a class="xref" href="sql_commands/DROP_ROLE.html#topic1">DROP ROLE</a></td>
+<td>An alias for <a class="xref" href="../sql_commands/DROP_ROLE.md">DROP ROLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">DROP VIEW</code></td>
@@ -786,7 +819,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">MOVE</code></td>
 <td>YES</td>
-<td>See <a class="xref" href="sql_commands/FETCH.html#topic1">FETCH</a></td>
+<td>See <a class="xref" href="../sql_commands/FETCH.md">FETCH</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">NOTIFY</code></td>
@@ -880,7 +913,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">SELECT INTO</code></td>
 <td>YES</td>
-<td>See <a class="xref" href="sql_commands/SELECT.html#topic1">SELECT</a></td>
+<td>See <a class="xref" href="../sql_commands/SELECT.md">SELECT</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">SET</code></td>
@@ -901,7 +934,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 <tr>
 <td><code class="ph codeph">SET SESSION AUTHORIZATION</code></td>
 <td>YES</td>
-<td>Deprecated as of PostgreSQL 8.1 - see <a class="xref" href="sql_commands/SET_ROLE.html#topic1">SET ROLE</a></td>
+<td>Deprecated as of PostgreSQL 8.1 - see <a class="xref" href="../sql_commands/SET_ROLE.md">SET ROLE</a></td>
 </tr>
 <tr>
 <td><code class="ph codeph">SET TRANSACTION</code></td>
@@ -945,10 +978,9 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 </td>
 </tr>
 <tr>
-<td class="entry row-nocellborder" style="vertical-align:top;" headers="d119146e602 "><code class="ph codeph">VALUES</code></td>
-<td class="entry row-nocellborder" style="vertical-align:top;" headers="d119146e605 ">YES</td>
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d119146e608 "></td>
+<td class="entry row-nocellborder" style="vertical-align:top;" headers="d119146e602"><code class="ph codeph">VALUES</code></td>
+<td class="entry row-nocellborder" style="vertical-align:top;" headers="d119146e605">YES</td>
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d119146e608"></td>
 </tr>
 </tbody>
 </table>
-

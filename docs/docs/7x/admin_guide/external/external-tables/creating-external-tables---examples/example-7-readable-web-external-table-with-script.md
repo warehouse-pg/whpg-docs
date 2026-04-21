@@ -1,4 +1,6 @@
-# Example 7—Readable External Web Table with Script
+---
+title: Example 7—Readable External Web Table with Script
+
 ---
 
 Creates a readable external web table that runs a script once per segment host:
@@ -11,5 +13,4 @@ Creates a readable external web table that runs a script once per segment host:
 
 ```
 
-**Parent topic:** [Examples for Creating External Tables](../external/creating-external-tables---examples.html)
-
+**Parent topic:** [Examples for Creating External Tables](index.md)

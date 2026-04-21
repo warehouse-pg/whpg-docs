@@ -1,7 +1,9 @@
-# Example 1—Single gpfdist instance on single-NIC machine
+---
+title: Example 1—Single gpfdist instance on single-NIC machine
+
 ---
 
-Creates a readable external table, `ext_expenses`, using the `gpfdist` protocol. The files are formatted with a pipe \(\|\) as the column delimiter.
+Creates a readable external table, `ext_expenses`, using the `gpfdist` protocol. The files are formatted with a pipe (\|) as the column delimiter.
 
 ```
 =# CREATE EXTERNAL TABLE ext_expenses ( name text,
@@ -10,5 +12,4 @@ Creates a readable external table, `ext_expenses`, using the `gpfdist` protocol.
 FORMAT 'TEXT' (DELIMITER '|');
 ```
 
-**Parent topic:** [Examples for Creating External Tables](../external/creating-external-tables---examples.html)
-
+**Parent topic:** [Examples for Creating External Tables](index.md)

@@ -1,11 +1,15 @@
-# Updating Statistics with ANALYZE
+---
+title: Updating Statistics with ANALYZE
+
 ---
 
 The most important prerequisite for good query performance is to begin with accurate statistics for the tables. Updating statistics with the `ANALYZE` statement enables the query planner to generate optimal query plans. When a table is analyzed, information about the data is stored in the system catalog tables. If the stored information is out of date, the planner can generate inefficient plans.
 
-## <a id="genstat"></a>Generating Statistics Selectively
+<a id="genstat"></a>
 
-Running [ANALYZE](../ref_guide/sql_commands/ANALYZE.html) with no arguments updates statistics for all tables in the database. This can be a very long-running process and it is not recommended. You should `ANALYZE` tables selectively when data has changed or use the [analyzedb](../utility_guide/ref/analyzedb.html) utility.
+## Generating Statistics Selectively
+
+Running [ANALYZE](../../ref_guide/sql_commands/ANALYZE.md) with no arguments updates statistics for all tables in the database. This can be a very long-running process and it is not recommended. You should `ANALYZE` tables selectively when data has changed or use the [analyzedb](../../ref_guide/utility_guide/reference/analyzedb.md) utility.
 
 Running `ANALYZE` on a large table can take a long time. If it is not feasible to run `ANALYZE` on all columns of a very large table, you can generate statistics for selected columns only using `ANALYZE table(column, ...)`. Be sure to include columns used in joins, `WHERE` clauses, `SORT` clauses, `GROUP BY` clauses, or `HAVING` clauses.
 
@@ -15,13 +19,17 @@ For a partitioned table, you can run `ANALYZE` just on partitions that have chan
 SELECT * FROM pg_partition_tree( 'parent_table' );
 ```
 
-## <a id="impstat"></a>Improving Statistics Quality
+<a id="impstat"></a>
+
+## Improving Statistics Quality
 
 There is a trade-off between the amount of time it takes to generate statistics and the quality, or accuracy, of the statistics.
 
 To allow large tables to be analyzed in a reasonable amount of time, `ANALYZE` takes a random sample of the table contents, rather than examining every row. To increase the number of sample values for all table columns adjust the `default_statistics_target` configuration parameter. The target value ranges from 1 to 1000; the default target value is 100. The `default_statistics_target` variable applies to all columns by default, and specifies the number of values that are stored in the list of common values. A larger target may improve the quality of the query planner’s estimates, especially for columns with irregular data patterns. `default_statistics_target` can be set at the coordinator/session level and requires a reload.
 
-## <a id="whenrun"></a>When to Run ANALYZE
+<a id="whenrun"></a>
+
+## When to Run ANALYZE
 
 Run `ANALYZE`:
 
@@ -31,7 +39,9 @@ Run `ANALYZE`:
 
 `ANALYZE` requires only a read lock on the table, so it may be run in parallel with other database activity, but do not run `ANALYZE` while performing loads, `INSERT`, `UPDATE`, `DELETE`, and `CREATE INDEX` operations.
 
-## <a id="conauto"></a>Configuring Automatic Statistics Collection
+<a id="conauto"></a>
+
+## Configuring Automatic Statistics Collection
 
 The `gp_autostats_mode` configuration parameter, together with the `gp_autostats_on_change_threshold` parameter, determines when an automatic analyze operation is triggered. When automatic statistics collection is triggered, the planner adds an `ANALYZE` step to the query.
 
@@ -46,7 +56,6 @@ Setting the `gp_autostats_allow_nonowner` server configuration parameter to `tru
 
 Setting `gp_autostats_mode` to `none` deactivates automatics statistics collection.
 
-For partitioned tables, automatic statistics collection is not triggered if data is inserted from the top-level parent table of a partitioned table. But automatic statistics collection *is* triggered if data is inserted directly in a leaf table \(where the data is stored\) of the partitioned table.
+For partitioned tables, automatic statistics collection is not triggered if data is inserted from the top-level parent table of a partitioned table. But automatic statistics collection *is* triggered if data is inserted directly in a leaf table (where the data is stored) of the partitioned table.
 
-**Parent topic:** [System Monitoring and Maintenance](maintenance.html)
-
+**Parent topic:** [System Monitoring and Maintenance](index.md)

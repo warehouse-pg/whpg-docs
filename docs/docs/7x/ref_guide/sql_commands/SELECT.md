@@ -1,10 +1,17 @@
-# SELECT 
+---
+title: SELECT
+
+---
 
 Retrieves rows from a table or view.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 [ WITH [ RECURSIVE ] <with_query> [, ...] ]
 SELECT [ALL | DISTINCT [ON (<expression> [, ...])]]
   [* | <expression> [[AS] <output_name>] [, ...]]
@@ -51,8 +58,9 @@ where <with_query> is:
 TABLE [ ONLY ] <table_name> [ * ]
 ```
 
+<a id="section3"></a>
 
-## <a id="section3"></a>Description 
+## Description
 
 `SELECT` retrieves rows from zero or more tables. The general processing of `SELECT` is as follows:
 
@@ -63,16 +71,20 @@ TABLE [ ONLY ] <table_name> [ * ]
 5.  The actual output rows are computed using the `SELECT` output expressions for each selected row or row group. (See [SELECT List](#selectlist) below.)
 6.  `SELECT DISTINCT` eliminates duplicate rows from the result. `SELECT DISTINCT ON` eliminates rows that match on all the specified expressions. `SELECT ALL` (the default) will return all candidate rows, including duplicates. (See [DISTINCT Clause](#distinctclause) below.)
 7.  If a window expression is specified (and optional `WINDOW` clause), the output is organized according to the positional (row) or value-based (range) window frame. (See [WINDOW Clause](#windowclause) below.)
-9.  Using the operators `UNION`, `INTERSECT`, and `EXCEPT`, the output of more than one `SELECT` statement can be combined to form a single result set. The `UNION` operator returns all rows that are in one or both of the result sets. The `INTERSECT` operator returns all rows that are strictly in both result sets. The `EXCEPT` operator returns the rows that are in the first result set but not in the second. In all three cases, duplicate rows are eliminated unless `ALL` is specified. The noise word `DISTINCT` can be added to explicitly specify eliminating duplicate rows. Notice that `DISTINCT` is the default behavior here, even though `ALL` is the default for `SELECT` itself.  (See [UNION Clause](#unionclause), [INTERSECT Clause](#intersectclause), and [EXCEPT Clause](#exceptclause) below.)
-10. If the `ORDER BY` clause is specified, the returned rows are sorted in the specified order. If `ORDER BY` is not given, the rows are returned in whatever order the system finds fastest to produce. (See [ORDER BY Clause](#orderbyclause) below.)
-11. If the `LIMIT` (or `FETCH FIRST`) or `OFFSET` clause is specified, the `SELECT` command only returns a subset of the result rows. (See [LIMIT Clause](#limitclause) below.)
-12. If `FOR UPDATE`, `FOR NO KEY UPDATE`, `FOR SHARE`, or `FOR KEY SHARE` is specified, the `SELECT` command locks the entire table against concurrent updates when the Global Deadlock Detector is deactivated (the default). When the Global Deadlock Detector is activated, it affects some simple `SELECT` statements that contain a locking clause. (See [The Locking Clause](#lockingclause) below.)
+8.  Using the operators `UNION`, `INTERSECT`, and `EXCEPT`, the output of more than one `SELECT` statement can be combined to form a single result set. The `UNION` operator returns all rows that are in one or both of the result sets. The `INTERSECT` operator returns all rows that are strictly in both result sets. The `EXCEPT` operator returns the rows that are in the first result set but not in the second. In all three cases, duplicate rows are eliminated unless `ALL` is specified. The noise word `DISTINCT` can be added to explicitly specify eliminating duplicate rows. Notice that `DISTINCT` is the default behavior here, even though `ALL` is the default for `SELECT` itself.  (See [UNION Clause](#unionclause), [INTERSECT Clause](#intersectclause), and [EXCEPT Clause](#exceptclause) below.)
+9.  If the `ORDER BY` clause is specified, the returned rows are sorted in the specified order. If `ORDER BY` is not given, the rows are returned in whatever order the system finds fastest to produce. (See [ORDER BY Clause](#orderbyclause) below.)
+10. If the `LIMIT` (or `FETCH FIRST`) or `OFFSET` clause is specified, the `SELECT` command only returns a subset of the result rows. (See [LIMIT Clause](#limitclause) below.)
+11. If `FOR UPDATE`, `FOR NO KEY UPDATE`, `FOR SHARE`, or `FOR KEY SHARE` is specified, the `SELECT` command locks the entire table against concurrent updates when the Global Deadlock Detector is deactivated (the default). When the Global Deadlock Detector is activated, it affects some simple `SELECT` statements that contain a locking clause. (See [The Locking Clause](#lockingclause) below.)
 
 You must have `SELECT` privilege on each column used in a `SELECT` command. The use of `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, or `FOR KEY SHARE` requires `UPDATE` privilege as well (for at least one column of each table so selected).
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-### <a id="withclause"></a>The WITH Clause
+## Parameters
+
+<a id="withclause"></a>
+
+### The WITH Clause
 
 The `WITH` clause allows you to specify one or more subqueries that can be referenced by name in the primary query. The subqueries effectively act as temporary tables or views for the duration of the primary query. Each subquery can be a `SELECT`, `TABLE`, `VALUES`, `INSERT`, `UPDATE`, or `DELETE` statement. When writing a data-modifying statement (`INSERT`, `UPDATE`, or `DELETE`) in `WITH`, it is usual to include a `RETURNING` clause. It is the output of `RETURNING`, *not* the underlying table that the statement modifies, that forms the temporary table that is read by the primary query. If `RETURNING` is omitted, the statement is still run, but it produces no output so it cannot be referenced as a table by the primary query.
 
@@ -132,10 +144,11 @@ However, a `WITH` query can be marked `NOT MATERIALIZED` to remove this guarante
 
 By default, a side-effect-free `WITH` query is folded into the primary query if it is used exactly once in the primary query's `FROM` clause. This allows joint optimization of the two query levels in situations where that should be semantically invisible. However, such folding can be prevented by marking the `WITH` query as `MATERIALIZED`. That might be useful, for example, if the `WITH` query is being used as an optimization fence to prevent the planner from choosing a bad plan. WarehousePG versions before 7 never did such folding, so queries written for older versions might rely on `WITH` to act as an optimization fence.
 
-See [WITH Queries \(Common Table Expressions\)](../../admin_guide/query/topics/CTE-query.html) in the *WarehousePG Administrator Guide* for additional information.
+See [WITH Queries (Common Table Expressions)](../../admin_guide/query/CTE-query.md) in the *WarehousePG Administrator Guide* for additional information.
 
+<a id="fromclause"></a>
 
-### <a id="fromclause"></a>The FROM Clause
+### The FROM Clause
 
 The `FROM` clause specifies one or more source tables for the `SELECT`. If multiple sources are specified, the result is the Cartesian product (cross join) of all the sources. But usually qualification conditions are added (via `WHERE`) to restrict the returned rows to a small subset of the Cartesian product.
 
@@ -157,20 +170,22 @@ The `SYSTEM ROWS` table sampling method accepts a single integer argument that i
    The `SYSTEM_TIME` table sampling method takes a single floating-point argument that specifies the maximum number of milliseconds to spend reading the table. This allows you to control how long the query takes; the tradeoff is that the size of the sample becomes hard to predict. The resulting sample will contain as many rows as could be read in the specified time, unless the whole table has been read first. 
 
    Like the built-in `SYSTEM` sampling method,  `SYSTEM_ROWS` and `SYSTEM_TIME` perform block-level sampling, so that, rather than being completely random, the sample may be subject to clustering effects, particularly when a small number of rows are selected.
-  
-   >**IMPORTANT**
-   >To call the `SYSTEM_ROWS` and `SYSTEM_TIME` sampling methods, you must install the WarehousePG extensions that provide access to them: `tsm_system_rows` and `tsm_system_time`, repectively. See the [tsm_system_rows](../modules/tsm_system_rows.html) and [tsm_system_time](../modules/tsm_system_time.html) topics for details.
+
+> **IMPORTANT**
+> To call the `SYSTEM_ROWS` and `SYSTEM_TIME` sampling methods, you must install the WarehousePG extensions that provide access to them: `tsm_system_rows` and `tsm_system_time`, repectively. See the [tsm_system_rows](../modules/tsm_system_rows.md) and [tsm_system_time](../modules/tsm_system_time.md) topics for details.
 
   Sampling performance on append-optimized tables will improve if the table has a block directory (if the table has any index or had any index in the past) and the improvement is directly proportional to the degree of compression of the table and inversely proportional to the size of the sample requested. To create a block directory for a table that doesn't have an index, issue the following command: 
- 
-      ```
-      CREATE INDEX dummy ON tab(i) WHERE false; DROP INDEX dummy;
-      ```
+
+````
+  ```
+  CREATE INDEX dummy ON tab(i) WHERE false; DROP INDEX dummy;
+  ```
+````
 
 The optional `REPEATABLE` clause specifies a seed number or expression to use for generating random numbers within the sampling method. The seed value can be any non-null floating-point value. Two queries that specify the same seed and argument values will select the same sample of the table, if the table has not been changed meanwhile. But different seed values usually produce different samples. If `REPEATABLE` is not specified, then WarehousePG selects a new random sample for each query, based upon a system-generated seed. Note that some add-on sampling methods do not accept `REPEATABLE`, and will always produce new samples on each use.
 
 select
-A sub-`SELECT` can appear in the `FROM` clause. This acts as though its output were created as a temporary table for the duration of this single `SELECT` command. Note that the sub-`SELECT` must be surrounded by parentheses, and an alias *must* be provided for it. A [VALUES](VALUES.html) command can also be used here. See "Non-standard Clauses" in the [Compatibility](#compatibility) section for limitations of using correlated sub-selects in WarehousePG.
+A sub-`SELECT` can appear in the `FROM` clause. This acts as though its output were created as a temporary table for the duration of this single `SELECT` command. Note that the sub-`SELECT` must be surrounded by parentheses, and an alias *must* be provided for it. A [VALUES](VALUES.md) command can also be used here. See "Non-standard Clauses" in the [Compatibility](#compatibility) section for limitations of using correlated sub-selects in WarehousePG.
 
 with_query_name
 A `WITH` query is referenced in the `FROM` clause by specifying its name, just as though the name were a table name. You can provide an alias in the same way as for a table.
@@ -188,10 +203,12 @@ To use `ORDINALITY` together with a column definition list, you must use the `RO
 join_type
 One of:
 
-    -   `[INNER] JOIN`
-    -   `LEFT [OUTER] JOIN`
-    -   `RIGHT [OUTER] JOIN`
-    -   `FULL [OUTER] JOIN`
+```
+-   `[INNER] JOIN`
+-   `LEFT [OUTER] JOIN`
+-   `RIGHT [OUTER] JOIN`
+-   `FULL [OUTER] JOIN`
+```
 
 For the `INNER` and `OUTER` join types, you must specify a join condition, namely exactly one of `NATURAL`, `ON <join_condition>`, or `USING ( <join_column> [, ...])`. Continue reading for the meaning.
 
@@ -226,7 +243,9 @@ When a `FROM` item contains `LATERAL` cross-references, evaluation proceeds as f
 
 The column source table(s) must be `INNER` or `LEFT` joined to the `LATERAL` item, else there would not be a well-defined set of rows from which to compute each set of rows for the `LATERAL` item. Thus, although a construct such as `<X> RIGHT JOIN LATERAL <Y>` is syntactically valid, WarehousePG does not permit `<Y>` to reference `<X>`.
 
-### <a id="whereclause"></a>The WHERE Clause
+<a id="whereclause"></a>
+
+### The WHERE Clause
 
 The optional `WHERE` clause has the general form:
 
@@ -236,8 +255,9 @@ WHERE <condition>
 
 where condition is any expression that evaluates to a result of type `boolean`. Any row that does not satisfy this condition will be eliminated from the output. A row satisfies the condition if it returns true when the actual row values are substituted for any variable references.
 
+<a id="groupbyclause"></a>
 
-### <a id="groupbyclause"></a>The GROUP BY Clause
+### The GROUP BY Clause
 
 The optional `GROUP BY` clause has the general form:
 
@@ -259,11 +279,11 @@ GROUPING SETS ((<grouping_element> [, ...]))
 
 If any of `GROUPING SETS`, `ROLLUP`, or `CUBE` are present as grouping elements, then the `GROUP BY` clause as a whole defines some number of independent grouping sets. The effect of this is equivalent to constructing a `UNION ALL` between subqueries with the individual grouping sets as their `GROUP BY` clauses. For further details on the handling of grouping sets, refer to [GROUPING SETS, CUBE, and ROLLUP](https://www.postgresql.org/docs/12/queries-table-expressions.html#QUERIES-GROUPING-SETS) in the PostgreSQL documentation.
 
-Aggregate functions, if any are used, are computed across all rows making up each group, producing a separate value for each group. (If there are aggregate functions but no `GROUP BY` clause, the query is treated as having a single group comprising all of the selected rows.) You can further filter the set of rows fed to each aggregate function by attaching a `FILTER` clause to the aggregate function call. When a `FILTER` clause is present, only those rows matching it are included in the input to that aggregate function. See [Aggregate Expressions](../../admin_guide/query/topics/defining-queries.html#topic11).
+Aggregate functions, if any are used, are computed across all rows making up each group, producing a separate value for each group. (If there are aggregate functions but no `GROUP BY` clause, the query is treated as having a single group comprising all of the selected rows.) You can further filter the set of rows fed to each aggregate function by attaching a `FILTER` clause to the aggregate function call. When a `FILTER` clause is present, only those rows matching it are included in the input to that aggregate function. See [Aggregate Expressions](../../admin_guide/query/defining-queries.md#topic11).
 
 When `GROUP BY` is present, or any aggregate functions are present, it is not valid for the `SELECT` list expressions to refer to ungrouped columns except within aggregate functions or when the ungrouped column is functionally dependent on the grouped columns, since there would otherwise be more than one possible value to return for an ungrouped column. A functional dependency exists if the grouped columns (or a subset thereof) are the primary key of the table containing the ungrouped column.
 
-Keep in mind that all aggregate functions are evaluated before evaluating any "scalar" expressions in the `HAVING` clause or `SELECT` list. This means that, for example, a `CASE` expression cannot be used to skip evaluation of an aggregate function; see [Expression Evaluation Rules](../../admin_guide/query/topics/defining-queries.html#topic25).
+Keep in mind that all aggregate functions are evaluated before evaluating any "scalar" expressions in the `HAVING` clause or `SELECT` list. This means that, for example, a `CASE` expression cannot be used to skip evaluation of an aggregate function; see [Expression Evaluation Rules](../../admin_guide/query/defining-queries.md#topic25).
 
 Currently, `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` cannot be specified with `GROUP BY`.
 
@@ -272,31 +292,35 @@ WarehousePG has the following additional OLAP grouping extensions (often referre
 ROLLUP
 A `ROLLUP` grouping is an extension to the `GROUP BY` clause that creates aggregate subtotals that roll up from the most detailed level to a grand total, following a list of grouping columns (or expressions). `ROLLUP` takes an ordered list of grouping columns, calculates the standard aggregate values specified in the `GROUP BY` clause, then creates progressively higher-level subtotals, moving from right to left through the list. Finally, it creates a grand total. A `ROLLUP` grouping can be thought of as a series of grouping sets. For example:
 
-    ```
-    GROUP BY ROLLUP (a,b,c) 
-    ```
+````
+```
+GROUP BY ROLLUP (a,b,c) 
+```
 
-    is equivalent to:
+is equivalent to:
 
-    ```
-    GROUP BY GROUPING SETS( (a,b,c), (a,b), (a), () ) 
-    ```
+```
+GROUP BY GROUPING SETS( (a,b,c), (a,b), (a), () ) 
+```
 
-    Notice that the n elements of a `ROLLUP` translate to n+1 grouping sets. Also, the order in which the grouping expressions are specified is significant in a `ROLLUP`.
+Notice that the n elements of a `ROLLUP` translate to n+1 grouping sets. Also, the order in which the grouping expressions are specified is significant in a `ROLLUP`.
+````
 
 CUBE
 A `CUBE` grouping is an extension to the `GROUP BY` clause that creates subtotals for all of the possible combinations of the given list of grouping columns (or expressions). In terms of multidimensional analysis, `CUBE` generates all the subtotals that could be calculated for a data cube with the specified dimensions. For example:
 
-    ```
-    GROUP BY CUBE (a,b,c) 
-    ```
+````
+```
+GROUP BY CUBE (a,b,c) 
+```
 
-    is equivalent to:
+is equivalent to:
 
-    ```
-    GROUP BY GROUPING SETS( (a,b,c), (a,b), (a,c), (b,c), (a), 
-    (b), (c), () ) 
-    ```
+```
+GROUP BY GROUPING SETS( (a,b,c), (a,b), (a,c), (b,c), (a), 
+(b), (c), () ) 
+```
+````
 
 Notice that n elements of a `CUBE` translate to 2n grouping sets. Consider using `CUBE` in any situation requiring cross-tabular reports. `CUBE` is typically most suitable in queries that use columns from multiple dimensions rather than columns representing different levels of a single dimension. For instance, a commonly requested cross-tabulation might need subtotals for all the combinations of month, state, and product.
 
@@ -312,7 +336,9 @@ If using the grouping extension clauses `ROLLUP`, `CUBE`, or `GROUPING SETS`, tw
 -   **grouping(column [, ...])** — The `grouping` function can be applied to one or more grouping attributes to distinguish super-aggregated rows from regular grouped rows. This can be helpful in distinguishing a "NULL" representing the set of all values in a super-aggregated row from a `NULL` value in a regular row. Each argument in this function produces a bit — either `1` or `0`, where `1` means the result row is super-aggregated, and `0` means the result row is from a regular grouping. The `grouping` function returns an integer by treating these bits as a binary number and then converting it to a base-10 integer.
 -   **group_id()** — For grouping extension queries that contain duplicate grouping sets, the `group_id` function is used to identify duplicate rows in the output. All *unique* grouping set output rows will have a `<group_id>` value of 0. For each duplicate grouping set detected, the `group_id` function assigns a `<group_id>` number greater than 0. All output rows in a particular duplicate grouping set are identified by the same `<group_id>` number.
 
-### <a id="havingclause"></a>The HAVING Clause
+<a id="havingclause"></a>
+
+### The HAVING Clause
 
 The optional `HAVING` clause has the general form:
 
@@ -328,8 +354,9 @@ The presence of `HAVING` turns a query into a grouped query even if there is no 
 
 Currently, `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` cannot be specified with `HAVING`.
 
+<a id="windowclause"></a>
 
-### <a id="windowclause"></a>The WINDOW Clause
+### The WINDOW Clause
 
 The optional `WINDOW` clause specifies the behavior of window functions appearing in the query's `SELECT` list or `ORDER BY` clause. The `WINDOW` clause has the general form:
 
@@ -370,30 +397,31 @@ Similarly, the elements of the `ORDER BY` list are interpreted in much the same 
 frame_clause
 The optional frame_clause defines the *window frame* for window functions that depend on the frame (not all do). The window frame is a set of related rows for each row of the query (called the *current row*). The frame_clause can be one of
 
+````
+```
+{ RANGE | ROWS | GROUPS } <frame_start> [ <frame_exclusion> ]
+{ RANGE | ROWS | GROUPS } BETWEEN <frame_start> AND <frame_end> [ <frame_exclusion> ]
+```
 
-    ```
-    { RANGE | ROWS | GROUPS } <frame_start> [ <frame_exclusion> ]
-    { RANGE | ROWS | GROUPS } BETWEEN <frame_start> AND <frame_end> [ <frame_exclusion> ]
-    ```
+where `<frame_start>` and `<frame_end>` can be one of
 
-    where `<frame_start>` and `<frame_end>` can be one of
+```
+UNBOUNDED PRECEDING
+<offset> PRECEDING
+CURRENT ROW
+<offset> FOLLOWING
+UNBOUNDED FOLLOWING
+```
 
-    ```
-    UNBOUNDED PRECEDING
-    <offset> PRECEDING
-    CURRENT ROW
-    <offset> FOLLOWING
-    UNBOUNDED FOLLOWING
-    ```
+and `<frame_exclusion>` can be one of
 
-    and `<frame_exclusion>` can be one of
-
-    ```
-    EXCLUDE CURRENT ROW
-    EXCLUDE GROUP
-    EXCLUDE TIES
-    EXCLUDE NO OTHERS
-    ```
+```
+EXCLUDE CURRENT ROW
+EXCLUDE GROUP
+EXCLUDE TIES
+EXCLUDE NO OTHERS
+```
+````
 
 If `<frame_end>` is omitted it defaults to `CURRENT ROW`. Restrictions are that `<frame_start>` cannot be `UNBOUNDED FOLLOWING`, `<frame_end>` cannot be `UNBOUNDED PRECEDING`, and the `<frame_end>` choice cannot appear earlier in the above list of `<frame_start>` and `<frame_end>` options than the `<frame_start>` choice does — for example `RANGE BETWEEN CURRENT ROW AND <offset> PRECEDING` is not allowed.
 
@@ -417,14 +445,15 @@ The purpose of a `WINDOW` clause is to specify the behavior of window functions 
 
 Currently, `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` cannot be specified with `WINDOW`.
 
-See [Window Expressions](../../admin_guide/query/topics/defining-queries.html#topic13) for more information about window functions.
+See [Window Expressions](../../admin_guide/query/defining-queries.md#topic13) for more information about window functions.
 
+<a id="selectlist"></a>
 
-### <a id="selectlist"></a>The SELECT List
+### The SELECT List
 
 The `SELECT` list (between the key words `SELECT` and `FROM`) specifies expressions that form the output rows of the `SELECT` statement. The expressions can (and usually do) refer to columns computed in the `FROM` clause.
 
-An expression in the `SELECT` list can be a constant value, a column reference, an operator invocation, a function call, an aggregate expression, a window expression, a scalar subquery, and so on. A number of constructs can be classified as an expression but do not follow any general syntax rules. These generally have the semantics of a function or operator. For information about SQL value expressions and function calls, see [SQL: Querying Data](../../admin_guide/query/topics/query.html) in the *WarehousePG Administrator Guide*.
+An expression in the `SELECT` list can be a constant value, a column reference, an operator invocation, a function call, an aggregate expression, a window expression, a scalar subquery, and so on. A number of constructs can be classified as an expression but do not follow any general syntax rules. These generally have the semantics of a function or operator. For information about SQL value expressions and function calls, see [SQL: Querying Data](../../admin_guide/query/index.md) in the *WarehousePG Administrator Guide*.
 
 Just as in a table, every output column of a `SELECT` has a name. In a simple `SELECT` this name is just used to label the column for display, but when the `SELECT` is a sub-query of a larger query, the name is seen by the larger query as the column name of the virtual table produced by the sub-query. To specify the name to use for an output column, write `AS <output_name>` after the column's expression. (You can omit `AS`, but only if the desired output name does not match any SQL keyword. For protection against possible future keyword additions, you can always either write `AS` or double-quote the output name.) If you do not specify a column name, WarehousePG chooses a name automatically. If the column's expression is a simple column reference then the chosen name is the same as that column's name. In more complex cases, a function or type name may be used, or the system may fall back on a generated name such as `?column?` or `columnN`.
 
@@ -436,8 +465,9 @@ According to the SQL standard, the expressions in the output list should be comp
 
 > **Note** WarehousePG versions prior to 7 did not provide any guarantees about the timing of evaluation of output expressions versus sorting and limiting; it depended on the form of the chosen query plan.
 
+<a id="distinctclause"></a>
 
-### <a id="distinctclause"></a>The DISTINCT Clause
+### The DISTINCT Clause
 
 If `SELECT DISTINCT` is specified, all duplicate rows are removed from the result set (one row is kept from each group of duplicates). `SELECT ALL` specifies the opposite: all rows are kept; that is the default.
 
@@ -455,8 +485,9 @@ The `DISTINCT ON` expression(s) must match the leftmost `ORDER BY` expression(s)
 
 Currently, `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` cannot be specified with `DISTINCT`.
 
+<a id="unionclause"></a>
 
-### <a id="unionclause"></a>The UNION Clause
+### The UNION Clause
 
 The `UNION` clause has this general form:
 
@@ -468,13 +499,15 @@ The `UNION` clause has this general form:
 
 The `UNION` operator computes the set union of the rows returned by the involved `SELECT` statements. A row is in the set union of two result sets if it appears in at least one of the result sets. The two `SELECT` statements that represent the direct operands of the `UNION` must produce the same number of columns, and corresponding columns must be of compatible data types.
 
-The result of `UNION` does not contain any duplicate rows unless the `ALL` option is specified. `ALL` prevents elimination of duplicates. (Therefore, `UNION ALL` is usually significantly quicker than `UNION`; use `ALL` when you can.\) `DISTINCT` can be specified to explicitly specify the default behavior of eliminating duplicate rows.
+The result of `UNION` does not contain any duplicate rows unless the `ALL` option is specified. `ALL` prevents elimination of duplicates. (Therefore, `UNION ALL` is usually significantly quicker than `UNION`; use `ALL` when you can.) `DISTINCT` can be specified to explicitly specify the default behavior of eliminating duplicate rows.
 
 Multiple `UNION` operators in the same `SELECT` statement are evaluated left to right, unless otherwise indicated by parentheses.
 
 Currently, `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` cannot be specified either for a `UNION` result or for any input of a `UNION`.
 
-### <a id="intersectclause"></a>The INTERSECT Clause
+<a id="intersectclause"></a>
+
+### The INTERSECT Clause
 
 The `INTERSECT` clause has this general form:
 
@@ -492,7 +525,9 @@ Multiple `INTERSECT` operators in the same `SELECT` statement are evaluated left
 
 Currently, `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` cannot be specified either for an `INTERSECT` result or for any input of an `INTERSECT`.
 
-### <a id="exceptclause"></a>The EXCEPT Clause
+<a id="exceptclause"></a>
+
+### The EXCEPT Clause
 
 The `EXCEPT` clause has this general form:
 
@@ -510,7 +545,9 @@ Multiple `EXCEPT` operators in the same `SELECT` statement are evaluated left to
 
 Currently, `FOR NO KEY UPDATE`, `FOR UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` cannot be specified either for an `EXCEPT` result or for any input of an `EXCEPT`.
 
-### <a id="orderbyclause"></a>The ORDER BY Clause
+<a id="orderbyclause"></a>
+
+### The ORDER BY Clause
 
 The optional `ORDER BY` clause has this general form:
 
@@ -542,9 +579,11 @@ Note that ordering options apply only to the expression they follow; for example
 
 Character-string data is sorted according to the locale-specific collation order that was established when the database was created. You can override this at need by including a `COLLATE` clause in the expression, for example `ORDER BY mycolumn COLLATE "en_US"`.
 
-Character-string data is sorted according to the collation that applies to the column being sorted. That can be overridden as needed by including a `COLLATE` clause in the expression, for example `ORDER BY mycolumn COLLATE "en_US"`. For information about defining collations, see [CREATE COLLATION](CREATE_COLLATION.html).
+Character-string data is sorted according to the collation that applies to the column being sorted. That can be overridden as needed by including a `COLLATE` clause in the expression, for example `ORDER BY mycolumn COLLATE "en_US"`. For information about defining collations, see [CREATE COLLATION](CREATE_COLLATION.md).
 
-### <a id="limitclause"></a>The LIMIT Clause
+<a id="limitclause"></a>
+
+### The LIMIT Clause
 
 The `LIMIT` clause consists of two independent sub-clauses:
 
@@ -572,9 +611,11 @@ The query optimizer takes `LIMIT` into account when generating a query plan, so 
 
 It is even possible for repeated executions of the same `LIMIT` query to return different subsets of the rows of a table, if there is not an `ORDER BY` to enforce selection of a deterministic subset. Again, this is not a bug; WarehousePG does not guarantee determinism of the results in such a case.
 
-### <a id="lockingclause"></a>The Locking Clause
+<a id="lockingclause"></a>
 
-`FOR UPDATE`, `FOR NO KEY UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` are *locking clauses*; they affect how `SELECT` locks rows as they are obtained from the table. The Global Deadlock Detector affects the locking used by `SELECT` queries that contain a locking clause (`FOR <lock_strength>`). The Global Deadlock Detector is enabled by setting the [gp_enable_global_deadlock_detector](../config_params/guc-list.html) configuration parameter to `on`. See [Global Deadlock Detector](../../admin_guide/dml.html#topic_gdd) in the *WarehousePG Administrator Guide* for information about the Global Deadlock Detector.
+### The Locking Clause
+
+`FOR UPDATE`, `FOR NO KEY UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` are *locking clauses*; they affect how `SELECT` locks rows as they are obtained from the table. The Global Deadlock Detector affects the locking used by `SELECT` queries that contain a locking clause (`FOR <lock_strength>`). The Global Deadlock Detector is enabled by setting the [gp_enable_global_deadlock_detector](../config_params/guc-list.md) configuration parameter to `on`. See [Global Deadlock Detector](../../admin_guide/dml.md#topic_gdd) in the *WarehousePG Administrator Guide* for information about the Global Deadlock Detector.
 
 The locking clause has the general form:
 
@@ -604,7 +645,7 @@ Otherwise, table locking for a `SELECT` query that contains a locking clause beh
 
 For more information on each row-level lock mode, refer to [Explicit Locking](https://www.postgresql.org/docs/12/explicit-locking.html) in the PostgreSQL documentation.
 
-To prevent the operation from waiting for other transactions to commit, use either the `NOWAIT` option or the `SKIP LOCKED` option. With `NOWAIT`, the statement reports an error, rather than waiting, if a selected row cannot be locked immediately. With `SKIP LOCKED`, any selected rows that cannot be immediately locked are skipped. Skipping locked rows provides an inconsistent view of the data, so this is not suitable for general purpose work, but can be used to avoid lock contention with multiple consumers accessing a queue-like table. Note that `NOWAIT` and `SKIP LOCKED` apply only to the row-level lock\(s\) — the required `ROW SHARE` table-level lock is still taken in the ordinary way. You can use [LOCK](LOCK.html) with the `NOWAIT` option first, if you need to acquire the table-level lock without waiting.
+To prevent the operation from waiting for other transactions to commit, use either the `NOWAIT` option or the `SKIP LOCKED` option. With `NOWAIT`, the statement reports an error, rather than waiting, if a selected row cannot be locked immediately. With `SKIP LOCKED`, any selected rows that cannot be immediately locked are skipped. Skipping locked rows provides an inconsistent view of the data, so this is not suitable for general purpose work, but can be used to avoid lock contention with multiple consumers accessing a queue-like table. Note that `NOWAIT` and `SKIP LOCKED` apply only to the row-level lock(s) — the required `ROW SHARE` table-level lock is still taken in the ordinary way. You can use [LOCK](LOCK.md) with the `NOWAIT` option first, if you need to acquire the table-level lock without waiting.
 
 If specific tables are named in a locking clause, then only rows coming from those tables are locked; any other tables used in the `SELECT` are simply read as usual. A locking clause without a table list affects all tables used in the statement. If a locking clause is applied to a view or sub-query, it affects all tables used in the view or sub-query. However, these clauses do not apply to `WITH` queries referenced by the primary query. If you want row locking to occur within a `WITH` query, specify a locking clause within the `WITH` query.
 
@@ -632,8 +673,9 @@ Note that this will result in locking all rows of `mytable`, whereas `FOR UPDATE
 
 At the `REPEATABLE READ` or `SERIALIZABLE` transaction isolation level this would cause a serialization failure (with a `SQLSTATE` of `40001`), so there is no possibility of receiving rows out of order under these isolation levels.
 
+<a id="table-command"></a>
 
-## <a id="table-command"></a>The TABLE Command 
+## The TABLE Command
 
 The command
 
@@ -649,7 +691,9 @@ SELECT * FROM <name>
 
 It can be used as a top-level command or as a space-saving syntax variant in parts of complex queries. Only the `WITH`, `UNION`, `INTERSECT`, `EXCEPT`, `ORDER BY`, `LIMIT`, `OFFSET`, `FETCH`, and `FOR` locking clauses can be used with `TABLE`; the `WHERE` clause and any form of aggregation cannot be used.
 
-## <a id="section18"></a>Examples 
+<a id="section18"></a>
+
+## Examples
 
 To join the table `films` with the table `distributors`:
 
@@ -760,7 +804,7 @@ GROUP BY region, product;
 
 The example could have been written without the `WITH` clause but would have required two levels of nested sub-`SELECT` statements.
 
-This example uses the `WITH RECURSIVE` clause to find all subordinates \(direct or indirect\) of the employee Mary, and their level of indirectness, from a table that shows only direct subordinates:
+This example uses the `WITH RECURSIVE` clause to find all subordinates (direct or indirect) of the employee Mary, and their level of indirectness, from a table that shows only direct subordinates:
 
 ```
 WITH RECURSIVE employee_recursive(distance, employee_name, manager_name) AS (
@@ -775,7 +819,7 @@ WITH RECURSIVE employee_recursive(distance, employee_name, manager_name) AS (
 SELECT distance, employee_name FROM employee_recursive;
 ```
 
-The typical form of a recursive query is an initial condition, followed by `UNION [ALL]`, followed by the recursive part of the query. Be sure that the recursive part of the query will eventually return no tuples, or else the query will loop indefinitely. See [WITH Queries (Common Table Expressions)](../../admin_guide/query/topics/CTE-query.html#topic_zhs_r1s_w1b)in the *WarehousePG Administrator Guide* for more examples.
+The typical form of a recursive query is an initial condition, followed by `UNION [ALL]`, followed by the recursive part of the query. Be sure that the recursive part of the query will eventually return no tuples, or else the query will loop indefinitely. See [WITH Queries (Common Table Expressions)](../../admin_guide/query/CTE-query.md)in the *WarehousePG Administrator Guide* for more examples.
 
 This example uses `LATERAL` to apply a set-returning function `get_product_names()` for each row of the `manufacturers` table:
 
@@ -791,11 +835,13 @@ SELECT m.name AS mname, pname
   FROM manufacturers m LEFT JOIN LATERAL get_product_names(m.id) pname ON true;
 ```
 
-## <a id="compatibility"></a>Compatibility 
+<a id="compatibility"></a>
+
+## Compatibility
 
 The `SELECT` statement is compatible with the SQL standard, but there are some extensions and some missing features.
 
-**Omitted FROM Clauses**
+### Omitted FROM Clauses
 
 WarehousePG allows one to omit the `FROM` clause. It has a straightforward use to compute the results of simple expressions. For example:
 
@@ -813,19 +859,17 @@ SELECT distributors.* WHERE distributors.name = 'Westward';
 
 In earlier releases, setting a server configuration parameter, `add_missing_from`, to true allowed WarehousePG to add an implicit entry to the query's `FROM` clause for each table referenced by the query. This is no longer allowed.
 
-
-**Empty SELECT Lists**
+### Empty SELECT Lists
 
 The list of output expressions after `SELECT` can be empty, producing a zero-column result table. This is not valid syntax according to the SQL standard. WarehousePG allows it to be consistent with allowing zero-column tables. However, an empty list is not allowed when `DISTINCT` is used.
 
-
-**Omitting the AS Key Word**
+### Omitting the AS Key Word
 
 In the SQL standard, the optional key word `AS` can be omitted before an output column name whenever the new column name is a valid column name (that is, not the same as any reserved keyword). WarehousePG is slightly more restrictive: `AS` is required if the new column name matches any keyword at all, reserved or not. Recommended practice is to use `AS` or double-quote output column names, to prevent any possible conflict against future keyword additions.
 
 In `FROM` items, both the standard and WarehousePG allow `AS` to be omitted before an alias that is an unreserved keyword. But this is impractical for output column names, because of syntactic ambiguities.
 
-**ONLY and Inheritance**
+### ONLY and Inheritance
 
 The SQL standard requires parentheses around the table name when writing `ONLY`, for example:
 
@@ -839,33 +883,33 @@ WarehousePG allows a trailing `*` to be written to explicitly specify the non-`O
 
 Note: The above points apply equally to all SQL commands supporting the `ONLY` option.
 
-**Function Calls in FROM**
+### Function Calls in FROM
 
 WarehousePG allows you to write a function call directly as a member of the `FROM` list. In the SQL standard it would be necessary to wrap such a function call in a sub-`SELECT`; that is, the syntax `FROM func(...) alias` is approximately equivalent to `FROM LATERAL (SELECT func(...)) alias`. Note that `LATERAL` is considered to be implicit; this is because the standard requires `LATERAL` semantics for an `UNNEST()` item in `FROM`. WarehousePG treats `UNNEST()` the same as other set-returning functions.
 
-**Namespace Available to GROUP BY and ORDER BY**
+### Namespace Available to GROUP BY and ORDER BY
 
 In the SQL-92 standard, an `ORDER BY` clause may only use output column names or numbers, while a `GROUP BY` clause may only use expressions based on input column names. WarehousePG extends each of these clauses to allow the other choice as well (but it uses the standard's interpretation if there is ambiguity). WarehousePG also allows both clauses to specify arbitrary expressions. Note that names appearing in an expression are always taken as input-column names, not as output column names.
 
 SQL:1999 and later use a slightly different definition which is not entirely upward compatible with SQL-92. In most cases, however, WarehousePG interprets an `ORDER BY` or `GROUP BY` expression the same way SQL:1999 does.
 
-**Functional Dependencies**
+### Functional Dependencies
 
 WarehousePG recognizes functional dependency (allowing columns to be omitted from `GROUP BY`) only when a table's primary key is included in the `GROUP BY` list. The SQL standard specifies additional conditions that should be recognized.
 
-**LIMIT and OFFSET**
+### LIMIT and OFFSET
 
 The clauses `LIMIT` and `OFFSET` are WarehousePG-specific syntax, also used by MySQL. The SQL:2008 standard has introduced the clauses `OFFSET .. FETCH {FIRST|NEXT} ...` for the same functionality, as shown above in [LIMIT Clause](#limitclause). This syntax is also used by IBM DB2. (Applications for Oracle frequently use a workaround involving the automatically generated `rownum` column, which is not available in WarehousePG, to implement the effects of these clauses.)
 
-**FOR NO KEY UPDATE, FOR UPDATE, FOR SHARE, and FOR KEY SHARE**
+### FOR NO KEY UPDATE, FOR UPDATE, FOR SHARE, and FOR KEY SHARE
 
 Although `FOR UPDATE` appears in the SQL standard, the standard allows it only as an option of `DECLARE CURSOR`. WarehousePG allows it in any `SELECT` query as well as in sub-`SELECT`s, but this is an extension. The `FOR NO KEY UPDATE`, `FOR SHARE`, and `FOR KEY SHARE` variants, as well as the `NOWAIT` and `SKIP LOCKED` options, do not appear in the standard.
 
-**Data-Modifying Statements in WITH**
+### Data-Modifying Statements in WITH
 
 WarehousePG allows `INSERT`, `UPDATE`, and `DELETE` to be used as `WITH` queries. This is not found in the SQL standard.
 
-**Nonstandard Clauses**
+### Nonstandard Clauses
 
 The clause `DISTINCT ON` is not defined in the SQL standard.
 
@@ -873,13 +917,14 @@ The clause `DISTINCT ON` is not defined in the SQL standard.
 
 The `MATERIALIZED` and `NOT MATERIALIZED` options of `WITH` are extensions of the SQL standard.
 
-**Limited Use of STABLE and VOLATILE Functions**
+### Limited Use of STABLE and VOLATILE Functions
 
-To prevent data from becoming out-of-sync across the segments in WarehousePG, any function classified as `STABLE` or `VOLATILE` cannot be run at the segment database level if it contains SQL or modifies the database in any way. See [CREATE FUNCTION](CREATE_FUNCTION.html) for more information.
+To prevent data from becoming out-of-sync across the segments in WarehousePG, any function classified as `STABLE` or `VOLATILE` cannot be run at the segment database level if it contains SQL or modifies the database in any way. See [CREATE FUNCTION](CREATE_FUNCTION.md) for more information.
 
-## <a id="section25"></a>See Also 
+<a id="section25"></a>
 
-[EXPLAIN](EXPLAIN.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[EXPLAIN](EXPLAIN.md)
 
+**Parent topic:** [SQL Commands](index.md)

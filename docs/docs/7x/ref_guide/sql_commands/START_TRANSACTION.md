@@ -1,10 +1,17 @@
-# START TRANSACTION 
+---
+title: START TRANSACTION
+
+---
 
 Starts a transaction block.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 START TRANSACTION [<transaction_mode>] [, ...]
 
 where <transaction_mode> is one of:
@@ -14,28 +21,34 @@ where <transaction_mode> is one of:
    [NOT] DEFERRABLE
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`START TRANSACTION` begins a new transaction block. If the isolation level, read/write mode, or deferrable mode is specified, the new transaction has those characteristics, as if [SET TRANSACTION](SET_TRANSACTION.html) was run. This is the same as the [BEGIN](BEGIN.html) command.
+## Description
 
-## <a id="section4"></a>Parameters 
+`START TRANSACTION` begins a new transaction block. If the isolation level, read/write mode, or deferrable mode is specified, the new transaction has those characteristics, as if [SET TRANSACTION](SET_TRANSACTION.md) was run. This is the same as the [BEGIN](BEGIN.md) command.
 
-Refer to [SET TRANSACTION](SET_TRANSACTION.html) for information on the meaning of the parameters to this statement.
+<a id="section4"></a>
 
+## Parameters
 
-## <a id="section6"></a>Compatibility 
+Refer to [SET TRANSACTION](SET_TRANSACTION.md) for information on the meaning of the parameters to this statement.
 
-In the standard, it is not necessary to issue `START TRANSACTION` to start a transaction block: any SQL command implicitly begins a block. WarehousePG's behavior can be seen as implicitly issuing a `COMMIT` after each command that does not follow `START TRANSACTION` \(or `BEGIN`\), and it is therefore often called 'autocommit'. Other relational database systems may offer an autocommit feature as a convenience.
+<a id="section6"></a>
 
-The `DEFERRABLE` transaction\_mode is a WarehousePG language extension.
+## Compatibility
 
-The SQL standard requires commas between successive transaction\_modes, but for historical reasons WarehousePG allows the commas to be omitted.
+In the standard, it is not necessary to issue `START TRANSACTION` to start a transaction block: any SQL command implicitly begins a block. WarehousePG's behavior can be seen as implicitly issuing a `COMMIT` after each command that does not follow `START TRANSACTION` (or `BEGIN`), and it is therefore often called 'autocommit'. Other relational database systems may offer an autocommit feature as a convenience.
 
-See also the compatibility section of [SET TRANSACTION](SET_TRANSACTION.html).
+The `DEFERRABLE` transaction_mode is a WarehousePG language extension.
 
-## <a id="section7"></a>See Also 
+The SQL standard requires commas between successive transaction_modes, but for historical reasons WarehousePG allows the commas to be omitted.
 
-[BEGIN](BEGIN.html), [COMMIT](COMMIT.html), [ROLLBACK](ROLLBACK.html), [SAVEPOINT](SAVEPOINT.html), [SET TRANSACTION](SET_TRANSACTION.html)
+See also the compatibility section of [SET TRANSACTION](SET_TRANSACTION.md).
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+<a id="section7"></a>
 
+## See Also
+
+[BEGIN](BEGIN.md), [COMMIT](COMMIT.md), [ROLLBACK](ROLLBACK.md), [SAVEPOINT](SAVEPOINT.md), [SET TRANSACTION](SET_TRANSACTION.md)
+
+**Parent topic:** [SQL Commands](index.md)

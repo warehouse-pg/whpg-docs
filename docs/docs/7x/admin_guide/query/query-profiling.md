@@ -1,4 +1,6 @@
-# Query Profiling
+---
+title: Query Profiling
+
 ---
 
 Examine the query plans of poorly performing queries to identify possible performance tuning opportunities.
@@ -31,11 +33,13 @@ When the `EXPLAIN ANALYZE` command uses GPORCA, the `EXPLAIN` plan shows only th
 SET gp_log_dynamic_partition_pruning = on;
 ```
 
-For information about GPORCA, see [SQL: Querying Data](query.html).
+For information about GPORCA, see [SQL: Querying Data](index.md).
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+**Parent topic:** [SQL: Querying Data](index.md)
 
-## <a id="topic40"></a>Reading EXPLAIN Output
+<a id="topic40"></a>
+
+## Reading EXPLAIN Output
 
 A query plan is a tree of nodes. Each node in the plan represents a single operation, such as a table scan, join, aggregation, or sort.
 
@@ -52,6 +56,7 @@ The output of `EXPLAIN` has one line for each node in the plan tree and shows th
     To summarize, the cost is essentially an internal number used by a given optimizer, and nothing should be inferred by examining only the cost value displayed in the `EXPLAIN` plans.
 
 -   **rows** —The total number of rows output by this plan node. This number is usually less than the number of rows processed or scanned by the plan node, reflecting the estimated selectivity of any `WHERE` clause conditions. Ideally, the estimate for the topmost node approximates the number of rows that the query actually returns, updates, or deletes.
+
 -   **width** —The total bytes of all the rows that this plan node outputs.
 
 Note the following:
@@ -59,7 +64,9 @@ Note the following:
 -   The cost of a node includes the cost of its child nodes. The topmost plan node has the estimated total execution cost for the plan. This is the number the optimizer intends to minimize.
 -   The cost reflects only the aspects of plan execution that the query optimizer takes into consideration. For example, the cost does not reflect time spent transmitting result rows to the client.
 
-### <a id="topic41"></a>EXPLAIN Example
+<a id="topic41"></a>
+
+### EXPLAIN Example
 
 The following example describes how to read an `EXPLAIN` query plan for a query:
 
@@ -78,29 +85,38 @@ Read the plan from the bottom to the top. To start, the query optimizer sequenti
 
 The results of the scan operation are passed to a *gather motion* operation. In WarehousePG, a gather motion is when segments send rows to the coordinator. In this example, we have two segment instances that send to one coordinator instance. This operation is working on `slice1` of the parallel query execution plan. A query plan is divided into *slices* so the segments can work on portions of the query plan in parallel.
 
-The estimated startup cost for this plan is `00.00` \(no cost\) and a total cost of `20.88` disk page fetches. The optimizer estimates this query will return one row.
+The estimated startup cost for this plan is `00.00` (no cost) and a total cost of `20.88` disk page fetches. The optimizer estimates this query will return one row.
 
-## <a id="topic42"></a>Reading EXPLAIN ANALYZE Output
+<a id="topic42"></a>
+
+## Reading EXPLAIN ANALYZE Output
 
 `EXPLAIN ANALYZE` plans and runs the statement. The `EXPLAIN ANALYZE` plan shows the actual execution cost along with the optimizer's estimates. This allows you to see if the optimizer's estimates are close to reality. `EXPLAIN ANALYZE` also shows the following:
 
--   The total runtime \(in milliseconds\) in which the query ran.
+-   The total runtime (in milliseconds) in which the query ran.
+
 -   The memory used by each slice of the query plan, as well as the memory reserved for the whole query statement.
--   The number of *workers* \(segments\) involved in a plan node operation. Only segments that return rows are counted.
--   The maximum number of rows returned by the segment that produced the most rows for the operation. If multiple segments produce an equal number of rows, `EXPLAIN ANALYZE` shows the segment with the longest *<time\> to end*.
+
+-   The number of *workers* (segments) involved in a plan node operation. Only segments that return rows are counted.
+
+-   The maximum number of rows returned by the segment that produced the most rows for the operation. If multiple segments produce an equal number of rows, `EXPLAIN ANALYZE` shows the segment with the longest *&lt;time> to end*.
+
 -   The segment id of the segment that produced the most rows for an operation.
--   For relevant operations, the amount of memory \(`work_mem`\) used by the operation. If the `work_mem` was insufficient to perform the operation in memory, the plan shows the amount of data spilled to disk for the lowest-performing segment. For example:
+
+-   For relevant operations, the amount of memory (`work_mem`) used by the operation. If the `work_mem` was insufficient to perform the operation in memory, the plan shows the amount of data spilled to disk for the lowest-performing segment. For example:
 
     ```
     Work_mem used: 64K bytes avg, 64K bytes max (seg0).
     Work_mem wanted: 90K bytes avg, 90K byes max (seg0) to lessen 
     workfile I/O affecting 2 workers.
-    
+
     ```
 
--   The time \(in milliseconds\) in which the segment that produced the most rows retrieved the first row, and the time taken for that segment to retrieve all rows. The result may omit *<time\> to first row* if it is the same as the *<time\> to end*.
+-   The time (in milliseconds) in which the segment that produced the most rows retrieved the first row, and the time taken for that segment to retrieve all rows. The result may omit *&lt;time> to first row* if it is the same as the *&lt;time> to end*.
 
-### <a id="topic43"></a>EXPLAIN ANALYZE Examples
+<a id="topic43"></a>
+
+### EXPLAIN ANALYZE Examples
 
 This example describes how to read an `EXPLAIN ANALYZE` query plan using the same query. The `bold` parts of the plan show actual timing and rows returned for each plan node, as well as memory and time statistics for the whole query.
 
@@ -127,9 +143,11 @@ Statement statistics:
 
 Read the plan from the bottom to the top. The total elapsed time to run this query was *22.548* milliseconds.
 
-The *sequential scan* operation had only one segment \(*seg0*\) that returned rows, and it returned just *1 row*. It took *0.255* milliseconds to find the first row and *0.486* to scan all rows. This result is close to the optimizer's estimate: the query optimizer estimated it would return one row for this query. The *gather motion* \(segments sending data to the coordinator\) received 1 row . The total elapsed time for this operation was *0.537* milliseconds.
+The *sequential scan* operation had only one segment (*seg0*) that returned rows, and it returned just *1 row*. It took *0.255* milliseconds to find the first row and *0.486* to scan all rows. This result is close to the optimizer's estimate: the query optimizer estimated it would return one row for this query. The *gather motion* (segments sending data to the coordinator) received 1 row . The total elapsed time for this operation was *0.537* milliseconds.
 
-#### <a id="topic_idt_2ll_gr"></a>Determining the Query Optimizer
+<a id="topic_idt_2ll_gr"></a>
+
+#### Determining the Query Optimizer
 
 You can view EXPLAIN output to determine if GPORCA is enabled for the query plan and whether GPORCA or the Postgres-based planner generated the explain plan. The information appears at the end of the EXPLAIN output. The `Settings` line displays the setting of the server configuration parameter `OPTIMIZER`. The `Optimizer:` line displays whether GPORCA or the Postgres-based planner generated the explain plan.
 
@@ -177,28 +195,32 @@ explain select count(*) from part;
 (5 rows)
 ```
 
-## <a id="topic44"></a>Examining Query Plans to Solve Problems
+<a id="topic44"></a>
+
+## Examining Query Plans to Solve Problems
 
 If a query performs poorly, examine its query plan and ask the following questions:
 
 -   **Do operations in the plan take an exceptionally long time?** Look for an operation consumes the majority of query processing time. For example, if an index scan takes longer than expected, the index could be out-of-date and need to be reindexed. Or, adjust `enable_<operator>`parameters to see if you can force the Postgres-based planner to choose a different plan by deactivating a particular query plan operator for that query.
+
 -   **Does the query planning time exceed query execution time?** When the query involves many table joins, the Postgres-based planner uses a dynamic algorithm to plan the query that is in part based on the number of table joins. You can reduce the amount of time that the Postgres-based planner spends planning the query by setting the `join_collapse_limit` and `from_collapse_limit` server configuration parameters to a smaller value, such as `8`. Note that while smaller values reduce planning time, they may also yield inferior query plans.
+
 -   **Are the optimizer's estimates close to reality?** Run `EXPLAIN ANALYZE` and see if the number of rows the optimizer estimates is close to the number of rows the query operation actually returns. If there is a large discrepancy, collect more statistics on the relevant columns.
 
     See the *WarehousePG Reference Guide* for more information on the `EXPLAIN ANALYZE` and `ANALYZE` commands.
 
 -   **Are selective predicates applied early in the plan?** Apply the most selective filters early in the plan so fewer rows move up the plan tree. If the query plan does not correctly estimate query predicate selectivity, collect more statistics on the relevant columns. See the `ANALYZE` command in the *WarehousePG Reference Guide* for more information collecting statistics.You can also try reordering the `WHERE` clause of your SQL statement.
+
 -   **Does the optimizer choose the best join order?** When you have a query that joins multiple tables, make sure that the optimizer chooses the most selective join order. Joins that eliminate the largest number of rows should be done earlier in the plan so fewer rows move up the plan tree.
 
     If the plan is not choosing the optimal join order, set `join_collapse_limit=1` and use explicit `JOIN` syntax in your SQL statement to force the Postgres-based planner to the specified join order. You can also collect more statistics on the relevant join columns.
 
     See the `ANALYZE` command in the *WarehousePG Reference Guide* for more information collecting statistics.
 
--   **Does the optimizer selectively scan partitioned tables?** If you use table partitioning, is the optimizer selectively scanning only the child tables required to satisfy the query predicates? Scans of the parent tables should return 0 rows since the parent tables do not contain any data. See [Verifying the Partition Strategy](../../ddl/ddl-partition.html#topic74) for an example of a query plan that shows a selective partition scan.
+-   **Does the optimizer selectively scan partitioned tables?** If you use table partitioning, is the optimizer selectively scanning only the child tables required to satisfy the query predicates? Scans of the parent tables should return 0 rows since the parent tables do not contain any data. See [Verifying the Partition Strategy](../ddl/ddl-partition/index.md#topic74) for an example of a query plan that shows a selective partition scan.
+
 -   **Does the optimizer choose hash aggregate and hash join operations where applicable?** Hash operations are typically much faster than other types of joins or aggregations. Row comparison and sorting is done in memory rather than reading/writing from disk. To enable the query optimizer to choose hash operations, there must be sufficient memory available to hold the estimated number of rows. Try increasing work memory to improve performance for a query. If possible, run an `EXPLAIN ANALYZE` for the query to show which plan operations spilled to disk, how much work memory they used, and how much memory was required to avoid spilling to disk. For example:
 
     `Work_mem used: 23430K bytes avg, 23430K bytes max (seg0). Work_mem wanted: 33649K bytes avg, 33649K bytes max (seg0) to lessen workfile I/O affecting 2 workers.`
 
     The "bytes wanted" message from `EXPLAIN ANALYZE` is based on the amount of data written to work files and is not exact. The minimum `work_mem` needed can differ from the suggested value.
-
-

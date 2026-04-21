@@ -1,7 +1,11 @@
-# Example Custom Data Access Protocol
+---
+title: Example Custom Data Access Protocol
+navigation:
+  - installing-the-external-table-protocol
+
 ---
 
-The following is the API for the WarehousePG custom data access protocol. The example protocol implementation [gpextprotocal.c](g-gpextprotocalc.html) is written in C and shows how the API can be used. For information about accessing a custom data access protocol, see [Using a Custom Protocol](g-using-a-custom-protocol.html).
+The following is the API for the WarehousePG custom data access protocol. The example protocol implementation [gpextprotocal.c](installing-the-external-table-protocol/gpextprotocalc.md) is written in C and shows how the API can be used. For information about accessing a custom data access protocol, see [Using a Custom Protocol](../loading-and-writing-non-hdfs-custom-data/using-a-custom-protocol.md).
 
 ```
 /* ---- Read/Write function API ------*/
@@ -23,13 +27,16 @@ EXTPROTOCOL_VALIDATOR_GET_NTH_URL(fcinfo, n)
 EXTPROTOCOL_VALIDATOR_GET_DIRECTION(fcinfo)
 ```
 
-## <a id="notes1"></a>Notes
+<a id="notes1"></a>
 
-The protocol corresponds to the example described in [Using a Custom Protocol](g-using-a-custom-protocol.html). The source code file name and shared object are `gpextprotocol.c` and `gpextprotocol.so`.
+## Notes
+
+The protocol corresponds to the example described in [Using a Custom Protocol](../loading-and-writing-non-hdfs-custom-data/using-a-custom-protocol.md). The source code file name and shared object are `gpextprotocol.c` and `gpextprotocol.so`.
 
 The protocol has the following properties:
 
 -   The name defined for the protocol is `myprot`.
+
 -   The protocol has the following simple form: the protocol name and a path, separated by `://`.
 
     `myprot://` `path`
@@ -39,13 +46,10 @@ The protocol has the following properties:
     -   `myprot_import()` a read function
     -   `myprot_export()` a write function
     -   `myprot_validate_urls()` a validation function
-    These functions are referenced in the `CREATE PROTOCOL` statement when the protocol is created and declared in the database.
+        These functions are referenced in the `CREATE PROTOCOL` statement when the protocol is created and declared in the database.
 
+The example implementation [gpextprotocal.c](installing-the-external-table-protocol/gpextprotocalc.md) uses `fopen()` and `fread()` to simulate a simple protocol that reads local files. In practice, however, the protocol would implement functionality such as a remote connection to some process over the network.
 
-The example implementation [gpextprotocal.c](g-gpextprotocalc.html) uses `fopen()` and `fread()` to simulate a simple protocol that reads local files. In practice, however, the protocol would implement functionality such as a remote connection to some process over the network.
+-   **[Installing the External Table Protocol](installing-the-external-table-protocol/index.md)**  
 
--   **[Installing the External Table Protocol](../../load/topics/g-installing-the-external-table-protocol.html)**  
-
-
-**Parent topic:** [Loading and Unloading Data](../../load/topics/g-loading-and-unloading-data.html)
-
+**Parent topic:** [Loading and Unloading Data](index.md)

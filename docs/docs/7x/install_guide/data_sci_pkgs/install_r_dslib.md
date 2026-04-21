@@ -1,4 +1,6 @@
-# R Data Science Library Package
+---
+title: R Data Science Library Package
+
 ---
 
 R packages are modules that contain R functions and data sets. WarehousePG provides a collection of data science-related R libraries that can be used with the WarehousePG PL/R language.
@@ -7,17 +9,18 @@ This chapter contains the following information:
 
 -   [R Data Science Libraries](#topic2)
 -   [Installing the R Data Science Library Package](#topic_instpdsl)
--   [Uninstalling the R Data Science Library Package](#topic_removepdsl)
 
-For information about the WarehousePG PL/R Language, see [WarehousePG PL/R Language Extension](../analytics/pl_r.html).
+For information about the WarehousePG PL/R Language, see [WarehousePG PL/R Language Extension](../../admin_guide/analytics/procedural_languages/pl_r.md).
 
-**Parent topic:** [Installing Optional Extensions \(WarehousePG\)](data_sci_pkgs.html)
+**Parent topic:** [Installing Optional Extensions (WarehousePG)](index.md)
 
-## <a id="topic2"></a>R Data Science Libraries
+<a id="topic2"></a>
+
+## R Data Science Libraries
 
 Libraries provided in the R Data Science package include:
 
-<table cellpadding="4" cellspacing="0" summary="" id="topic2__l33" border="1" class="simpletable"><col style="width:33.33333333333333%" /><col style="width:33.33333333333333%" /><col style="width:33.33333333333333%" /><thead></thead><tbody><tr class="strow">
+<table cellpadding="4" cellspacing="0" summary="" id="l33" border="1" class="simpletable"><colgroup><col style="width:33.33333333333333%" /><col style="width:33.33333333333333%" /><col style="width:33.33333333333333%" /></colgroup><thead></thead><tbody><tr class="strow">
 <td style="vertical-align:top;" class="stentry">
 <p class="p">abind</p>
 <p class="p">adabag</p>
@@ -145,9 +148,9 @@ Libraries provided in the R Data Science package include:
 <p class="p">zoo</p>
 </td>
 </tr>
-</tbody></table>
+</tbody></table><a id="topic_instpdsl"></a>
 
-## <a id="topic_instpdsl"></a>Installing the R Data Science Library Package
+## Installing the R Data Science Library Package
 
 Before you install the R Data Science Library package, make sure that your WarehousePG is running, you have sourced `greenplum_path.sh`, and that the `COORDINATOR_DATA_DIRECTORY` and `$GPHOME` environment variables are set.
 
@@ -160,10 +163,9 @@ Before you install the R Data Science Library package, make sure that your Wareh
 4.  Restart WarehousePG. You must re-source `greenplum_path.sh` before restarting your WarehousePG cluster:
 
     ```
-    $ source /usr/local/greenplum-db/greenplum_path.sh
+    $ source /usr/edb/whpg7/greenplum_path.sh
     $ gpstop -r
     ```
-
 
 The WarehousePG R Data Science Modules are installed in the following directory:
 
@@ -171,6 +173,4 @@ The WarehousePG R Data Science Modules are installed in the following directory:
 $GPHOME/ext/DataScienceR/library
 ```
 
-
 > **Note** When you uninstall the R Data Science Library package from your WarehousePG cluster, any UDFs that you have created that use R libraries installed with this package will return an error.
-

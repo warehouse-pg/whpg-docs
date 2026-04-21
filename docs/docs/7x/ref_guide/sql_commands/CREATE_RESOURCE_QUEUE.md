@@ -1,14 +1,21 @@
-# CREATE RESOURCE QUEUE 
+---
+title: CREATE RESOURCE QUEUE
+
+---
 
 Defines a new resource queue.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CREATE RESOURCE QUEUE <name> WITH (<queue_attribute>=<value> [, ... ])
 ```
 
-where queue\_attribute is:
+where queue_attribute is:
 
 ```
     ACTIVE_STATEMENTS=<integer>
@@ -24,19 +31,21 @@ where queue\_attribute is:
         [ MEMORY_LIMIT='<memory_units>' ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-Creates a new resource queue for WarehousePG resource management. A resource queue must have either an `ACTIVE_STATEMENTS` or a `MAX_COST` value \(or it can have both\). Only a superuser can create a resource queue.
+## Description
+
+Creates a new resource queue for WarehousePG resource management. A resource queue must have either an `ACTIVE_STATEMENTS` or a `MAX_COST` value (or it can have both). Only a superuser can create a resource queue.
 
 Resource queues with an `ACTIVE_STATEMENTS` threshold set a maximum limit on the number of queries that can be run by roles assigned to that queue. It controls the number of active queries that are allowed to run at the same time. The value for `ACTIVE_STATEMENTS` should be an integer greater than 0.
 
-Resource queues with a `MAX_COST` threshold set a maximum limit on the total cost of queries that can be run by roles assigned to that queue. Cost is measured in the *estimated total cost* for the query as determined by the query planner \(as shown in the `EXPLAIN` output for a query\). Therefore, an administrator must be familiar with the queries typically run on the system in order to set an appropriate cost threshold for a queue. Cost is measured in units of disk page fetches; 1.0 equals one sequential disk page read. The value for `MAX_COST` is specified as a floating point number \(for example 100.0\) or can also be specified as an exponent \(for example 1e+2\). If a resource queue is limited based on a cost threshold, then the administrator can allow `COST_OVERCOMMIT=TRUE` \(the default\). This means that a query that exceeds the allowed cost threshold will be allowed to run but only when the system is idle. If `COST_OVERCOMMIT=FALSE` is specified, queries that exceed the cost limit will always be rejected and never allowed to run. Specifying a value for `MIN_COST` allows the administrator to define a cost for small queries that will be exempt from resource queueing.
+Resource queues with a `MAX_COST` threshold set a maximum limit on the total cost of queries that can be run by roles assigned to that queue. Cost is measured in the *estimated total cost* for the query as determined by the query planner (as shown in the `EXPLAIN` output for a query). Therefore, an administrator must be familiar with the queries typically run on the system in order to set an appropriate cost threshold for a queue. Cost is measured in units of disk page fetches; 1.0 equals one sequential disk page read. The value for `MAX_COST` is specified as a floating point number (for example 100.0) or can also be specified as an exponent (for example 1e+2). If a resource queue is limited based on a cost threshold, then the administrator can allow `COST_OVERCOMMIT=TRUE` (the default). This means that a query that exceeds the allowed cost threshold will be allowed to run but only when the system is idle. If `COST_OVERCOMMIT=FALSE` is specified, queries that exceed the cost limit will always be rejected and never allowed to run. Specifying a value for `MIN_COST` allows the administrator to define a cost for small queries that will be exempt from resource queueing.
 
 > **Note** GPORCA and the Postgres-based planner utilize different query costing models and may compute different costs for the same query. The WarehousePG resource queue resource management scheme neither differentiates nor aligns costs between GPORCA and the Postgres-based planner; it uses the literal cost value returned from the optimizer to throttle queries.
 
 When resource queue-based resource management is active, use the `MEMORY_LIMIT` and `ACTIVE_STATEMENTS` limits for resource queues rather than configuring cost-based limits. Even when using GPORCA, WarehousePG may fall back to using the Postgres-based planner for certain queries, so using cost-based limits can lead to unexpected results.
 
-If a value is not defined for `ACTIVE_STATEMENTS` or `MAX_COST`, it is set to `-1` by default \(meaning no limit\). After defining a resource queue, you must assign roles to the queue using the [ALTER ROLE](ALTER_ROLE.html) or [CREATE ROLE](CREATE_ROLE.html) command.
+If a value is not defined for `ACTIVE_STATEMENTS` or `MAX_COST`, it is set to `-1` by default (meaning no limit). After defining a resource queue, you must assign roles to the queue using the [ALTER ROLE](ALTER_ROLE.md) or [CREATE ROLE](CREATE_ROLE.md) command.
 
 You can optionally assign a `PRIORITY` to a resource queue to control the relative share of available CPU resources used by queries associated with the queue in relation to other resource queues. If a value is not defined for `PRIORITY`, queries associated with the queue have a default priority of `MEDIUM`.
 
@@ -52,32 +61,36 @@ The default memory allotment can be overridden on a per-query basis using the `s
 
 The `MEMORY_LIMIT` value for all of your resource queues should not exceed the amount of physical memory of a segment host. If workloads are staggered over multiple queues, memory allocations can be oversubscribed. However, queries can be cancelled during execution if the segment host memory limit specified in `gp_vmem_protect_limit` is exceeded.
 
-For information about `statement_mem`, `max_statement`, and `gp_vmem_protect_limit`, see [Server Configuration Parameters](../config_params/guc_config.html).
+For information about `statement_mem`, `max_statement`, and `gp_vmem_protect_limit`, see [Server Configuration Parameters](../config_params/index.md).
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
 The name of the resource queue.
 
-ACTIVE\_STATEMENTS integer
+ACTIVE_STATEMENTS integer
 Resource queues with an `ACTIVE_STATEMENTS` threshold limit the number of queries that can be run by roles assigned to that queue. It controls the number of active queries that are allowed to run at the same time. The value for `ACTIVE_STATEMENTS` should be an integer greater than 0.
 
-MEMORY\_LIMIT 'memory\_units'
-Sets the total memory quota for all statements submitted from users in this resource queue. Memory units can be specified in kB, MB or GB. The minimum memory quota for a resource queue is 10MB. There is no maximum, however the upper boundary at query execution time is limited by the physical memory of a segment host. The default is no limit \(`-1`\).
+MEMORY_LIMIT 'memory_units'
+Sets the total memory quota for all statements submitted from users in this resource queue. Memory units can be specified in kB, MB or GB. The minimum memory quota for a resource queue is 10MB. There is no maximum, however the upper boundary at query execution time is limited by the physical memory of a segment host. The default is no limit (`-1`).
 
-MAX\_COST float
-Resource queues with a `MAX_COST` threshold set a maximum limit on the total cost of queries that can be run by roles assigned to that queue. Cost is measured in the *estimated total cost* for the query as determined by the WarehousePG query optimizer \(as shown in the `EXPLAIN` output for a query\). Therefore, an administrator must be familiar with the queries typically run on the system in order to set an appropriate cost threshold for a queue. Cost is measured in units of disk page fetches; 1.0 equals one sequential disk page read. The value for `MAX_COST` is specified as a floating point number \(for example 100.0\) or can also be specified as an exponent \(for example 1e+2\).
+MAX_COST float
+Resource queues with a `MAX_COST` threshold set a maximum limit on the total cost of queries that can be run by roles assigned to that queue. Cost is measured in the *estimated total cost* for the query as determined by the WarehousePG query optimizer (as shown in the `EXPLAIN` output for a query). Therefore, an administrator must be familiar with the queries typically run on the system in order to set an appropriate cost threshold for a queue. Cost is measured in units of disk page fetches; 1.0 equals one sequential disk page read. The value for `MAX_COST` is specified as a floating point number (for example 100.0) or can also be specified as an exponent (for example 1e+2).
 
-COST\_OVERCOMMIT boolean
-If a resource queue is limited based on `MAX_COST`, then the administrator can allow `COST_OVERCOMMIT` \(the default\). This means that a query that exceeds the allowed cost threshold will be allowed to run but only when the system is idle. If `COST_OVERCOMMIT=FALSE`is specified, queries that exceed the cost limit will always be rejected and never allowed to run.
+COST_OVERCOMMIT boolean
+If a resource queue is limited based on `MAX_COST`, then the administrator can allow `COST_OVERCOMMIT` (the default). This means that a query that exceeds the allowed cost threshold will be allowed to run but only when the system is idle. If `COST_OVERCOMMIT=FALSE`is specified, queries that exceed the cost limit will always be rejected and never allowed to run.
 
-MIN\_COST float
-The minimum query cost limit of what is considered a small query. Queries with a cost under this limit will not be queued and run immediately. Cost is measured in the *estimated total cost* for the query as determined by the query planner \(as shown in the `EXPLAIN` output for a query\). Therefore, an administrator must be familiar with the queries typically run on the system in order to set an appropriate cost for what is considered a small query. Cost is measured in units of disk page fetches; 1.0 equals one sequential disk page read. The value for `MIN_COST`is specified as a floating point number \(for example 100.0\) or can also be specified as an exponent \(for example 1e+2\).
+MIN_COST float
+The minimum query cost limit of what is considered a small query. Queries with a cost under this limit will not be queued and run immediately. Cost is measured in the *estimated total cost* for the query as determined by the query planner (as shown in the `EXPLAIN` output for a query). Therefore, an administrator must be familiar with the queries typically run on the system in order to set an appropriate cost for what is considered a small query. Cost is measured in units of disk page fetches; 1.0 equals one sequential disk page read. The value for `MIN_COST`is specified as a floating point number (for example 100.0) or can also be specified as an exponent (for example 1e+2).
 
-PRIORITY=\{MIN\|LOW\|MEDIUM\|HIGH\|MAX\}
+PRIORITY={MIN\|LOW\|MEDIUM\|HIGH\|MAX}
 Sets the priority of queries associated with a resource queue. Queries or statements in queues with higher priority levels will receive a larger share of available CPU resources in case of contention. Queries in low-priority queues may be delayed while higher priority queries are run. If no priority is specified, queries associated with the queue have a priority of `MEDIUM`.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 Use the `gp_toolkit.gp_resqueue_status` system view to see the limit settings and current status of a resource queue:
 
@@ -92,7 +105,9 @@ There is also another system view named `pg_stat_resqueue` which shows statistic
 
 Also, an SQL statement that is run during the execution time of an `EXPLAIN ANALYZE` command is excluded from resource queues.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Create a resource queue with an active query limit of 20:
 
@@ -100,7 +115,7 @@ Create a resource queue with an active query limit of 20:
 CREATE RESOURCE QUEUE myqueue WITH (ACTIVE_STATEMENTS=20);
 ```
 
-Create a resource queue with an active query limit of 20 and a total memory limit of 2000MB \(each query will be allocated 100MB of segment host memory at execution time\):
+Create a resource queue with an active query limit of 20 and a total memory limit of 2000MB (each query will be allocated 100MB of segment host memory at execution time):
 
 ```
 CREATE RESOURCE QUEUE myqueue WITH (ACTIVE_STATEMENTS=20, 
@@ -113,7 +128,7 @@ Create a resource queue with a query cost limit of 3000.0:
 CREATE RESOURCE QUEUE myqueue WITH (MAX_COST=3000.0);
 ```
 
-Create a resource queue with a query cost limit of 310 \(or 30000000000.0\) and do not allow overcommit. Allow small queries with a cost under 500 to run immediately:
+Create a resource queue with a query cost limit of 310 (or 30000000000.0) and do not allow overcommit. Allow small queries with a cost under 500 to run immediately:
 
 ```
 CREATE RESOURCE QUEUE myqueue WITH (MAX_COST=3e+10, 
@@ -134,13 +149,16 @@ CREATE RESOURCE QUEUE myqueue WITH (ACTIVE_STATEMENTS=5,
   PRIORITY=MAX);
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 `CREATE RESOURCE QUEUE` is a WarehousePG extension. There is no provision for resource queues or resource management in the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[ALTER ROLE](ALTER_ROLE.html), [CREATE ROLE](CREATE_ROLE.html), [ALTER RESOURCE QUEUE](ALTER_RESOURCE_QUEUE.html), [DROP RESOURCE QUEUE](DROP_RESOURCE_QUEUE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER ROLE](ALTER_ROLE.md), [CREATE ROLE](CREATE_ROLE.md), [ALTER RESOURCE QUEUE](ALTER_RESOURCE_QUEUE.md), [DROP RESOURCE QUEUE](DROP_RESOURCE_QUEUE.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,4 +1,6 @@
-# Example 1—WarehousePG file server (gpfdist)
+---
+title: Example 1—WarehousePG file server (gpfdist)
+
 ---
 
 ```
@@ -11,5 +13,4 @@
 
 ```
 
-**Parent topic:** [Defining a File-Based Writable External Table](../../load/topics/g-defining-a-file-based-writable-external-table.html)
-
+**Parent topic:** [Defining a File-Based Writable External Table](index.md)

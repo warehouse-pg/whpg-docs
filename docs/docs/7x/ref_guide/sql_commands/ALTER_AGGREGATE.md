@@ -1,10 +1,17 @@
-# ALTER AGGREGATE 
+---
+title: ALTER AGGREGATE
+
+---
 
 Changes the definition of an aggregate function
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER AGGREGATE <name> ( <aggregate_signature> )  RENAME TO <new_name>
 
 ALTER AGGREGATE <name> ( <aggregate_signature> )
@@ -19,16 +26,20 @@ where <aggregate_signature> is:
 [ [ <argmode> ] [ <argname> ] <argtype> [ , ... ] ] ORDER BY [ <argmode> ] [ <argname> ] <argtype> [ , ... ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER AGGREGATE` changes the definition of an aggregate function.
 
-You must own the aggregate function to use `ALTER AGGREGATE`. To change the schema of an aggregate function, you must also have `CREATE` privilege on the new schema. To alter the owner, you must also be a direct or indirect member of the new owning role, and that role must have `CREATE` privilege on the aggregate function's schema. \(These restrictions enforce that altering the owner does not do anything you could not do by dropping and recreating the aggregate function. However, a superuser can alter ownership of any aggregate function anyway.\)
+You must own the aggregate function to use `ALTER AGGREGATE`. To change the schema of an aggregate function, you must also have `CREATE` privilege on the new schema. To alter the owner, you must also be a direct or indirect member of the new owning role, and that role must have `CREATE` privilege on the aggregate function's schema. (These restrictions enforce that altering the owner does not do anything you could not do by dropping and recreating the aggregate function. However, a superuser can alter ownership of any aggregate function anyway.)
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
-The name \(optionally schema-qualified\) of an existing aggregate function.
+The name (optionally schema-qualified) of an existing aggregate function.
 
 argmode
 The mode of an argument: `IN` or `VARIADIC`. If omitted, the default is `IN`.
@@ -39,20 +50,24 @@ The name of an argument. Note that `ALTER AGGREGATE` does not actually pay any a
 argtype
 An input data type on which the aggregate function operates. To reference a zero-argument aggregate function, write `*` in place of the list of argument specifications  To reference an ordered-set aggregate function, write `ORDER BY` between the direct and aggregated argument specifications.
 
-new\_name
+new_name
 The new name of the aggregate function.
 
-new\_owner
+new_owner
 The new owner of the aggregate function.
 
-new\_schema
+new_schema
 The new schema for the aggregate function.
 
-## <a id="notes"></a>Notes 
+<a id="notes"></a>
 
-The recommended syntax for referencing an ordered-set aggregate is to write `ORDER BY` between the direct and aggregated argument specifications, in the same style as in [CREATE AGGREGATE](CREATE_AGGREGATE.html). However, it will also work to omit `ORDER BY` and just run the direct and aggregated argument specifications into a single list. In this abbreviated form, if `VARIADIC "any"` was used in both the direct and aggregated argument lists, write `VARIADIC "any"` only once.
+## Notes
 
-## <a id="section5"></a>Examples 
+The recommended syntax for referencing an ordered-set aggregate is to write `ORDER BY` between the direct and aggregated argument specifications, in the same style as in [CREATE AGGREGATE](CREATE_AGGREGATE.md). However, it will also work to omit `ORDER BY` and just run the direct and aggregated argument specifications into a single list. In this abbreviated form, if `VARIADIC "any"` was used in both the direct and aggregated argument lists, write `VARIADIC "any"` only once.
+
+<a id="section5"></a>
+
+## Examples
 
 To rename the aggregate function `myavg` for type `integer` to `my_average`:
 
@@ -78,13 +93,16 @@ This will work too:
 ALTER AGGREGATE mypercentile(float8, integer) SET SCHEMA myschema;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 There is no `ALTER AGGREGATE` statement in the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE AGGREGATE](CREATE_AGGREGATE.html), [DROP AGGREGATE](DROP_AGGREGATE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE AGGREGATE](CREATE_AGGREGATE.md), [DROP AGGREGATE](DROP_AGGREGATE.md)
 
+**Parent topic:** [SQL Commands](index.md)

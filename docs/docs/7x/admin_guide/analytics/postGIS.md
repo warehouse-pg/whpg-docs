@@ -1,7 +1,9 @@
-# Geospatial Analytics
+---
+title: Geospatial Analytics
+
 ---
 
-PostGIS is a spatial database extension for PostgreSQL that allows you to store GIS (Geographic Information Systems) objects in the database. The WarehousePG PostGIS extension supports some PostGIS optional extensions such as  GiST-based R-Tree spatial indexes, and functions for analysis and processing of GIS objects. It also includes support for the PostGIS `raster` data type. With the PostGIS Raster objects, the PostGIS `geometry` data type offers a single set of overlay SQL functions \(such as `ST_Intersects`\) operating seamlessly on vector and raster geospatial data. PostGIS Raster uses the GDAL \(Geospatial Data Abstraction Library\) translator library for raster geospatial data formats that presents a [single raster abstract data model](https://gdal.org/user/raster_data_model.html) to a calling application.
+PostGIS is a spatial database extension for PostgreSQL that allows you to store GIS (Geographic Information Systems) objects in the database. The WarehousePG PostGIS extension supports some PostGIS optional extensions such as  GiST-based R-Tree spatial indexes, and functions for analysis and processing of GIS objects. It also includes support for the PostGIS `raster` data type. With the PostGIS Raster objects, the PostGIS `geometry` data type offers a single set of overlay SQL functions (such as `ST_Intersects`) operating seamlessly on vector and raster geospatial data. PostGIS Raster uses the GDAL (Geospatial Data Abstraction Library) translator library for raster geospatial data formats that presents a [single raster abstract data model](https://gdal.org/user/raster_data_model.html) to a calling application.
 
 For information about WarehousePG PostGIS extension support, see [PostGIS Extension Support and Limitations](#postgis_support).
 
@@ -9,25 +11,26 @@ For information about PostGIS, see [https://postgis.net/](https://postgis.net/)
 
 For information about GDAL, see [https://gdal.org/](https://gdal.org/).
 
-## <a id="topic3"></a>WarehousePG PostGIS Extension
+<a id="topic3"></a>
 
+## WarehousePG PostGIS Extension
 
 WarehousePG supports the PostGIS extension with these component versions:
 
-- PostGIS 3.3.2
-- Proj 8.2.1 
-- Geos 3.10.2
-- GDAL 3.6.3
-- Json 0.12
-- Expat 2.5.0
+-   PostGIS 3.3.2
+-   Proj 8.2.1 
+-   Geos 3.10.2
+-   GDAL 3.6.3
+-   Json 0.12
+-   Expat 2.5.0
 
-For information about the supported WarehousePG extension packages and software versions, see [Extensions](../install_guide/platform-requirements.html#topic_eyc_l2h_zz).
+For information about the supported WarehousePG extension packages and software versions, see [Extensions](../../install_guide/platform-requirements.md#topic_eyc_l2h_zz).
 
 There are significant changes in PostGIS 3.3.2 compared with earlier versions. For a list of new and enhanced functions in PostGIS 3.3, see the PostGIS documentation [PostGIS Functions new or enhanced in 3.3](https://postgis.net/docs/manual-3.3/PostGIS_Special_Functions_Index.html#NewFunctions_3_3) and [Release 3.3.2](https://postgis.net/docs/manual-3.3/release_notes.html#idm44622).
 
 This table lists the PostGIS extensions support by WarehousePG PostGIS.
 
-<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="topic3__table_owt_4ml_xlb" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap"><span class="table--title-label">Table 1. </span>WarehousePG PostGIS Extensions</span></caption><colgroup><col style="width:32.786885245901644%" /><col style="width:67.21311475409836%" /></colgroup><thead class="thead" style="text-align:left;">
+<div class="tablenoborder"><table cellpadding="4" cellspacing="0" summary="" id="table_owt_4ml_xlb" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap"><span class="table--title-label">Table 1. </span>WarehousePG PostGIS Extensions</span></caption><colgroup><col style="width:32.786885245901644%" /><col style="width:67.21311475409836%" /></colgroup><thead class="thead" style="text-align:left;">
 <tr class="row">
 <th class="entry cellrowborder" style="vertical-align:top;" id="d47208e208">PostGIS Extension</th>
 <th class="entry cellrowborder" style="vertical-align:top;" id="d47208e211">WarehousePG PostGIS Notes</th>
@@ -35,16 +38,16 @@ This table lists the PostGIS extensions support by WarehousePG PostGIS.
 </thead>
 <tbody class="tbody">
 <tr class="row">
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208 "><code class="ph codeph">postgis</code><p dir="ltr" class="p">PostGIS and PostGIS Raster
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208"><code class="ph codeph">postgis</code><p dir="ltr" class="p">PostGIS and PostGIS Raster
                 support</p>
 </td>
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211 ">Supported. Both PostGIS and PostGIS Raster are enabled when the WarehousePG
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211">Supported. Both PostGIS and PostGIS Raster are enabled when the WarehousePG
                   <code class="ph codeph">postgis</code> extension is enabled.</td>
 </tr>
 <tr class="row">
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208 "><code class="ph codeph">postgis_tiger_geocoder</code><p class="p">The US TIGER geocoder</p>
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208"><code class="ph codeph">postgis_tiger_geocoder</code><p class="p">The US TIGER geocoder</p>
 </td>
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211 ">Supported. Installed with WarehousePG PostGIS. <p class="p">Requires the
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211">Supported. Installed with WarehousePG PostGIS. <p class="p">Requires the
                     <code class="ph codeph">postgis</code> and <code class="ph codeph">fuzzystrmatch</code>
                   extensions.</p>
 <p class="p">The US TIGER geocoder converts addresses (like a street address)
@@ -52,10 +55,10 @@ This table lists the PostGIS extensions support by WarehousePG PostGIS.
 </td>
 </tr>
 <tr class="row">
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208 "><code class="ph codeph">address_standardizer</code><p class="p">Rule-based address
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208"><code class="ph codeph">address_standardizer</code><p class="p">Rule-based address
                 standardizer</p>
 </td>
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211 ">Supported. Installed but not enabled with WarehousePG PostGIS. <p class="p">Can be used
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211">Supported. Installed but not enabled with WarehousePG PostGIS. <p class="p">Can be used
                   with TIGER geocoder.</p>
 <p class="p">A single line address parser that takes an input
                   address and normalizes it based on a set of rules stored in a table and helper
@@ -63,10 +66,10 @@ This table lists the PostGIS extensions support by WarehousePG PostGIS.
 </td>
 </tr>
 <tr class="row">
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208 "><code class="ph codeph">address_standardizer_data_us</code><p class="p">Sample rules tables for US
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208"><code class="ph codeph">address_standardizer_data_us</code><p class="p">Sample rules tables for US
                   address data</p>
 </td>
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211 ">Supported. Installed but not enabled with WarehousePG PostGIS.<p class="p">Can be used with
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211">Supported. Installed but not enabled with WarehousePG PostGIS.<p class="p">Can be used with
                   the address standardizer.</p>
 <p class="p">The extension contains <code class="ph codeph">gaz</code>,
                     <code class="ph codeph">lex</code>, and <code class="ph codeph">rules</code> tables for US address data. If
@@ -74,9 +77,9 @@ This table lists the PostGIS extensions support by WarehousePG PostGIS.
 </td>
 </tr>
 <tr class="row">
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208 "><code class="ph codeph">fuzzystrmatch</code><p class="p">Fuzzy string matching</p>
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e208"><code class="ph codeph">fuzzystrmatch</code><p class="p">Fuzzy string matching</p>
 </td>
-<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211 ">Supported. This extension is bundled but not enabled with WarehousePG
+<td class="entry cellrowborder" style="vertical-align:top;" headers="d47208e211">Supported. This extension is bundled but not enabled with WarehousePG
                   Database.<p class="p">Required for the PostGIS TIGER geocoder.</p>
 </td>
 </tr>
@@ -90,15 +93,21 @@ For information about the PostGIS extensions, see the [PostGIS documentation](ht
 
 For information about WarehousePG PostGIS feature support, see [PostGIS Extension Support and Limitations](#postgis_support).
 
-## <a id="topic_b2l_hzw_q1b"></a>Enabling and Removing PostGIS Support
+<a id="topic_b2l_hzw_q1b"></a>
+
+## Enabling and Removing PostGIS Support
 
 This section describes how to enable and remove PostGIS and the supported PostGIS extensions, and how to configure PostGIS Raster.
 
-### <a id="topic_ln5_xcl_r1b"></a>Enabling PostGIS Support
+<a id="topic_ln5_xcl_r1b"></a>
+
+### Enabling PostGIS Support
 
 To enable PostGIS support, install the WarehousePG PostGIS extension package into the WarehousePG cluster, and then use the `CREATE EXTENSION` command to enable PostGIS support for an individual database.
 
-#### <a id="section_dlv_xv1_rqb"></a>Installing the WarehousePG PostGIS Extension Package
+<a id="section_dlv_xv1_rqb"></a>
+
+#### Installing the WarehousePG PostGIS Extension Package
 
 After installing the package, source the `greenplum_path.sh` file and restart WarehousePG. This command restarts WarehousePG.
 
@@ -114,7 +123,9 @@ export POSTGIS_ENABLE_OUTDB_RASTERS=0
 export POSTGIS_GDAL_ENABLED_DRIVERS=DISABLE_ALL
 ```
 
-#### <a id="enable_postgis_cmd"></a>Using the CREATE EXTENSION Command
+<a id="enable_postgis_cmd"></a>
+
+#### Using the CREATE EXTENSION Command
 
 These steps enable the PostGIS extension and the extensions that are used with PostGIS.
 
@@ -151,8 +162,9 @@ These steps enable the PostGIS extension and the extensions that are used with P
     CREATE EXTENSION address_standardizer_data_us ;
     ```
 
+<a id="topic_ydr_q5l_ybb"></a>
 
-### <a id="topic_ydr_q5l_ybb"></a>Enabling GDAL Raster Drivers
+### Enabling GDAL Raster Drivers
 
 PostGIS uses GDAL raster drivers when processing raster data with commands such as `ST_AsJPEG()`. As the default, PostGIS deactivates all raster drivers. You enable raster drivers by setting the value of the `POSTGIS_GDAL_ENABLED_DRIVERS` environment variable in the `greenplum_path.sh` file on all WarehousePG hosts.
 
@@ -188,9 +200,11 @@ After you have updated the `greenplum_path.sh` file on all hosts, and have resta
 SELECT short_name, long_name FROM ST_GDALDrivers();
 ```
 
-### <a id="topic_fx2_fpx_llb"></a>Enabling Out-of-Database Rasters
+<a id="topic_fx2_fpx_llb"></a>
 
-After installing PostGIS, the default setting `POSTGIS_ENABLE_OUTDB_RASTERS=0` in the `greenplum_path.sh` file deactivates support for out-of-database rasters. To enable this feature, you can set the value to true \(a non-zero value\) on all hosts and restart the WarehousePG cluster.
+### Enabling Out-of-Database Rasters
+
+After installing PostGIS, the default setting `POSTGIS_ENABLE_OUTDB_RASTERS=0` in the `greenplum_path.sh` file deactivates support for out-of-database rasters. To enable this feature, you can set the value to true (a non-zero value) on all hosts and restart the WarehousePG cluster.
 
 You can also activate or deactivate this feature for a WarehousePG session. For example, this `SET` command enables the feature for the current session.
 
@@ -200,7 +214,9 @@ SET postgis.enable_outdb_rasters = true;
 
 > **Note** When the feature is enabled, the server configuration parameter `postgis.gdal_enabled_drivers` determines the accessible raster formats.
 
-### <a id="topic_bgz_vcl_r1b"></a>Removing PostGIS Support
+<a id="topic_bgz_vcl_r1b"></a>
+
+### Removing PostGIS Support
 
 You use the `DROP EXTENSION` command to remove support for the PostGIS extension and the extensions that are used with PostGIS.
 
@@ -208,7 +224,9 @@ Removing PostGIS support from a database does not remove these PostGIS Raster en
 
 > **Caution** Removing PostGIS support from a database drops PostGIS database objects from the database without warning. Users accessing PostGIS objects might interfere with the dropping of PostGIS objects. See [Notes](#postgis_note).
 
-#### <a id="drop_postgis_cmd"></a>Using the DROP EXTENSION Command
+<a id="drop_postgis_cmd"></a>
+
+#### Using the DROP EXTENSION Command
 
 Depending on the extensions you enabled for PostGIS, drop support for the extensions in the database.
 
@@ -234,8 +252,9 @@ Depending on the extensions you enabled for PostGIS, drop support for the extens
 
     If you enabled support for PostGIS and specified a specific schema with the `CREATE EXTENSION` command, you can update the `search_path` and drop the PostGIS schema if required.
 
+<a id="postgis_note"></a>
 
-#### <a id="postgis_note"></a>Notes
+#### Notes
 
 Removing PostGIS support from a database drops PostGIS objects from the database. Dropping the PostGIS objects cascades to objects that reference the PostGIS objects. Before removing PostGIS support, ensure that no users are accessing the database. Users accessing PostGIS objects might interfere with dropping PostGIS objects.
 
@@ -268,7 +287,9 @@ This is the table definition in a database after PostGIS support has been remove
 Distributed randomly
 ```
 
-## <a id="topic7"></a>Usage
+<a id="topic7"></a>
+
+## Usage
 
 The following example SQL statements create non-OpenGIS tables and geometries.
 
@@ -301,11 +322,15 @@ INSERT INTO geotest (id, name, geopoint)
 SELECT name,ST_AsText(geopoint) FROM geotest;
 ```
 
-### <a id="topic8"></a>Spatial Indexes
+<a id="topic8"></a>
+
+### Spatial Indexes
 
 PostgreSQL provides support for GiST spatial indexing. The GiST scheme offers indexing even on large objects. It uses a system of lossy indexing in which smaller objects act as proxies for larger ones in the index. In the PostGIS indexing system, all objects use their bounding boxes as proxies in the index.
 
-#### <a id="topic9"></a>Building a Spatial Index
+<a id="topic9"></a>
+
+#### Building a Spatial Index
 
 You can build a GiST index as follows:
 
@@ -315,7 +340,9 @@ CREATE INDEX indexname
   USING GIST ( geometryfield );
 ```
 
-## <a id="postgis_support"></a>PostGIS Extension Support and Limitations
+<a id="postgis_support"></a>
+
+## PostGIS Extension Support and Limitations
 
 This section describes WarehousePG PostGIS extension feature support and limitations. In general, the WarehousePG PostGIS extension does not support the following features:
 
@@ -326,7 +353,9 @@ This section describes WarehousePG PostGIS extension feature support and limitat
 
 For the PostGIS extensions supported by WarehousePG PostGIS, see [WarehousePG PostGIS Extension](#topic3).
 
-### <a id="topic_g2d_hkb_3p"></a>Supported PostGIS Data Types
+<a id="topic_g2d_hkb_3p"></a>
+
+### Supported PostGIS Data Types
 
 WarehousePG PostGIS extension supports these PostGIS data types:
 
@@ -337,7 +366,9 @@ WarehousePG PostGIS extension supports these PostGIS data types:
 
 For a list of PostGIS data types, operators, and functions, see the [PostGIS reference documentation](https://postgis.net/docs/manual-3.3/reference.html).
 
-### <a id="topic_bl3_4vy_d1b"></a>Supported PostGIS Raster Data Types
+<a id="topic_bl3_4vy_d1b"></a>
+
+### Supported PostGIS Raster Data Types
 
 WarehousePG PostGIS supports these PostGIS Raster data types.
 
@@ -353,20 +384,25 @@ For information about PostGIS Raster data Management, queries, and applications,
 
 For a list of PostGIS Raster data types, operators, and functions, see the [PostGIS Raster reference documentation](https://postgis.net/docs/manual-3.3/RT_reference.html).
 
-### <a id="topic_y5z_nkb_3p"></a>Supported PostGIS Index
+<a id="topic_y5z_nkb_3p"></a>
 
-WarehousePG PostGIS extension supports the GiST \(Generalized Search Tree\) index.
+### Supported PostGIS Index
 
-### <a id="topic_wy2_rkb_3p"></a>PostGIS Extension Limitations
+WarehousePG PostGIS extension supports the GiST (Generalized Search Tree) index.
 
-This section lists the WarehousePG PostGIS extension limitations for user-defined functions \(UDFs\), data types, and aggregates.
+<a id="topic_wy2_rkb_3p"></a>
+
+### PostGIS Extension Limitations
+
+This section lists the WarehousePG PostGIS extension limitations for user-defined functions (UDFs), data types, and aggregates.
 
 -   Data types and functions related to PostGIS topology functionality, such as TopoGeometry, are not supported by WarehousePG.
+
 -   These PostGIS aggregates are not supported by WarehousePG:
 
-    -   ST\_Collect
-    -   ST\_MakeLine
-    
+    -   ST_Collect
+    -   ST_MakeLine
+
     On a WarehousePG with multiple segments, the aggregate might return different answers if it is called several times repeatedly.
 
 -   WarehousePG does not support PostGIS long transactions.
@@ -374,7 +410,9 @@ This section lists the WarehousePG PostGIS extension limitations for user-define
     PostGIS relies on triggers and the PostGIS table `public.authorization_table` for long transaction support. When PostGIS attempts to acquire locks for long transactions, WarehousePG reports errors citing that the function cannot access the relation, `authorization_table`.
 
 -   The `_postgis_index_extent` function is not supported on WarehousePG 7 due to its dependence on spatial index operations.
--   The `<->` operator \(`geometry <-> geometry`\) returns the centroid/centroid distance for WarehousePG 7.
--   The TIGER geocoder extension is supported. However, upgrading the TIGER geocoder extension is not supported.
--   The `standardize_address()` function uses `lex`, `gaz` or `rules` tables as parameters. If you are using tables apart from `us_lex`, `us_gaz` or `us_rules`, you should create them with the distribution policy `DISTRIBUTED REPLICATED` to work for WarehousePG.
 
+-   The `<->` operator (`geometry <-> geometry`) returns the centroid/centroid distance for WarehousePG 7.
+
+-   The TIGER geocoder extension is supported. However, upgrading the TIGER geocoder extension is not supported.
+
+-   The `standardize_address()` function uses `lex`, `gaz` or `rules` tables as parameters. If you are using tables apart from `us_lex`, `us_gaz` or `us_rules`, you should create them with the distribution policy `DISTRIBUTED REPLICATED` to work for WarehousePG.

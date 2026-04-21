@@ -1,21 +1,32 @@
-# REFRESH MATERIALIZED VIEW 
+---
+title: REFRESH MATERIALIZED VIEW
+
+---
 
 Replaces the contents of a materialized view.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 REFRESH MATERIALIZED VIEW [ CONCURRENTLY ] <name>
     [ WITH [ NO ] DATA ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`REFRESH MATERIALIZED VIEW` completely replaces the contents of a materialized view. The old contents are discarded. To run this command you must be the owner of the materialized view. If `WITH DATA` is specified \(or defaults\), the backing query is executed to provide the new data, and the materialized view is left in a scannable state. If `WITH NO DATA` is specified, no new data is generated, and the materialized view is left in an unscannable state.
+## Description
+
+`REFRESH MATERIALIZED VIEW` completely replaces the contents of a materialized view. The old contents are discarded. To run this command you must be the owner of the materialized view. If `WITH DATA` is specified (or defaults), the backing query is executed to provide the new data, and the materialized view is left in a scannable state. If `WITH NO DATA` is specified, no new data is generated, and the materialized view is left in an unscannable state.
 
 You may not specify `CONCURRENTLY` and `WITH NO DATA` together.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 CONCURRENTLY
 Refresh the materialized view without locking out concurrent selects on the materialized view. Without this option, a refresh that affects a lot of rows tends to use fewer resources and completes more quickly, but could block other connections which are trying to read from the materialized view. This option might be faster in cases where a small number of rows are affected.
@@ -24,17 +35,20 @@ You can not use this option when the materialized view is not already populated.
 Even with this option, only one `REFRESH` at a time may run against any one materialized view.
 
 name
-The name \(optionally schema-qualified\) of the materialized view to refresh.
+The name (optionally schema-qualified) of the materialized view to refresh.
 
-WITH \[ NO \] DATA
+WITH \[ NO ] DATA
 `WITH DATA` is the default and specifies that the materialized view query is run to provide new data, and the materialized view is left in a scannable state. If `WITH NO DATA` is specified, no new data is generated and the materialized view is left in an unscannable state.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 If there is an `ORDER BY` clause in the materialized view's defining query, the original contents of the materialized view will be ordered that way; but `REFRESH MATERIALIZED VIEW` does not guarantee to preserve that ordering.
 
+<a id="section6"></a>
 
-## <a id="section6"></a>Examples 
+## Examples
 
 This command replaces the contents of the materialized view `order_summary` using the query from the materialized view's definition, and leaves it in a scannable state.
 
@@ -48,13 +62,16 @@ This command frees storage associated with the materialized view `annual_statist
 REFRESH MATERIALIZED VIEW annual_statistics_basis WITH NO DATA;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 `REFRESH MATERIALIZED VIEW` is a WarehousePG extension of the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[ALTER MATERIALIZED VIEW](ALTER_MATERIALIZED_VIEW.html), [CREATE MATERIALIZED VIEW](CREATE_MATERIALIZED_VIEW.html), [DROP MATERIALIZED VIEW](DROP_MATERIALIZED_VIEW.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER MATERIALIZED VIEW](ALTER_MATERIALIZED_VIEW.md), [CREATE MATERIALIZED VIEW](CREATE_MATERIALIZED_VIEW.md), [DROP MATERIALIZED VIEW](DROP_MATERIALIZED_VIEW.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,10 +1,15 @@
-# pageinspect 
+---
+title: pageinspect
+
+---
 
 The `pageinspect` module provides functions for low level inspection of the contents of database pages. `pageinspect` is available only to WarehousePG superusers.
 
 The WarehousePG `pageinspect` module is based on the PostgreSQL `pageinspect` module. The WarehousePG version of the module differs as described in the [WarehousePG Considerations](#topic_gp) topic.
 
-## <a id="topic_reg"></a>Installing and Registering the Module 
+<a id="topic_reg"></a>
+
+## Installing and Registering the Module
 
 The `pageinspect` module is installed when you install WarehousePG. Before you can use any of the functions defined in the module, you must register the `pageinspect` extension in each database in which you want to use the functions:
 
@@ -12,9 +17,11 @@ The `pageinspect` module is installed when you install WarehousePG. Before you c
 CREATE EXTENSION pageinspect;
 ```
 
-Refer to [Installing Extensions](../../install_guide/install_extensions.html) for more information.
+Refer to [Installing Extensions](../../install_guide/install_extensions.md) for more information.
 
-## <a id="topic_upgrade"></a>Upgrading the Module 
+<a id="topic_upgrade"></a>
+
+## Upgrading the Module
 
 If you are currently using `pageinspect` in your WarehousePG installation and you want to access newly-released module functionality, you must update the `pageinspect` extension in every database in which it is currently registered:
 
@@ -22,32 +29,40 @@ If you are currently using `pageinspect` in your WarehousePG installation and yo
 ALTER EXTENSION pageinspect UPDATE;
 ```
 
-## <a id="topic_info"></a>Module Documentation 
+<a id="topic_info"></a>
+
+## Module Documentation
 
 See [pageinspect](https://www.postgresql.org/docs/12/pageinspect.html) in the PostgreSQL documentation for detailed information about the majority of functions in this module.
 
 The next topic includes documentation for WarehousePG-added `pageinspect` functions.
 
-## <a id="topic_gp"></a>WarehousePG Considerations 
+<a id="topic_gp"></a>
+
+## WarehousePG Considerations
 
 When using this module with WarehousePG, consider the following:
 
 -   The WarehousePG version of the `pageinspect` does not allow inspection of pages belonging to append-optimized or external relations.
 -   For `pageinspect` functions that read data from a database, the function reads data only from the segment instance where the function is run. For example, the `get_raw_page()` function returns a `block number out of range` error when you try to read data from a user-defined table on the WarehousePG coordinator because there is no data in the table on the coordinator segment. The function will read data from a system catalog table on the coordinator segment.
 
-### <a id="gp_funcs"></a>WarehousePG-Added Functions 
+<a id="gp_funcs"></a>
+
+### WarehousePG-Added Functions
 
 In addition to the functions specified in the PostgreSQL documentation, WarehousePG provides these additional `pageinspect` functions for inspecting bitmap index pages:
 
-|Function Name|Description|
-|-------------|-----------|
-|bm\_metap\(relname text\) returns record|Returns information about a bitmap index's meta page.|
-|bm\_bitmap\_page\_header\(relname text, blkno int\) returns record|Returns the header information for a bitmap page; this corresponds to the opaque section from the page header.|
-|bm\_lov\_page\_items\(relname text, blkno int\) returns setof record|Returns the list of value \(LOV\) items present in a bitmap LOV page.|
-|bm\_bitmap\_page\_items\(relname text, blkno int\) returns setof record|Returns the content words and their compression statuses for a bitmap page.|
-|bm\_bitmap\_page\_items\(page bytea\) returns setof record|Returns the content words and their compression statuses for a page image obtained by `get_raw_page()`.|
+| Function Name                                                      | Description                                                                                                    |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| bm_metap(relname text) returns record                              | Returns information about a bitmap index's meta page.                                                          |
+| bm_bitmap_page_header(relname text, blkno int) returns record      | Returns the header information for a bitmap page; this corresponds to the opaque section from the page header. |
+| bm_lov_page_items(relname text, blkno int) returns setof record    | Returns the list of value (LOV) items present in a bitmap LOV page.                                            |
+| bm_bitmap_page_items(relname text, blkno int) returns setof record | Returns the content words and their compression statuses for a bitmap page.                                    |
+| bm_bitmap_page_items(page bytea) returns setof record              | Returns the content words and their compression statuses for a page image obtained by `get_raw_page()`.        |
 
-### <a id="topic_examples"></a>Examples 
+<a id="topic_examples"></a>
+
+### Examples
 
 WarehousePG-added `pageinspect` function usage examples follow.
 
@@ -106,4 +121,3 @@ testdb=# SELECT * FROM bm_bitmap_page_items(get_raw_page('i1', 2)) ORDER BY word
  2        | t          | 00 00 00 00 00 00 03 f1 
 (3 rows)
 ```
-

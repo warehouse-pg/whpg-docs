@@ -1,10 +1,17 @@
-# dropuser 
+---
+title: dropuser
+
+---
 
 Removes a database role.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#client_util_synopsis}
+## Synopsis
+
+<div id="client_util_synopsis"></div>
+
+```
 dropuser [<connection-option> ...] [-e] [-i] <role_name>
 
 dropuser -? | --help 
@@ -12,50 +19,56 @@ dropuser -? | --help
 dropuser -V | --version
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `dropuser` removes an existing role from WarehousePG. Only superusers and users with the `CREATEROLE` privilege can remove roles. To remove a superuser role, you must yourself be a superuser.
 
 `dropuser` is a wrapper around the SQL command `DROP ROLE`.
 
-## <a id="section4"></a>Options 
+<a id="section4"></a>
 
-role\_name
+## Options
+
+role_name
 The name of the role to be removed. You will be prompted for a name if not specified on the command line and the `-i`/`--interactive` option is used.
 
--e \| --echo
+\-e \| --echo
 Echo the commands that `dropuser` generates and sends to the server.
 
--i \| --interactive
+\-i \| --interactive
 Prompt for confirmation before actually removing the role, and prompt for the role name if none is specified on the command line.
 
---if-exists
+\--if-exists
 Do not throw an error if the user does not exist. A notice is issued in this case.
 
--V \| --version
+\-V \| --version
 Print the `dropuser` version and exit.
 
--? \| --help
+\-? \| --help
 Show help about `dropuser` command line arguments, and exit.
 
-**Connection Options**
+### Connection Options
 
--h host \| --host=host
+\-h host \| --host=host
 The host name of the machine on which the WarehousePG coordinator database server is running. If not specified, reads from the environment variable `PGHOST` or defaults to localhost.
 
--p port \| --port=port
+\-p port \| --port=port
 The TCP port on which the WarehousePG coordinator database server is listening for connections. If not specified, reads from the environment variable `PGPORT` or defaults to 5432.
 
--U username \| --username=username
+\-U username \| --username=username
 The database role name to connect as. If not specified, reads from the environment variable `PGUSER` or defaults to the current system role name.
 
--w \| --no-password
+\-w \| --no-password
 Never issue a password prompt. If the server requires password authentication and a password is not available by other means such as a `.pgpass` file, the connection attempt will fail. This option can be useful in batch jobs and scripts where no user is present to enter a password.
 
--W \| --password
+\-W \| --password
 Force a password prompt.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 To remove the role `joe` using default connection options:
 
@@ -74,7 +87,8 @@ DROP ROLE "joe"
 DROP ROLE
 ```
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[createuser](createuser.html), [DROP ROLE](../../ref_guide/sql_commands/DROP_ROLE.html)
+## See Also
 
+[createuser](createuser.md), [DROP ROLE](../../sql_commands/DROP_ROLE.md)

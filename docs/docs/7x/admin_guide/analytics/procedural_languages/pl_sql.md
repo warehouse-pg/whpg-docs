@@ -1,4 +1,6 @@
-# PL/pgSQL Language
+---
+title: PL/pgSQL Language
+
 ---
 
 This section contains an overview of the WarehousePG PL/pgSQL language.
@@ -9,7 +11,9 @@ This section contains an overview of the WarehousePG PL/pgSQL language.
 -   [About Developing PL/pgSQL Procedures](#about_procs)
 -   [References](#topic10)
 
-## <a id="topic2"></a>About WarehousePG PL/pgSQL
+<a id="topic2"></a>
+
+## About WarehousePG PL/pgSQL
 
 WarehousePG PL/pgSQL is a loadable procedural language that is installed and registered by default with WarehousePG. You can create user-defined functions and procedures using SQL statements, functions, and operators.
 
@@ -17,22 +21,26 @@ With PL/pgSQL you can group a block of computation and a series of SQL queries i
 
 The PL/pgSQL language is a subset of Oracle PL/SQL. WarehousePG PL/pgSQL is based on Postgres PL/pgSQL. The Postgres PL/pgSQL documentation is at [https://www.postgresql.org/docs/12/plpgsql.html](https://www.postgresql.org/docs/12/plpgsql.html)
 
-When using PL/pgSQL functions, function attributes affect how WarehousePG creates query plans. You can specify the attribute `IMMUTABLE`, `STABLE`, or `VOLATILE` as part of the `LANGUAGE` clause to classify the type of function. For information about the creating functions and function attributes, see the [CREATE FUNCTION](../ref_guide/sql_commands/CREATE_FUNCTION.html) command in the *WarehousePG Reference Guide*.
+When using PL/pgSQL functions, function attributes affect how WarehousePG creates query plans. You can specify the attribute `IMMUTABLE`, `STABLE`, or `VOLATILE` as part of the `LANGUAGE` clause to classify the type of function. For information about the creating functions and function attributes, see the [CREATE FUNCTION](../../../ref_guide/sql_commands/CREATE_FUNCTION.md) command in the *WarehousePG Reference Guide*.
 
-You can run PL/SQL code blocks as anonymous code blocks. See the [DO](../ref_guide/sql_commands/DO.html) command in the *WarehousePG Reference Guide*.
+You can run PL/SQL code blocks as anonymous code blocks. See the [DO](../../../ref_guide/sql_commands/DO.md) command in the *WarehousePG Reference Guide*.
 
-### <a id="topic3"></a>WarehousePG SQL Limitations
+<a id="topic3"></a>
+
+### WarehousePG SQL Limitations
 
 When using WarehousePG PL/pgSQL, limitations include
 
 -   Triggers are not supported
--   Cursors are forward moving only \(not scrollable\)
--   Updatable cursors \(`UPDATE...WHERE CURRENT OF` and `DELETE...WHERE CURRENT OF`\) are not supported.
--   Parallel retrieve cursors \(`DECLARE...PARALLEL RETRIEVE`\) are not supported.
+-   Cursors are forward moving only (not scrollable)
+-   Updatable cursors (`UPDATE...WHERE CURRENT OF` and `DELETE...WHERE CURRENT OF`) are not supported.
+-   Parallel retrieve cursors (`DECLARE...PARALLEL RETRIEVE`) are not supported.
 
-For information about WarehousePG SQL conformance, see [Summary of WarehousePG Features](../ref_guide/feature_summary.html) in the *WarehousePG Reference Guide*.
+For information about WarehousePG SQL conformance, see [Summary of WarehousePG Features](../../../ref_guide/misc/feature_summary.md) in the *WarehousePG Reference Guide*.
 
-### <a id="topic4"></a>The PL/pgSQL Language
+<a id="topic4"></a>
+
+### The PL/pgSQL Language
 
 PL/pgSQL is a block-structured language. The complete text of a function definition must be a block. A block is defined as:
 
@@ -45,21 +53,20 @@ BEGIN
 END [ <label> ];
 ```
 
-Each declaration and each statement within a block is terminated by a semicolon \(;\). A block that appears within another block must have a semicolon after `END`, as shown in the previous block. The `END` that concludes a function body does not require a semicolon.
+Each declaration and each statement within a block is terminated by a semicolon (;). A block that appears within another block must have a semicolon after `END`, as shown in the previous block. The `END` that concludes a function body does not require a semicolon.
 
 A label is required only if you want to identify the block for use in an `EXIT` statement, or to qualify the names of variables declared in the block. If you provide a label after `END`, it must match the label at the block's beginning.
 
-> **Important** Do not confuse the use of the `BEGIN` and `END` keywords for grouping statements in PL/pgSQL with the database commands for transaction control. The PL/pgSQL `BEGIN` and `END` keywords are only for grouping; they do not start or end a transaction. Functions are always run within a transaction established by an outer query — they cannot start or commit that transaction, since there would be no context for them to run in. However, a PL/pgSQL block that contains an `EXCEPTION` clause effectively forms a subtransaction that can be rolled back without affecting the outer transaction. For more about the `EXCEPTION` clause, see the PostgreSQL documentation on trapping errors at [https://www.postgresql.org/docs/12/plpgsql-control-structures.html\#PLPGSQL-ERROR-TRAPPING](https://www.postgresql.org/docs/12/plpgsql-control-structures.html#PLPGSQL-ERROR-TRAPPING).
+> **Important** Do not confuse the use of the `BEGIN` and `END` keywords for grouping statements in PL/pgSQL with the database commands for transaction control. The PL/pgSQL `BEGIN` and `END` keywords are only for grouping; they do not start or end a transaction. Functions are always run within a transaction established by an outer query — they cannot start or commit that transaction, since there would be no context for them to run in. However, a PL/pgSQL block that contains an `EXCEPTION` clause effectively forms a subtransaction that can be rolled back without affecting the outer transaction. For more about the `EXCEPTION` clause, see the PostgreSQL documentation on trapping errors at [https://www.postgresql.org/docs/12/plpgsql-control-structures.html#PLPGSQL-ERROR-TRAPPING](https://www.postgresql.org/docs/12/plpgsql-control-structures.html#PLPGSQL-ERROR-TRAPPING).
 
 Keywords are case-insensitive. Identifiers are implicitly converted to lowercase unless double-quoted, just as they are in ordinary SQL commands.
 
 Comments work the same way in PL/pgSQL code as in ordinary SQL:
 
--   A double dash \(--\) starts a comment that extends to the end of the line.
+-   A double dash (--) starts a comment that extends to the end of the line.
 -   A /\* starts a block comment that extends to the matching occurrence of \*/.
 
     Block comments nest.
-
 
 Any statement in the statement section of a block can be a subblock. Subblocks can be used for logical grouping or to localize variables to a small group of statements.
 
@@ -88,15 +95,19 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-#### <a id="topic5"></a>Running SQL Commands
+<a id="topic5"></a>
+
+#### Running SQL Commands
 
 You can run SQL commands with PL/pgSQL statements such as `EXECUTE`, `PERFORM`, and `SELECT ... INTO`. For information about the PL/pgSQL statements, see [https://www.postgresql.org/docs/12/plpgsql-statements.html](https://www.postgresql.org/docs/12/plpgsql-statements.html).
 
 > **Note** The PL/pgSQL statement `SELECT INTO` is not supported in the `EXECUTE` statement.
 
-## <a id="topic67"></a>PL/pgSQL Plan Caching
+<a id="topic67"></a>
 
-A PL/pgSQL function’s volatility classification has implications on how WarehousePG caches plans that reference the function. Refer to [Function Volatility and Plan Caching](../admin_guide/query/topics/functions-operators.html#topic281) in the *WarehousePG Administrator Guide* for information on plan caching considerations for WarehousePG function volatility categories.
+## PL/pgSQL Plan Caching
+
+A PL/pgSQL function’s volatility classification has implications on how WarehousePG caches plans that reference the function. Refer to [Function Volatility and Plan Caching](../../query/functions-operators.md#userfunc1) in the *WarehousePG Administrator Guide* for information on plan caching considerations for WarehousePG function volatility categories.
 
 When a PL/pgSQL function runs for the first time in a database session, the PL/pgSQL interpreter parses the function’s SQL expressions and commands. The interpreter creates a prepared execution plan as each expression and SQL command is first run in the function. The PL/pgSQL interpreter reuses the execution plan for a specific expression and SQL command for the life of the database connection. While this reuse substantially reduces the total amount of time required to parse and generate plans, errors in a specific expression or command cannot be detected until run time when that part of the function is run.
 
@@ -108,11 +119,15 @@ PL/pgSQL caches a separate query plan for each combination of actual argument ty
 
 Refer to the PostgreSQL [Plan Caching](https://www.postgresql.org/docs/12/plpgsql-implementation.html#PLPGSQL-PLAN-CACHING) documentation for a detailed discussion of plan caching considerations in the PL/pgSQL language.
 
-## <a id="topic6"></a>PL/pgSQL Examples
+<a id="topic6"></a>
+
+## PL/pgSQL Examples
 
 The following are examples of PL/pgSQL user-defined functions.
 
-### <a id="topic7"></a>Example: Aliases for Function Parameters
+<a id="topic7"></a>
+
+### Example: Aliases for Function Parameters
 
 Parameters passed to functions are named with identifiers such as `$1`, `$2`. Optionally, aliases can be declared for `$n` parameter names for increased readability. Either the alias or the numeric identifier can then be used to refer to the parameter value.
 
@@ -144,7 +159,9 @@ END;
 $$ LANGUAGE plpgsql;
 ```
 
-### <a id="topic8"></a>Example: Using the Data Type of a Table Column
+<a id="topic8"></a>
+
+### Example: Using the Data Type of a Table Column
 
 When declaring a variable, you can use the `%TYPE` construct to specify the data type of a variable or table column. This is the syntax for declaring a variable whose type is the data type of a table column:
 
@@ -160,7 +177,9 @@ my_userid users.user_id%TYPE;
 
 `%TYPE` is particularly valuable in polymorphic functions, since the data types needed for internal variables may change from one call to the next. Appropriate variables can be created by applying `%TYPE` to the function’s arguments or result placeholders.
 
-### <a id="topic_mbj_vfg_mjb"></a>Example: Composite Type Based on a Table Row
+<a id="topic_mbj_vfg_mjb"></a>
+
+### Example: Composite Type Based on a Table Row
 
 A variable of a composite type is called a row variable. The following syntax declares a composite variable based on table row:
 
@@ -170,7 +189,7 @@ name table_name%ROWTYPE;
 
 Such a row variable can hold a whole row of a `SELECT` or `FOR` query result, so long as that query's column set matches the declared type of the variable. The individual fields of the row value are accessed using the usual dot notation, for example `rowvar.column`.
 
-Parameters to a function can be composite types \(complete table rows\). In that case, the corresponding identifier `$n` will be a row variable, and fields can be selected from it, for `example $1.user_id`.
+Parameters to a function can be composite types (complete table rows). In that case, the corresponding identifier `$n` will be a row variable, and fields can be selected from it, for `example $1.user_id`.
 
 Only the user-defined columns of a table row are accessible in a row-type variable, not the OID or other system columns. The fields of the row type inherit the table’s field size or precision for data types such as `char(n)`.
 
@@ -220,7 +239,9 @@ select t1_calc( 'test1' );
 
 > **Note** The example PL/pgSQL function uses `SELECT` with the `INTO` clause. It is different from the SQL command `SELECT INTO`. If you want to create a table from a `SELECT` result inside a PL/pgSQL function, use the SQL command `CREATE TABLE AS`.
 
-### <a id="topic_lsh_5n5_2z1717"></a>Example: Using a Variable Number of Arguments
+<a id="topic_lsh_5n5_2z1717"></a>
+
+### Example: Using a Variable Number of Arguments
 
 You can declare a PL/pgSQL function to accept variable numbers of arguments, as long as all of the optional arguments are of the same data type. You must mark the last argument of the function as `VARIADIC` and declare the argument using an array type. You can refer to a function that includes `VARIADIC` arguments as a variadic function.
 
@@ -255,7 +276,9 @@ SELECT mleast(VARIADIC ARRAY[10, -1, 5, 4.4]);
 
 This prevents PL/pgSQL from expanding the function's variadic parameter into its element type.
 
-### <a id="topic_lsh_5n5_2z1313"></a>Example: Using Default Argument Values
+<a id="topic_lsh_5n5_2z1313"></a>
+
+### Example: Using Default Argument Values
 
 You can declare PL/pgSQL functions with default values for some or all input arguments. The default values are inserted whenever the function is called with fewer than the declared number of arguments. Because arguments can only be omitted from the end of the actual argument list, you must provide default values for all arguments after an argument defined with a default value.
 
@@ -294,9 +317,11 @@ SELECT use_default_args(10);
 
 You can also use the `=` sign in place of the keyword `DEFAULT`.
 
-### <a id="topic_lsh_5n5_2z"></a>Example: Using Polymorphic Data Types
+<a id="topic_lsh_5n5_2z"></a>
 
-PL/pgSQL supports the polymorphic *anyelement*, *anyarray*, *anyenum*, and *anynonarray* types. Using these types, you can create a single PL/pgSQL function that operates on multiple data types. Refer to [WarehousePG Data Types](../ref_guide/data_types.html) for additional information on polymorphic type support in WarehousePG.
+### Example: Using Polymorphic Data Types
+
+PL/pgSQL supports the polymorphic *anyelement*, *anyarray*, *anyenum*, and *anynonarray* types. Using these types, you can create a single PL/pgSQL function that operates on multiple data types. Refer to [WarehousePG Data Types](../../../ref_guide/data_types/index.md) for additional information on polymorphic type support in WarehousePG.
 
 A special parameter named `$0` is created when the return type of a PL/pgSQL function is declared as a polymorphic type. The data type of `$0` identifies the return type of the function as deduced from the actual input types.
 
@@ -338,7 +363,9 @@ The return type of `add_two_values()` in this case is float.
 
 You can also specify `VARIADIC` arguments in polymorphic functions.
 
-### <a id="topic_isw_3sx_cz"></a>Example: Anonymous Block
+<a id="topic_isw_3sx_cz"></a>
+
+### Example: Anonymous Block
 
 This example runs the statements in the `t1_calc()` function from a previous example as an anonymous block using the `DO` command. In the example, the anonymous block retrieves the input value from a temporary table.
 
@@ -356,9 +383,11 @@ BEGIN
 END $$ LANGUAGE plpgsql ;
 ```
 
-## <a id="about_procs"></a>About Developing PL/pgSQL Procedures
+<a id="about_procs"></a>
 
-A PL/pgSQL procedure is similar to a PL/pgSQL function. Refer to [User-Defined Procedures](../admin_guide/query/topics/functions-operators.html#topic28a) for more information on procedures in WarehousePG and how they differ from functions.
+## About Developing PL/pgSQL Procedures
+
+A PL/pgSQL procedure is similar to a PL/pgSQL function. Refer to [User-Defined Procedures](../../query/functions-operators.md#userproc) for more information on procedures in WarehousePG and how they differ from functions.
 
 A PL/pgSQL procedure does not have a return value, and as such can end without a `RETURN` statement. If you wish to use a `RETURN` statement to exit the code early, write just `RETURN` with no expression.
 
@@ -366,7 +395,7 @@ If the PL/pgSQL procedure has output parameters, the final values of the output 
 
 A PL/pgSQL function, procedure, or `DO` block can call a procedure using `CALL`. Output parameters are handled differently from the way that `CALL` works in plain SQL. Each `INOUT` parameter of the procedure must correspond to a variable in the `CALL` statement, and whatever the procedure returns is assigned back to that variable after it returns. For example:
 
-``` sql
+```sql
 CREATE PROCEDURE triple(INOUT x int)
 LANGUAGE plpgsql
 AS $$
@@ -384,13 +413,15 @@ END;
 $$;
 ```
 
-### <a id="proc_transmgmt"></a>About Transaction Management in Procedures
+<a id="proc_transmgmt"></a>
+
+### About Transaction Management in Procedures
 
 In procedures invoked by the `CALL` command as well as in anonymous code blocks (`DO` command), it is possible to end transactions using the commands `COMMIT` and `ROLLBACK`. A new transaction is started automatically after a transaction is ended using these commands, so there is no separate `START TRANSACTION` command. (Note that `BEGIN` and `END` have different meanings in PL/pgSQL.)
 
 Here is a simple example:
 
-``` sql
+```sql
 CREATE PROCEDURE transaction_test1()
 LANGUAGE plpgsql
 AS $$
@@ -413,13 +444,14 @@ A new transaction starts out with default transaction characteristics such as tr
 
 Transaction control is only possible in `CALL` or `DO` invocations from the top level or nested `CALL` or `DO` invocations without any other intervening command. For example, if the call stack is `CALL proc1()` → `CALL proc2()` → `CALL proc3()`, then the second and third procedures can perform transaction control actions. But if the call stack is `CALL proc1()` → `SELECT func2()` → `CALL proc3()`, the last procedure cannot perform transaction control because of the `SELECT` in between.
 
-## <a id="topic10"></a>References
+<a id="topic10"></a>
+
+## References
 
 The PostgreSQL documentation about PL/pgSQL is at [https://www.postgresql.org/docs/12/plpgsql.html](https://www.postgresql.org/docs/12/plpgsql.html)
 
-Also, see the [CREATE FUNCTION](../ref_guide/sql_commands/CREATE_FUNCTION.html) command in the *WarehousePG Reference Guide*.
+Also, see the [CREATE FUNCTION](../../../ref_guide/sql_commands/CREATE_FUNCTION.md) command in the *WarehousePG Reference Guide*.
 
-For a summary of built-in WarehousePG functions, see [Summary of Built-in Functions](../ref_guide/function-summary.html) in the *WarehousePG Reference Guide*. For information about using WarehousePG functions see "SQL: Querying Data" in the *WarehousePG Administrator Guide*
+For a summary of built-in WarehousePG functions, see [Summary of Built-in Functions](../../../ref_guide/function-summary.md) in the *WarehousePG Reference Guide*. For information about using WarehousePG functions see "SQL: Querying Data" in the *WarehousePG Administrator Guide*
 
 For information about porting Oracle functions, see [https://www.postgresql.org/docs/12/plpgsql-porting.html](https://www.postgresql.org/docs/12/plpgsql-porting.html). For information about installing and using the Oracle compatibility functions with WarehousePG, see "Oracle Compatibility Functions" in the *WarehousePG Utility Guide*.
-

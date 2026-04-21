@@ -1,15 +1,21 @@
-# Loading Data
+---
+title: Loading Data
+
 ---
 
 Description of the different ways to add data to WarehousePG.
 
-**Parent topic:** [WarehousePG Best Practices](intro.html)
+**Parent topic:** [WarehousePG Best Practices](index.md)
 
-## <a id="topic_tmf_t2t_bp"></a>INSERT Statement with Column Values
+<a id="topic_tmf_t2t_bp"></a>
+
+## INSERT Statement with Column Values
 
 A singleton `INSERT` statement with values adds a single row to a table. The row flows through the coordinator and is distributed to a segment. This is the slowest method and is not suitable for loading large amounts of data.
 
-## <a id="topic_oqb_y2t_bp"></a>COPY Statement
+<a id="topic_oqb_y2t_bp"></a>
+
+## COPY Statement
 
 The PostgreSQL `COPY` statement copies data from an external file into a database table. It can insert multiple rows more efficiently than an `INSERT` statement, but the rows are still passed through the coordinator. All of the data is copied in one command; it is not a parallel process.
 
@@ -27,17 +33,21 @@ Since COPY is a single command, there is no need to deactivate autocommit when y
 
 You can run multiple concurrent `COPY` commands to improve performance.
 
-## <a id="topic_kgp_z2t_bp"></a>External Tables
+<a id="topic_kgp_z2t_bp"></a>
 
-External tables provide access to data in sources outside of WarehousePG. They can be accessed with `SELECT` statements and are commonly used with the Extract, Load, Transform \(ELT\) pattern, a variant of the Extract, Transform, Load \(ETL\) pattern that takes advantage of WarehousePG's fast parallel data loading capability.
+## External Tables
+
+External tables provide access to data in sources outside of WarehousePG. They can be accessed with `SELECT` statements and are commonly used with the Extract, Load, Transform (ELT) pattern, a variant of the Extract, Transform, Load (ETL) pattern that takes advantage of WarehousePG's fast parallel data loading capability.
 
 With ETL, data is extracted from its source, transformed outside of the database using external transformation tools, such as Datastage, and then loaded into the database.
 
-With ELT, WarehousePG external tables provide access to data in external sources, which could be read-only files \(for example, text, CSV, or XML files\), Web servers, Hadoop file systems, executable OS programs, or the WarehousePG `gpfdist` file server, described in the next section. External tables support SQL operations such as select, sort, and join so the data can be loaded and transformed simultaneously, or loaded into a *load table* and transformed in the database into target tables.
+With ELT, WarehousePG external tables provide access to data in external sources, which could be read-only files (for example, text, CSV, or XML files), Web servers, Hadoop file systems, executable OS programs, or the WarehousePG `gpfdist` file server, described in the next section. External tables support SQL operations such as select, sort, and join so the data can be loaded and transformed simultaneously, or loaded into a *load table* and transformed in the database into target tables.
 
 The external table is defined with a `CREATE EXTERNAL TABLE` statement, which has a `LOCATION` clause to define the location of the data and a `FORMAT` clause to define the formatting of the source data so that the system can parse the input data. Files use the `file://` protocol, and must reside on a segment host in a location accessible by the WarehousePG superuser. The data can be spread out among the segment hosts with no more than one file per primary segment on each host. The number of files listed in the `LOCATION` clause is the number of segments that will read the external table in parallel.
 
-## <a id="topic_x2l_bft_bp"></a>External Tables with Gpfdist
+<a id="topic_x2l_bft_bp"></a>
+
+## External Tables with Gpfdist
 
 The fastest way to load large fact tables is to use external tables with `gpfdist`. `gpfdist` is a file server program using an HTTP protocol that serves external data files to WarehousePG segments in parallel. A `gpfdist` instance can serve 200 MB/second and many `gpfdist` processes can run simultaneously, each serving up a portion of the data to be loaded. When you begin the load using a statement such as `INSERT INTO <table> SELECT * FROM <external_table>`, the `INSERT` statement is parsed by the coordinator and distributed to the primary segments. The segments connect to the `gpfdist` servers and retrieve the data in parallel, parse and validate the data, calculate a hash from the distribution key data and, based on the hash key, send the row to its destination segment. By default, each `gpfdist` instance will accept up to 64 connections from segments. With many segments and `gpfdist` servers participating in the load, data can be loaded at very high rates.
 
@@ -70,7 +80,9 @@ Run `ANALYZE` on the table after loading. Deactivate automatic statistics collec
 
 Performing small, high frequency data loads into heavily partitioned column-oriented tables can have a high impact on the system because of the number of physical files accessed per time interval.
 
-## <a id="topic_xyt_cft_bp"></a>Gpload
+<a id="topic_xyt_cft_bp"></a>
+
+## Gpload
 
 `gpload` is a data loading utility that acts as an interface to the WarehousePG external table parallel loading feature.
 
@@ -86,16 +98,26 @@ Beware of using `gpload` as it can cause catalog bloat by creating and dropping 
 
 The load is accomplished in a single transaction.
 
-## <a id="topic_ryr_2ft_bp"></a>Best Practices
+<a id="topic_ryr_2ft_bp"></a>
+
+## Best Practices
 
 -   Drop any indexes on an existing table before loading data and recreate the indexes after loading. Newly creating an index is faster than updating an index incrementally as each row is loaded.
+
 -   Deactivate automatic statistics collection during loading by setting the `gp_autostats_mode` configuration parameter to `NONE`.
+
 -   External tables are not intended for frequent or ad hoc access.
+
 -   When using `gpfdist`, maximize network bandwidth by running one `gpfdist` instance for each NIC on the ETL server. Divide the source data evenly between the `gpfdist` instances.
+
 -   When using `gpload`, run as many simultaneous `gpload` instances as resources allow. Take advantage of the CPU, memory, and networking resources available to increase the amount of data that can be transferred from ETL servers to the WarehousePG.
+
 -   Use the `SEGMENT REJECT LIMIT` clause of the `COPY` statement to set a limit for the number or percentage of rows that can have errors before the `COPY FROM` command is cancelled. The reject limit is per segment; when any one segment exceeds the limit, the command is cancelled and no rows are added. Use the `LOG ERRORS` clause to save error rows. If a row has errors in the formatting—for example missing or extra values, or incorrect data types—WarehousePG stores the error information and row internally. Use the `gp_read_error_log()` built-in SQL function to access this stored information.
+
 -   If the load has errors, run `VACUUM` on the table to recover space.
+
 -   After you load data into a table, run `VACUUM` on heap tables, including system catalogs, and `ANALYZE` on all tables. It is not necessary to run `VACUUM` on append-optimized tables. If the table is partitioned, you can vacuum and analyze just the partitions affected by the data load. These steps clean up any rows from prematurely ended loads, deletes, or updates and update statistics for the table.
+
 -   Recheck for segment skew in the table after loading a large amount of data. You can use a query like the following to check for skew:
 
     ```
@@ -106,7 +128,8 @@ The load is accomplished in a single transaction.
 
 -   By default, `gpfdist` assumes a maximum record size of 32K. To load data records larger than 32K, you must increase the maximum row size parameter by specifying the `-m <*bytes*>` option on the `gpfdist` command line. If you use `gpload`, set the `MAX_LINE_LENGTH` parameter in the `gpload` control file.
 
-### <a id="addinfo"></a>Additional Information
+<a id="addinfo"></a>
+
+### Additional Information
 
 See the *WarehousePG Reference Guide* for detailed instructions for loading data using `gpfdist` and `gpload`.
-

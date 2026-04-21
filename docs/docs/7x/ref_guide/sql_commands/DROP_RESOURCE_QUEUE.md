@@ -1,25 +1,38 @@
-# DROP RESOURCE QUEUE 
+---
+title: DROP RESOURCE QUEUE
+
+---
 
 Removes a resource queue.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP RESOURCE QUEUE <queue_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 This command removes a resource queue from WarehousePG. To drop a resource queue, the queue cannot have any roles assigned to it, nor can it have any statements waiting in the queue. Only a superuser can drop a resource queue.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-queue\_name
+## Parameters
+
+queue_name
 The name of a resource queue to remove.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-Use [ALTER ROLE](ALTER_ROLE.html) to remove a user from a resource queue.
+## Notes
+
+Use [ALTER ROLE](ALTER_ROLE.md) to remove a user from a resource queue.
 
 To see all the currently active queries for all resource queues, perform the following query of the `pg_locks` table joined with the `pg_roles` and `pg_resqueue` tables:
 
@@ -37,9 +50,11 @@ SELECT rolname, rsqname FROM pg_roles, pg_resqueue WHERE
 pg_roles.rolresqueue=pg_resqueue.oid;
 ```
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
 
-Remove a role from a resource queue \(and move the role to the default resource queue, `pg_default`\):
+## Examples
+
+Remove a role from a resource queue (and move the role to the default resource queue, `pg_default`):
 
 ```
 ALTER ROLE bob RESOURCE QUEUE NONE;
@@ -51,13 +66,16 @@ Remove the resource queue named `adhoc`:
 DROP RESOURCE QUEUE adhoc;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 The `DROP RESOURCE QUEUE` statement is a WarehousePG extension.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[ALTER RESOURCE QUEUE](ALTER_RESOURCE_QUEUE.html), [CREATE RESOURCE QUEUE](CREATE_RESOURCE_QUEUE.html), [ALTER ROLE](ALTER_ROLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER RESOURCE QUEUE](ALTER_RESOURCE_QUEUE.md), [CREATE RESOURCE QUEUE](CREATE_RESOURCE_QUEUE.md), [ALTER ROLE](ALTER_ROLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

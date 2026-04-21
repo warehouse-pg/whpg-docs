@@ -1,4 +1,6 @@
-# Text Search Parsers
+---
+title: Text Search Parsers
+
 ---
 
 This topic describes the types of tokens the WarehousePG text search parser produces from raw text.
@@ -7,31 +9,31 @@ Text search parsers are responsible for splitting raw document text into *tokens
 
 The built-in parser is named `pg_catalog.default`. It recognizes 23 token types, shown in the following table.
 
-|Alias|Description|Example|
-|-----|-----------|-------|
-|asciiword|Word, all ASCII letters|elephant|
-|word|Word, all letters|mañana|
-|numword|Word, letters and digits|beta1|
-|asciihword|Hyphenated word, all ASCII|up-to-date|
-|hword|Hyphenated word, all letters|lógico-matemática|
-|numhword|Hyphenated word, letters and digits|postgresql-beta1|
-|hword\_asciipart|Hyphenated word part, all ASCII|postgresql in the context postgresql-beta1|
-|hword\_part|Hyphenated word part, all letters|lógico or matemática in the context lógico-matemática|
-|hword\_numpart|Hyphenated word part, letters and digits|beta1 in the context postgresql-beta1|
-|email|Email address|foo@example.com|
-|protocol|Protocol head|http://|
-|url|URL|example.com/stuff/index.html|
-|host|Host|example.com|
-|url\_path|URL path|/stuff/index.html, in the context of a URL|
-|file|File or path name|/usr/local/foo.txt, if not within a URL|
-|sfloat|Scientific notation|-1.234e56|
-|float|Decimal notation|-1.234|
-|int|Signed integer|-1234|
-|uint|Unsigned integer|1234|
-|version|Version number|8.3.0|
-|tag|XML tag|\<a href="dictionaries.html"\>|
-|entity|XML entity|\&amp;|
-|blank|Space symbols|\(any whitespace or punctuation not otherwise recognized\)|
+| Alias           | Description                              | Example                                                  |
+| --------------- | ---------------------------------------- | -------------------------------------------------------- |
+| asciiword       | Word, all ASCII letters                  | elephant                                                 |
+| word            | Word, all letters                        | mañana                                                   |
+| numword         | Word, letters and digits                 | beta1                                                    |
+| asciihword      | Hyphenated word, all ASCII               | up-to-date                                               |
+| hword           | Hyphenated word, all letters             | lógico-matemática                                        |
+| numhword        | Hyphenated word, letters and digits      | postgresql-beta1                                         |
+| hword_asciipart | Hyphenated word part, all ASCII          | postgresql in the context postgresql-beta1               |
+| hword_part      | Hyphenated word part, all letters        | lógico or matemática in the context lógico-matemática    |
+| hword_numpart   | Hyphenated word part, letters and digits | beta1 in the context postgresql-beta1                    |
+| email           | Email address                            | [foo@example.com](mailto:foo@example.com)                |
+| protocol        | Protocol head                            | http\\://                                                |
+| url             | URL                                      | example.com/stuff/index.html                             |
+| host            | Host                                     | example.com                                              |
+| url_path        | URL path                                 | /stuff/index.html, in the context of a URL               |
+| file            | File or path name                        | /usr/local/foo.txt, if not within a URL                  |
+| sfloat          | Scientific notation                      | -1.234e56                                                |
+| float           | Decimal notation                         | -1.234                                                   |
+| int             | Signed integer                           | -1234                                                    |
+| uint            | Unsigned integer                         | 1234                                                     |
+| version         | Version number                           | 8.3.0                                                    |
+| tag             | XML tag                                  | \\&lt;a href="dictionaries.html">                        |
+| entity          | XML entity                               | \\&                                                      |
+| blank           | Space symbols                            | (any whitespace or punctuation not otherwise recognized) |
 
 > **Note** The parser's notion of a "letter" is determined by the database's locale setting, specifically `lc_ctype`. Words containing only the basic ASCII letters are reported as a separate token type, since it is sometimes useful to distinguish them. In most European languages, token types `word` and `asciiword` should be treated alike.
 
@@ -63,5 +65,4 @@ SELECT alias, description, token FROM ts_debug('http://example.com/stuff/index.h
  url_path | URL path      | /stuff/index.html
 ```
 
-**Parent topic:** [Using Full Text Search](../textsearch/full-text-search.html)
-
+**Parent topic:** [Using Full Text Search](index.md)

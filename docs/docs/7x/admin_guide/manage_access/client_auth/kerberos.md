@@ -1,24 +1,30 @@
-# Using Kerberos Authentication
+---
+title: Using Kerberos Authentication
+
 ---
 
 You can control access to WarehousePG with a Kerberos authentication server.
 
-WarehousePG supports the Generic Security Service Application Program Interface \(GSSAPI\) with Kerberos authentication. GSSAPI provides automatic authentication \(single sign-on\) for systems that support it. You specify the WarehousePG users \(roles\) that require Kerberos authentication in the WarehousePG configuration file pg\_hba.conf. The login fails if Kerberos authentication is not available when a role attempts to log in to WarehousePG.
+WarehousePG supports the Generic Security Service Application Program Interface (GSSAPI) with Kerberos authentication. GSSAPI provides automatic authentication (single sign-on) for systems that support it. You specify the WarehousePG users (roles) that require Kerberos authentication in the WarehousePG configuration file pg_hba.conf. The login fails if Kerberos authentication is not available when a role attempts to log in to WarehousePG.
 
-Kerberos provides a secure, encrypted authentication service. It does not encrypt data exchanged between the client and database and provides no authorization services. To encrypt data exchanged over the network, you must use an SSL connection. To manage authorization for access to WarehousePGs and objects such as schemas and tables, you use settings in the pg\_hba.conf file and privileges given to WarehousePG users and roles within the database. For information about managing authorization privileges, see [Managing Roles and Privileges](roles_privs.html).
+Kerberos provides a secure, encrypted authentication service. It does not encrypt data exchanged between the client and database and provides no authorization services. To encrypt data exchanged over the network, you must use an SSL connection. To manage authorization for access to WarehousePGs and objects such as schemas and tables, you use settings in the pg_hba.conf file and privileges given to WarehousePG users and roles within the database. For information about managing authorization privileges, see [Managing Roles and Privileges](../roles_privs.md).
 
 For more information about Kerberos, see [http://web.mit.edu/kerberos/](http://web.mit.edu/kerberos/).
 
-## <a id="kerberos_prereq"></a>Prerequisites
+<a id="kerberos_prereq"></a>
+
+## Prerequisites
 
 Before configuring Kerberos authentication for WarehousePG, ensure that:
 
 -   You can identify the KDC server you use for Kerberos authentication and the Kerberos realm for your WarehousePG cluster. If you have not yet configured your MIT Kerberos KDC server, see [Installing and Configuring a Kerberos KDC Server](#task_setup_kdc) for example instructions.
--   System time on the Kerberos Key Distribution Center \(KDC\) server and WarehousePG coordinator is synchronized. \(For example, install the `ntp` package on both servers.\)
+-   System time on the Kerberos Key Distribution Center (KDC) server and WarehousePG coordinator is synchronized. (For example, install the `ntp` package on both servers.)
 -   Network connectivity exists between the KDC server and the WarehousePG coordinator host.
--   Java 1.7.0\_17 or later is installed on all WarehousePG hosts. Java 1.7.0\_17 is required to use Kerberos-authenticated JDBC on Red Hat Enterprise Linux 6.x or 7.x.
+-   Java 1.7.0_17 or later is installed on all WarehousePG hosts. Java 1.7.0_17 is required to use Kerberos-authenticated JDBC on Red Hat Enterprise Linux 6.x or 7.x.
 
-## <a id="nr166539"></a>Procedure
+<a id="nr166539"></a>
+
+## Procedure
 
 Following are the tasks to complete to set up Kerberos authentication for WarehousePG.
 
@@ -27,12 +33,14 @@ Following are the tasks to complete to set up Kerberos authentication for Wareho
 -   [Configuring WarehousePG to use Kerberos Authentication](#topic7)
 -   [Mapping Kerberos Principals to WarehousePG Roles](#topic_kmr_gws_d2b)
 -   [Configuring JDBC Kerberos Authentication for WarehousePG](#topic9)
--   [Configuring Kerberos for Linux Clients](kerberos-lin-client.html)
--   [Configuring Kerberos For Windows Clients](kerberos-win-client.html)
+-   [Configuring Kerberos for Linux Clients](kerberos-lin-client.md)
+-   [Configuring Kerberos For Windows Clients](kerberos-win-client.md)
 
-**Parent topic:** [Configuring Client Authentication](client_auth.html)
+**Parent topic:** [Configuring Client Authentication](index.md)
 
-## <a id="task_m43_vwl_2p"></a>Creating WarehousePG Principals in the KDC Database
+<a id="task_m43_vwl_2p"></a>
+
+## Creating WarehousePG Principals in the KDC Database
 
 Create a service principal for the WarehousePG service and a Kerberos admin principal that allows managing the KDC database as the gpadmin user.
 
@@ -52,7 +60,7 @@ Create a service principal for the WarehousePG service and a Kerberos admin prin
 
     The `servicename` part of the principal is ordinarily `postgres`, but you may specify a different value via the `libpq`'s configuration parameter `krbsrvname`.
 
-    The `hostname` part of the principal name must match the output of the `hostname` command on the WarehousePG coordinator host. If the `hostname` command shows the fully qualified domain name \(FQDN\), use it in the principal name, for example `postgres/cdw.example.com@GPDB.KRB`.
+    The `hostname` part of the principal name must match the output of the `hostname` command on the WarehousePG coordinator host. If the `hostname` command shows the fully qualified domain name (FQDN), use it in the principal name, for example `postgres/cdw.example.com@GPDB.KRB`.
 
     The `realm` part of the principal name is the Kerberos realm name. For example, `GPDB.KRB`.
 
@@ -80,8 +88,9 @@ Create a service principal for the WarehousePG service and a Kerberos admin prin
     # scp gpdb-kerberos.keytab gpadmin@cdw:~
     ```
 
+<a id="topic6"></a>
 
-## <a id="topic6"></a>Installing the Kerberos Client on the Coordinator Host
+## Installing the Kerberos Client on the Coordinator Host
 
 Install the Kerberos client utilities and libraries on the WarehousePG coordinator.
 
@@ -93,7 +102,9 @@ Install the Kerberos client utilities and libraries on the WarehousePG coordinat
 
 2.  Copy the `/etc/krb5.conf` file from the KDC server to `/etc/krb5.conf` on the WarehousePG Coordinator host.
 
-## <a id="topic7"></a>Configuring WarehousePG to use Kerberos Authentication
+<a id="topic7"></a>
+
+## Configuring WarehousePG to use Kerberos Authentication
 
 Configure WarehousePG to use Kerberos.
 
@@ -101,7 +112,7 @@ Configure WarehousePG to use Kerberos.
 
     ```
     $ ssh gpadmin@<coordinator>
-    $ source /usr/local/greenplum-db/greenplum_path.sh
+    $ source /usr/edb/whpg7/greenplum_path.sh
     ```
 
 2.  Set the ownership and permissions of the keytab file you copied from the KDC server.
@@ -123,7 +134,7 @@ Configure WarehousePG to use Kerberos.
     host all all 0.0.0.0/0 gss include_realm=0 krb_realm=GPDB.KRB
     ```
 
-    Setting the `krb_realm` option to a realm name ensures that only users from that realm can successfully authenticate with Kerberos. Setting the `include_realm` option to `0` excludes the realm name from the authenticated user name. For information about the `pg_hba.conf` file, see [The pg\_hba.conf file](https://www.postgresql.org/docs/12/auth-pg-hba-conf.html) in the PostgreSQL documentation.
+    Setting the `krb_realm` option to a realm name ensures that only users from that realm can successfully authenticate with Kerberos. Setting the `include_realm` option to `0` excludes the realm name from the authenticated user name. For information about the `pg_hba.conf` file, see [The pg_hba.conf file](https://www.postgresql.org/docs/12/auth-pg-hba-conf.html) in the PostgreSQL documentation.
 
 5.  Restart WarehousePG after updating the `krb_server_keyfile` parameter and the `pg_hba.conf` file.
 
@@ -146,7 +157,7 @@ Configure WarehousePG to use Kerberos.
     $ LD_LIBRARY_PATH= klist
     Ticket cache: FILE:/tmp/krb5cc_1000
     Default principal: gpadmin/admin@GPDB.KRB
-    
+
     Valid starting       Expires              Service principal
     06/13/2018 17:37:35  06/14/2018 17:37:35  krbtgt/GPDB.KRB@GPDB.KRB
     ```
@@ -159,7 +170,7 @@ Configure WarehousePG to use Kerberos.
     $ psql -U "gpadmin/admin" -h cdw postgres
     psql (9.4.20)
     Type "help" for help.
-    
+
     postgres=# select current_user;
      current_user
     ---------------
@@ -169,7 +180,6 @@ Configure WarehousePG to use Kerberos.
 
     > **Note** When you start `psql` on the coordinator host, you must include the `-h <coordinator-hostname>` option to force a TCP connection because Kerberos authentication does not work with local connections.
 
-
 If a Kerberos principal is not a WarehousePG user, a message similar to the following is displayed from the `psql` command line when the user attempts to log in to the database:
 
 ```
@@ -178,7 +188,9 @@ psql: krb5_sendauth: Bad response
 
 The principal must be added as a WarehousePG user.
 
-## <a id="topic_kmr_gws_d2b"></a>Mapping Kerberos Principals to WarehousePG Roles
+<a id="topic_kmr_gws_d2b"></a>
+
+## Mapping Kerberos Principals to WarehousePG Roles
 
 To connect to a WarehousePG cluster with Kerberos authentication enabled, a user first requests a ticket-granting ticket from the KDC server using the `kinit` utility with a password or a keytab file provided by the Kerberos admin. When the user then connects to the Kerberos-enabled WarehousePG cluster, the user's Kerberos principle name will be the WarehousePG role name, subject to transformations specified in the options field of the `gss` entry in the WarehousePG `pg_hba.conf` file:
 
@@ -201,11 +213,13 @@ The map name is specified in the `pg_hba.conf` Kerberos entry in the options fie
 host all all 0.0.0.0/0 gss include_realm=0 krb_realm=GPDB.KRB map=mymap
 ```
 
-The first map entry matches the Kerberos principal admin@GPDB.KRB and replaces it with the WarehousePG gpadmin role name. The second entry uses a wildcard to match any Kerberos principal in the GPDB-KRB realm with a name ending with the characters `_gp` and replaces it with the initial portion of the principal name. WarehousePG applies the first matching map entry in the `pg_ident.conf` file, so the order of entries is significant.
+The first map entry matches the Kerberos principal [admin@GPDB.KRB](mailto:admin@GPDB.KRB) and replaces it with the WarehousePG gpadmin role name. The second entry uses a wildcard to match any Kerberos principal in the GPDB-KRB realm with a name ending with the characters `_gp` and replaces it with the initial portion of the principal name. WarehousePG applies the first matching map entry in the `pg_ident.conf` file, so the order of entries is significant.
 
 For more information about using username maps see [Username maps](https://www.postgresql.org/docs/12/auth-username-maps.html) in the PostgreSQL documentation.
 
-## <a id="topic9"></a>Configuring JDBC Kerberos Authentication for WarehousePG
+<a id="topic9"></a>
+
+## Configuring JDBC Kerberos Authentication for WarehousePG
 
 Enable Kerberos-authenticated JDBC access to WarehousePG.
 
@@ -236,10 +250,11 @@ You can configure WarehousePG to use Kerberos to run user-defined Java functions
 
 4.  Test the Kerberos login by running a sample Java application from WarehousePG.
 
+<a id="task_setup_kdc"></a>
 
-## <a id="task_setup_kdc"></a>Installing and Configuring a Kerberos KDC Server
+## Installing and Configuring a Kerberos KDC Server
 
-Steps to set up a Kerberos Key Distribution Center \(KDC\) server on a Red Hat Enterprise Linux host for use with WarehousePG.
+Steps to set up a Kerberos Key Distribution Center (KDC) server on a Red Hat Enterprise Linux host for use with WarehousePG.
 
 If you do not already have a KDC, follow these steps to install and configure a KDC server on a Red Hat Enterprise Linux host with a `GPDB.KRB` realm. The host name of the KDC server in this example is gpdb-kdc.
 
@@ -256,7 +271,7 @@ If you do not already have a KDC, follow these steps to install and configure a 
      default = FILE:/var/log/krb5libs.log
      kdc = FILE:/var/log/krb5kdc.log
      admin_server = FILE:/var/log/kadmind.log
-    
+
     [libdefaults]
      default_realm = GPDB.KRB
      dns_lookup_realm = false
@@ -267,18 +282,18 @@ If you do not already have a KDC, follow these steps to install and configure a 
      default_tgs_enctypes = aes128-cts des3-hmac-sha1 des-cbc-crc des-cbc-md5
      default_tkt_enctypes = aes128-cts des3-hmac-sha1 des-cbc-crc des-cbc-md5
      permitted_enctypes = aes128-cts des3-hmac-sha1 des-cbc-crc des-cbc-md5
-    
+
     [realms]
      GPDB.KRB = {
       kdc = gpdb-kdc:88
       admin_server = gpdb-kdc:749
       default_domain = gpdb.krb
      }
-    
+
     [domain_realm]
      .gpdb.krb = GPDB.KRB
      gpdb.krb = GPDB.KRB
-    
+
     [appdefaults]
      pam = {
         debug = false
@@ -287,10 +302,10 @@ If you do not already have a KDC, follow these steps to install and configure a 
         forwardable = true
         krb4_convert = false
      }
-    
+
     ```
 
-    The `kdc` and `admin_server` keys in the `[realms]` section specify the host \(`gpdb-kdc`\) and port where the Kerberos server is running. IP numbers can be used in place of host names.
+    The `kdc` and `admin_server` keys in the `[realms]` section specify the host (`gpdb-kdc`) and port where the Kerberos server is running. IP numbers can be used in place of host names.
 
     If your Kerberos server manages authentication for other realms, you would instead add the `GPDB.KRB` realm in the `[realms]` and `[domain_realm]` section of the `kdc.conf` file. See the [Kerberos documentation](http://web.mit.edu/kerberos/krb5-latest/doc/) for information about the `kdc.conf` file.
 
@@ -308,9 +323,10 @@ If you do not already have a KDC, follow these steps to install and configure a 
     # kadmin.local -q "addprinc gpadmin/admin"
     ```
 
-    Most users do not need administrative access to the Kerberos server. They can use `kadmin` to manage their own principals \(for example, to change their own password\). For information about `kadmin`, see the [Kerberos documentation](http://web.mit.edu/kerberos/krb5-latest/doc/).
+    Most users do not need administrative access to the Kerberos server. They can use `kadmin` to manage their own principals (for example, to change their own password). For information about `kadmin`, see the [Kerberos documentation](http://web.mit.edu/kerberos/krb5-latest/doc/).
 
 5.  If needed, edit the /var/kerberos/krb5kdc/kadm5.acl file to grant the appropriate permissions to `gpadmin`.
+
 6.  Start the Kerberos daemons:
 
     ```
@@ -324,5 +340,3 @@ If you do not already have a KDC, follow these steps to install and configure a 
     # /sbin/chkconfig krb5kdc on
     # /sbin/chkconfig kadmin on
     ```
-
-

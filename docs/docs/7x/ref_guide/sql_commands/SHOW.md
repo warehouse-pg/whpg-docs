@@ -1,50 +1,66 @@
-# SHOW 
+---
+title: SHOW
+
+---
 
 Shows the value of a run-time system configuration parameter.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 SHOW <name>
 
 SHOW ALL
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `SHOW` displays the current settings of WarehousePG run-time system configuration parameters. You can set these parameters with the `SET` statement, by editing the `postgresql.conf` configuration file of the WarehousePG coordinator, through the `PGOPTIONS` environment variable (when using libpq or a libpq-based application), or through command-line flags when starting the WarehousePG server.
 
+<a id="section4"></a>
 
-## <a id="section4"></a>Parameters 
+## Parameters
 
 name
 The name of a run-time system configuration parameter.
 
 Some parameters viewable by `SHOW` are read-only — you can view their values but not set them:
 
-    SERVER_VERSION
-    Shows the version number of the WarehousePG server.
+```
+SERVER_VERSION
+Shows the version number of the WarehousePG server.
 
-    SERVER_ENCODING
-    Shows the server-side character set encoding. You can show, but not set, this parameter because the encoding is determined at database creation time.
+SERVER_ENCODING
+Shows the server-side character set encoding. You can show, but not set, this parameter because the encoding is determined at database creation time.
 
-    LC_COLLATE
-    Shows the database's locale setting for collation (text ordering). You can show, but not set, this parameter because the setting is determined at database creation time.
+LC_COLLATE
+Shows the database's locale setting for collation (text ordering). You can show, but not set, this parameter because the setting is determined at database creation time.
 
-    LC_CTYPE
-    Shows the database's locale setting for character classification; You can show, but not set, this parameter because the setting is determined at database creation time.
+LC_CTYPE
+Shows the database's locale setting for character classification; You can show, but not set, this parameter because the setting is determined at database creation time.
 
-    IS_SUPERUSER
-    True if the current role has superuser privileges.
+IS_SUPERUSER
+True if the current role has superuser privileges.
+```
 
 ALL
 Shows the current value of all configuration parameters, with descriptions.
 
-## <a id="section4n"></a>Notes
+<a id="section4n"></a>
+
+## Notes
 
 The function `current_setting()` produces equivalent output; see [System Administration Functions](https://www.postgresql.org/docs/12/functions-admin.html) in the PostgreSQL documentation. Also, the [pg_settings](https://www.postgresql.org/docs/12/view-pg-settings.html) system view produces the same information.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Show the current setting of the parameter `DateStyle`:
 
@@ -81,13 +97,16 @@ SHOW ALL;
 (473 rows)
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 The `SHOW` command is a WarehousePG extension.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[SET](SET.html), [RESET](RESET.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[SET](SET.md), [RESET](RESET.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,4 +1,6 @@
-# Preferred Index Types for Text Search
+---
+title: Preferred Index Types for Text Search
+
 ---
 
 There are two kinds of indexes that can be used to speed up full text searches: GIN and GiST. Indexes are not mandatory for full text searching, but in cases where a column is searched on a regular basis, an index is usually desirable.
@@ -6,10 +8,10 @@ There are two kinds of indexes that can be used to speed up full text searches: 
 To create such an index, do one of:
 
 `CREATE INDEX <name> ON <table> USING gin(<column>);`
-Creates a GIN \(Generalized Inverted Index\)-based index. The `<column>` must be of `tsvector` type.
+Creates a GIN (Generalized Inverted Index)-based index. The `<column>` must be of `tsvector` type.
 
 `CREATE INDEX <name> ON <table> USING gist(<column>);`
-Creates a GiST \(Generalized Search Tree\)-based index. The `<column>` can be of `tsvector` or `tsquery` type.
+Creates a GiST (Generalized Search Tree)-based index. The `<column>` can be of `tsvector` or `tsquery` type.
 
 GIN indexes are the preferred text search index type. As inverted indexes, they contain an index entry for each word (lexeme), with a compressed list of matching locations. Multi-word searches can find the first match, then use the index to remove rows that are lacking additional words. GIN indexes store only the words (lexemes) of `tsvector` values, and not their weight labels. Thus a table row recheck is needed when using a query that involves weights.
 
@@ -19,9 +21,8 @@ A GiST index can be covering, i.e., use the `INCLUDE` clause. Included columns c
 
 Lossiness causes performance degradation due to unnecessary fetches of table records that turn out to be false matches. Since random access to table records is slow, this limits the usefulness of GiST indexes. The likelihood of false matches depends on several factors, in particular the number of unique words, so using dictionaries to reduce this number is recommended.
 
-Note that GIN index build time can often be improved by increasing [maintenance\_work\_mem](../../ref_guide/config_params/guc-list.html), while GiST index build time is not sensitive to that parameter.
+Note that GIN index build time can often be improved by increasing [maintenance_work_mem](../../../ref_guide/config_params/guc-list.md), while GiST index build time is not sensitive to that parameter.
 
-Partitioning of big collections and the proper use of GiST and GIN indexes allows the implementation of very fast searches with online update. Partitioning can be done at the database level using table inheritance, or by distributing documents over servers and collecting search results using [dblink](../../ref_guide/modules/dblink.html). The latter is possible because ranking functions use only local information.
+Partitioning of big collections and the proper use of GiST and GIN indexes allows the implementation of very fast searches with online update. Partitioning can be done at the database level using table inheritance, or by distributing documents over servers and collecting search results using [dblink](../../../ref_guide/modules/dblink.md). The latter is possible because ranking functions use only local information.
 
-**Parent topic:** [Using Full Text Search](../textsearch/full-text-search.html)
-
+**Parent topic:** [Using Full Text Search](index.md)

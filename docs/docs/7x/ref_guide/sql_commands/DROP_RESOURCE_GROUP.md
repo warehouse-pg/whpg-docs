@@ -1,14 +1,23 @@
-# DROP RESOURCE GROUP 
+---
+title: DROP RESOURCE GROUP
+
+---
 
 Removes a resource group.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP RESOURCE GROUP <group_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 This command removes a resource group from WarehousePG. Only a superuser can drop a resource group. When you drop a resource group, the memory and CPU resources reserved by the group are returned to WarehousePG.
 
@@ -16,16 +25,20 @@ To drop a role resource group, the group cannot be assigned to any roles, nor ca
 
 You cannot drop the pre-defined `admin_group` and `default_group` resource groups.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-group\_name
+## Parameters
+
+group_name
 The name of the resource group to remove.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 You cannot submit a `DROP RESOURCE GROUP` command in an explicit transaction or sub-transaction.
 
-Use [ALTER ROLE](ALTER_ROLE.html) to remove a resource group assigned to a specific user/role.
+Use [ALTER ROLE](ALTER_ROLE.md) to remove a resource group assigned to a specific user/role.
 
 Perform the following query to view all of the currently active queries for all resource groups:
 
@@ -44,7 +57,9 @@ SELECT rolname, rsgname
   WHERE pg_roles.rolresgroup=pg_resgroup.oid;
 ```
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Remove the resource group assigned to a role. This operation then assigns the default resource group `default_group` to the role:
 
@@ -58,13 +73,16 @@ Remove the resource group named `adhoc`:
 DROP RESOURCE GROUP adhoc;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 The `DROP RESOURCE GROUP` statement is a WarehousePG extension.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[ALTER RESOURCE GROUP](ALTER_RESOURCE_GROUP.html), [CREATE RESOURCE GROUP](CREATE_RESOURCE_GROUP.html), [ALTER ROLE](ALTER_ROLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER RESOURCE GROUP](ALTER_RESOURCE_GROUP.md), [CREATE RESOURCE GROUP](CREATE_RESOURCE_GROUP.md), [ALTER ROLE](ALTER_ROLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

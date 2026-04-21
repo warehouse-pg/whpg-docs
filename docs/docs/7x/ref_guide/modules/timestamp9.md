@@ -1,10 +1,15 @@
-# timestamp9
+---
+title: timestamp9
+
+---
 
 The `timestamp9` module provides an efficient, nanosecond-precision timestamp data type and related functions and operators.
 
 The WarehousePG `timestamp9` module is based on version 1.2.0 of the [`timestamp9` module](https://github.com/fvannee/timestamp9) used with PostgreSQL.
 
-## <a id="topic_reg"></a>Installing and Registering the Module 
+<a id="topic_reg"></a>
+
+## Installing and Registering the Module
 
 The `timestamp9` module is installed when you install WarehousePG. Before you can use the data type defined in the module, you must register the `timestamp9` extension in each database in which you want to use the type:
 
@@ -12,7 +17,7 @@ The `timestamp9` module is installed when you install WarehousePG. Before you ca
 CREATE EXTENSION timestamp9;
 ```
 
-Refer to [Installing Extensions](../../install_guide/install_extensions.html) for more information.
+Refer to [Installing Extensions](../../install_guide/install_extensions.md) for more information.
 
 ## Supported Data Types
 
@@ -20,11 +25,11 @@ The WarehousePG `timestamp9` extension supports three kinds of datatatypes: `TIM
 
 The following table summarizes key information about the `timestamp9` data types:
 
-|Data Type|Storage Size|Description|Max Value|Min Value|Resolution|
-|--------|-------|----|-----------|---------|---------|----------|
-|`TIMESTAMP9`|8 bytes|Like TIMESTAMP9_LTZ. Timestamp with local time zone. |2261-12-31 23:59:59.999999999 +0000 |1700-01-01 00:00:00.000000000 +0000 | 1 nanosecond |
-|`TIMESTAMP9_LTZ`|8 bytes|Timestamp with local time zone. |2261-12-31 23:59:59.999999999 +0000 |1700-01-01 00:00:00.000000000 +0000 | 1 nanosecond |
-|`TIMESTAMP9_NTZ`|8 bytes|Timestamp without time zone. |2261-12-31 23:59:59.999999999 +0000 |1700-01-01 00:00:00.000000000 +0000 | 1 nanosecond|
+| Data Type        | Storage Size | Description                                          | Max Value                           | Min Value                           | Resolution   |
+| ---------------- | ------------ | ---------------------------------------------------- | ----------------------------------- | ----------------------------------- | ------------ |
+| `TIMESTAMP9`     | 8 bytes      | Like TIMESTAMP9_LTZ. Timestamp with local time zone. | 2261-12-31 23:59:59.999999999 +0000 | 1700-01-01 00:00:00.000000000 +0000 | 1 nanosecond |
+| `TIMESTAMP9_LTZ` | 8 bytes      | Timestamp with local time zone.                      | 2261-12-31 23:59:59.999999999 +0000 | 1700-01-01 00:00:00.000000000 +0000 | 1 nanosecond |
+| `TIMESTAMP9_NTZ` | 8 bytes      | Timestamp without time zone.                         | 2261-12-31 23:59:59.999999999 +0000 | 1700-01-01 00:00:00.000000000 +0000 | 1 nanosecond |
 
 ### More about `TIMESTAMP9`
 
@@ -48,30 +53,32 @@ See [TIMESTAMP9_NTZ Examples](#timestamp9_ntz-examples) for examples using this 
 
 The following table summarizes the `timestamp9` module's supported type conversions.
 
-|From|To|Description|
-|--------|-------|----|
-|`BIGINT`|`TIMESTAMP9_LTZ`|WarehousePG treats the `BIGINT` value as the number of nanoseconds started from ‘1970-01-01 00:00:00 +0000’.|
-|`DATE`|`TIMESTAMP9_LTZ`|WarehousePG treats the `DATE` value as in the current session time zone. This behavior is identical to converting from from `DATE` to `TIMESTAMPTZ`.|
-|`TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP`|`TIMESTAMP9_LTZ`|WarehousePG treats the `TIMESTAMP` value as in the current session time zone.  This behavior is identical to converting from `TIMESTAMP` to `TIMESTAMPTZ`.|
-|`TIMESTAMP WITH TIME ZONE/TIMESTAMPTZ` |`TIMESTAMP9_LTZ`|For this conversion, WarehousePG only extends the fractional part to nanosecond precision.|
-|`TIMESTAMP9_LTZ`|`BIGINT`|The result of this conversion is the nanoseconds since ‘1970-01-01 00:00:00.000000000 +0000’ to the given `TIMESTAMP9_LTZ` value.  If the given `TIMESTAMP9_LTZ` value is before ‘1970-01-01 00:00:00.000000000 +0000’, the result is negative.|
-|`TIMESTAMP9_LTZ`|`DATE`|The result of this conversion depends on the date of the given `TIMESTAMP9_LTZ` value in the time zone of the current session. The behavior is like doing conversion from `TIMESTAMPTZ` to `DATE`.|
-|`TIMESTAMP9_LTZ`|`TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP`|The result of this conversion is a timestamp without time zone.  The resulting timestamp’s value is determined by the value of `TIMESTAMP9_LTZ` in the current session time zone.  Note that the fractional part of `TIMESTAMP` type has 6 digits, while `TIMESTAMP9_LTZ` has 9 digits in its fractional part. When converting `TIMESTAMP9_LTZ` to `TIMESTAMP`, the fractional part is truncated instead of being rounded off.|
-|`TIMESTAMP9_LTZ`|`TIMESTAMP WITH TIME ZONE/TIMESTAMP`|When performing this conversion, WarehousePG truncates the fractional part to only 6 digits.|
-|`BIGINT`|`TIMESTAMP9_NTZ`|When performing this conversion, WarehousePG treats the BIGINT value as the number of nanoseconds started from ‘1970-01-01 00:00:00’.|
-|`DATE`|`TIMESTAMP9_NTZ`|When performing this conversion, the resulting timestamp is ‘00:00:00.000000000’ on the given date.|
-|`TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP`|`TIMESTAMP9_NTZ`|When peforming this conversion, WarehousePG only extends the fractional part to nanosecond precision.|
-|`TIMESTAMP WITH TIME ZONE/TIMESTAMP`|`TIMESTAMP9_NTZ`|The resulting timestamp’s value is determined by the value of `TIMESTAMPTZ` in the current session time zone.|
-|`TIMESTAMP9_NTZ`|`BIGINT`|The result of this conversion is the nanoseconds since ‘1970-01-01 00:00:00.000000000’ to the given `TIMESTAMP9_NTZ` value.  If the given `TIMESTAMP9_NTZ` value is before ‘1970-01-01 00:00:00.000000000’, the result is negative.|
-|`TIMESTAMP9_NTZ`|`DATE`|When performing this conversion, WarehousePG truncatest the time portion and preserves the date portion.|
-|`TIMESTAMP9_NTZ`|`TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP`|When performing this conversion, WarehousePG truncates only the fractional part to 6 digits.|
-|`TIMESTAMP9_NTZ`|`TIMESTAMP WITH TIME ZONE/TIMESTAMP`|When performing this conversion, WarehousePG only truncates the fractional part to 6 digits and add the time zone of the current session. 
-|`TIMESTAMP9_LTZ`|`TIMESTAMP9_NTZ`|The resulting `TIMESTAMP9_NTZ` value is determined by the value of `TIMESTAMP9_LTZ` in the current session's time zone.|
-|`TIMESTAMP9_NTZ`|`TIMESTAMP9_LTZ`|When performing this conversion, WarehousePG adds the timezone of the current sesion.|
+| From                                    | To                                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `BIGINT`                                | `TIMESTAMP9_LTZ`                        | WarehousePG treats the `BIGINT` value as the number of nanoseconds started from ‘1970-01-01 00:00:00 +0000’.                                                                                                                                                                                                                                                                                                                   |
+| `DATE`                                  | `TIMESTAMP9_LTZ`                        | WarehousePG treats the `DATE` value as in the current session time zone. This behavior is identical to converting from from `DATE` to `TIMESTAMPTZ`.                                                                                                                                                                                                                                                                           |
+| `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` | `TIMESTAMP9_LTZ`                        | WarehousePG treats the `TIMESTAMP` value as in the current session time zone.  This behavior is identical to converting from `TIMESTAMP` to `TIMESTAMPTZ`.                                                                                                                                                                                                                                                                     |
+| `TIMESTAMP WITH TIME ZONE/TIMESTAMPTZ`  | `TIMESTAMP9_LTZ`                        | For this conversion, WarehousePG only extends the fractional part to nanosecond precision.                                                                                                                                                                                                                                                                                                                                     |
+| `TIMESTAMP9_LTZ`                        | `BIGINT`                                | The result of this conversion is the nanoseconds since ‘1970-01-01 00:00:00.000000000 +0000’ to the given `TIMESTAMP9_LTZ` value.  If the given `TIMESTAMP9_LTZ` value is before ‘1970-01-01 00:00:00.000000000 +0000’, the result is negative.                                                                                                                                                                                |
+| `TIMESTAMP9_LTZ`                        | `DATE`                                  | The result of this conversion depends on the date of the given `TIMESTAMP9_LTZ` value in the time zone of the current session. The behavior is like doing conversion from `TIMESTAMPTZ` to `DATE`.                                                                                                                                                                                                                             |
+| `TIMESTAMP9_LTZ`                        | `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` | The result of this conversion is a timestamp without time zone.  The resulting timestamp’s value is determined by the value of `TIMESTAMP9_LTZ` in the current session time zone.  Note that the fractional part of `TIMESTAMP` type has 6 digits, while `TIMESTAMP9_LTZ` has 9 digits in its fractional part. When converting `TIMESTAMP9_LTZ` to `TIMESTAMP`, the fractional part is truncated instead of being rounded off. |
+| `TIMESTAMP9_LTZ`                        | `TIMESTAMP WITH TIME ZONE/TIMESTAMP`    | When performing this conversion, WarehousePG truncates the fractional part to only 6 digits.                                                                                                                                                                                                                                                                                                                                   |
+| `BIGINT`                                | `TIMESTAMP9_NTZ`                        | When performing this conversion, WarehousePG treats the BIGINT value as the number of nanoseconds started from ‘1970-01-01 00:00:00’.                                                                                                                                                                                                                                                                                          |
+| `DATE`                                  | `TIMESTAMP9_NTZ`                        | When performing this conversion, the resulting timestamp is ‘00:00:00.000000000’ on the given date.                                                                                                                                                                                                                                                                                                                            |
+| `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` | `TIMESTAMP9_NTZ`                        | When peforming this conversion, WarehousePG only extends the fractional part to nanosecond precision.                                                                                                                                                                                                                                                                                                                          |
+| `TIMESTAMP WITH TIME ZONE/TIMESTAMP`    | `TIMESTAMP9_NTZ`                        | The resulting timestamp’s value is determined by the value of `TIMESTAMPTZ` in the current session time zone.                                                                                                                                                                                                                                                                                                                  |
+| `TIMESTAMP9_NTZ`                        | `BIGINT`                                | The result of this conversion is the nanoseconds since ‘1970-01-01 00:00:00.000000000’ to the given `TIMESTAMP9_NTZ` value.  If the given `TIMESTAMP9_NTZ` value is before ‘1970-01-01 00:00:00.000000000’, the result is negative.                                                                                                                                                                                            |
+| `TIMESTAMP9_NTZ`                        | `DATE`                                  | When performing this conversion, WarehousePG truncatest the time portion and preserves the date portion.                                                                                                                                                                                                                                                                                                                       |
+| `TIMESTAMP9_NTZ`                        | `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` | When performing this conversion, WarehousePG truncates only the fractional part to 6 digits.                                                                                                                                                                                                                                                                                                                                   |
+| `TIMESTAMP9_NTZ`                        | `TIMESTAMP WITH TIME ZONE/TIMESTAMP`    | When performing this conversion, WarehousePG only truncates the fractional part to 6 digits and add the time zone of the current session.                                                                                                                                                                                                                                                                                      |
+| `TIMESTAMP9_LTZ`                        | `TIMESTAMP9_NTZ`                        | The resulting `TIMESTAMP9_NTZ` value is determined by the value of `TIMESTAMP9_LTZ` in the current session's time zone.                                                                                                                                                                                                                                                                                                        |
+| `TIMESTAMP9_NTZ`                        | `TIMESTAMP9_LTZ`                        | When performing this conversion, WarehousePG adds the timezone of the current sesion.                                                                                                                                                                                                                                                                                                                                          |
 
 ### Type Conversion Examples
 
-#### <a id="conversion_1"></a>Convert `BIGINT` to `TIMESTAMP9_LTZ`
+<a id="conversion_1"></a>
+
+#### Convert `BIGINT` to `TIMESTAMP9_LTZ`
 
 ```
 =# SHOW TIMEZONE; 
@@ -89,7 +96,9 @@ Asia/Shanghai
 (1 row) 
 ```
 
-#### <a id="conversion_2"></a>Convert `DATE` to `TIMESTAMP9_LTZ`
+<a id="conversion_2"></a>
+
+#### Convert `DATE` to `TIMESTAMP9_LTZ`
 
 ```
 =# SHOW TIMEZONE; 
@@ -114,7 +123,9 @@ Asia/Shanghai
 (1 row) 
 ```
 
-#### <a id="conversion_3"></a>Convert `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` to `TIMESTAMP9_LTZ`
+<a id="conversion_3"></a>
+
+#### Convert `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` to `TIMESTAMP9_LTZ`
 
 ```
 =# SHOW TIMEZONE; 
@@ -141,7 +152,9 @@ Time: 0.691 ms
 (1 row) 
 ```
 
-#### <a id="conversion_4"></a>Convert `TIMESTAMP WITH TIME ZONE/TIMESTAMP` to `TIMESTAMP9_LTZ`
+<a id="conversion_4"></a>
+
+#### Convert `TIMESTAMP WITH TIME ZONE/TIMESTAMP` to `TIMESTAMP9_LTZ`
 
 ```
 =# SELECT '2023-01-01 00:00:00.123456'::TIMESTAMPTZ::TIMESTAMP9_LTZ; 
@@ -152,7 +165,9 @@ Time: 0.691 ms
 (1 row) 
 ```
 
-#### <a id="conversion_5"></a>Convert `TIMESTAMP9_LTZ` to `BIGINT`
+<a id="conversion_5"></a>
+
+#### Convert `TIMESTAMP9_LTZ` to `BIGINT`
 
 ```
 =# SELECT '2023-01-01 00:00:00.123456 Asia/Shanghai'::TIMESTAMP9_LTZ::BIGINT; 
@@ -170,7 +185,9 @@ Time: 0.691 ms
 (1 row) 
 ```
 
-#### <a id="conversion_6"></a>Convert `TIMESTAMP9_LTZ` to `DATE`
+<a id="conversion_6"></a>
+
+#### Convert `TIMESTAMP9_LTZ` to `DATE`
 
 ```
 =# SET TIMEZONE TO 'Asia/Shanghai'; 
@@ -190,9 +207,11 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_7"></a>Convert `TIMESTAMP9_LTZ` to `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP`
+<a id="conversion_7"></a>
 
-**Example 1**
+#### Convert `TIMESTAMP9_LTZ` to `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP`
+
+##### Example 1
 
 ```
 =# SET TIMEZONE TO 'Asia/Shanghai'; 
@@ -214,7 +233,7 @@ SET
 2023-01-01 18:59:59 
 (1 row) 
 ```
- 
+
 **Example 2 -- Truncation of the fractional part** 
 
 ```
@@ -228,7 +247,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_8"></a>Convert `TIMESTAMP9_LTZ` to `TIMESTAMP WITH TIME ZONE/TIMESTAMP`
+<a id="conversion_8"></a>
+
+#### Convert `TIMESTAMP9_LTZ` to `TIMESTAMP WITH TIME ZONE/TIMESTAMP`
 
 ```
 =# SET TIMEZONE TO 'Asia/Shanghai'; 
@@ -239,7 +260,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_9"></a>Convert `BIGINT` to `TIMESTAMP9_NTZ`
+<a id="conversion_9"></a>
+
+#### Convert `BIGINT` to `TIMESTAMP9_NTZ`
 
 ```
 =# SELECT 0::BIGINT::TIMESTAMP9_NTZ; 
@@ -250,7 +273,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_10"></a>Convert `DATE` to `TIMESTAMP9_NTZ`
+<a id="conversion_10"></a>
+
+#### Convert `DATE` to `TIMESTAMP9_NTZ`
 
 ```
 =# SELECT '2023-01-01'::DATE::TIMESTAMP9_NTZ; 
@@ -260,7 +285,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_11"></a>Convert `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` to `TIMESTAMP9_NTZ` 
+<a id="conversion_11"></a>
+
+#### Convert `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` to `TIMESTAMP9_NTZ`
 
 ```
 =# SELECT '2023-01-01 00:00:00.123456'::TIMESTAMP::TIMESTAMP9_NTZ; 
@@ -271,7 +298,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_12"></a>Convert `TIMESTAMP WITH TIME ZONE/TIMESTAMP` to `TIMESTAMP9_NTZ` 
+<a id="conversion_12"></a>
+
+#### Convert `TIMESTAMP WITH TIME ZONE/TIMESTAMP` to `TIMESTAMP9_NTZ`
 
 ```
 =# SET TIMEZONE TO 'Asia/Shanghai'; 
@@ -291,7 +320,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_13"></a>Convert `TIMESTAMP9_NTZ` to `BIGINT`
+<a id="conversion_13"></a>
+
+#### Convert `TIMESTAMP9_NTZ` to `BIGINT`
 
 ```
 =# SELECT '2023-01-01 00:00:00.123456'::TIMESTAMP9_NTZ::BIGINT; 
@@ -307,7 +338,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_14"></a>Convert `TIMESTAMP9_NTZ` to `DATE`
+<a id="conversion_14"></a>
+
+#### Convert `TIMESTAMP9_NTZ` to `DATE`
 
 ```
 =# SELECT '2023-01-01 00:00:00.123456'::TIMESTAMP9_NTZ::DATE; 
@@ -317,7 +350,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_15"></a>Convert `TIMESTAMP9_NTZ` to `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP` 
+<a id="conversion_15"></a>
+
+#### Convert `TIMESTAMP9_NTZ` to `TIMESTAMP WITHOUT TIME ZONE/TIMESTAMP`
 
 ```
 =# SELECT '2023-01-01 00:00:00.123456789'::TIMESTAMP9_NTZ::TIMESTAMP; 
@@ -327,7 +362,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_16"></a>Convert `TIMESTAMP9_NTZ` to `TIMESTAMP WITH TIME ZONE/TIMESTAMP` 
+<a id="conversion_16"></a>
+
+#### Convert `TIMESTAMP9_NTZ` to `TIMESTAMP WITH TIME ZONE/TIMESTAMP`
 
 ```
 =# SET TIMEZONE TO 'Asia/Shanghai'; 
@@ -348,7 +385,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_17"></a>Convert `TIMESTAMP9_LTZ` to `TIMESTAMP9_NTZ`
+<a id="conversion_17"></a>
+
+#### Convert `TIMESTAMP9_LTZ` to `TIMESTAMP9_NTZ`
 
 ```
 =# SET TIMEZONE TO 'Asia/Shanghai'; 
@@ -368,7 +407,9 @@ SET
 (1 row) 
 ```
 
-#### <a id="conversion_18"></a>Convert `TIMESTAMP9_NTZ` to `TIMESTAMP9_LTZ`
+<a id="conversion_18"></a>
+
+#### Convert `TIMESTAMP9_NTZ` to `TIMESTAMP9_LTZ`
 
 ```
 =# SET TIMEZONE TO 'Asia/Shanghai'; 
@@ -388,9 +429,11 @@ SET
 (1 row) 
 ```
 
-## <a id="topic_gp"></a>The TimeZone Configuration Parameter and `timestamp9`
+<a id="topic_gp"></a>
 
-You can set the [TimeZone](../config_params/guc-list.html#TimeZone) server configuration parameter to specify the time zone that WarehousePG uses when it prints a `timestamp9` timestamp. When you set this parameter, WarehousePG displays the timestamp value in that time zone. For example:
+## The TimeZone Configuration Parameter and `timestamp9`
+
+You can set the [TimeZone](../config_params/guc-list.md#timezone) server configuration parameter to specify the time zone that WarehousePG uses when it prints a `timestamp9` timestamp. When you set this parameter, WarehousePG displays the timestamp value in that time zone. For example:
 
 ```sql
 testdb=# SELECT now()::timestamp9;
@@ -408,12 +451,14 @@ testdb=# SELECT now()::timestamp9;
 (1 row)
 ```
 
-## <a id="topic_gucs"></a>Support For Date/Time Functions
+<a id="topic_gucs"></a>
+
+## Support For Date/Time Functions
 
 The `timestamp9` module defines two server configuration parameters that you set to enable date/time functions defined in the `pg_catalog` schema on `timestamp` types. Visit the [PostgreSQL Documentation](https://www.postgresql.org/docs/12/functions-datetime.html#:~:text=Table%C2%A09.31.%C2%A0Date/Time%20Functions) for a list of the supported date/time functions. The parameters are:
 
-- `timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz`: when enabled, casting a `timestamp9_ltz` value to `timestamp with time zone` becomes implicit.
-- `timestamp9.enable_implicit_cast_timestamp9_ntz_to_timestamp`: when enabled, casting a `timestamp9_ntz` value to `timestamp without time zone` becomes implicit.
+-   `timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz`: when enabled, casting a `timestamp9_ltz` value to `timestamp with time zone` becomes implicit.
+-   `timestamp9.enable_implicit_cast_timestamp9_ntz_to_timestamp`: when enabled, casting a `timestamp9_ntz` value to `timestamp without time zone` becomes implicit.
 
 The default value for both configuration parameters is `off`. For example, if you try use the `date` function with `timestamp9` and `timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz` is set to `off`:
 
@@ -422,6 +467,7 @@ postgres=# SELECT date('2022-01-01'::timestamp9_ltz);
 ERROR:  implicitly cast timestamp9_ltz to timestamptz is not allowed 
 HINT:  either set 'timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz' to 'on' or do it explicitly 
 ```
+
 Enable the configuration parameter in order to use the `date` function:
 
 ```
@@ -463,12 +509,14 @@ postgres=# select '2019-09-19'::timestamp9_ntz::timestamptz <= '2019-09-20'::tim
 (1 row) 
 ```
 
-## <a id="topic_gucs"></a>Support For Date/Time Functions
+<a id="topic_gucs"></a>
+
+## Support For Date/Time Functions
 
 The `timestamp9` module defines two server configuration parameters that you set to enable date/time functions defined in the `pg_catalog` schema on `timestamp` types. Visit the [PostgreSQL Documentation](https://www.postgresql.org/docs/12/functions-datetime.html#:~:text=Table%C2%A09.31.%C2%A0Date/Time%20Functions) for a list of the supported date/time functions. The parameters are:
 
-- `timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz`: when enabled, casting a `timestamp9_ltz` value to `timestamp with time zone` becomes implicit.
-- `timestamp9.enable_implicit_cast_timestamp9_ntz_to_timestamp`: when enabled, casting a `timestamp9_ntz` value to `timestamp without time zone` becomes implicit.
+-   `timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz`: when enabled, casting a `timestamp9_ltz` value to `timestamp with time zone` becomes implicit.
+-   `timestamp9.enable_implicit_cast_timestamp9_ntz_to_timestamp`: when enabled, casting a `timestamp9_ntz` value to `timestamp without time zone` becomes implicit.
 
 The default value for both configuration parameters is `off`. For example, if you try use the `date` function with `timestamp9` and `timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz` is set to `off`:
 
@@ -477,6 +525,7 @@ postgres=# SELECT date('2022-01-01'::timestamp9_ltz);
 ERROR:  implicitly cast timestamp9_ltz to timestamptz is not allowed 
 HINT:  either set 'timestamp9.enable_implicit_cast_timestamp9_ltz_to_timestamptz' to 'on' or do it explicitly 
 ```
+
 Enable the configuration parameter in order to use the `date` function:
 
 ```
@@ -518,7 +567,9 @@ postgres=# select '2019-09-19'::timestamp9_ntz::timestamptz <= '2019-09-20'::tim
 (1 row) 
 ```
 
-## <a id="examples"></a>Examples
+<a id="examples"></a>
+
+## Examples
 
 ### `TIMESTAMP9_LTZ` Examples
 
@@ -549,7 +600,7 @@ SELECT '2023-02-20 00:00:00.123456789'::TIMESTAMP9_LTZ;
 
 TIMESTAMP9_LTZ also accepts numbers as valid input. It’s interpreted as the number of nanoseconds since the UTC time ‘1970-01-01 00:00:00.000000000’. 
 
-``` 
+```
 SELECT '123456789'::TIMESTAMP9_LTZ; 
 
            timestamp9_ltz 
@@ -579,9 +630,8 @@ The current system’s TIMEZONE parameter is ‘Asia/Shanghai’
 (1 row)
 ```
 
-## <a id="topic_limit"></a>Limitations
+<a id="topic_limit"></a>
+
+## Limitations
 
 The `timestamp9` data type does not support arithmetic calculations with nanoseconds.
-
-
-

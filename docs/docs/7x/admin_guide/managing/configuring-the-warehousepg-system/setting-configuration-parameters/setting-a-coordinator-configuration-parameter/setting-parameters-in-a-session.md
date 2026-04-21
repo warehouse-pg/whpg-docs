@@ -1,4 +1,6 @@
-# Setting Parameters in a Session
+---
+title: Setting Parameters in a Session
+
 ---
 
 Any session parameter can be set in an active database session using the `SET` command. For example:
@@ -15,5 +17,4 @@ The parameter setting is valid for the rest of that session or until you issue a
 
 Settings at the session level override those at the role level.
 
-**Parent topic:** [Setting a Coordinator Configuration Parameter](../topics/g-setting-a-coordinator-configuration-parameter.html)
-
+**Parent topic:** [Setting a Coordinator Configuration Parameter](index.md)

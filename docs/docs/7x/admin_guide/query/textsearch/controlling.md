@@ -1,4 +1,6 @@
-# Controlling Text Search
+---
+title: Controlling Text Search
+
 ---
 
 This topic shows how to create search and query vectors, how to rank search results, and how to highlight search terms in the results of text search queries.
@@ -12,7 +14,9 @@ This topic contains the following subtopics:
 -   [Ranking Search Results](#ranking)
 -   [Highlighting Results](#highlighting)
 
-## <a id="parsing-documents"></a>Parsing Documents
+<a id="parsing-documents"></a>
+
+## Parsing Documents
 
 WarehousePG provides the function `to_tsvector` for converting a document to the `tsvector` data type.
 
@@ -31,7 +35,7 @@ SELECT to_tsvector('english', 'a fat  cat sat on a mat - it ate a fat rats');
 
 In the example above we see that the resulting tsvector does not contain the words `a`, `on`, or `it`, the word `rats` became `rat`, and the punctuation sign `-` was ignored.
 
-The `to_tsvector` function internally calls a parser which breaks the document text into tokens and assigns a type to each token. For each token, a list of dictionaries \([Text Search Dictionaries](dictionaries.html)\) is consulted, where the list can vary depending on the token type. The first dictionary that *recognizes* the token emits one or more normalized *lexemes* to represent the token. For example, `rats` became `rat` because one of the dictionaries recognized that the word `rats` is a plural form of `rat`. Some words are recognized as *stop words*, which causes them to be ignored since they occur too frequently to be useful in searching. In our example these are `a`, `on`, and `it`. If no dictionary in the list recognizes the token then it is also ignored. In this example that happened to the punctuation sign `-` because there are in fact no dictionaries assigned for its token type \(`Space symbols`\), meaning space tokens will never be indexed. The choices of parser, dictionaries and which types of tokens to index are determined by the selected text search configuration \([Text Search Configuration Example](configuration.html)\). It is possible to have many different configurations in the same database, and predefined configurations are available for various languages. In our example we used the default configuration `english` for the English language.
+The `to_tsvector` function internally calls a parser which breaks the document text into tokens and assigns a type to each token. For each token, a list of dictionaries ([Text Search Dictionaries](dictionaries.md)) is consulted, where the list can vary depending on the token type. The first dictionary that *recognizes* the token emits one or more normalized *lexemes* to represent the token. For example, `rats` became `rat` because one of the dictionaries recognized that the word `rats` is a plural form of `rat`. Some words are recognized as *stop words*, which causes them to be ignored since they occur too frequently to be useful in searching. In our example these are `a`, `on`, and `it`. If no dictionary in the list recognizes the token then it is also ignored. In this example that happened to the punctuation sign `-` because there are in fact no dictionaries assigned for its token type (`Space symbols`), meaning space tokens will never be indexed. The choices of parser, dictionaries and which types of tokens to index are determined by the selected text search configuration ([Text Search Configuration Example](configuration.md)). It is possible to have many different configurations in the same database, and predefined configurations are available for various languages. In our example we used the default configuration `english` for the English language.
 
 The function `setweight` can be used to label the entries of a `tsvector` with a given *weight*, where a weight is one of the letters `A`, `B`, `C`, or `D`. This is typically used to mark entries coming from different parts of a document, such as `title` versus `body`. Later, this information can be used for ranking of search results.
 
@@ -44,9 +48,11 @@ UPDATE tt SET ti = setweight(to_tsvector(coalesce(title,'')), 'A')
   || setweight(to_tsvector(coalesce(body,'')), 'D');
 ```
 
-Here we have used `setweight` to label the source of each lexeme in the finished `tsvector`, and then merged the labeled `tsvector` values using the `tsvector` concatenation operator `||`. \([Additional Text Search Features](features.html) gives details about these operations.\)
+Here we have used `setweight` to label the source of each lexeme in the finished `tsvector`, and then merged the labeled `tsvector` values using the `tsvector` concatenation operator `||`. ([Additional Text Search Features](features.md) gives details about these operations.)
 
-## <a id="parsing-queries"></a>Parsing Queries
+<a id="parsing-queries"></a>
+
+## Parsing Queries
 
 WarehousePG provides the functions `to_tsquery`, `plainto_tsquery`, `phraseto_tsquery`, and `websearch_to_tsquery` for converting a query to the `tsquery` data type. `to_tsquery` offers access to more features than `plainto_tsquery`, but is less forgiving about its input. `websearch_to_tsquery` is a simplified version of `to_tsquery` with an alternative syntax, similar to the one used by web search engines.
 
@@ -54,7 +60,7 @@ WarehousePG provides the functions `to_tsquery`, `plainto_tsquery`, `phraseto_ts
 to_tsquery([<config> regconfig, ] <querytext> text) returns tsquery
 ```
 
-`to_tsquery` creates a `tsquery` value from *querytext*, which must consist of single tokens separated by the Boolean operators `&` \(AND\), `|` \(OR\), `!` \(NOT\), and <-> (FOLLOWED BY), possibly grouped using parentheses. In other words, the input to `to_tsquery` must already follow the general rules for tsquery input, as described in [Text Search Data Types](../../ref_guide/datatype-textsearch.html). The difference is that while basic `tsquery` input takes the tokens at face value, `to_tsquery` normalizes each token to a lexeme using the specified or default configuration, and discards any tokens that are stop words according to the configuration. For example:
+`to_tsquery` creates a `tsquery` value from *querytext*, which must consist of single tokens separated by the Boolean operators `&` (AND), `|` (OR), `!` (NOT), and &lt;-> (FOLLOWED BY), possibly grouped using parentheses. In other words, the input to `to_tsquery` must already follow the general rules for tsquery input, as described in [Text Search Data Types](../../../ref_guide/data_types/datatype-textsearch.md). The difference is that while basic `tsquery` input takes the tokens at face value, `to_tsquery` normalizes each token to a lexeme using the specified or default configuration, and discards any tokens that are stop words according to the configuration. For example:
 
 ```
 SELECT to_tsquery('english', 'The & Fat & Rats');
@@ -63,7 +69,7 @@ SELECT to_tsquery('english', 'The & Fat & Rats');
  'fat' & 'rat'
 ```
 
-As in basic `tsquery` input, weight\(s\) can be attached to each lexeme to restrict it to match only `tsvector` lexemes of those weight\(s\). For example:
+As in basic `tsquery` input, weight(s) can be attached to each lexeme to restrict it to match only `tsvector` lexemes of those weight(s). For example:
 
 ```
 SELECT to_tsquery('english', 'Fat | Rats:AB');
@@ -98,7 +104,7 @@ Without quotes, `to_tsquery` will generate a syntax error for tokens that are no
 plainto_tsquery([ <config> regconfig, ] <querytext> ext) returns tsquery
 ```
 
-`plainto_tsquery` transforms unformatted text `*querytext*` to `tsquery`. The text is parsed and normalized much as for `to_tsvector`, then the `&` \(AND\) Boolean operator is inserted between surviving words.
+`plainto_tsquery` transforms unformatted text `*querytext*` to `tsquery`. The text is parsed and normalized much as for `to_tsvector`, then the `&` (AND) Boolean operator is inserted between surviving words.
 
 Example:
 
@@ -150,13 +156,13 @@ websearch_to_tsquery([ <config> regconfig, ] <querytext> text) returns tsquery
 
 `websearch_to_tsquery` creates a `tsquery` value from querytext using an alternative syntax in which simple unformatted text is a valid query. Unlike `plainto_tsquery` and `phraseto_tsquery`, it also recognizes certain operators. Moreover, this function should never raise syntax errors, which makes it possible to use raw user-supplied input for search. The following syntax is supported:
 
-- `unquoted text`: text not inside quote marks will be converted to terms separated by `&` operators, as if processed by `plainto_tsquery`.
+-   `unquoted text`: text not inside quote marks will be converted to terms separated by `&` operators, as if processed by `plainto_tsquery`.
 
-- `"quoted text"`: text inside quote marks will be converted to terms separated by `<->` operators, as if processed by `phraseto_tsquery`.
+-   `"quoted text"`: text inside quote marks will be converted to terms separated by `<->` operators, as if processed by `phraseto_tsquery`.
 
-- `OR`: logical or will be converted to the `|` operator.
+-   `OR`: logical or will be converted to the `|` operator.
 
-- `-`: the logical not operator, converted to the `!` operator.
+-   `-`: the logical not operator, converted to the `!` operator.
 
 Examples:
 
@@ -192,7 +198,9 @@ SELECT websearch_to_tsquery('english', '""" )( dummy \\ query <->');
 (1 row)
 ```
 
-## <a id="ranking"></a>Ranking Search Results
+<a id="ranking"></a>
+
+## Ranking Search Results
 
 Ranking attempts to measure how relevant documents are to a particular query, so that when there are many matches the most relevant ones can be shown first. WarehousePG provides two predefined ranking functions, which take into account lexical, proximity, and structural information; that is, they consider how often the query terms appear in the document, how close together the terms are in the document, and how important is the part of the document where they occur. However, the concept of relevancy is vague and very application-specific. Different applications might require additional information for ranking, e.g., document modification time. The built-in ranking functions are only examples. You can write your own ranking functions and/or combine their results with additional factors to fit your specific needs.
 
@@ -204,7 +212,7 @@ Ranks vectors based on the frequency of their matching lexemes.
 `ts_rank_cd([ <weights> float4[], ] <vector> tsvector, <query> tsquery [, <normalization> integer ]) returns float4`
 This function computes the *cover density* ranking for the given document vector and query, as described in Clarke, Cormack, and Tudhope's "Relevance Ranking for One to Three Term Queries" in the journal "Information Processing and Management", 1999. Cover density is similar to `ts_rank` ranking except that the proximity of matching lexemes to each other is taken into consideration.
 
-This function requires lexeme positional information to perform its calculation. Therefore, it ignores any "stripped" lexemes in the `tsvector`. If there are no unstripped lexemes in the input, the result will be zero. \(See [Manipulating Documents](features.html#manipulating-documents) for more information about the `strip` function and positional information in `tsvector`s.\)
+This function requires lexeme positional information to perform its calculation. Therefore, it ignores any "stripped" lexemes in the `tsvector`. If there are no unstripped lexemes in the input, the result will be zero. (See [Manipulating Documents](features.md#manipulating-documents) for more information about the `strip` function and positional information in `tsvector`s.)
 
 For both these functions, the optional `<weights>` argument offers the ability to weigh word instances more or less heavily depending on how they are labeled. The weight arrays specify how heavily to weigh each category of word, in the order:
 
@@ -220,12 +228,12 @@ If no `<weights>` are provided, then these defaults are used:
 
 Typically weights are used to mark words from special areas of the document, like the title or an initial abstract, so they can be treated with more or less importance than words in the document body.
 
-Since a longer document has a greater chance of containing a query term it is reasonable to take into account document size, e.g., a hundred-word document with five instances of a search word is probably more relevant than a thousand-word document with five instances. Both ranking functions take an integer `<normalization>` option that specifies whether and how a document's length should impact its rank. The integer option controls several behaviors, so it is a bit mask: you can specify one or more behaviors using `|` \(for example, `2|4`\).
+Since a longer document has a greater chance of containing a query term it is reasonable to take into account document size, e.g., a hundred-word document with five instances of a search word is probably more relevant than a thousand-word document with five instances. Both ranking functions take an integer `<normalization>` option that specifies whether and how a document's length should impact its rank. The integer option controls several behaviors, so it is a bit mask: you can specify one or more behaviors using `|` (for example, `2|4`).
 
--   0 \(the default\) ignores the document length
+-   0 (the default) ignores the document length
 -   1 divides the rank by 1 + the logarithm of the document length
 -   2 divides the rank by the document length
--   4 divides the rank by the mean harmonic distance between extents \(this is implemented only by `ts_rank_cd`\)
+-   4 divides the rank by the mean harmonic distance between extents (this is implemented only by `ts_rank_cd`)
 -   8 divides the rank by the number of unique words in document
 -   16 divides the rank by 1 + the logarithm of the number of unique words in document
 -   32 divides the rank by itself + 1
@@ -280,7 +288,9 @@ LIMIT 10;
 
 Ranking can be expensive since it requires consulting the tsvector of each matching document, which can be I/O bound and therefore slow. Unfortunately, it is almost impossible to avoid since practical queries often result in large numbers of matches.
 
-## <a id="highlighting"></a>Highlighting Results
+<a id="highlighting"></a>
+
+## Highlighting Results
 
 To present search results it is ideal to show a part of each document and how it is related to the query. Usually, search engines show fragments of the document with marked search terms. WarehousePG provides a function `ts_headline` that implements this functionality.
 
@@ -333,5 +343,4 @@ occurrences to display in the result.',
 
 `ts_headline` uses the original document, not a `tsvector` summary, so it can be slow and should be used with care.
 
-**Parent topic:** [Using Full Text Search](../textsearch/full-text-search.html)
-
+**Parent topic:** [Using Full Text Search](index.md)

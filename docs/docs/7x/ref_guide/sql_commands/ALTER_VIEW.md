@@ -1,10 +1,17 @@
-# ALTER VIEW 
+---
+title: ALTER VIEW
+
+---
 
 Changes properties of a view.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER VIEW [ IF EXISTS ] <name> ALTER [ COLUMN ] <column_name> SET DEFAULT <expression>
 
 ALTER VIEW [ IF EXISTS ] <name> ALTER [ COLUMN ] <column_name> DROP DEFAULT
@@ -20,16 +27,20 @@ ALTER VIEW [ IF EXISTS ] <name> SET ( <view_option_name> [= <view_option_value>]
 ALTER VIEW [ IF EXISTS ] <name> RESET ( <view_option_name> [, ... ] )
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`ALTER VIEW` changes various auxiliary properties of a view. \(If you want to modify the view's defining query, use `CREATE OR REPLACE VIEW`\).
+## Description
+
+`ALTER VIEW` changes various auxiliary properties of a view. (If you want to modify the view's defining query, use `CREATE OR REPLACE VIEW`).
 
 You must own the view to use `ALTER VIEW`. To change a view's schema you must also have `CREATE` privilege on the new schema. To alter the owner, you must also be a direct or indirect member of the new owning role, and that role must have `CREATE` privilege on the view's schema. These restrictions enforce that altering the owner does not do anything you could not do by dropping and recreating the view. However, a superuser can alter ownership of any view.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
-The name \(optionally schema-qualified\) of an existing view.
+The name (optionally schema-qualified) of an existing view.
 
 IF EXISTS
 Do not throw an error if the view does not exist. WarehousePG issues a notice in this case.
@@ -37,30 +48,36 @@ Do not throw an error if the view does not exist. WarehousePG issues a notice in
 SET/DROP DEFAULT
 These forms set or remove the default value for a column. A view column's default value is substituted into any `INSERT` or `UPDATE` command whose target is the view, before applying any rules or triggers for the view. The view's default will therefore take precedence over any default values from underlying relations.
 
-new\_owner
+new_owner
 The user name of the new owner of the view.
 
-new\_name
+new_name
 The new name of the view.
 
-new\_schema
+new_schema
 The new schema for the view.
 
-SET ( view\_option\_name [= view\_option\_value] [, ... ] )
-RESET ( view\_option\_name [, ... ] )
+SET ( view_option_name [= view_option_value][, ... ] )
+RESET ( view_option_name [, ... ] )
 Sets or resets a view option. Currently supported options are:
 
-    check\_option \(string\)
-    Changes the check option of the view. The value must be `local` or `cascaded`.
+```
+check\_option \(string\)
+Changes the check option of the view. The value must be `local` or `cascaded`.
 
-    security\_barrier \(boolean\)
-    Changes the security-barrier property of the view. The value must be a Boolean value, such as `true` or `false`.
+security\_barrier \(boolean\)
+Changes the security-barrier property of the view. The value must be a Boolean value, such as `true` or `false`.
+```
 
-## <a id="Notes"></a>Notes 
+<a id="notes"></a>
+
+## Notes
 
 For historical reasons, `ALTER TABLE` can be used with views, too; however, the only variants of `ALTER TABLE` that are allowed with views are equivalent to the statements shown above.
 
-## <a id="examples"></a>Examples 
+<a id="examples"></a>
+
+## Examples
 
 To rename the view `foo` to `bar`:
 
@@ -78,13 +95,16 @@ INSERT INTO base_table(id) VALUES(1);  -- ts will receive a NULL
 INSERT INTO a_view(id) VALUES(2);  -- ts will receive the current time
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 `ALTER VIEW` is a WarehousePG extension of the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE VIEW](CREATE_VIEW.html), [DROP VIEW](DROP_VIEW.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE VIEW](CREATE_VIEW.md), [DROP VIEW](DROP_VIEW.md)
 
+**Parent topic:** [SQL Commands](index.md)

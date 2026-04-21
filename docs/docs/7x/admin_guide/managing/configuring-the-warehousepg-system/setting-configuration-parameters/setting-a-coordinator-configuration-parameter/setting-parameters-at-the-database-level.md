@@ -1,4 +1,6 @@
-# Setting Parameters at the Database Level
+---
+title: Setting Parameters at the Database Level
+
 ---
 
 Use `ALTER DATABASE` to set parameters at the database level. For example:
@@ -9,5 +11,4 @@ Use `ALTER DATABASE` to set parameters at the database level. For example:
 
 When you set a session parameter at the database level, every session that connects to that database uses that parameter setting. Settings at the database level override settings at the system level.
 
-**Parent topic:** [Setting a Coordinator Configuration Parameter](../topics/g-setting-a-coordinator-configuration-parameter.html)
-
+**Parent topic:** [Setting a Coordinator Configuration Parameter](index.md)

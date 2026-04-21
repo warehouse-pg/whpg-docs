@@ -1,20 +1,31 @@
-# DROP TABLESPACE 
+---
+title: DROP TABLESPACE
+
+---
 
 Removes a tablespace.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP TABLESPACE [IF EXISTS] <name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `DROP TABLESPACE` removes a tablespace from the system.
 
-A tablespace can only be dropped by its owner or a superuser. The tablespace must be empty of all database objects before it can be dropped. It is possible that objects in other databases may still reside in the tablespace even if no objects in the current database are using the tablespace. Also, if the tablespace is listed in the [temp\_tablespaces](../config_params/guc-list.html) setting of any active session, `DROP TABLESPACE` might fail due to temporary files residing in the tablespace.
+A tablespace can only be dropped by its owner or a superuser. The tablespace must be empty of all database objects before it can be dropped. It is possible that objects in other databases may still reside in the tablespace even if no objects in the current database are using the tablespace. Also, if the tablespace is listed in the [temp_tablespaces](../config_params/guc-list.md) setting of any active session, `DROP TABLESPACE` might fail due to temporary files residing in the tablespace.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF EXISTS
 Do not throw an error if the tablespace does not exist. WarehousePG issues a notice in this case.
@@ -22,7 +33,9 @@ Do not throw an error if the tablespace does not exist. WarehousePG issues a not
 name
 The name of the tablespace to remove.
 
-## <a id="Notes"></a>Notes 
+<a id="notes"></a>
+
+## Notes
 
 You cannot run `DROP TABLESPACE` inside a transaction block.
 
@@ -36,9 +49,11 @@ WARNING:  tablespace with oid "16415" is not empty
 DROP TABLESPACE
 ```
 
-The table data in the tablespace directory is not dropped. You can use the [ALTER TABLE](ALTER_TABLE.html) command to change the tablespace defined for the table and move the data to an existing tablespace.
+The table data in the tablespace directory is not dropped. You can use the [ALTER TABLE](ALTER_TABLE.md) command to change the tablespace defined for the table and move the data to an existing tablespace.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Remove the tablespace `mystuff`:
 
@@ -46,13 +61,16 @@ Remove the tablespace `mystuff`:
 DROP TABLESPACE mystuff;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 `DROP TABLESPACE` is a WarehousePG extension.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE TABLESPACE](CREATE_TABLESPACE.html), [ALTER TABLESPACE](ALTER_TABLESPACE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE TABLESPACE](CREATE_TABLESPACE.md), [ALTER TABLESPACE](ALTER_TABLESPACE.md)
 
+**Parent topic:** [SQL Commands](index.md)

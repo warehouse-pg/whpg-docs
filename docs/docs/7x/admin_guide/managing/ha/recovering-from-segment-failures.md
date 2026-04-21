@@ -1,4 +1,6 @@
-# Recovering from Segment Failures
+---
+title: Recovering from Segment Failures
+
 ---
 
 This topic walks you through what to do when one or more segments or hosts are down and you want to recover the down segments. The recovery path you follow depends primarily which of these 3 scenarios fits your circumstances:
@@ -9,15 +11,13 @@ This topic walks you through what to do when one or more segments or hosts are d
 
 -   you want to recover to a new host, outside of the cluster
 
-
 The steps you follow within these scenarios can vary, depending on:
 
 -   whether you want to do an incremental or a full recovery
 
 -   whether you want to recover all segments or just a subset of segments
 
-
-> **Note** Incremental recovery is only possible when recovering segments to the current host \(in-place recovery\).
+> **Note** Incremental recovery is only possible when recovering segments to the current host (in-place recovery).
 
 This topic is divided into the following sections:
 
@@ -25,16 +25,20 @@ This topic is divided into the following sections:
 -   [Recovery Scenarios](#recovery_scenarios)
 -   [Post-Recovery Tasks](#post_recovery)
 
-**Parent topic:** [Enabling High Availability and Data Consistency Features](../ha/enabling-high-availability-features.html)
+**Parent topic:** [Enabling High Availability and Data Consistency Features](index.md)
 
-## <a id="prepare_for_recovery"></a>Prerequisites
+<a id="prepare_for_recovery"></a>
+
+## Prerequisites
 
 -   Mirroring is enabled for all segments.
--   You've already identified which segments have failed. If necessary, see the topic [Checking for Failed Segments](checking-for-failed-segments.html).
+-   You've already identified which segments have failed. If necessary, see the topic [Checking for Failed Segments](checking-for-failed-segments.md).
 -   The coordinator host can connect to the segment host.
 -   All networking or hardware issues that caused the segment to fail have been resolved.
 
-## <a id="recovery_scenarios"></a>Recovery Scenarios
+<a id="recovery_scenarios"></a>
+
+## Recovery Scenarios
 
 This section documents the steps for the 3 distinct segment recovery scenarios. Follow the link to instructions that walk you through each scenario.
 
@@ -45,11 +49,15 @@ This section documents the steps for the 3 distinct segment recovery scenarios. 
 -   [Recover to A Different Host within the Cluster](#different_host)
 -   [Recover to A New Host, Outside of the Cluster](#new_host)
 
-### <a id="same_host"></a>Recover In-Place to Current Host
+<a id="same_host"></a>
+
+### Recover In-Place to Current Host
 
 When recovering in-place to the current host, you may choose between incremental recovery (the default), full recovery, and differential recovery.
 
-#### <a id="incremental"></a>Incremental Recovery
+<a id="incremental"></a>
+
+#### Incremental Recovery
 
 Follow these steps for incremental recovery:
 
@@ -60,6 +68,7 @@ Follow these steps for incremental recovery:
     ```
 
 2.  To recover a subset of segments:
+
     1.  Manually create a `recover_config_file` file in a location of your choice, where each segment to recover has its own line with format `failedAddress|failedPort|failedDataDirectory` or `failedHostname|failedAddress|failedPort|failedDataDirectory`
 
         For multiple segments, create a new line for each segment you want to recover, specifying the hostname (optional), the address, port number and data directory for each down segment. For example:
@@ -69,7 +78,7 @@ Follow these steps for incremental recovery:
         failedAddress2|failedPort2|failedDataDirectory2
         failedAddress3|failedPort3|failedDataDirectory3
         ```
-       
+
         or
 
         ```
@@ -78,22 +87,25 @@ Follow these steps for incremental recovery:
         failedHostname3|failedAddress3|failedPort3|failedDataDirectory3
         ```
 
+````
+2.  Alternatively, generate a sample recovery file using the following command; you may edit the resulting file if necessary:
 
-    2.  Alternatively, generate a sample recovery file using the following command; you may edit the resulting file if necessary:
+    ```
+    $ gprecoverseg -o /home/gpadmin/recover_config_file
+    ```
 
-        ```
-        $ gprecoverseg -o /home/gpadmin/recover_config_file
-        ```
+3.  Pass the `recover_config_file` to the `gprecoverseg -i` command:
 
-    3.  Pass the `recover_config_file` to the `gprecoverseg -i` command:
-
-        ```
-        $ gprecoverseg -i /home/gpadmin/recover_config_file  
-        ```
+    ```
+    $ gprecoverseg -i /home/gpadmin/recover_config_file  
+    ```
+````
 
 3.  Perform the post-recovery tasks summarized in the section [Post-Recovery Tasks](#post_recovery).
 
-#### <a id="full"></a>Full Recovery
+<a id="full"></a>
+
+#### Full Recovery
 
 1.  To recover all segments, run `gprecoverseg -F`:
 
@@ -102,6 +114,7 @@ Follow these steps for incremental recovery:
     ```
 
 2.  To recover specific segments:
+
     1.  Manually create a `recover_config_file` file in a location of your choice, where each segment to recover has its own line with following format:
 
         ```
@@ -130,14 +143,17 @@ Follow these steps for incremental recovery:
 
 3.  Perform the post-recovery tasks summarized in the section [Post-Recovery Tasks](#post_recovery).
 
-#### <a id="differential"></a>Differential Recovery
+<a id="differential"></a>
+
+#### Differential Recovery
 
 Follow these steps for differential recovery: 
 
-1. Run `gprecoverseg --differential`
+1.  Run `gprecoverseg --differential`
 
+<a id="different_host"></a>
 
-### <a id="different_host"></a>Recover to A Different Host within the Cluster
+### Recover to A Different Host within the Cluster
 
 > **Note** Only full recovery is possible when recovering to a different host in the cluster.
 
@@ -171,28 +187,34 @@ Follow these steps to recover all segments or just a subset of segments to a dif
 
 3.  Perform the post-recovery tasks summarized in the section [Post-Recovery Tasks](#post_recovery).
 
-### <a id="new_host"></a>Recover to A New Host, Outside of the Cluster
+<a id="new_host"></a>
+
+### Recover to A New Host, Outside of the Cluster
 
 Follow these steps if you are planning to do a hardware refresh on the host the segments are running on.
 
 > **Note** Only full recovery is possible when recovering to a new host.
 
-#### <a id="new_host_requirements"></a>Requirements for New Host
+<a id="new_host_requirements"></a>
+
+#### Requirements for New Host
 
 The new host must:
 
 -   have the same WarehousePG software installed and configured as the failed host
 
--   have the same hardware and OS configuration as the failed host \(same hostname, OS version, OS configuration parameters applied, locales, gpadmin user account, data directory locations created, ssh keys exchanged, number of network interfaces, network interface naming convention, and so on\)
+-   have the same hardware and OS configuration as the failed host (same hostname, OS version, OS configuration parameters applied, locales, gpadmin user account, data directory locations created, ssh keys exchanged, number of network interfaces, network interface naming convention, and so on)
 
 -   have sufficient disk space to accommodate the segments
 
 -   be able to connect password-less with all other existing segments and WarehousePG coordinator.
 
+<a id="recover_to_new_host"></a>
 
-#### <a id="recover_to_new_host"></a>Steps to Recover to a New Host
+#### Steps to Recover to a New Host
 
 1.  Bring up the new host
+
 2.  Run the following command to recover all segments to the new host:
 
     ```
@@ -209,7 +231,9 @@ The new host must:
 
 3.  Perform the post-recovery tasks summarized in the section [Post-Recovery Tasks](#post_recovery).
 
-### <a id="post_recovery"></a>Post-Recovery Tasks
+<a id="post_recovery"></a>
+
+### Post-Recovery Tasks
 
 Follow these steps once `gprecoverseg` has completed:
 
@@ -230,5 +254,3 @@ Follow these steps once `gprecoverseg` has completed:
     ```
     gprecoverseg -r
     ```
-
-

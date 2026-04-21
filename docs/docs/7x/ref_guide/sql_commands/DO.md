@@ -1,14 +1,23 @@
-# DO 
+---
+title: DO
+
+---
 
 Runs anonymous code block as a transient anonymous function.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DO [ LANGUAGE <lang_name> ] <code>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `DO` runs an anonymous code block, or in other words a transient anonymous function in a procedural language.
 
@@ -22,17 +31,21 @@ Anonymous blocks are standard procedural language blocks. They carry the syntax 
 
 The compilation and execution of anonymous blocks are combined in one step, while a user-defined function needs to be re-defined before use each time its definition changes.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 code
 The procedural language code to be run. This must be specified as a string literal, just as with the `CREATE FUNCTION` command. Use of a dollar-quoted literal is recommended.
 
-lang\_name
+lang_name
 The name of the procedural language in which the code is written. The default is `plpgsql`.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-The procedural language to be used must already have been installed into the current database by means of `CREATE EXTENSION`. The PL/pgSQL language is installed wih WarehousePG and is registered by default every user-created database. The PL/Python and PL/Perl languages are installed by default, but not registered. Other languages are neither installed nor registered. The [pg_language](../system_catalogs/pg_language.html) system catalog contains information about the registered languages in a database.
+## Notes
+
+The procedural language to be used must already have been installed into the current database by means of `CREATE EXTENSION`. The PL/pgSQL language is installed wih WarehousePG and is registered by default every user-created database. The PL/Python and PL/Perl languages are installed by default, but not registered. Other languages are neither installed nor registered. The [pg_language](../system_catalogs/system_catalogs_definitions/pg_language.md) system catalog contains information about the registered languages in a database.
 
 The user must have `USAGE` privilege for the procedural language, or must be a superuser if the language is untrusted. This is the same privilege requirement as for creating a function in the language.
 
@@ -40,7 +53,9 @@ If `DO` is run in a transaction block, then the procedure code cannot execute tr
 
 Anonymous blocks do not support function volatility or `EXECUTE ON` attributes.
 
-## <a id="Examples"></a>Examples 
+<a id="examples"></a>
+
+## Examples
 
 This PL/pgSQL example grants all privileges on all views in schema `public` to role `webuser`:
 
@@ -55,13 +70,16 @@ BEGIN
 END$$;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 There is no `DO` statement in the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE LANGUAGE](CREATE_LANGUAGE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE LANGUAGE](CREATE_LANGUAGE.md)
 
+**Parent topic:** [SQL Commands](index.md)

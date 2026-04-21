@@ -1,4 +1,7 @@
-# Memory calculator
+---
+title: WarehousePG memory calculator
+
+---
 
 This tool calculates recommended memory limits for WarehousePG environments. It is designed to maximize database memory utilization while maintaining a conservative buffer for Linux kernel operations, ensuring system stability even under high concurrency or heavy workloads.
 
@@ -161,7 +164,7 @@ transform: translateY(-10px);
 
 Choose the value for **Primary Segments Per Node** based on your mirroring strategy.
 
-See [Overview of Segment Mirroring](ha/overview-of-segment-mirroring) for more information on group and spread mirroring strategies.
+See [Overview of Segment Mirroring](../managing/ha/overview-of-segment-mirroring.md) for more information on group and spread mirroring strategies.
 - Given a configuration of 6 primaries and 6 mirrors, set **Primary Segments Per Node** to 6+6=12 when using group mirroring.
 - Using the same configuration example for spread mirroring, the value would be 6+2=8.
 

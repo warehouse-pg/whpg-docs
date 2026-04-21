@@ -1,4 +1,6 @@
-# Viewing Server Configuration Parameter Settings
+---
+title: Viewing Server Configuration Parameter Settings
+
 ---
 
 The SQL command `SHOW` allows you to see the current server configuration parameter settings. For example, to see the settings for all parameters:
@@ -7,11 +9,10 @@ The SQL command `SHOW` allows you to see the current server configuration parame
 $ psql -c 'SHOW ALL;'
 ```
 
-`SHOW` lists the settings for the coordinator instance only. To see the value of a particular parameter across the entire system \( and all segments\), use the `gpconfig` utility. For example:
+`SHOW` lists the settings for the coordinator instance only. To see the value of a particular parameter across the entire system ( and all segments), use the `gpconfig` utility. For example:
 
 ```
 $ gpconfig --show max_connections
 ```
 
-**Parent topic:** [Configuring the WarehousePG cluster](../topics/g-configuring-the-warehousepg-system.html)
-
+**Parent topic:** [Configuring the WarehousePG cluster](index.md)

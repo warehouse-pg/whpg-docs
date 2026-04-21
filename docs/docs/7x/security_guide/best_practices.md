@@ -1,15 +1,20 @@
-# Security Best Practices 
+---
+title: Security Best Practices
+
+---
 
 Describes basic security best practices that you should follow to ensure the highest level of system security. 
 
 In the default WarehousePG security configuration:
 
 -   Only local connections are allowed.
--   Basic authentication is configured for the superuser \(`gpadmin`\).
+-   Basic authentication is configured for the superuser (`gpadmin`).
 -   The superuser is authorized to do anything.
 -   Only database role passwords are encrypted.
 
-## <a id="sysuser"></a>System User \(gpadmin\) 
+<a id="sysuser"></a>
+
+## System User (gpadmin)
 
 Secure and limit access to the `gpadmin` system user.
 
@@ -17,25 +22,31 @@ WarehousePG requires a UNIX user id to install and initialize the WarehousePG cl
 
 The `gpadmin` user can bypass all security features of WarehousePG. Anyone who logs on to a WarehousePG host with this user id can read, alter, or delete any data, including system catalog data and database access rights. Therefore, it is very important to secure the `gpadmin` user id and only allow essential system administrators access to it.
 
-Administrators should only log in to WarehousePG as `gpadmin` when performing certain system maintenance tasks \(such as upgrade or expansion\).
+Administrators should only log in to WarehousePG as `gpadmin` when performing certain system maintenance tasks (such as upgrade or expansion).
 
 Database users should never log on as `gpadmin`, and ETL or production workloads should never run as `gpadmin`.
 
-## <a id="susers"></a>Superusers 
+<a id="susers"></a>
+
+## Superusers
 
 Roles granted the `SUPERUSER` attribute are superusers. Superusers bypass all access privilege checks and resource queues. Only system administrators should be given superuser rights.
 
 See "Altering Role Attributes" in the *WarehousePG Administrator Guide*.
 
-## <a id="loginusers"></a>Login Users 
+<a id="loginusers"></a>
+
+## Login Users
 
 Assign a distinct role to each user who logs in and set the `LOGIN` attribute.
 
-For logging and auditing purposes, each user who is allowed to log in to WarehousePG should be given their own database role. For applications or web services, consider creating a distinct role for each application or service. See "Creating New Roles \(Users\)" in the *WarehousePG Administrator Guide*.
+For logging and auditing purposes, each user who is allowed to log in to WarehousePG should be given their own database role. For applications or web services, consider creating a distinct role for each application or service. See "Creating New Roles (Users)" in the *WarehousePG Administrator Guide*.
 
 Each login role should be assigned to a single, non-default resource queue.
 
-## <a id="groups"></a>Groups 
+<a id="groups"></a>
+
+## Groups
 
 Use groups to manage access privileges.
 
@@ -45,17 +56,21 @@ Every login user should belong to one or more roles. Use the `GRANT` statement t
 
 The `LOGIN` attribute should not be set for group roles.
 
-See "Creating Groups \(Role Membership\)" in the *WarehousePG Administrator Guide*.
+See "Creating Groups (Role Membership)" in the *WarehousePG Administrator Guide*.
 
-## <a id="objpriv"></a>Object Privileges 
+<a id="objpriv"></a>
 
-Only the owner and superusers have full permissions to new objects. Permission must be granted to allow other rules \(users or groups\) to access objects. Each type of database object has different privileges that may be granted. Use the `GRANT` statement to add a permission to a role and the `REVOKE` statement to remove the permission.
+## Object Privileges
+
+Only the owner and superusers have full permissions to new objects. Permission must be granted to allow other rules (users or groups) to access objects. Each type of database object has different privileges that may be granted. Use the `GRANT` statement to add a permission to a role and the `REVOKE` statement to remove the permission.
 
 You can change the owner of an object using the `REASSIGN OWNED BY` statement. For example, to prepare to drop a role, change the owner of the objects that belong to the role. Use the `DROP OWNED BY` to drop objects, including dependent objects, that are owned by a role.
 
 Schemas can be used to enforce an additional layer of object permissions checking, but schema permissions do not override object privileges set on objects contained within the schema.
 
-## <a id="password-strength-recommendations"></a>Operating System Users and File System 
+<a id="password-strength-recommendations"></a>
+
+## Operating System Users and File System
 
 > **Note** Commands shown in this section should be run as the root user.
 
@@ -116,7 +131,7 @@ find / -xdev -type d \( -perm -0002 -a ! -perm -1000 \) -print
 
 ```
 
-Set the sticky bit \(`# chmod +t {dir}`\) for all the directories that result from running the previous command.
+Set the sticky bit (`# chmod +t {dir}`) for all the directories that result from running the previous command.
 
 Find all the files that are world-writable and fix each file listed.
 
@@ -126,7 +141,7 @@ find / -xdev -type f -perm -0002 -print
 
 ```
 
-Set the right permissions \(`# chmod o-w {file}`\) for all the files generated by running the aforementioned command.
+Set the right permissions (`# chmod o-w {file}`) for all the files generated by running the aforementioned command.
 
 Find all the files that do not belong to a valid user or group and either assign an owner or remove the file, as appropriate.
 
@@ -136,7 +151,7 @@ find / -xdev \( -nouser -o -nogroup \) -print
 
 ```
 
-Find all the directories that are world-writable and ensure they are owned by either root or a system account \(assuming only system accounts have a User ID lower than 500\). If the command generates any output, verify the assignment is correct or reassign it to root.
+Find all the directories that are world-writable and ensure they are owned by either root or a system account (assuming only system accounts have a User ID lower than 500). If the command generates any output, verify the assignment is correct or reassign it to root.
 
 ```
 
@@ -144,7 +159,7 @@ find / -xdev -type d -perm -0002 -uid +500 -print
 
 ```
 
-Authentication settings such as password quality, password expiration policy, password reuse, password retry attempts, and more can be configured using the Pluggable Authentication Modules \(PAM\) framework. PAM looks in the directory `/etc/pam.d` for application-specific configuration information. Running `authconfig` or `system-config-authentication` will re-write the PAM configuration files, destroying any manually made changes and replacing them with system defaults.
+Authentication settings such as password quality, password expiration policy, password reuse, password retry attempts, and more can be configured using the Pluggable Authentication Modules (PAM) framework. PAM looks in the directory `/etc/pam.d` for application-specific configuration information. Running `authconfig` or `system-config-authentication` will re-write the PAM configuration files, destroying any manually made changes and replacing them with system defaults.
 
 The default `pam_cracklib` PAM module provides strength checking for passwords. To configure `pam_cracklib` to require at least one uppercase character, lowercase character, digit, and special character, as recommended by the U.S. Department of Defense guidelines, edit the file `/etc/pam.d/system-auth` to include the following parameters in the line corresponding to password requisite `pam_cracklib.so try_first_pass`.
 
@@ -181,7 +196,6 @@ The `pam_tally2` PAM module provides the capability to lock out user accounts af
     account required pam_tally2.so
     ```
 
-
 Here, the deny parameter is set to limit the number of retries to 5 and the `unlock_time` has been set to 900 seconds to keep the account locked for 900 seconds before it is unlocked. These parameters may be configured appropriately to reflect your security policy requirements. A locked account can be manually unlocked using the `pam_tally2` utility:
 
 ```
@@ -212,5 +226,4 @@ chmod 400 shadow gshadow
 
 ```
 
-**Parent topic:** [WarehousePG Security Configuration Guide](../security_guide/)
-
+**Parent topic:** [WarehousePG Security Configuration Guide](index.md)

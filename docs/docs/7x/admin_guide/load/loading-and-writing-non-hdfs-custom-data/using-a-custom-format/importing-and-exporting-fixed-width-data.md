@@ -1,4 +1,6 @@
-# Importing and Exporting Fixed Width Data
+---
+title: Importing and Exporting Fixed Width Data
+
 ---
 
 Each column/field in fixed-width text data contains a certain number of character positions. Use a WarehousePG custom format for fixed-width data by specifying the built-in formatter functions `fixedwith_in` (read) and `fixedwidth_out` (write). 
@@ -25,6 +27,7 @@ The following options specify how to import fixed width data.
     Use the `null='null_string_value'` option to specify a value for null characters.
 
 -   If you specify `preserve_blanks=on`, you must also define a value for null characters.
+
 -   If you specify `preserve_blanks=off`, null is not defined, and the field contains only blanks, WarehousePG writes a null to the table. If null is defined, WarehousePG writes an empty string to the table.
 
     Use the `line_delim='line_ending'` option to specify the line ending character. The following examples cover most cases. The `E` specifies an escape string constant.
@@ -36,6 +39,4 @@ The following options specify how to import fixed width data.
     line_delim='abc'
     ```
 
-
-**Parent topic:** [Using a Custom Format](../../load/topics/g-using-a-custom-format.html)
-
+**Parent topic:** [Using a Custom Format](index.md)

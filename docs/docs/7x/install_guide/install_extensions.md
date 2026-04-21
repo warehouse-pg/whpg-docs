@@ -1,4 +1,6 @@
-# Installing Extensions
+---
+title: Installing Extensions
+
 ---
 
 The WarehousePG distribution includes several PostgreSQL- and WarehousePG-sourced `contrib` modules that you have the option to install.
@@ -19,40 +21,38 @@ $ psql -d testdb -c 'DROP EXTENSION dblink;'
 
 You can register the following modules in this manner:
 
-<table cellpadding="4" cellspacing="0" summary="" border="1" class="simpletable"><col style="width:33.33333333333333%" /><col style="width:33.33333333333333%" /><thead></thead><tbody><tr>
+<table cellpadding="4" cellspacing="0" summary="" border="1" class="simpletable"><colgroup><col style="width:33.33333333333333%" /><col style="width:33.33333333333333%" /></colgroup><thead></thead><tbody><tr>
 <td style="vertical-align:top;">
 <ul class="ul" id="topic_d45_wcw_pgb__ul_tc3_nlx_wp">
-<li class="li"><a class="xref" href="../ref_guide/modules/btree_gin.html">btree_gin</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/citext.html">citext</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/dblink.html">dblink</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/diskquota.html">diskquota</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/fuzzystrmatch.html">fuzzystrmatch</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/gp_sparse_vector.html">gp_sparse_vector</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/greenplum_fdw.html">greenplum_fdw</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/hstore.html">hstore</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/ip4r.html">ip4r</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/btree_gin.md">btree_gin</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/citext.md">citext</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/dblink.md">dblink</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/diskquota.md">diskquota</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/fuzzystrmatch.md">fuzzystrmatch</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/gp_sparse_vector.md">gp_sparse_vector</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/hstore.md">hstore</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/ip4r.md">ip4r</a></li>
 </ul>
 </td>
 <td style="vertical-align:top;">
 <ul class="ul">
-<li class="li"><a class="xref" href="../ref_guide/modules/ltree.html">ltree</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/orafce_ref.html">orafce</a> (WarehousePG only)</li>
-<li class="li"><a class="xref" href="../ref_guide/modules/pageinspect.html">pageinspect</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/pg_trgm.html">pg_trgm</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/pgcrypto.html">pgcrypto</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/pgvector/pgvector.html">pgvector</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/postgres_fdw.html">postgres_fdw</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/postgresql-hll.html">postgresql-hll</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/sslinfo.html">sslinfo</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/tablefunc.html">tablefunc</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/timestamp9.html">timestamp9</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/uuid-ossp.html">uuid-ossp</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/ltree.md">ltree</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/orafce_ref.md">orafce</a> (WarehousePG only)</li>
+<li class="li"><a class="xref" href="../ref_guide/modules/pageinspect.md">pageinspect</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/pg_trgm.md">pg_trgm</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/pgcrypto.md">pgcrypto</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/pgvector/index.md">pgvector</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/postgres_fdw.md">postgres_fdw</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/postgresql-hll.md">postgresql-hll</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/sslinfo.md">sslinfo</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/tablefunc.md">tablefunc</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/timestamp9.md">timestamp9</a></li>
+<li class="li"><a class="xref" href="../ref_guide/modules/uuid-ossp.md">uuid-ossp</a></li>
 </ul>
 </td>
 </tr>
 </tbody></table>
 
-For additional information about the modules supplied with WarehousePG, refer to [Additional Supplied Modules](../ref_guide/modules/intro.html) in the *WarehousePG Reference Guide*.
+For additional information about the modules supplied with WarehousePG, refer to [Additional Supplied Modules](../ref_guide/modules/index.md) in the *WarehousePG Reference Guide*.
 
-**Parent topic:** [Installing and Upgrading WarehousePG](install_guide/)
-
+**Parent topic:** [Installing and Upgrading WarehousePG](index.md)

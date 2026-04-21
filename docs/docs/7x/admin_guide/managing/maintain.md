@@ -1,33 +1,39 @@
-# Routine System Maintenance Tasks
+---
+title: Routine System Maintenance Tasks
+
 ---
 
 To keep a WarehousePG cluster running efficiently, the database must be regularly cleared of expired data and the table statistics must be updated so that the query optimizer has accurate information.
 
-WarehousePG requires that certain tasks be performed regularly to achieve optimal performance. The tasks discussed here are required, but database administrators can automate them using standard UNIX tools such as `cron` scripts. An administrator sets up the appropriate scripts and checks that they ran successfully. See [Recommended Monitoring and Maintenance Tasks](../monitoring/monitoring.html) for additional suggested maintenance activities you can implement to keep your WarehousePG cluster running optimally.
+WarehousePG requires that certain tasks be performed regularly to achieve optimal performance. The tasks discussed here are required, but database administrators can automate them using standard UNIX tools such as `cron` scripts. An administrator sets up the appropriate scripts and checks that they ran successfully. See [Recommended Monitoring and Maintenance Tasks](monitoring.md) for additional suggested maintenance activities you can implement to keep your WarehousePG cluster running optimally.
 
-**Parent topic:** [Managing a WarehousePG cluster](../managing/managing.html)
+**Parent topic:** [Managing a WarehousePG cluster](index.md)
 
-## <a id="topic2"></a>Routine Vacuum and Analyze
+<a id="topic2"></a>
+
+## Routine Vacuum and Analyze
 
 The design of the MVCC transaction concurrency model used in WarehousePG means that deleted or updated data rows still occupy physical space on disk even though they are not visible to new transactions. If your database has many updates and deletes, many expired rows exist and the space they use must be reclaimed with the `VACUUM` command. The `VACUUM` command also collects table-level statistics, such as numbers of rows and pages, so it is also necessary to vacuum append-optimized tables, even when there is no space to reclaim from updated or deleted rows.
 
 Vacuuming an append-optimized table follows a different process than vacuuming heap tables. On each segment, a new segment file is created and visible rows are copied into it from the current segment. When the segment file has been copied, the original is scheduled to be dropped and the new segment file is made available. This requires sufficient available disk space for a copy of the visible rows until the original segment file is dropped.
 
-If the ratio of hidden rows to total rows in a segment file is less than a threshold value \(10, by default\), the segment file is not compacted. The threshold value can be configured with the `gp_appendonly_compaction_threshold` server configuration parameter. `VACUUM FULL` ignores the value of `gp_appendonly_compaction_threshold` and rewrites the segment file regardless of the ratio.
+If the ratio of hidden rows to total rows in a segment file is less than a threshold value (10, by default), the segment file is not compacted. The threshold value can be configured with the `gp_appendonly_compaction_threshold` server configuration parameter. `VACUUM FULL` ignores the value of `gp_appendonly_compaction_threshold` and rewrites the segment file regardless of the ratio.
 
-You can use the `__gp_aovisimap_compaction_info()` function in the *gp\_toolkit* schema to investigate the effectiveness of a VACUUM operation on append-optimized tables.
+You can use the `__gp_aovisimap_compaction_info()` function in the *gp_toolkit* schema to investigate the effectiveness of a VACUUM operation on append-optimized tables.
 
-For information about the `__gp_aovisimap_compaction_info()` function, see [Checking Append-Optimized Tables](../../ref_guide/gp_toolkit.html#topic8).
+For information about the `__gp_aovisimap_compaction_info()` function, see [Checking Append-Optimized Tables](../../ref_guide/gp_toolkit.md#topic8).
 
 `VACUUM` can be deactivated for append-optimized tables using the `gp_appendonly_compaction` server configuration parameter.
 
-For details about vacuuming a database, see [Vacuuming the Database](../dml.html).
+For details about vacuuming a database, see [Vacuuming the Database](../dml.md).
 
 For information about the `gp_appendonly_compaction_threshold` server configuration parameter and the `VACUUM` command, see the *WarehousePG Reference Guide*.
 
-### <a id="topic3"></a>Transaction ID Management
+<a id="topic3"></a>
 
-WarehousePG's MVCC transaction semantics depend on comparing transaction ID \(XID\) numbers to determine visibility to other transactions. Transaction ID numbers are compared using modulo 232 arithmetic, so a WarehousePG cluster that runs more than about two billion transactions can experience transaction ID wraparound, where past transactions appear to be in the future. This means past transactions' outputs become invisible. Therefore, it is necessary to `VACUUM` every table in every database at least once per two billion transactions.
+### Transaction ID Management
+
+WarehousePG's MVCC transaction semantics depend on comparing transaction ID (XID) numbers to determine visibility to other transactions. Transaction ID numbers are compared using modulo 232 arithmetic, so a WarehousePG cluster that runs more than about two billion transactions can experience transaction ID wraparound, where past transactions appear to be in the future. This means past transactions' outputs become invisible. Therefore, it is necessary to `VACUUM` every table in every database at least once per two billion transactions.
 
 WarehousePG assigns XID values only to transactions that involve DDL or DML operations, which are typically the only transactions that require an XID.
 
@@ -47,7 +53,9 @@ wraparound data loss in database "database_name"
 
 The WarehousePG configuration parameter `xid_warn_limit` controls when the warning is displayed. The parameter `xid_stop_limit` controls when WarehousePG stops creating transactions.
 
-#### <a id="np160654"></a>Recovering from a Transaction ID Limit Error
+<a id="np160654"></a>
+
+#### Recovering from a Transaction ID Limit Error
 
 When WarehousePG reaches the `xid_stop_limit` transaction ID limit due to infrequent `VACUUM` maintenance, it becomes unresponsive. To recover from this situation, perform the following steps as database administrator:
 
@@ -62,13 +70,17 @@ For information about the configuration parameters, see the *WarehousePG Referen
 
 For information about transaction ID wraparound see the [PostgreSQL documentation](https://www.postgresql.org/docs/12/index.html).
 
-### <a id="topic4"></a>System Catalog Maintenance
+<a id="topic4"></a>
+
+### System Catalog Maintenance
 
 Numerous database updates with `CREATE` and `DROP` commands increase the system catalog size and affect system performance. For example, running many `DROP TABLE` statements degrades the overall system performance due to excessive data scanning during metadata operations on catalog tables. The performance loss occurs between thousands to tens of thousands of `DROP TABLE` statements, depending on the system.
 
 You should run a system catalog maintenance procedure regularly to reclaim the space occupied by deleted objects. If a regular procedure has not been run for a long time, you may need to run a more intensive procedure to clear the system catalog. This topic describes both procedures.
 
-#### <a id="topic5"></a>Regular System Catalog Maintenance
+<a id="topic5"></a>
+
+#### Regular System Catalog Maintenance
 
 It is recommended that you periodically run `REINDEX` and `VACUUM` on the system catalog to clear the space that deleted objects occupy in the system indexes and tables. If regular database operations include numerous `DROP` statements, it is safe and appropriate to run a system catalog maintenance procedure with `VACUUM` daily at off-peak hours. You can do this while the system is available.
 
@@ -79,6 +91,7 @@ These are WarehousePG cluster catalog maintenance steps.
     > **Note** `REINDEX` causes locking of system catalog tables, which could affect currently running queries. To avoid disrupting ongoing business operations, schedule the `REINDEX` operation during a period of low activity.
 
 2.  Perform a `VACUUM` on the system catalog tables.
+
 3.  Perform an `ANALYZE` on the system catalog tables to update the catalog table statistics.
 
 This example script performs a `REINDEX`, `VACUUM`, and `ANALYZE` of a WarehousePG cluster catalog. In the script, replace `<database-name>` with a database name.
@@ -97,7 +110,9 @@ analyzedb -as pg_catalog -d $DBNAME
 
 > **Note** If you are performing catalog maintenance during a maintenance period and you need to stop a process due to time constraints, run the WarehousePG function `pg_cancel_backend(<PID>)` to safely stop the WarehousePG process.
 
-#### <a id="topic6"></a>Intensive System Catalog Maintenance
+<a id="topic6"></a>
+
+#### Intensive System Catalog Maintenance
 
 If system catalog maintenance has not been performed in a long time, the catalog can become bloated with dead space; this causes excessively long wait times for simple metadata operations. A wait of more than two seconds to list user tables, such as with the `\d` metacommand from within `psql`, is an indication of catalog bloat.
 
@@ -117,7 +132,9 @@ These are steps for intensive system catalog maintenance.
 -   The `pg_attribute` table contains a large number of records.
 -   The diagnostic message for `pg_attribute` is `significant amount of bloat` in the `gp_toolkit.gp_bloat_diag` view.
 
-### <a id="topic7"></a>Vacuum and Analyze for Query Optimization
+<a id="topic7"></a>
+
+### Vacuum and Analyze for Query Optimization
 
 WarehousePG uses a cost-based query optimizer that relies on database statistics. Accurate statistics allow the query optimizer to better estimate selectivity and the number of rows that a query operation retrieves. These estimates help it choose the most efficient query plan. The `ANALYZE` command collects column-level statistics for the query optimizer.
 
@@ -128,35 +145,41 @@ You can run both `VACUUM` and `ANALYZE` operations in the same command. For exam
 
 ```
 
-Running the VACUUM ANALYZE command might produce incorrect statistics when the command is run on a table with a significant amount of bloat \(a significant amount of table disk space is occupied by deleted or obsolete rows\). For large tables, the `ANALYZE` command calculates statistics from a random sample of rows. It estimates the number rows in the table by multiplying the average number of rows per page in the sample by the number of actual pages in the table. If the sample contains many empty pages, the estimated row count can be inaccurate.
+Running the VACUUM ANALYZE command might produce incorrect statistics when the command is run on a table with a significant amount of bloat (a significant amount of table disk space is occupied by deleted or obsolete rows). For large tables, the `ANALYZE` command calculates statistics from a random sample of rows. It estimates the number rows in the table by multiplying the average number of rows per page in the sample by the number of actual pages in the table. If the sample contains many empty pages, the estimated row count can be inaccurate.
 
-For a table, you can view information about the amount of unused disk space \(space that is occupied by deleted or obsolete rows\) in the *gp\_toolkit* view *gp\_bloat\_diag*. If the `bdidiag` column for a table contains the value `significant amount of bloat suspected`, a significant amount of table disk space consists of unused space. Entries are added to the *gp\_bloat\_diag* view after a table has been vacuumed.
+For a table, you can view information about the amount of unused disk space (space that is occupied by deleted or obsolete rows) in the *gp_toolkit* view *gp_bloat_diag*. If the `bdidiag` column for a table contains the value `significant amount of bloat suspected`, a significant amount of table disk space consists of unused space. Entries are added to the *gp_bloat_diag* view after a table has been vacuumed.
 
 To remove unused disk space from the table, you can run the command VACUUM FULL on the table. Due to table lock requirements, VACUUM FULL might not be possible until a maintenance period.
 
-As a temporary workaround, run ANALYZE to compute column statistics and then run VACUUM on the table to generate an accurate row count. This example runs ANALYZE and then VACUUM on the *cust\_info* table.
+As a temporary workaround, run ANALYZE to compute column statistics and then run VACUUM on the table to generate an accurate row count. This example runs ANALYZE and then VACUUM on the *cust_info* table.
 
 ```
 ANALYZE cust_info;
 VACUUM cust_info;
 ```
 
-> **Important** If you intend to run queries on partitioned tables with GPORCA enabled \(the default\), you must collect statistics on the root partitioned table with the ANALYZE command. For information about GPORCA, see [Overview of GPORCA](../query/topics/query-piv-opt-overview.html).
+> **Important** If you intend to run queries on partitioned tables with GPORCA enabled (the default), you must collect statistics on the root partitioned table with the ANALYZE command. For information about GPORCA, see [Overview of GPORCA](../query/query-piv-optimizer/query-piv-opt-overview.md).
 
-> **Note** You can use the WarehousePG utility analyzedb to update table statistics. Tables can be analyzed concurrently. For append optimized tables, analyzedb updates statistics only if the statistics are not current. See the [analyzedb](../../utility_guide/ref/analyzedb.html) utility.
+> **Note** You can use the WarehousePG utility analyzedb to update table statistics. Tables can be analyzed concurrently. For append optimized tables, analyzedb updates statistics only if the statistics are not current. See the [analyzedb](../../ref_guide/utility_guide/reference/analyzedb.md) utility.
 
-## <a id="topic8"></a>Routine Reindexing
+<a id="topic8"></a>
 
-For B-tree indexes, a freshly-constructed index is slightly faster to access than one that has been updated many times because logically adjacent pages are usually also physically adjacent in a newly built index. Reindexing older indexes periodically can improve access speed. If all but a few index keys on a page have been deleted, there will be wasted space on the index page. A reindex will reclaim that wasted space. In WarehousePG it is often faster to drop an index \(`DROP INDEX`\) and then recreate it \(`CREATE INDEX`\) than it is to use the `REINDEX` command.
+## Routine Reindexing
+
+For B-tree indexes, a freshly-constructed index is slightly faster to access than one that has been updated many times because logically adjacent pages are usually also physically adjacent in a newly built index. Reindexing older indexes periodically can improve access speed. If all but a few index keys on a page have been deleted, there will be wasted space on the index page. A reindex will reclaim that wasted space. In WarehousePG it is often faster to drop an index (`DROP INDEX`) and then recreate it (`CREATE INDEX`) than it is to use the `REINDEX` command.
 
 For table columns with indexes, some operations such as bulk updates or inserts to the table might perform more slowly because of the updates to the indexes. To enhance performance of bulk operations on tables with indexes, you can drop the indexes, perform the bulk operation, and then re-create the index.
 
-## <a id="topic9"></a>Managing WarehousePG Log Files
+<a id="topic9"></a>
+
+## Managing WarehousePG Log Files
 
 -   [Database Server Log Files](#topic10)
 -   [Management Utility Log Files](#topic11)
 
-### <a id="topic10"></a>Database Server Log Files
+<a id="topic10"></a>
+
+### Database Server Log Files
 
 WarehousePG log output tends to be voluminous, especially at higher debug levels, and you do not need to save it indefinitely. Administrators should purge older log files periodically.
 
@@ -166,9 +189,11 @@ Log rotation can be triggered by the size of the current log file or the age of 
 
 The `log_rotation_age` configuration parameter specifies the age of a log file that triggers rotation. When the specified amount of time has elapsed since the log file was created, the file is closed and a new log file is created. The default `log_rotation_age`, 1d, creates a new log file 24 hours after the current log file was created. If `log_rotation_age` is set to 0, time-based rotation is deactivated.
 
-For information about viewing the database server log files, see [Viewing the Database Server Log Files](monitor.html).
+For information about viewing the database server log files, see [Viewing the Database Server Log Files](monitor.md).
 
-### <a id="topic11"></a>Management Utility Log Files
+<a id="topic11"></a>
+
+### Management Utility Log Files
 
 Log files for the WarehousePG management utilities are written to `~/gpAdminLogs` by default. The naming convention for management log files is:
 
@@ -185,4 +210,3 @@ The log entry format is:
 ```
 
 The log file for a particular utility execution is appended to its daily log file each time that utility is run.
-

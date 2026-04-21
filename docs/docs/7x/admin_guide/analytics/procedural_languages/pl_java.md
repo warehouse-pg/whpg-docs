@@ -1,4 +1,6 @@
-# PL/Java Language
+---
+title: PL/Java Language
+
 ---
 
 This section contains an overview of the WarehousePG PL/Java language.
@@ -19,7 +21,9 @@ This section contains an overview of the WarehousePG PL/Java language.
 -   [Example](#topic40)
 -   [References](#topic41)
 
-## <a id="topic2"></a>About PL/Java
+<a id="topic2"></a>
+
+## About PL/Java
 
 With the WarehousePG PL/Java extension, you can write Java methods using your favorite Java IDE and install the JAR files that contain those methods into WarehousePG.
 
@@ -27,7 +31,7 @@ WarehousePG PL/Java package is based on the open source PL/Java 1.5.0. Warehouse
 
 -   Ability to run PL/Java functions with Java 8, Java 11 and Java 17.
 -   Ability to specify Java runtime.
--   Standardized utilities \(modeled after the SQL 2003 proposal\) to install and maintain Java code in the database.
+-   Standardized utilities (modeled after the SQL 2003 proposal) to install and maintain Java code in the database.
 -   Standardized mappings of parameters and result. Complex types as well as sets are supported.
 -   An embedded, high performance, JDBC driver utilizing the internal WarehousePG SPI routines.
 -   Metadata support for the JDBC driver. Both `DatabaseMetaData` and `ResultSetMetaData` are included.
@@ -48,13 +52,17 @@ A JDBC driver is included in PL/Java. This driver calls WarehousePG internal SPI
 
 PL/Java is optimized for performance. The Java virtual machine runs within the same process as the backend to minimize call overhead. PL/Java is designed with the objective to enable the power of Java to the database itself so that database intensive business logic can run as close to the actual data as possible.
 
-The standard Java Native Interface \(JNI\) is used when bridging calls between the backend and the Java VM.
+The standard Java Native Interface (JNI) is used when bridging calls between the backend and the Java VM.
 
-## <a id="topic10"></a>About WarehousePG PL/Java
+<a id="topic10"></a>
+
+## About WarehousePG PL/Java
 
 There are a few key differences between the implementation of PL/Java in standard PostgreSQL and WarehousePG.
 
-### <a id="topic11"></a>Functions
+<a id="topic11"></a>
+
+### Functions
 
 The following functions are not supported in WarehousePG. The classpath is handled differently in a distributed WarehousePG environment than in the PostgreSQL environment.
 
@@ -66,13 +74,15 @@ The following functions are not supported in WarehousePG. The classpath is handl
 
 WarehousePG uses the `pljava_classpath` server configuration parameter in place of the `sqlj.set_classpath` function.
 
-### <a id="topic12"></a>Server Configuration Parameters
+<a id="topic12"></a>
+
+### Server Configuration Parameters
 
 The following server configuration parameters are used by PL/Java in WarehousePG. These parameters replace the `pljava.*` parameters that are used in the standard PostgreSQL PL/Java implementation:
 
 -   `pljava_classpath`
 
-    A colon \(`:`\) separated list of the jar files containing the Java classes used in any PL/Java functions. The jar files must be installed in the same locations on all WarehousePG hosts. With the trusted PL/Java language handler, jar file paths must be relative to the `$GPHOME/lib/postgresql/java/` directory. With the untrusted language handler \(javaU language tag\), paths may be relative to `$GPHOME/lib/postgresql/java/` or absolute.
+    A colon (`:`) separated list of the jar files containing the Java classes used in any PL/Java functions. The jar files must be installed in the same locations on all WarehousePG hosts. With the trusted PL/Java language handler, jar file paths must be relative to the `$GPHOME/lib/postgresql/java/` directory. With the untrusted language handler (javaU language tag), paths may be relative to `$GPHOME/lib/postgresql/java/` or absolute.
 
     The server configuration parameter `pljava_classpath_insecure` controls whether the server configuration parameter `pljava_classpath` can be set by a user without WarehousePG superuser privileges. When `pljava_classpath_insecure` is enabled, WarehousePG developers who are working on PL/Java functions do not have to be database superusers to change `pljava_classpath`.
 
@@ -80,7 +90,7 @@ The following server configuration parameters are used by PL/Java in WarehousePG
 
 -   `pljava_statement_cache_size`
 
-    Sets the size in KB of the Most Recently Used \(MRU\) cache for prepared statements.
+    Sets the size in KB of the Most Recently Used (MRU) cache for prepared statements.
 
 -   `pljava_release_lingering_savepoints`
 
@@ -90,14 +100,15 @@ The following server configuration parameters are used by PL/Java in WarehousePG
 
     Defines the start up options for the WarehousePG Java VM.
 
-
 See the *WarehousePG Reference Guide* for information about the WarehousePG server configuration parameters.
 
-## <a id="topic_qx1_xcp_w3b"></a>Installing Java
+<a id="topic_qx1_xcp_w3b"></a>
+
+## Installing Java
 
 PL/Java requires a Java runtime environment on each WarehousePG host. Ensure that the same Java environment is at the same location on all hosts: coordinators and segments. The command `java -version` displays the Java version.
 
-The commands that you use to install Java depend on the host system operating system and Java version. To install OpenJDK 8, OpenJDK 11 or OpenJDK 17 \(Java 8 JDK, Java 11 JDK, Java 17 JDK\) on RHEL/Oracle/Rocky Linux:
+The commands that you use to install Java depend on the host system operating system and Java version. To install OpenJDK 8, OpenJDK 11 or OpenJDK 17 (Java 8 JDK, Java 11 JDK, Java 17 JDK) on RHEL/Oracle/Rocky Linux:
 
 ```
 $ sudo yum install java-<version>-openjdk-devel
@@ -111,12 +122,13 @@ After installing OpenJDK on a RHEL system, run this `update-alternatives` comman
 $ sudo update-alternatives --config java 
 ```
 
-> **Note** When configuring host systems, you can use the [gpssh](../utility_guide/ref/gpssh.html) utility to run bash shell commands on multiple remote hosts.
+> **Note** When configuring host systems, you can use the [gpssh](../../../ref_guide/utility_guide/reference/gpssh.md) utility to run bash shell commands on multiple remote hosts.
 
-## <a id="topic4"></a>Installing PL/Java
+<a id="topic4"></a>
+
+## Installing PL/Java
 
 For WarehousePG, the PL/Java extension is available as a package.
-
 
 To install and use PL/Java:
 
@@ -126,14 +138,18 @@ To install and use PL/Java:
 4.  Install user-created JAR files containing Java methods into the same directory on all WarehousePG hosts.
 5.  Add the name of the JAR file to the WarehousePG server configuration parameter `pljava_classpath`. The parameter lists the installed JAR files. For information about the parameter, see the *WarehousePG Reference Guide*.
 
-### <a id="topic5"></a>Installing the WarehousePG PL/Java Extension
+<a id="topic5"></a>
+
+### Installing the WarehousePG PL/Java Extension
 
 Before you install the PL/Java extension, make sure that your WarehousePG is running, you have sourced `greenplum_path.sh`, and that the `$COORDINATOR_DATA_DIRECTORY` and `$GPHOME` variables are set.
 
 1.  Download the PL/Java extension package then copy it to the coordinator host.
-3.  Install the software extension package 
 
-4.  Ensure that the environment variables `JAVA_HOME` and `LD_LIBRARY_PATH` are set properly in `$GPHOME/greenplum_path.sh` on all WarehousePG hosts.
+2.  Install the software extension package 
+
+3.  Ensure that the environment variables `JAVA_HOME` and `LD_LIBRARY_PATH` are set properly in `$GPHOME/greenplum_path.sh` on all WarehousePG hosts.
+
     -   Set the `JAVA_HOME` variable to the directory where your Java Runtime is installed. For example, for Oracle JRE this directory would be `/usr/java/latest`. For OpenJDK, the directory is `/usr/lib/jvm`. This example changes the environment variable to use `/usr/lib/jvm`.
 
         ```
@@ -144,25 +160,26 @@ Before you install the PL/Java extension, make sure that your WarehousePG is run
         export LD_LIBRARY_PATH=$GPHOME/lib:$GPHOME/ext/python/lib:$JAVA_HOME/lib/server:$LD_LIBRARY_PATH
         ```
 
-    This example [gpsync](../utility_guide/ref/gpsync.html) command copies the file to all hosts specified in the file `gphosts_file`.
+    This example [gpsync](../../../ref_guide/utility_guide/reference/gpsync.md) command copies the file to all hosts specified in the file `gphosts_file`.
 
     ```
     $ gpsync -f gphosts_file $GPHOME/greenplum_path.sh 
     =:$GPHOME/greenplum_path.sh
     ```
 
-5.  Reload `greenplum_path.sh`.
+4.  Reload `greenplum_path.sh`.
     ```
     $ source $GPHOME/greenplum_path.sh
     ```
 
-6.  Restart WarehousePG.
+5.  Restart WarehousePG.
     ```
     $ gpstop -r
     ```
 
+<a id="topic6"></a>
 
-## <a id="topic6"></a>Enabling PL/Java and Installing JAR Files
+## Enabling PL/Java and Installing JAR Files
 
 Perform the following steps as the WarehousePG administrator `gpadmin`.
 
@@ -174,16 +191,16 @@ Perform the following steps as the WarehousePG administrator `gpadmin`.
 
     > **Note** The PL/Java `install.sql` script, used in previous releases to register the language, is deprecated.
 
-2.  Copy your Java archives \(JAR files\) to the same directory on all WarehousePG hosts. This example uses the WarehousePG `gpsync` utility to copy the file `myclasses.jar` to the directory `$GPHOME/lib/postgresql/java/`:
+2.  Copy your Java archives (JAR files) to the same directory on all WarehousePG hosts. This example uses the WarehousePG `gpsync` utility to copy the file `myclasses.jar` to the directory `$GPHOME/lib/postgresql/java/`:
 
     ```
     $ gpsync -f gphosts_file myclasses.jar 
-    =:/usr/local/greenplum-db/lib/postgresql/java/
+    =:/usr/edb/whpg7/lib/postgresql/java/
     ```
 
     The file `gphosts_file` contains a list of the WarehousePG hosts.
 
-3.  Set the `pljava_classpath` server configuration parameter in the coordinator `postgresql.conf` file. For this example, the parameter value is a colon \(:\) separated list of the JAR files. For example:
+3.  Set the `pljava_classpath` server configuration parameter in the coordinator `postgresql.conf` file. For this example, the parameter value is a colon (:) separated list of the JAR files. For example:
 
     ```
     $ gpconfig -c pljava_classpath -v 'examples.jar:myclasses.jar'
@@ -199,19 +216,21 @@ Perform the following steps as the WarehousePG administrator `gpadmin`.
     $ gpstop -u
     ```
 
-5.  \(optional\) WarehousePG provides an `examples.sql` file containing sample PL/Java functions that you can use for testing. Run the commands in this file to create the test functions \(which use the Java classes in `examples.jar`\).
+5.  (optional) WarehousePG provides an `examples.sql` file containing sample PL/Java functions that you can use for testing. Run the commands in this file to create the test functions (which use the Java classes in `examples.jar`).
 
     ```
     $ psql -f $GPHOME/share/postgresql/pljava/examples.sql
     ```
 
+<a id="topic7"></a>
 
-## <a id="topic7"></a>Uninstalling PL/Java
+## Uninstalling PL/Java
 
 -   [Remove PL/Java Support for a Database](#topic8)
--   [Uninstall the Java JAR files and Software Package](#topic_tgt_nfg_mjb)
 
-### <a id="topic8"></a>Remove PL/Java Support for a Database
+<a id="topic8"></a>
+
+### Remove PL/Java Support for a Database
 
 Use the `DROP EXTENSION` command to remove support for PL/Java from a database. For example, this command deactivates the PL/Java language in the `testdb` database:
 
@@ -219,14 +238,13 @@ Use the `DROP EXTENSION` command to remove support for PL/Java from a database. 
 $ psql -d testdb -c 'DROP EXTENSION pljava;'
 ```
 
-The default command fails if any existing objects \(such as functions\) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/Java.
+The default command fails if any existing objects (such as functions) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/Java.
 
 > **Note** The PL/Java `uninstall.sql` script, used in previous releases to remove the language registration, is deprecated.
 
+<a id="topic13"></a>
 
-
-
-## <a id="topic13"></a>Writing PL/Java functions
+## Writing PL/Java functions
 
 Information about writing functions with PL/Java.
 
@@ -237,10 +255,12 @@ Information about writing functions with PL/Java.
 -   [Returning Complex Types](#topic18)
 -   [Returning Complex Types](#topic18)
 -   [Functions That Return Sets](#topic19)
--   [Returning a SETOF <scalar type\>](#topic20)
--   [Returning a SETOF <complex type\>](#topic21)
+-   [Returning a SETOF &lt;scalar type>](#topic20)
+-   [Returning a SETOF &lt;complex type>](#topic21)
 
-### <a id="topic14"></a>SQL Declaration
+<a id="topic14"></a>
+
+### SQL Declaration
 
 A Java function is declared with the name of a class and a static method on that class. The class will be resolved using the classpath that has been defined for the schema where the function is declared. If no classpath has been defined for that schema, the public schema is used. If no classpath is found there either, the class is resolved using the system classloader.
 
@@ -259,31 +279,35 @@ Run the following command to return the Java `user.home` property:
 SELECT getsysprop('user.home');
 ```
 
-### <a id="topic15"></a>Type Mapping
+<a id="topic15"></a>
+
+### Type Mapping
 
 Scalar types are mapped in a straight forward way. This table lists the current mappings.
 
-|PostgreSQL|Java|
-|----------|----|
-|bool|boolean|
-|char|byte|
-|int2|short|
-|int4|int|
-|int8|long|
-|varchar|java.lang.String|
-|text|java.lang.String|
-|bytea|byte\[ \]|
-|date|java.sql.Date|
-|time|java.sql.Time \(stored value treated as local time\)|
-|timetz|java.sql.Time|
-|timestamp|java.sql.Timestamp \(stored value treated as local time\)|
-|timestamptz|java.sql.Timestamp|
-|complex|java.sql.ResultSet|
-|setof complex|java.sql.ResultSet|
+| PostgreSQL    | Java                                                    |
+| ------------- | ------------------------------------------------------- |
+| bool          | boolean                                                 |
+| char          | byte                                                    |
+| int2          | short                                                   |
+| int4          | int                                                     |
+| int8          | long                                                    |
+| varchar       | java.lang.String                                        |
+| text          | java.lang.String                                        |
+| bytea         | byte\[ ]                                                |
+| date          | java.sql.Date                                           |
+| time          | java.sql.Time (stored value treated as local time)      |
+| timetz        | java.sql.Time                                           |
+| timestamp     | java.sql.Timestamp (stored value treated as local time) |
+| timestamptz   | java.sql.Timestamp                                      |
+| complex       | java.sql.ResultSet                                      |
+| setof complex | java.sql.ResultSet                                      |
 
 All other types are mapped to java.lang.String and will utilize the standard `textin`/`textout` routines registered for respective type.
 
-### <a id="topic16"></a>NULL Handling
+<a id="topic16"></a>
+
+### NULL Handling
 
 The scalar types that map to Java primitives can not be passed as `NULL` values. To pass `NULL` values, those types can have an alternative mapping. You enable this mapping by explicitly denoting it in the method reference.
 
@@ -316,9 +340,11 @@ SELECT trueIfEvenOrNull(NULL);
 SELECT trueIfEvenOrNull(4);
 ```
 
-In order to return `NULL` values from a Java method, you use the object type that corresponds to the primitive \(for example, you return `java.lang.Integer` instead of `int`\). The PL/Java resolve mechanism finds the method regardless. Since Java cannot have different return types for methods with the same name, this does not introduce any ambiguity.
+In order to return `NULL` values from a Java method, you use the object type that corresponds to the primitive (for example, you return `java.lang.Integer` instead of `int`). The PL/Java resolve mechanism finds the method regardless. Since Java cannot have different return types for methods with the same name, this does not introduce any ambiguity.
 
-### <a id="topic17"></a>Complex Types
+<a id="topic17"></a>
+
+### Complex Types
 
 A complex type will always be passed as a read-only `java.sql.ResultSet` with exactly one row. The ResultSet is positioned on its row so a call to `next()` should not be made. The values of the complex type are retrieved using the standard getter methods of the ResultSet.
 
@@ -348,7 +374,9 @@ throws SQLException
 }
 ```
 
-### <a id="topic18"></a>Returning Complex Types
+<a id="topic18"></a>
+
+### Returning Complex Types
 
 Java does not stipulate any way to create a ResultSet. Hence, returning a ResultSet is not an option. The SQL-2003 draft suggests that a complex return value should be handled as an IN/OUT parameter. PL/Java implements a ResultSet that way. If you declare a function that returns a complex type, you will need to use a Java method with boolean return type with a last parameter of type `java.sql.ResultSet`. The parameter will be initialized to an empty updateable ResultSet that contains exactly one row.
 
@@ -376,13 +404,17 @@ throws SQLException
 }
 ```
 
-The return value denotes if the receiver should be considered as a valid tuple \(true\) or NULL \(false\).
+The return value denotes if the receiver should be considered as a valid tuple (true) or NULL (false).
 
-### <a id="topic19"></a>Functions That Return Sets
+<a id="topic19"></a>
+
+### Functions That Return Sets
 
 When returning result sets, you should not build a result set before returning it, because building a large result set would consume a large amount of resources. It is better to produce one row at a time. Incidentally, that is what the WarehousePG backend expects a function with SETOF return to do. You can return a SETOF a scalar type such as an `int`, `float` or `varchar`, or you can return a SETOF a complex type.
 
-### <a id="topic20"></a>Returning a SETOF <scalar type\>
+<a id="topic20"></a>
+
+### Returning a SETOF &lt;scalar type>
 
 In order to return a set of a scalar type, you need create a Java method that returns something that implements the `java.util.Iterator` interface. Here is an example of a method that returns a SETOF `varchar`:
 
@@ -413,11 +445,15 @@ public class Bar
 }
 ```
 
-### <a id="topic21"></a>Returning a SETOF <complex type\>
+<a id="topic21"></a>
 
-A method returning a SETOF <complex type\> must use either the interface `org.postgresql.pljava.ResultSetProvider` or `org.postgresql.pljava.ResultSetHandle`. The reason for having two interfaces is that they cater for optimal handling of two distinct use cases. The former is for cases when you want to dynamically create each row that is to be returned from the SETOF function. The latter makes sense in cases where you want to return the result of a query after it runs.
+### Returning a SETOF &lt;complex type>
 
-#### <a id="topic22"></a>Using the ResultSetProvider Interface
+A method returning a SETOF &lt;complex type> must use either the interface `org.postgresql.pljava.ResultSetProvider` or `org.postgresql.pljava.ResultSetHandle`. The reason for having two interfaces is that they cater for optimal handling of two distinct use cases. The former is for cases when you want to dynamically create each row that is to be returned from the SETOF function. The latter makes sense in cases where you want to return the result of a query after it runs.
+
+<a id="topic22"></a>
+
+#### Using the ResultSetProvider Interface
 
 This interface has two methods. The boolean `assignRowValues(java.sql.ResultSet tupleBuilder, int rowNumber)` and the `void close()` method. The WarehousePG query evaluator will call the `assignRowValues` repeatedly until it returns false or until the evaluator decides that it does not need any more rows. Then it calls close.
 
@@ -471,7 +507,9 @@ int increment)
 
 The `listComplextTests` method is called once. It may return `NULL` if no results are available or an instance of the `ResultSetProvider`. Here the Java class `Fum` implements this interface so it returns an instance of itself. The method `assignRowValues` will then be called repeatedly until it returns false. At that time, close will be called.
 
-#### <a id="topic23"></a>Using the ResultSetHandle Interface
+<a id="topic23"></a>
+
+#### Using the ResultSetHandle Interface
 
 This interface is similar to the `ResultSetProvider` interface in that it has a `close()` method that will be called at the end. But instead of having the evaluator call a method that builds one row at a time, this method has a method that returns a ResultSet. The query evaluator will iterate over this set and deliver the RestulSet contents, one tuple at a time, to the caller until a call to `next()` returns false or the evaluator decides that no more rows are needed.
 
@@ -527,7 +565,9 @@ eateStatement();
 }
 ```
 
-## <a id="topic24"></a>Using JDBC
+<a id="topic24"></a>
+
+## Using JDBC
 
 PL/Java contains a JDBC driver that maps to the PostgreSQL SPI functions. A connection that maps to the current transaction can be obtained using the following statement:
 
@@ -546,23 +586,29 @@ After obtaining a connection, you can prepare and run statements similar to othe
 -   Savepoints are available with some restrictions. A savepoint cannot outlive the function in which it was set and it must be rolled back or released by that same function.
 -   A ResultSet returned from `executeQuery()` are always `FETCH_FORWARD` and `CONCUR_READ_ONLY`.
 -   Metadata is only available in PL/Java 1.1 or higher.
--   `CallableStatement` \(for stored procedures\) is not implemented.
+-   `CallableStatement` (for stored procedures) is not implemented.
 -   The types `Clob` or `Blob` are not completely implemented, they need more work. The types `byte[]` and `String` can be used for `bytea` and `text` respectively.
 
-## <a id="topic25"></a>Exception Handling
+<a id="topic25"></a>
 
-You can catch and handle an exception in the WarehousePG backend just like any other exception. The backend ErrorData structure is exposed as a property in a class called `org.postgresql.pljava.ServerException` \(derived from `java.sql.SQLException`\) and the Java try/catch mechanism is synchronized with the backend mechanism.
+## Exception Handling
+
+You can catch and handle an exception in the WarehousePG backend just like any other exception. The backend ErrorData structure is exposed as a property in a class called `org.postgresql.pljava.ServerException` (derived from `java.sql.SQLException`) and the Java try/catch mechanism is synchronized with the backend mechanism.
 
 > **Important** You will not be able to continue running backend functions until your function has returned and the error has been propagated when the backend has generated an exception unless you have used a savepoint. When a savepoint is rolled back, the exceptional condition is reset and you can continue your execution.
 
-## <a id="topic26"></a>Savepoints
+<a id="topic26"></a>
+
+## Savepoints
 
 WarehousePG savepoints are exposed using the java.sql.Connection interface. Two restrictions apply.
 
 -   A savepoint must be rolled back or released in the function where it was set.
 -   A savepoint must not outlive the function where it was set.
 
-## <a id="topic27"></a>Logging
+<a id="topic27"></a>
+
+## Logging
 
 PL/Java uses the standard Java Logger. Hence, you can write things like:
 
@@ -577,26 +623,32 @@ At present, the logger uses a handler that maps the current state of the Warehou
 
 The following mapping apply between the Logger levels and the WarehousePG backend levels.
 
-|java.util.logging.Level|WarehousePG Level|
-|-----------------------|------------------------|
-|SEVERE ERROR|ERROR|
-|WARNING|WARNING|
-|CONFIG|LOG|
-|INFO|INFO|
-|FINE|DEBUG1|
-|FINER|DEBUG2|
-|FINEST|DEBUG3|
+| java.util.logging.Level | WarehousePG Level |
+| ----------------------- | ----------------- |
+| SEVERE ERROR            | ERROR             |
+| WARNING                 | WARNING           |
+| CONFIG                  | LOG               |
+| INFO                    | INFO              |
+| FINE                    | DEBUG1            |
+| FINER                   | DEBUG2            |
+| FINEST                  | DEBUG3            |
 
-## <a id="topic28"></a>Security
+<a id="topic28"></a>
+
+## Security
 
 -   [Installation](#topic29)
 -   [Trusted Language](#topic30)
 
-### <a id="topic29"></a>Installation
+<a id="topic29"></a>
+
+### Installation
 
 Only a database superuser can install PL/Java. The PL/Java utility functions are installed using SECURITY DEFINER so that they run with the access permissions that were granted to the creator of the functions.
 
-### <a id="topic30"></a>Trusted Language
+<a id="topic30"></a>
+
+### Trusted Language
 
 PL/Java is a *trusted* language. The trusted PL/Java language has no access to the file system as stipulated by PostgreSQL definition of a trusted language. Any database user can create and access functions in a trusted language.
 
@@ -606,39 +658,55 @@ To install both the trusted and untrusted languages, register the extension by r
 
 To install only the trusted language, register the extension by running the `'CREATE EXTENSION pljavat'` command when [Enabling PL/Java and Installing JAR Files](#topic6).
 
-## <a id="topic33"></a>Some PL/Java Issues and Solutions
+<a id="topic33"></a>
+
+## Some PL/Java Issues and Solutions
 
 When writing the PL/Java, mapping the JVM into the same process-space as the WarehousePG backend code, some concerns have been raised regarding multiple threads, exception handling, and memory management. Here are brief descriptions explaining how these issues where resolved.
 
 -   [Multi-threading](#topic34)
 -   [Exception Handling](#topic36)
--   [Java Garbage Collector Versus palloc\(\) and Stack Allocation](#topic38)
+-   [Java Garbage Collector Versus palloc() and Stack Allocation](#topic38)
 
-### <a id="topic34"></a>Multi-threading
+<a id="topic34"></a>
+
+### Multi-threading
 
 Java is inherently multi-threaded. The WarehousePG backend is not. There is nothing stopping a developer from utilizing multiple Threads class in the Java code. Finalizers that call out to the backend might have been spawned from a background Garbage Collection thread. Several third party Java-packages that are likely to be used make use of multiple threads. How can this model coexist with the WarehousePG backend in the same process?
 
-#### <a id="topic35"></a>Solution
+<a id="topic35"></a>
 
-The solution is simple. PL/Java defines a special object called the `Backend.THREADLOCK`. When PL/Java is initialized, the backend immediately grabs this objects monitor \(i.e. it will synchronize on this object\). When the backend calls a Java function, the monitor is released and then immediately regained when the call returns. All calls from Java out to backend code are synchronized on the same lock. This ensures that only one thread at a time can call the backend from Java, and only at a time when the backend is awaiting the return of a Java function call.
+#### Solution
 
-### <a id="topic36"></a>Exception Handling
+The solution is simple. PL/Java defines a special object called the `Backend.THREADLOCK`. When PL/Java is initialized, the backend immediately grabs this objects monitor (i.e. it will synchronize on this object). When the backend calls a Java function, the monitor is released and then immediately regained when the call returns. All calls from Java out to backend code are synchronized on the same lock. This ensures that only one thread at a time can call the backend from Java, and only at a time when the backend is awaiting the return of a Java function call.
+
+<a id="topic36"></a>
+
+### Exception Handling
 
 Java makes frequent use of try/catch/finally blocks. WarehousePG sometimes use an exception mechanism that calls `longjmp` to transfer control to a known state. Such a jump would normally effectively bypass the JVM.
 
-#### <a id="topic37"></a>Solution
+<a id="topic37"></a>
+
+#### Solution
 
 The backend now allows errors to be caught using the macros `PG_TRY/PG_CATCH`/`PG_END_TRY` and in the catch block, the error can be examined using the ErrorData structure. PL/Java implements a `java.sql.SQLException` subclass called `org.postgresql.pljava.ServerException`. The ErrorData can be retrieved and examined from that exception. A catch handler is allowed to issue a rollback to a savepoint. After a successful rollback, execution can continue.
 
-### <a id="topic38"></a>Java Garbage Collector Versus palloc\(\) and Stack Allocation
+<a id="topic38"></a>
 
-Primitive types are always be passed by value. This includes the `String` type \(this is a must since Java uses double byte characters\). Complex types are often wrapped in Java objects and passed by reference. For example, a Java object can contain a pointer to a palloc'ed or stack allocated memory and use native JNI calls to extract and manipulate data. Such data will become stale once a call has ended. Further attempts to access such data will at best give very unpredictable results but more likely cause a memory fault and a crash.
+### Java Garbage Collector Versus palloc() and Stack Allocation
 
-#### <a id="topic39"></a>Solution
+Primitive types are always be passed by value. This includes the `String` type (this is a must since Java uses double byte characters). Complex types are often wrapped in Java objects and passed by reference. For example, a Java object can contain a pointer to a palloc'ed or stack allocated memory and use native JNI calls to extract and manipulate data. Such data will become stale once a call has ended. Further attempts to access such data will at best give very unpredictable results but more likely cause a memory fault and a crash.
+
+<a id="topic39"></a>
+
+#### Solution
 
 The PL/Java contains code that ensures that stale pointers are cleared when the MemoryContext or stack where they were allocated goes out of scope. The Java wrapper objects might live on but any attempt to use them will result in a stale native handle exception.
 
-## <a id="topic40"></a>Example
+<a id="topic40"></a>
+
+## Example
 
 The following simple Java example creates a JAR file that contains a single method and runs the method.
 
@@ -646,7 +714,7 @@ The following simple Java example creates a JAR file that contains a single meth
 
 The following method returns a substring.
 
-``` pre
+```pre
 {
 public static String substring(String text, int beginIndex,
   int endIndex)
@@ -687,7 +755,7 @@ Run the `gpsync` utility to copy the jar file to the WarehousePG Java directory.
 
 ```
 gpsync -f gphosts_file analytics.jar 
-=:/usr/local/greenplum-db/lib/postgresql/java/
+=:/usr/edb/whpg7/lib/postgresql/java/
 ```
 
 Use the `gpconfig` utility to set the WarehousePG `pljava_classpath` server configuration parameter. The parameter lists the installed jar files.
@@ -735,9 +803,10 @@ java_substring
 (1 row)
 ```
 
-## <a id="topic41"></a>References
+<a id="topic41"></a>
+
+## References
 
 The PL/Java Github wiki page - [https://github.com/tada/pljava/wiki](https://github.com/tada/pljava/wiki).
 
-PL/Java 1.5.0 release - [https://github.com/tada/pljava/tree/REL1\_5\_STABLE](https://github.com/tada/pljava/tree/REL1_5_STABLE).
-
+PL/Java 1.5.0 release - [https://github.com/tada/pljava/tree/REL1_5_STABLE](https://github.com/tada/pljava/tree/REL1_5_STABLE).

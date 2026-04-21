@@ -1,7 +1,9 @@
-# Starting and Stopping WarehousePG
+---
+title: Starting and Stopping WarehousePG
+
 ---
 
-In a WarehousePG DBMS, the database server instances \(the coordinator and all segments\) are started or stopped across all of the hosts in the system in such a way that they can work together as a unified DBMS.
+In a WarehousePG DBMS, the database server instances (the coordinator and all segments) are started or stopped across all of the hosts in the system in such a way that they can work together as a unified DBMS.
 
 Because a WarehousePG cluster is distributed across many machines, the process for starting and stopping a WarehousePG cluster is different than the process for starting and stopping a regular PostgreSQL DBMS.
 
@@ -13,45 +15,53 @@ Issuing a `kill -9` or `kill -11` can introduce database corruption and prevent 
 
 For information about `gpstart` and `gpstop`, see the *WarehousePG Utility Guide*.
 
-**Parent topic:** [Managing a WarehousePG cluster](../managing/managing.html)
+**Parent topic:** [Managing a WarehousePG cluster](index.md)
 
-## <a id="task_hkd_gzv_fp"></a>Starting WarehousePG
+<a id="task_hkd_gzv_fp"></a>
+
+## Starting WarehousePG
 
 Start an initialized WarehousePG cluster by running the `gpstart` utility on the coordinator instance.
 
 Use the `gpstart` utility to start a WarehousePG cluster that has already been initialized by the `gpinitsystem` utility, but has been stopped by the `gpstop` utility. The `gpstart` utility starts WarehousePG by starting all the Postgres database instances on the WarehousePG cluster. `gpstart` orchestrates this process and performs the process in parallel.
 
 Run `gpstart` on the coordinator host to start WarehousePG:
+
 ```
 $ gpstart
 ```
 
+<a id="task_gpdb_restart"></a>
 
-## <a id="task_gpdb_restart"></a>Restarting WarehousePG
+## Restarting WarehousePG
 
 Stop the WarehousePG cluster and then restart it.
 
 The `gpstop` utility with the `-r` option can stop and then restart WarehousePG after the shutdown completes.
 
 To restart WarehousePG, enter the following command on the coordinator host:
+
 ```
 $ gpstop -r
 ```
 
+<a id="task_upload_config"></a>
 
-## <a id="task_upload_config"></a>Reloading Configuration File Changes Only
+## Reloading Configuration File Changes Only
 
 Reload changes to WarehousePG configuration files without interrupting the system.
 
-The `gpstop` utility can reload changes to the pg\_hba.conf configuration file and to *runtime* parameters in the coordinator postgresql.conf file without service interruption. Active sessions pick up changes when they reconnect to the database. Many server configuration parameters require a full system restart \(`gpstop -r`\) to activate. For information about server configuration parameters, see the *WarehousePG Reference Guide*.
+The `gpstop` utility can reload changes to the pg_hba.conf configuration file and to *runtime* parameters in the coordinator postgresql.conf file without service interruption. Active sessions pick up changes when they reconnect to the database. Many server configuration parameters require a full system restart (`gpstop -r`) to activate. For information about server configuration parameters, see the *WarehousePG Reference Guide*.
 
 Reload configuration file changes without shutting down the WarehousePG cluster using the `gpstop` utility:
+
 ```
 $ gpstop -u
 ```
 
+<a id="task_maint_mode"></a>
 
-## <a id="task_maint_mode"></a>Starting the Coordinator in Maintenance Mode
+## Starting the Coordinator in Maintenance Mode
 
 Start only the coordinator to perform maintenance or administrative tasks without affecting data on the segments.
 
@@ -65,10 +75,9 @@ Maintenance mode should only be used with direction from WarehousePG Technical S
 
 2.  Connect to the coordinator in maintenance mode to do catalog maintenance. For example:
 
-     <a id="kg155401"></a>
-     ``` 
-     $ PGOPTIONS='-c gp_role=utility' psql postgres
-     ```
+    ```
+    $ PGOPTIONS='-c gp_role=utility' psql postgres
+    ```
 
 3.  After completing your administrative tasks, stop the coordinator in maintenance mode. Then, restart it in production mode.
 
@@ -79,8 +88,9 @@ Maintenance mode should only be used with direction from WarehousePG Technical S
 
     > **Caution** Incorrect use of maintenance mode connections can result in an inconsistent system state. Only Technical Support should perform this operation.
 
+<a id="task_gpdb_stop"></a>
 
-## <a id="task_gpdb_stop"></a>Stopping WarehousePG
+## Stopping WarehousePG
 
 The `gpstop` utility stops or restarts your WarehousePG cluster and always runs on the coordinator host. When activated, `gpstop` stops all `postgres` processes in the system, including the coordinator and all segment instances. The `gpstop` utility uses a default of up to 64 parallel worker threads to bring down the Postgres instances that make up the WarehousePG cluster. The system waits for any active transactions to finish before shutting down. If after two minutes there are still active connections, `gpstop` will prompt you to either continue waiting in smart mode, stop in fast mode, or stop in immediate mode. To stop WarehousePG immediately, use fast mode.
 
@@ -100,8 +110,9 @@ The `gpstop` utility stops or restarts your WarehousePG cluster and always runs 
 
     By default, you are not allowed to shut down WarehousePG if there are any client connections to the database. Use the `-M fast` option to roll back all in progress transactions and terminate any connections before shutting down.
 
+<a id="topic13"></a>
 
-## <a id="topic13"></a>Stopping Client Processes
+## Stopping Client Processes
 
 WarehousePG launches a new backend process for each client connection. A WarehousePG user with `SUPERUSER` privileges can cancel and terminate these client backend processes.
 
@@ -137,7 +148,7 @@ Sample partial query output:
   billy  |   31905  |    t    | active | SELECT * FROM topten;  | testdb
 ```
 
-Use the output to identify the process id \(`pid`\) of the query or client connection.
+Use the output to identify the process id (`pid`) of the query or client connection.
 
 For example, to cancel the waiting query identified in the sample output above and include `'Admin canceled long-running query.'` as the message returned to the client:
 
@@ -145,4 +156,3 @@ For example, to cancel the waiting query identified in the sample output above a
 =# SELECT pg_cancel_backend(31905 ,'Admin canceled long-running query.');
 ERROR:  canceling statement due to user request: "Admin canceled long-running query."
 ```
-

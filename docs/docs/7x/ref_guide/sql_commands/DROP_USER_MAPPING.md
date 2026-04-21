@@ -1,32 +1,45 @@
-# DROP USER MAPPING 
+---
+title: DROP USER MAPPING
+
+---
 
 Removes a user mapping for a foreign server.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP USER MAPPING [ IF EXISTS ] { <user_name> | USER | CURRENT_USER | PUBLIC } 
     SERVER <server_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `DROP USER MAPPING` removes an existing user mapping from a foreign server.
 
 The owner of a foreign server can drop user mappings for that server for any user. Also, a user can drop a user mapping for their own user name if they have been granted the `USAGE` privilege on the server.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF EXISTS
 Do not throw an error if the user mapping does not exist. WarehousePG issues a notice in this case.
 
-user\_name
+user_name
 User name of the mapping. `CURRENT_USER` and `USER` match the name of the current user. `PUBLIC` is used to match all present and future user names in the system.
 
-server\_name
+server_name
 Server name of the user mapping.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Drop the user mapping named `bob`, server `foo` if it exists:
 
@@ -34,13 +47,16 @@ Drop the user mapping named `bob`, server `foo` if it exists:
 DROP USER MAPPING IF EXISTS FOR bob SERVER foo;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-`DROP SERVER` conforms to ISO/IEC 9075-9 \(SQL/MED\). The `IF EXISTS` clause is a WarehousePG extension.
+## Compatibility
 
-## <a id="section8"></a>See Also 
+`DROP SERVER` conforms to ISO/IEC 9075-9 (SQL/MED). The `IF EXISTS` clause is a WarehousePG extension.
 
-[CREATE USER MAPPING](CREATE_USER_MAPPING.html), [ALTER USER MAPPING](ALTER_USER_MAPPING.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[CREATE USER MAPPING](CREATE_USER_MAPPING.md), [ALTER USER MAPPING](ALTER_USER_MAPPING.md)
+
+**Parent topic:** [SQL Commands](index.md)

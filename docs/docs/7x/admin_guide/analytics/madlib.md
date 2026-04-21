@@ -1,4 +1,6 @@
-# Machine Learning and Deep Learning using MADlib
+---
+title: Machine Learning and Deep Learning using MADlib
+
 ---
 
 Apache MADlib is an open-source library for scalable in-database analytics. The WarehousePG MADlib extension provides the ability to run machine learning and deep learning workloads in a WarehousePG.
@@ -9,23 +11,27 @@ MADlib’s suite of SQL-based algorithms run at scale within a single WarehouseP
 
 MADlib is part of the database fabric with no changes to the WarehousePG architecture. This makes it easy for database administrators to deploy and manage since it is not a separate daemon or separate software running outside the database.
 
-![WarehousePG with MADlib](/whpg_madlib.png "WarehousePG MADlib Analytics Architecture")
+![WarehousePG with MADlib](../../images/whpg_madlib.png "WarehousePG MADlib Analytics Architecture")
 
-## <a id="section_lmf_pv1_rqb"></a>Machine Learning
+<a id="section_lmf_pv1_rqb"></a>
+
+## Machine Learning
 
 Apache MADlib consists of methods to support the full spectrum of data science activities. This includes data transformation and feature engineering, using methods in descriptive and inferential statistics, pivoting, sessionization and encoding categorical variables. There is also a comprehensive library of graph, supervised learning and unsupervised learning methods.
 
 In the area of model selection, MADlib supports cross validation and the most common prediction metrics for evaluating the quality of predictions of a model. Please refer to the [MADlib user guide](http://madlib.apache.org/docs/latest/index.html) for more information on these methods.
 
+<a id="section_hrn_pv1_rqb"></a>
 
-
-## <a id="section_hrn_pv1_rqb"></a>Deep Learning
+## Deep Learning
 
 WarehousePG supports using Keras and TensorFlow for deep learning. You can review the [supported libraries and configuration instructions](https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning) on the Apache MADlib pages as well as user documentation for [Keras API](http://madlib.apache.org/docs/latest/group__grp__dl.html) using the Tensorflow backend.
 
-MADlib supports Keras with a TensorFlow backend, with or without Graphics Processing Units \(GPUs\). GPUs can significantly accelerate the training of deep neural networks so they are typically used for enterprise level workloads. For further GPU information, visit the MADlib wiki, [https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning](https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning).
+MADlib supports Keras with a TensorFlow backend, with or without Graphics Processing Units (GPUs). GPUs can significantly accelerate the training of deep neural networks so they are typically used for enterprise level workloads. For further GPU information, visit the MADlib wiki, [https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning](https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning).
 
-## <a id="section_wp5_pv1_rqb"></a>PivotalR
+<a id="section_wp5_pv1_rqb"></a>
+
+## PivotalR
 
 MADlib can be used with PivotalR, an R client package that enables users to interact with data resident in the WarehousePG. PivotalR can be considered as a wrapper around MADlib that translates R code into SQL to run on MPP databases and is designed for users familiar with R but with data sets that are too large for R.
 
@@ -44,36 +50,43 @@ For information about PivotalR, including supported MADlib functionality, see [h
 
 The R package for PivotalR can be found at [https://cran.r-project.org/web/packages/PivotalR/index.html](https://cran.r-project.org/web/packages/PivotalR/index.html).
 
-## <a id="prereq"></a>Prerequisites
+<a id="prereq"></a>
+
+## Prerequisites
 
 MADlib requires the `m4` macro processor version 1.4.13 or later. Ensure that you have access to, or superuser permissions to install, this package on each WarehousePG host.
 
 MADlib 2.1.0 requires Python 3, which should already be installed as a dependency when you install the WarehousePG software on each WarehousePG host.
 
-## <a id="topic3"></a>Installing MADlib
+<a id="topic3"></a>
+
+## Installing MADlib
 
 To install MADlib on WarehousePG, you first install a compatible WarehousePG MADlib package and then install the MADlib function libraries on all databases that will use MADlib.
 
-
 If you have GPUs installed on some or across all hosts in the cluster, then the segments residing on those hosts can benefit from GPU acceleration. GPUs and deep learning libraries such as Keras, TensorFlow, cudNN, and CUDA are managed separately from MADlib. For more information see the [MADlib wiki instructions for deep learning](https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning) and the [MADlib user documentation for deep learning](http://madlib.apache.org/docs/latest/group__grp__dl.html) .
 
-### <a id="topic4"></a>Installing the WarehousePG MADlib Package
+<a id="topic4"></a>
+
+### Installing the WarehousePG MADlib Package
 
 Before you install the MADlib package, make sure that your WarehousePG is running, you have sourced `greenplum_path.sh`, and that the`$COORDINATOR_DATA_DIRECTORY` and `$GPHOME` variables are set.
 
 1.  Download the MADlib extension package.
+
 2.  Copy the MADlib package to the WarehousePG coordinator host.
-4.  Unpack the MADlib distribution package. For example:
+
+3.  Unpack the MADlib distribution package. For example:
 
     ```
     $ tar xzvf madlib-2.1.0-gp7-rhel8-x86_64.tar.gz
     ```
 
-5.  Install the software package 
+4.  Install the software package 
 
+<a id="topic5"></a>
 
-
-### <a id="topic5"></a>Adding MADlib Functions to a Database
+### Adding MADlib Functions to a Database
 
 After installing the MADlib package, run the `madpack` command to add MADlib functions to WarehousePG. `madpack` is in `$GPHOME/madlib/bin`.
 
@@ -87,7 +100,7 @@ For example, this command creates MADlib functions in the WarehousePG `testdb` r
 $ madpack -s madlib -p greenplum -c gpadmin@cdw:5432/testdb install
 ```
 
-After installing the functions, The WarehousePG `gpadmin` superuser role should grant all privileges on the target schema \(in the example `madlib`\) to users who will be accessing MADlib functions. Users without access to the functions will get the error `ERROR: permission denied for schema MADlib`.
+After installing the functions, The WarehousePG `gpadmin` superuser role should grant all privileges on the target schema (in the example `madlib`) to users who will be accessing MADlib functions. Users without access to the functions will get the error `ERROR: permission denied for schema MADlib`.
 
 The madpack `install-check` option runs test using Madlib modules to check the MADlib installation:
 
@@ -97,16 +110,15 @@ $ madpack -s madlib -p greenplum -c gpadmin@cdw:5432/testdb install-check
 
 > **Note** The command `madpack -h` displays information for the utility.
 
-## <a id="topic6"></a>Uninstalling MADlib
+<a id="topic6"></a>
 
--   [Remove MADlib objects from the database](#topic7)
--   [Uninstall the WarehousePG MADlib Package](#topic8)
+## Uninstalling MADlib
 
 When you remove MADlib support from a database, routines that you created in the database that use MADlib functionality will no longer work.
 
+<a id="topic9"></a>
 
-
-## <a id="topic9"></a>Examples
+## Examples
 
 Following are examples using the WarehousePG MADlib extension:
 
@@ -116,7 +128,9 @@ Following are examples using the WarehousePG MADlib extension:
 
 See the MADlib documentation for additional examples.
 
-### <a id="mlogr"></a>Linear Regression
+<a id="mlogr"></a>
+
+### Linear Regression
 
 This example runs a linear regression on the table `regr_example`. The dependent variable data are in the `y` column and the independent variable data are in the `x1` and `x2` columns.
 
@@ -187,7 +201,9 @@ FROM regr_example, regr_example_model m;
 (4 rows)
 ```
 
-### <a id="assoc_rules"></a>Association Rules
+<a id="assoc_rules"></a>
+
+### Association Rules
 
 This example demonstrates the association rules data mining technique on a transactional data set. Association rule mining is a technique for discovering relationships between variables in a large data set. This example considers items in a store that are commonly purchased together. In addition to market basket analysis, association rules are also used in bioinformatics, web analytics, and other fields.
 
@@ -271,7 +287,9 @@ This is the output. The `pre` and `post` columns are the itemsets of left and ri
 
 Based on the data, beer and diapers are often purchased together. To increase sales, you might consider placing beer and diapers closer together on the shelves.
 
-### <a id="naive_bayes"></a>Naive Bayes Classification
+<a id="naive_bayes"></a>
+
+### Naive Bayes Classification
 
 Naive Bayes analysis predicts the likelihood of an outcome of a class variable, or category, based on one or more independent variables, or attributes. The class variable is a non-numeric categorial variable, a variable that can have one of a limited number of values or categories. The class variable is represented with integers, each integer representing a category. For example, if the category can be one of "true", "false", or "unknown," the values can be represented with the integers 1, 2, or 3.
 
@@ -279,7 +297,7 @@ The attributes can be of numeric types and non-numeric, categorical, types. The 
 
 The MADlib Naive Bayes training functions produce a features probabilities table and a class priors table, which can be used with the prediction function to provide the probability of a class for the set of attributes.
 
-**Naive Bayes Example 1 - Simple All-numeric Attributes**
+#### Naive Bayes Example 1 - Simple All-numeric Attributes
 
 In the first example, the `class` variable is either 1 or 2 and there are three integer attributes.
 
@@ -311,7 +329,7 @@ In the first example, the `class` variable is either 1 or 2 and there are three 
        'example_feature_probs', -- name for the feature probabilities output table
        'example_priors'         -- name for the class priors output table
         );
-    
+
     ```
 
 3.  Create a table with data to classify using the model.
@@ -338,7 +356,7 @@ In the first example, the `class` variable is either 1 or 2 and there are three 
         3,                         -- number of attributes
         'example_classified'       -- name of the view to create
         );
-    
+
     ```
 
 5.  Display the classification results.
@@ -356,8 +374,7 @@ In the first example, the `class` variable is either 1 or 2 and there are three 
     (6 rows)
     ```
 
-
-**Naive Bayes Example 2 – Weather and Outdoor Sports**
+#### Naive Bayes Example 2 – Weather and Outdoor Sports
 
 This example calculates the probability that the user will play an outdoor sport, such as golf or tennis, based on weather conditions.
 
@@ -372,10 +389,10 @@ The `play` column holds the dependent variable and has two classifications:
 
 There are four attributes: outlook, temperature, humidity, and wind. These are categorical variables. The MADlib `create_nb_classify_view()` function expects the attributes to be provided as an array of `INTEGER`, `NUMERIC`, or `FLOAT8` values, so the attributes for this example are encoded with integers as follows:
 
--   *outlook* may be sunny \(1\), overcast \(2\), or rain \(3\).
--   *temperature* may be hot \(1\), mild \(2\), or cool \(3\).
--   *humidity* may be high \(1\) or normal \(2\).
--   *wind* may be strong \(1\) or weak \(2\).
+-   *outlook* may be sunny (1), overcast (2), or rain (3).
+-   *temperature* may be hot (1), mild (2), or cool (3).
+-   *humidity* may be high (1) or normal (2).
+-   *wind* may be strong (1) or weak (2).
 
 The following table shows the training data, before encoding the variables.
 
@@ -493,7 +510,7 @@ The following table shows the training data, before encoding the variables.
        4,                    -- number of attributes
        't1_out'              -- output table name
     );
-    
+
     ```
 
     The result is four rows, one for each record in the `t1` table.
@@ -509,12 +526,12 @@ The following table shows the training data, before encoding the variables.
      (4 rows)
     ```
 
+<a id="topic10"></a>
 
-## <a id="topic10"></a>References
+## References
 
 MADlib web site is at [http://madlib.apache.org/](http://madlib.apache.org/).
 
 MADlib documentation is at [http://madlib.apache.org/documentation.html](http://madlib.apache.org/documentation.html).
 
 PivotalR is a first class R package that enables users to interact with data resident in WarehousePG and MADLib using an R client.
-

@@ -1,7 +1,10 @@
-# Identifying and Mitigating Heap Table Performance Issues
+---
+title: Identifying and Mitigating Heap Table Performance Issues
+navTitle: Slow or Hanging Jobs
+
 ---
 
-## <a id="bulkloadslow"></a>Slow or Hanging Jobs
+<a id="bulkloadslow"></a>
 
 **Symptom**:
 
@@ -25,9 +28,8 @@ If you have restored or loaded a complete database comprised primarily of heap t
 
 Alternatively, if you can identify the individual tables affected, you have two options:
 
-1. Schedule and take a maintenance window and run `VACUUM` on the specific tables that have been loaded, updated, or deleted in bulk. This operation should scan all of the tuples and set and WAL-log the hint bits, taking the performance hit up-front.
+1.  Schedule and take a maintenance window and run `VACUUM` on the specific tables that have been loaded, updated, or deleted in bulk. This operation should scan all of the tuples and set and WAL-log the hint bits, taking the performance hit up-front.
 
-2. Run `SELECT count(*) FROM <table-name>` on each table. This operation similarly scans all of the tuples and sets and WAL-logs the hint bits.
+2.  Run `SELECT count(*) FROM <table-name>` on each table. This operation similarly scans all of the tuples and sets and WAL-logs the hint bits.
 
 All subsequent scans as part of regular workloads on the tables should not be required to generate hints or their accompanying full page image WAL records.
-

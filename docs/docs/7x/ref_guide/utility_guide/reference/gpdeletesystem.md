@@ -1,8 +1,13 @@
-# gpdeletesystem 
+---
+title: gpdeletesystem
+
+---
 
 Deletes a WarehousePG cluster that was initialized using `gpinitsystem`.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
+
+## Synopsis
 
 ```
 gpdeletesystem [-d <coordinator_data_directory>] [-B <parallel_processes>] 
@@ -13,11 +18,13 @@ gpdeletesystem -?
 gpdeletesystem -v
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 The `gpdeletesystem` utility performs the following actions:
 
--   Stop all `postgres` processes \(the segment instances and coordinator instance\).
+-   Stop all `postgres` processes (the segment instances and coordinator instance).
 -   Deletes all data directories.
 
 Before running `gpdeletesystem`:
@@ -28,30 +35,34 @@ Before running `gpdeletesystem`:
 
 This utility will not uninstall the WarehousePG software.
 
-## <a id="section4"></a>Options 
+<a id="section4"></a>
 
--d coordinator\_data\_directory
-Specifies the coordinator host data directory. If this option is not specified, the setting for the environment variable `COORDINATOR_DATA_DIRECTORY` is used. If this option is specified, it overrides any setting of `COORDINATOR_DATA_DIRECTORY`. If coordinator\_data\_directory cannot be determined, the utility returns an error.
+## Options
 
--B parallel\_processes
+\-d coordinator_data_directory
+Specifies the coordinator host data directory. If this option is not specified, the setting for the environment variable `COORDINATOR_DATA_DIRECTORY` is used. If this option is specified, it overrides any setting of `COORDINATOR_DATA_DIRECTORY`. If coordinator_data_directory cannot be determined, the utility returns an error.
+
+\-B parallel_processes
 The number of segments to delete in parallel. If not specified, the utility will start up to 60 parallel processes depending on how many segment instances it needs to delete.
 
--f \(force\)
+\-f (force)
 Force a delete even if backup files are found in the data directories. The default is to not delete WarehousePG instances if backup files are present.
 
--l logfile\_directory
+\-l logfile_directory
 The directory to write the log file. Defaults to `~/gpAdminLogs`.
 
--D \(debug\)
+\-D (debug)
 Sets logging level to debug.
 
--? \(help\)
+\-? (help)
 Displays the online help.
 
--v \(show utility version\)
+\-v (show utility version)
 Displays the version, status, last updated date, and check sum of this utility.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Delete a WarehousePG cluster:
 
@@ -65,7 +76,8 @@ Delete a WarehousePG cluster even if backup files are present:
 gpdeletesystem -d /gpdata/gp-1 -f
 ```
 
-## <a id="seealso"></a>See Also 
+<a id="seealso"></a>
 
-[gpinitsystem](gpinitsystem.html)
+## See Also
 
+[gpinitsystem](gpinitsystem.md)

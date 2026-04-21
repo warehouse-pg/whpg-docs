@@ -1,33 +1,46 @@
-# ALTER USER MAPPING 
+---
+title: ALTER USER MAPPING
+
+---
 
 Changes the definition of a user mapping for a foreign server.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER USER MAPPING FOR { <user_name> | USER | CURRENT_USER | SESSION_USER | PUBLIC }
     SERVER <server_name>
     OPTIONS ( [ ADD | SET | DROP ] <option> ['<value>'] [, ... ] )
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER USER MAPPING` changes the definition of a user mapping for a foreign server.
 
 The owner of a foreign server can alter user mappings for that server for any user. Also, a user granted `USAGE` privilege on the server can alter a user mapping for their own user name.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-user\_name
+## Parameters
+
+user_name
 User name of the mapping. `CURRENT_USER` and `USER` match the name of the current user. `PUBLIC` is used to match all present and future user names in the system.
 
-server\_name
+server_name
 Server name of the user mapping.
 
-OPTIONS \( \[ ADD \| SET \| DROP \] option \['value'\] \[, ... \] \)
+OPTIONS ( \[ ADD \| SET \| DROP ] option \['value'] \[, ... ] )
 Change options for the user mapping. The new options override any previously specified options. `ADD`, `SET`, and `DROP` specify the action to perform. If no operation is explicitly specified, the default operation is `ADD`. Option names must be unique. WarehousePG validates names and values using the server's foreign-data wrapper.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Change the password for user mapping `bob`, server `foo`:
 
@@ -35,13 +48,16 @@ Change the password for user mapping `bob`, server `foo`:
 ALTER USER MAPPING FOR bob SERVER foo OPTIONS (SET password 'public');
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-`ALTER USER MAPPING` conforms to ISO/IEC 9075-9 \(SQL/MED\). There is a subtle syntax issue: The standard omits the `FOR` key word. Since both `CREATE USER MAPPING` and `DROP USER MAPPING` use `FOR` in analogous positions, WarehousePG diverges from the standard here in the interest of consistency and interoperability.
+## Compatibility
 
-## <a id="section8"></a>See Also 
+`ALTER USER MAPPING` conforms to ISO/IEC 9075-9 (SQL/MED). There is a subtle syntax issue: The standard omits the `FOR` key word. Since both `CREATE USER MAPPING` and `DROP USER MAPPING` use `FOR` in analogous positions, WarehousePG diverges from the standard here in the interest of consistency and interoperability.
 
-[CREATE USER MAPPING](CREATE_USER_MAPPING.html), [DROP USER MAPPING](DROP_USER_MAPPING.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[CREATE USER MAPPING](CREATE_USER_MAPPING.md), [DROP USER MAPPING](DROP_USER_MAPPING.md)
+
+**Parent topic:** [SQL Commands](index.md)

@@ -1,18 +1,29 @@
-# ALTER TRIGGER 
+---
+title: ALTER TRIGGER
+
+---
 
 Changes the definition of a trigger.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER TRIGGER <name> ON <table> RENAME TO <newname>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER TRIGGER` changes properties of an existing trigger. The `RENAME` clause changes the name of the given trigger without otherwise changing the trigger definition. You must own the table on which the trigger acts to be allowed to change its properties.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
 The name of an existing trigger to alter.
@@ -23,13 +34,17 @@ The name of the table on which this trigger acts.
 newname
 The new name for the trigger.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-The ability to temporarily activate or deactivate a trigger is provided by [ALTER TABLE](ALTER_TABLE.html), not by `ALTER TRIGGER`, because `ALTER TRIGGER` has no convenient way to express the option of activating or deactivating all of a table's triggers at once.
+## Notes
 
-Note that WarehousePG has limited support of triggers in this release. See [CREATE TRIGGER](CREATE_TRIGGER.html) for more information.
+The ability to temporarily activate or deactivate a trigger is provided by [ALTER TABLE](ALTER_TABLE.md), not by `ALTER TRIGGER`, because `ALTER TRIGGER` has no convenient way to express the option of activating or deactivating all of a table's triggers at once.
 
-## <a id="section6"></a>Examples 
+Note that WarehousePG has limited support of triggers in this release. See [CREATE TRIGGER](CREATE_TRIGGER.md) for more information.
+
+<a id="section6"></a>
+
+## Examples
 
 To rename an existing trigger:
 
@@ -37,13 +52,16 @@ To rename an existing trigger:
 ALTER TRIGGER emp_stamp ON emp RENAME TO emp_track_chgs;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 `ALTER TRIGGER` is a WarehousePG extension of the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[ALTER TABLE](ALTER_TABLE.html), [CREATE TRIGGER](CREATE_TRIGGER.html), [DROP TRIGGER](DROP_TRIGGER.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER TABLE](ALTER_TABLE.md), [CREATE TRIGGER](CREATE_TRIGGER.md), [DROP TRIGGER](DROP_TRIGGER.md)
 
+**Parent topic:** [SQL Commands](index.md)

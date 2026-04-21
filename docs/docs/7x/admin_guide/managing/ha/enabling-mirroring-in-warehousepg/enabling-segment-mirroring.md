@@ -1,15 +1,19 @@
-# Enabling Segment Mirroring
+---
+title: Enabling Segment Mirroring
+
 ---
 
 Mirror segments allow database queries to fail over to a backup segment if the primary segment is unavailable. By default, mirrors are configured on the same array of hosts as the primary segments. You may choose a completely different set of hosts for your mirror segments so they do not share machines with any of your primary segments.
 
 > **Important** During the online data replication process, WarehousePG should be in a quiescent state, workloads and other queries should not be running.
 
-## <a id="ki169450"></a>To add segment mirrors to an existing system \(same hosts as primaries\)
+<a id="ki169450"></a>
+
+## To add segment mirrors to an existing system (same hosts as primaries)
 
 1.  Allocate the data storage area for mirror data on all segment hosts. The data storage area must be different from your primary segments' file system location.
-2.  Use [gpssh-exkeys](../../utility_guide/ref/gpssh-exkeys.html) to ensure that the segment hosts can SSH and remote sync to each other without a password prompt.
-3.  Run the [gpaddmirrors](../../utility_guide/ref/gpaddmirrors.html) utility to enable mirroring in your WarehousePG cluster. For example, to add 10000 to your primary segment port numbers to calculate the mirror segment port numbers:
+2.  Use [gpssh-exkeys](../../../../ref_guide/utility_guide/reference/gpssh-exkeys.md) to ensure that the segment hosts can SSH and remote sync to each other without a password prompt.
+3.  Run the [gpaddmirrors](../../../../ref_guide/utility_guide/reference/gpaddmirrors.md) utility to enable mirroring in your WarehousePG cluster. For example, to add 10000 to your primary segment port numbers to calculate the mirror segment port numbers:
 
     ```
     $ gpaddmirrors -p 10000
@@ -17,12 +21,16 @@ Mirror segments allow database queries to fail over to a backup segment if the p
 
     Where `-p` specifies the number to add to your primary segment port numbers. Mirrors are added with the default group mirroring configuration.
 
+<a id="toadd"></a>
 
-## <a id="toadd"></a>To add segment mirrors to an existing system \(different hosts from primaries\)
+## To add segment mirrors to an existing system (different hosts from primaries)
 
 1.  Ensure the WarehousePG software is installed on all hosts. See the *WarehousePG Installation Guide* for detailed installation instructions.
+
 2.  Allocate the data storage area for mirror data, and tablespaces if needed, on all segment hosts.
+
 3.  Use `gpssh-exkeys` to ensure the segment hosts can SSH and remote sync to each other without a password prompt.
+
 4.  Create a configuration file that lists the host names, ports, and data directories on which to create mirrors. To create a sample configuration file to use as a starting point, run:
 
     ```
@@ -54,6 +62,4 @@ Mirror segments allow database queries to fail over to a backup segment if the p
 
     The `-i` option specifies the mirror configuration file you created.
 
-
-**Parent topic:** [Enabling Mirroring in WarehousePG](../ha/enabling-mirroring-in-warehousepg.html)
-
+**Parent topic:** [Enabling Mirroring in WarehousePG](index.md)

@@ -1,4 +1,6 @@
-# GPORCA Features and Enhancements
+---
+title: GPORCA Features and Enhancements
+
 ---
 
 GPORCA, the WarehousePG next generation query optimizer, includes enhancements for specific types of queries and operations:
@@ -15,14 +17,18 @@ GPORCA also includes these optimization enhancements:
 -   Sort order optimization
 -   Data skew estimates included in query optimization
 
-**Parent topic:** [About GPORCA](../../query/topics/query-piv-optimizer.html)
+**Parent topic:** [About GPORCA](index.md)
 
-## <a id="topic_dwy_zml_gr"></a>Queries Against Partitioned Tables
+<a id="topic_dwy_zml_gr"></a>
+
+## Queries Against Partitioned Tables
 
 GPORCA includes these enhancements for queries against partitioned tables:
 
 -   Partition elimination is improved.
+
 -   Query plan can contain the Partition selector operator.
+
 -   Partitions are not enumerated in EXPLAIN plans.
 
     For queries that involve static partition selection where the partitioning key is compared to a constant, GPORCA lists the number of partitions to be scanned in the `EXPLAIN` output under the Partition Selector operator. This example Partition Selector operator shows the filter and number of partitions selected:
@@ -36,6 +42,7 @@ GPORCA includes these enhancements for queries against partitioned tables:
     For queries that involve dynamic partition selection where the partitioning key is compared to a variable, the number of partitions that are scanned will be known only during query execution. The partitions selected are not shown in the `EXPLAIN` output.
 
 -   Plan size is independent of number of partitions.
+
 -   Out of memory errors caused by number of partitions are reduced.
 
 This example CREATE TABLE command creates a range partitioned table.
@@ -71,15 +78,16 @@ GPORCA improves on these types of queries against partitioned tables:
     SELECT * FROM sales WHERE yr_qtr BETWEEN 201601 AND 201704 ;
     ```
 
--   Joins involving partitioned tables. In this example, the partitioned dimension table *date\_dim* is joined with fact table *catalog\_sales*:
+-   Joins involving partitioned tables. In this example, the partitioned dimension table *date_dim* is joined with fact table *catalog_sales*:
 
     ```
     SELECT * FROM catalog_sales
        WHERE date_id IN (SELECT id FROM date_dim WHERE month=12);
     ```
 
+<a id="topic_vph_wml_gr"></a>
 
-## <a id="topic_vph_wml_gr"></a>Queries that Contain Subqueries
+## Queries that Contain Subqueries
 
 GPORCA handles subqueries more efficiently. A subquery is query that is nested inside an outer query block. In the following query, the SELECT in the WHERE clause is a subquery.
 
@@ -88,7 +96,7 @@ SELECT * FROM part
   WHERE price > (SELECT avg(price) FROM part);
 ```
 
-GPORCA also handles queries that contain a correlated subquery \(CSQ\) more efficiently. A correlated subquery is a subquery that uses values from the outer query. In the following query, the `price` column is used in both the outer query and the subquery. 
+GPORCA also handles queries that contain a correlated subquery (CSQ) more efficiently. A correlated subquery is a subquery that uses values from the outer query. In the following query, the `price` column is used in both the outer query and the subquery. 
 
 ```
 SELECT * FROM part p1 WHERE price > (SELECT avg(price) FROM part p2 WHERE p2.brand = p1.brand);
@@ -105,7 +113,7 @@ GPORCA generates more efficient plans for the following types of subqueries:
     FROM part p1;
     ```
 
--   CSQ in disjunctive \(OR\) filters.
+-   CSQ in disjunctive (OR) filters.
 
     ```
     SELECT FROM part p1 WHERE p_size > 40 OR 
@@ -144,10 +152,11 @@ GPORCA generates more efficient plans for the following types of subqueries:
     FROM part p1;
     ```
 
+<a id="topic_c3v_rml_gr"></a>
 
-## <a id="topic_c3v_rml_gr"></a>Queries that Contain Common Table Expressions
+## Queries that Contain Common Table Expressions
 
-GPORCA handles queries that contain the WITH clause. The WITH clause, also known as a common table expression \(CTE\), generates temporary tables that exist only for the query. This example query contains a CTE.
+GPORCA handles queries that contain the WITH clause. The WITH clause, also known as a common table expression (CTE), generates temporary tables that exist only for the query. This example query contains a CTE.
 
 ```
 WITH v AS (SELECT a, sum(b) as s FROM T where c < 10 GROUP BY a)
@@ -194,19 +203,21 @@ GPORCA can handle these types of CTEs:
       WHERE v1.a < v2.a; 
     ```
 
+<a id="topic_plx_mml_gr"></a>
 
-## <a id="topic_plx_mml_gr"></a>DML Operation Enhancements with GPORCA
+## DML Operation Enhancements with GPORCA
 
 GPORCA contains enhancements for DML operations such as INSERT, UPDATE, and DELETE.
 
 -   A DML node in a query plan is a query plan operator.
-    -   Can appear anywhere in the plan, as a regular node \(top slice only for now\)
+    -   Can appear anywhere in the plan, as a regular node (top slice only for now)
     -   Can have consumers
+
 -   UPDATE operations use the query plan operator Split and supports these operations:
 
     -   UPDATE operations on the table distribution key columns.
     -   UPDATE operations on the table on the partition key column.
-    This example plan shows the Split operator.
+        This example plan shows the Split operator.
 
     ```
     QUERY PLAN
@@ -236,5 +247,3 @@ GPORCA contains enhancements for DML operations such as INSERT, UPDATE, and DELE
                    ->  Result  (cost=0.00..1.14 rows=3 width=24)
                          ->  Seq Scan on dmlsource
     ```
-
-

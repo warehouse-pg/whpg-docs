@@ -1,28 +1,39 @@
-# DROP OPERATOR FAMILY 
+---
+title: DROP OPERATOR FAMILY
+
+---
 
 Removes an operator family.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP OPERATOR FAMILY [IF EXISTS] <name> USING <index_method> [CASCADE | RESTRICT]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `DROP OPERATOR FAMILY` drops an existing operator family. To run this command you must be the owner of the operator family.
 
 `DROP OPERATOR FAMILY` includes dropping any operator classes contained in the family, but it does not drop any of the operators or functions referenced by the family. If there are any indexes depending on operator classes within the family, you will need to specify `CASCADE` for the drop to complete.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF EXISTS
 Do not throw an error if the operator family does not exist. A notice is issued in this case.
 
 name
-The name \(optionally schema-qualified\) of an existing operator family.
+The name (optionally schema-qualified) of an existing operator family.
 
-index\_method
+index_method
 The name of the index access method the operator family is for.
 
 CASCADE
@@ -31,7 +42,9 @@ Automatically drop objects that depend on the operator family, and in turn all o
 RESTRICT
 Refuse to drop the operator family if any objects depend on it. This is the default.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Remove the B-tree operator family `float_ops`:
 
@@ -41,13 +54,16 @@ DROP OPERATOR FAMILY float_ops USING btree;
 
 This command will not succeed if there are any existing indexes that use the operator family. Add `CASCADE` to drop such indexes along with the operator family.
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 There is no `DROP OPERATOR FAMILY` statement in the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[ALTER OPERATOR FAMILY](ALTER_OPERATOR_FAMILY.html), [CREATE OPERATOR FAMILY](CREATE_OPERATOR_FAMILY.html), [ALTER OPERATOR CLASS](ALTER_OPERATOR_CLASS.html), [CREATE OPERATOR CLASS](CREATE_OPERATOR_CLASS.html), [DROP OPERATOR CLASS](DROP_OPERATOR_CLASS.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER OPERATOR FAMILY](ALTER_OPERATOR_FAMILY.md), [CREATE OPERATOR FAMILY](CREATE_OPERATOR_FAMILY.md), [ALTER OPERATOR CLASS](ALTER_OPERATOR_CLASS.md), [CREATE OPERATOR CLASS](CREATE_OPERATOR_CLASS.md), [DROP OPERATOR CLASS](DROP_OPERATOR_CLASS.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,33 +1,48 @@
-# ABORT 
+---
+title: ABORT
+
+---
 
 Terminates the current transaction.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ABORT [WORK | TRANSACTION] [AND [NO] CHAIN]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`ABORT` rolls back the current transaction and causes all the updates made by the transaction to be discarded. This command is identical in behavior to the standard SQL command [ROLLBACK](ROLLBACK.html), and is present only for historical reasons.
+## Description
 
-## <a id="section4"></a>Parameters 
+`ABORT` rolls back the current transaction and causes all the updates made by the transaction to be discarded. This command is identical in behavior to the standard SQL command [ROLLBACK](ROLLBACK.md), and is present only for historical reasons.
+
+<a id="section4"></a>
+
+## Parameters
 
 WORK
 TRANSACTION
 Optional key words. They have no effect.
 
 AND CHAIN
-If `AND CHAIN` is specified, a new transaction is immediately started with the same transaction characteristics \(see [SET TRANSACTION](SET_TRANSACTION.html)\) as the just finished one. Otherwise, no new transaction is started.
+If `AND CHAIN` is specified, a new transaction is immediately started with the same transaction characteristics (see [SET TRANSACTION](SET_TRANSACTION.md)) as the just finished one. Otherwise, no new transaction is started.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-Use [COMMIT](COMMIT.html) to successfully terminate a transaction.
+## Notes
+
+Use [COMMIT](COMMIT.md) to successfully terminate a transaction.
 
 Issuing `ABORT` outside of a transaction block emits a warning and otherwise has no effect.
 
-## <a id="section5a"></a>Examples 
+<a id="section5a"></a>
+
+## Examples
 
 To terminate all changes:
 
@@ -35,13 +50,16 @@ To terminate all changes:
 ABORT;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 This command is a WarehousePG extension present for historical reasons. `ROLLBACK` is the equivalent standard SQL command.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[BEGIN](BEGIN.html), [COMMIT](COMMIT.html), [ROLLBACK](ROLLBACK.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[BEGIN](BEGIN.md), [COMMIT](COMMIT.md), [ROLLBACK](ROLLBACK.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,34 +1,42 @@
-# Writing a Foreign Data Wrapper
+---
+title: Writing a Foreign Data Wrapper
+
 ---
 
 This chapter outlines how to write a new foreign-data wrapper.
 
-All operations on a foreign table are handled through its foreign-data wrapper \(FDW\), a library that consists of a set of functions that the core WarehousePG server calls. The foreign-data wrapper is responsible for fetching data from the remote data store and returning it to the WarehousePG executor. If updating foreign-data is supported, the wrapper must handle that, too.
+All operations on a foreign table are handled through its foreign-data wrapper (FDW), a library that consists of a set of functions that the core WarehousePG server calls. The foreign-data wrapper is responsible for fetching data from the remote data store and returning it to the WarehousePG executor. If updating foreign-data is supported, the wrapper must handle that, too.
 
-The foreign-data wrappers included in the WarehousePG open source github repository are good references when trying to write your own. You may want to examine the source code for the [file\_fdw](https://github.com/greenplum-db/gpdb/tree/main/contrib/file_fdw) and [postgres\_fdw](https://github.com/greenplum-db/gpdb/tree/main/contrib/postgres_fdw) modules in the `contrib/` directory. The [CREATE FOREIGN DATA WRAPPER](../../ref_guide/sql_commands/CREATE_FOREIGN_DATA_WRAPPER.html) reference page also provides some useful details.
+The foreign-data wrappers included in the WarehousePG open source github repository are good references when trying to write your own. You may want to examine the source code for the [file_fdw](https://github.com/warehouse-pg/warehouse-pg/tree/main/contrib/file_fdw) and [postgres_fdw](https://github.com/warehouse-pg/warehouse-pg/tree/main/contrib/postgres_fdw) modules in the `contrib/` directory. The [CREATE FOREIGN DATA WRAPPER](../../../ref_guide/sql_commands/CREATE_FOREIGN_DATA_WRAPPER.md) reference page also provides some useful details.
 
 > **Note** The SQL standard specifies an interface for writing foreign-data wrappers. WarehousePG does not implement that API, however, because the effort to accommodate it into WarehousePG would be large, and the standard API hasn't yet gained wide adoption.
 
-**Parent topic:** [Accessing External Data with Foreign Tables](../external/foreign.html)
+**Parent topic:** [Accessing External Data with Foreign Tables](index.md)
 
-## <a id="reqs"></a>Requirements
+<a id="reqs"></a>
+
+## Requirements
 
 When you develop with the WarehousePG foreign-data wrapper API:
 
 -   You must develop your code on a system with the same hardware and software architecture as that of your WarehousePG hosts.
 -   Your code must be written in a compiled language such as C, using the version-1 interface. For details on C language calling conventions and dynamic loading, refer to [C Language Functions](https://www.postgresql.org/docs/12/xfunc-c.html) in the PostgreSQL documentation.
 -   Symbol names in your object files must not conflict with each other nor with symbols defined in the WarehousePG server. You must rename your functions or variables if you get error messages to this effect.
--   Review the foreign table introduction described in [Accessing External Data with Foreign Tables](foreign.html).
+-   Review the foreign table introduction described in [Accessing External Data with Foreign Tables](index.md).
 
-## <a id="limits"></a>Known Issues and Limitations
+<a id="limits"></a>
+
+## Known Issues and Limitations
 
 The WarehousePG 7 foreign-data wrapper implementation has the following known issues and limitations:
 
 -   WarehousePG supports all values of the `mpp_execute` option value for foreign table scans only. WarehousePG supports parallel write operations only when `mpp_execute` is set to `'all segments'`; WarehousePG initiates write operations through the coordinator for all other `mpp_execute` settings. See [WarehousePG Considerations](#topic5).
 
-## <a id="includes"></a>Header Files
+<a id="includes"></a>
 
-The WarehousePG header files that you may use when you develop a foreign-data wrapper are located in the `gpdb/src/include/` directory \(when developing against the WarehousePG open source github repository\), or installed in the `$GPHOME/include/postgresql/server/` directory \(when developing against a WarehousePG installation\):
+## Header Files
+
+The WarehousePG header files that you may use when you develop a foreign-data wrapper are located in the `gpdb/src/include/` directory (when developing against the WarehousePG open source github repository), or installed in the `$GPHOME/include/postgresql/server/` directory (when developing against a WarehousePG installation):
 
 -   `foreign/fdwapi.h` - FDW API structures and callback function signatures
 -   `foreign/foreign.h` - foreign-data wrapper helper structs and functions
@@ -37,7 +45,9 @@ The WarehousePG header files that you may use when you develop a foreign-data wr
 
 Your FDW code may also be dependent on header files and libraries required to access the remote data store.
 
-## <a id="topic2"></a>Foreign Data Wrapper Functions
+<a id="topic2"></a>
+
+## Foreign Data Wrapper Functions
 
 The developer of a foreign-data wrapper must implement an SQL-invokable *handler* function, and optionally an SQL-invokable *validator* function. Both functions must be written in a compiled language such as C, using the version-1 interface.
 
@@ -63,7 +73,9 @@ LANGUAGE C STRICT;
 
 The OID argument reflects the type of the system catalog that the object would be stored in, one of `ForeignDataWrapperRelationId`, `ForeignServerRelationId`, `UserMappingRelationId`, or `ForeignTableRelationId`. If no *validator* function is supplied by a foreign data wrapper, WarehousePG does not check option validity at object creation time or object alteration time.
 
-## <a id="topic3"></a>Foreign Data Wrapper Callback Functions
+<a id="topic3"></a>
+
+## Foreign Data Wrapper Callback Functions
 
 The foreign-data wrapper API defines callback functions that WarehousePG invokes when scanning and updating foreign tables. The API also includes callbacks for performing explain and analyze operations on a foreign table.
 
@@ -122,10 +134,10 @@ You must implement the scan-related functions in your foreign-data wrapper; impl
 
 Scan-related callback functions include:
 
-<table class="table" id="topic3__in201681"><caption></caption><colgroup><col style="width:35.573122529644266%"><col style="width:64.42687747035573%"></colgroup><thead class="thead">
+<table class="table" id="in201681"><caption></caption><colgroup><col style="width:35.573122529644266%" /><col style="width:64.42687747035573%" /></colgroup><thead class="thead">
             <tr class="row">
-              <th class="entry" id="topic3__in201681__entry__1">Callback Signature</th>
-              <th class="entry" id="topic3__in201681__entry__2">Description</th>
+              <th class="entry" id="in201681__entry__1">Callback Signature</th>
+              <th class="entry" id="in201681__entry__2">Description</th>
             </tr>
           </thead><tbody class="tbody">
             <tr class="row">
@@ -185,10 +197,10 @@ EndForeignScan (ForeignScanState *node)</code></pre></td>
 
 If a foreign data wrapper supports writable foreign tables, it should provide the update-related callback functions that are required by the capabilities of the FDW. Update-related callback functions include:
 
-<table class="table" id="topic3__in201681"><caption></caption><colgroup><col style="width:35.573122529644266%"><col style="width:64.42687747035573%"></colgroup><thead class="thead">
+<table class="table" id="in201681"><caption></caption><colgroup><col style="width:35.573122529644266%" /><col style="width:64.42687747035573%" /></colgroup><thead class="thead">
             <tr class="row">
-              <th class="entry" id="topic3__in201681__entry__1">Callback Signature</th>
-              <th class="entry" id="topic3__in201681__entry__2">Description</th>
+              <th class="entry" id="in201681__entry__1">Callback Signature</th>
+              <th class="entry" id="in201681__entry__2">Description</th>
             </tr>
           </thead><tbody class="tbody">
             <tr class="row">
@@ -266,7 +278,9 @@ IsForeignRelUpdatable (Relation rel)</code></pre></td>
 
 Refer to [Foreign Data Wrapper Callback Routines](https://www.postgresql.org/docs/12/fdw-callbacks.html) in the PostgreSQL documentation for detailed information about the inputs and outputs of the FDW callback functions.
 
-## <a id="helper"></a>Foreign Data Wrapper Helper Functions
+<a id="helper"></a>
+
+## Foreign Data Wrapper Helper Functions
 
 The FDW API exports several helper functions from the WarehousePG core server so that authors of foreign-data wrappers have easy access to attributes of FDW-related objects, such as options provided when the user creates or alters the foreign-data wrapper, server, or foreign table. To use these helper functions, you must include `foreign.h` header file in your source file:
 
@@ -276,7 +290,7 @@ The FDW API exports several helper functions from the WarehousePG core server so
 
 The FDW API includes the helper functions listed in the table below. Refer to [Foreign Data Wrapper Helper Functions](https://www.postgresql.org/docs/12/fdw-helpers.html) in the PostgreSQL documentation for more information about these functions.
 
-<table class="table" id="helper__fdw_helper"><caption></caption><colgroup><col style="width:35.573122529644266%"><col style="width:64.42687747035573%"></colgroup><thead class="thead">
+<table class="table" id="helper__fdw_helper"><caption></caption><colgroup><col style="width:35.573122529644266%" /><col style="width:64.42687747035573%" /></colgroup><thead class="thead">
             <tr class="row">
               <th class="entry" id="helper__fdw_helper__entry__1">Helper Signature</th>
               <th class="entry" id="helper__fdw_helper__entry__2">Description</th>
@@ -325,11 +339,11 @@ GetForeignColumnOptions(Oid relid, AttrNumber attnum);</code></pre></td>
               <td class="entry" headers="helper__fdw_helper__entry__2">Returns the per-column FDW options for the
                 column with the given foreign table OID and attribute number.</td>
             </tr>
-          </tbody></table>
+          </tbody></table><a id="topic5"></a>
 
-## <a id="topic5"></a>WarehousePG Considerations
+## WarehousePG Considerations
 
-A WarehousePG user can specify the `mpp_execute` option when they create or alter a foreign table, foreign server, or foreign data wrapper. A WarehousePG-compatible foreign-data wrapper examines the `mpp_execute` option value and uses it to determine where to request or send data - from the `coordinator` \(the default\), `any` \(coordinator or any one segment\), or `all segments` (parallel read/write).
+A WarehousePG user can specify the `mpp_execute` option when they create or alter a foreign table, foreign server, or foreign data wrapper. A WarehousePG-compatible foreign-data wrapper examines the `mpp_execute` option value and uses it to determine where to request or send data - from the `coordinator` (the default), `any` (coordinator or any one segment), or `all segments` (parallel read/write).
 
 WarehousePG supports all `mpp_execute` settings for a scan.
 
@@ -364,17 +378,19 @@ int segmentNumber = GpIdentity.segindex;
 int totalNumberOfSegments = getgpsegmentCount();
 ```
 
-## <a id="pkg"></a>Building a Foreign Data Wrapper Extension with PGXS
+<a id="pkg"></a>
+
+## Building a Foreign Data Wrapper Extension with PGXS
 
 You compile the foreign-data wrapper functions that you write with the FDW API into one or more shared libraries that the WarehousePG server loads on demand.
 
-You can use the PostgreSQL build extension infrastructure \(PGXS\) to build the source code for your foreign-data wrapper against a WarehousePG installation. This framework automates common build rules for simple modules. If you have a more complicated use case, you will need to write your own build system.
+You can use the PostgreSQL build extension infrastructure (PGXS) to build the source code for your foreign-data wrapper against a WarehousePG installation. This framework automates common build rules for simple modules. If you have a more complicated use case, you will need to write your own build system.
 
 To use the PGXS infrastructure to generate a shared library for your FDW, create a simple `Makefile` that sets PGXS-specific variables.
 
 > **Note** Refer to [Extension Building Infrastructure](https://www.postgresql.org/docs/12/extend-pgxs.html) in the PostgreSQL documentation for information about the `Makefile` variables supported by PGXS.
 
-For example, the following `Makefile` generates a shared library in the current working directory named `base_fdw.so` from two C source files, base\_fdw\_1.c and base\_fdw\_2.c:
+For example, the following `Makefile` generates a shared library in the current working directory named `base_fdw.so` from two C source files, base_fdw_1.c and base_fdw_2.c:
 
 ```
 MODULE_big = base_fdw
@@ -393,10 +409,10 @@ A description of the directives used in this `Makefile` follows:
 
 -   `MODULE_big` - identifes the base name of the shared library generated by the `Makefile`
 -   `PG_CPPFLAGS` - adds the WarehousePG installation `include/` directory to the compiler header file search path
--   `SHLIB_LINK` adds the WarehousePG installation library directory \(`$GPHOME/lib/`\) to the linker search path
+-   `SHLIB_LINK` adds the WarehousePG installation library directory (`$GPHOME/lib/`) to the linker search path
 -   The `PG_CONFIG` and `PGXS` variable settings and the `include` statement are required and typically reside in the last three lines of the `Makefile`.
 
-To package the foreign-data wrapper as a WarehousePG extension, you create script \(`newfdw--version.sql`\) and control \(`newfdw.control`\) files that register the FDW *handler* and *validator* functions, create the foreign data wrapper, and identify the characteristics of the FDW shared library file.
+To package the foreign-data wrapper as a WarehousePG extension, you create script (`newfdw--version.sql`) and control (`newfdw.control`) files that register the FDW *handler* and *validator* functions, create the foreign data wrapper, and identify the characteristics of the FDW shared library file.
 
 > **Note** [Packaging Related Objects into an Extension](https://www.postgresql.org/docs/12/extend-extensions.html) in the PostgreSQL documentation describes how to package an extension.
 
@@ -428,20 +444,21 @@ module_pathname = '$libdir/base_fdw'
 relocatable = true
 ```
 
-When you add the following directives to the `Makefile`, you identify the FDW extension control file base name \(`EXTENSION`\) and SQL script \(`DATA`\):
+When you add the following directives to the `Makefile`, you identify the FDW extension control file base name (`EXTENSION`) and SQL script (`DATA`):
 
 ```
 EXTENSION = base_fdw
 DATA = base_fdw--1.0.sql
 ```
 
-Running `make install` with these directives in the `Makefile` copies the shared library and FDW SQL and control files into the specified or default locations in your WarehousePG installation \(`$GPHOME`\).
+Running `make install` with these directives in the `Makefile` copies the shared library and FDW SQL and control files into the specified or default locations in your WarehousePG installation (`$GPHOME`).
 
-## <a id="deployconsider"></a>Deployment Considerations
+<a id="deployconsider"></a>
+
+## Deployment Considerations
 
 You must package the FDW shared library and extension files in a form suitable for deployment in a WarehousePG cluster. When you construct and deploy the package, take into consideration the following:
 
 -   The FDW shared library must be installed to the same file system location on the coordinator host and on every segment host in the WarehousePG cluster. You specify this location in the `.control` file. This location is typically the `$GPHOME/lib/postgresql/` directory.
 -   The FDW `.sql` and `.control` files must be installed to the `$GPHOME/share/postgresql/extension/` directory on the coordinator host and on every segment host in the WarehousePG cluster.
 -   The `gpadmin` user must have permission to traverse the complete file system path to the FDW shared library file and extension files.
-

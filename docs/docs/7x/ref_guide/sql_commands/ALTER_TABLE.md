@@ -1,10 +1,17 @@
-# ALTER TABLE 
+---
+title: ALTER TABLE
+
+---
 
 Changes the definition of a table.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER TABLE [IF EXISTS] [ONLY] <name> [ * ]
     <action> [, ... ]
 
@@ -198,12 +205,14 @@ and <subpartition_element> is:
 [ TABLESPACE <tablespace> ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER TABLE` changes the definition of an existing table. There are several subforms described below. Note that the lock level required may differ for each subform. *An `ACCESS EXCLUSIVE` lock is acquired unless explicitly noted.* When multiple subcommands are provided, WarehousePG acquires the strictest lock required by any subcommand.
 
 ADD COLUMN [ IF NOT EXISTS ]
- Adds a new column to the table, using the same syntax as [CREATE TABLE](CREATE_TABLE.html). If `IF NOT EXISTS` is specified and a column already exists with this name, no error is thrown.
+ Adds a new column to the table, using the same syntax as [CREATE TABLE](CREATE_TABLE.md). If `IF NOT EXISTS` is specified and a column already exists with this name, no error is thrown.
 
 DROP COLUMN [ IF EXISTS ]
 Drops a column from a table. Note that if you drop table columns that are being used as the WarehousePG distribution key, the distribution policy for the table will be changed to `DISTRIBUTED RANDOMLY`. Indexes and table constraints involving the column are automatically dropped as well. Multivariate statistics referencing the dropped column will also be removed if the removal of the column would cause the statistics to contain data for only a single column. You need to specify `CASCADE` if anything outside of the table depends on the column, such as views. If `IF EXISTS` is specified and the column does not exist, no error is thrown; WarehousePG issues a notice instead.
@@ -230,22 +239,22 @@ If this table is a partition, you cannot `DROP NOT NULL` on a column if it is ma
 ADD GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY
 SET GENERATED { ALWAYS | BY DEFAULT }
 DROP IDENTITY [ IF EXISTS ]
-These forms change whether a column is an identity column or change the generation attribute of an existing identity column. See [CREATE TABLE](CREATE_TABLE.html) for details.
+These forms change whether a column is an identity column or change the generation attribute of an existing identity column. See [CREATE TABLE](CREATE_TABLE.md) for details.
 
 If `DROP IDENTITY IF EXISTS` is specified and the column is not an identity column, no error is thrown. In this case WarehousePG issues a notice instead.
 
-SET sequence\_option
+SET sequence_option
 RESTART
-These forms alter the sequence that underlies an existing identity column. sequence_option is an option supported by [ALTER SEQUENCE](ALTER_SEQUENCE.html) such as `INCREMENT BY`.
+These forms alter the sequence that underlies an existing identity column. sequence_option is an option supported by [ALTER SEQUENCE](ALTER_SEQUENCE.md) such as `INCREMENT BY`.
 
 SET STATISTICS
-Sets the per-column statistics-gathering target for subsequent [ANALYZE](ANALYZE.html) operations. The target can be set in the range 0 to 10000, or set to -1 to revert to using the system default statistics target \([default_statistics_target](../config_params/guc-list.html#default_statistics_target). When set to 0, no statistics are collected.
+Sets the per-column statistics-gathering target for subsequent [ANALYZE](ANALYZE.md) operations. The target can be set in the range 0 to 10000, or set to -1 to revert to using the system default statistics target ([default_statistics_target](../config_params/guc-list.md#default_statistics_target). When set to 0, no statistics are collected.
 
 `SET STATISTICS` acquires a `SHARE UPDATE EXCLUSIVE` lock.
 
-SET ( attribute\_option = value [, ... ] )
-RESET ( attribute\_option [, ...] )
-Sets or resets per-attribute options. Currently, the only defined per-attribute options are `n_distinct` and `n_distinct_inherited`, which override the number-of-distinct-values estimates made by subsequent [ANALYZE](ANALYZE.html) operations. `n_distinct` affects the statistics for the table itself, while `n_distinct_inherited` affects the statistics gathered for the table plus its inheritance children. When set to a positive value, `ANALYZE` assumes that the column contains exactly the specified number of distinct non-null values. When set to a negative value, which must be greater than or equal to -1, `ANALYZE` assumes that the number of distinct non-null values in the column is linear in the size of the table; the exact count is to be computed by multiplying the estimated table size by the absolute value of the given number. For example, a value of -1 implies that all values in the column are distinct, while a value of -0.5 implies that each value appears twice on the average. This can be useful when the size of the table changes over time, since the multiplication by the number of rows in the table is not performed until query planning time. Specify the value 0 to revert to estimating the number of distinct values normally.
+SET ( attribute_option = value [, ... ] )
+RESET ( attribute_option [, ...] )
+Sets or resets per-attribute options. Currently, the only defined per-attribute options are `n_distinct` and `n_distinct_inherited`, which override the number-of-distinct-values estimates made by subsequent [ANALYZE](ANALYZE.md) operations. `n_distinct` affects the statistics for the table itself, while `n_distinct_inherited` affects the statistics gathered for the table plus its inheritance children. When set to a positive value, `ANALYZE` assumes that the column contains exactly the specified number of distinct non-null values. When set to a negative value, which must be greater than or equal to -1, `ANALYZE` assumes that the number of distinct non-null values in the column is linear in the size of the table; the exact count is to be computed by multiplying the estimated table size by the absolute value of the given number. For example, a value of -1 implies that all values in the column are distinct, while a value of -0.5 implies that each value appears twice on the average. This can be useful when the size of the table changes over time, since the multiplication by the number of rows in the table is not performed until query planning time. Specify the value 0 to revert to estimating the number of distinct values normally.
 
 Changing per-attribute options acquires a `SHARE UPDATE EXCLUSIVE` lock.
 
@@ -254,17 +263,17 @@ Do not use this form of `SET` to set attribute encoding options for appendoptimi
 SET STORAGE
 This form sets the storage mode for a column. This controls whether this column is held inline or in a secondary TOAST table, and whether the data should be compressed or not. `PLAIN` must be used for fixed-length values such as integer and is inline, uncompressed. `MAIN` is for inline, compressible data. `EXTERNAL` is for external, uncompressed data, and `EXTENDED` is for external, compressed data. `EXTENDED` is the default for most data types that support non-`PLAIN` storage. Use of `EXTERNAL` will make substring operations on very large text and bytea values run faster, at the penalty of increased storage space. Note that `SET STORAGE` doesn't itself change anything in the table, it just sets the strategy to be pursued during future table updates.
 
-SET ENCODING ( storage\_directive> [, ...] )
+SET ENCODING ( storage_directive> [, ...] )
 This form sets column encoding options for append-optimized, column-oriented tables.
 
-ADD table\_constraint [ NOT VALID ]
-Adds a new constraint to a table using the same syntax as [CREATE TABLE](CREATE_TABLE.html). The `NOT VALID` option is currently allowed only for foreign key and `CHECK` constraints.
+ADD table_constraint [ NOT VALID ]
+Adds a new constraint to a table using the same syntax as [CREATE TABLE](CREATE_TABLE.md). The `NOT VALID` option is currently allowed only for foreign key and `CHECK` constraints.
 
 Normally, this form causes a scan of the table to verify that all existing rows in the table satisfy the new constraint.  If the constraint is marked `NOT VALID`, WarehousePG skips the potentially-lengthy initial check to verify that all rows in the table satisfy the constraint. The constraint will still be enforced against subsequent inserts or updates (that is, they'll fail unless there is a matching row in the referenced table, in the case of foreign keys; and they'll fail unless the new row matches the specified check constraints). But the database will not assume that the constraint holds for all rows in the table, until it is validated by using the `VALIDATE CONSTRAINT` option. See the [Notes](#section5) for more information about using the `NOT VALID` option.
 
 Most forms of `ADD <table_constraint>` require an `ACCESS EXCLUSIVE` lock.
 
-Additional restrictions apply when unique or primary key constraints are added to partitioned tables; see [CREATE TABLE](CREATE_TABLE.html).
+Additional restrictions apply when unique or primary key constraints are added to partitioned tables; see [CREATE TABLE](CREATE_TABLE.md).
 
 ADD table_constraint_using_index
 This form adds a new `PRIMARY KEY` or `UNIQUE` constraint to a table based on an existing unique index. All the columns of the index will be included in the constraint.
@@ -292,39 +301,39 @@ Drops the specified constraint on a table, along with any index underlying the c
 
 DISABLE ROW LEVEL SECURITY
 ENABLE ROW LEVEL SECURITY
-These forms control the application of row security policies belonging to the table. If enabled and no policies exist for the table, then WarehousePG applies a default-deny policy. Note that policies can exist for a table even if row level security is disabled - in this case, the policies will NOT be applied and the policies will be ignored. See also [CREATE POLICY](CREATE_POLICY.html).
+These forms control the application of row security policies belonging to the table. If enabled and no policies exist for the table, then WarehousePG applies a default-deny policy. Note that policies can exist for a table even if row level security is disabled - in this case, the policies will NOT be applied and the policies will be ignored. See also [CREATE POLICY](CREATE_POLICY.md).
 
 NO FORCE ROW LEVEL SECURITY
 FORCE ROW LEVEL SECURITY
-These forms control the application of row security policies belonging to the table when the user is the table owner. If enabled, row level security policies will be applied when the user is the table owner. If disabled (the default) then row level security will not be applied when the user is the table owner. See also [CREATE POLICY](CREATE_POLICY.html).
+These forms control the application of row security policies belonging to the table when the user is the table owner. If enabled, row level security policies will be applied when the user is the table owner. If disabled (the default) then row level security will not be applied when the user is the table owner. See also [CREATE POLICY](CREATE_POLICY.md).
 
 CLUSTER ON
-Selects the default index for future [CLUSTER](CLUSTER.html) operations. It does not actually re-cluster the table.
+Selects the default index for future [CLUSTER](CLUSTER.md) operations. It does not actually re-cluster the table.
 
 Changing cluster options acquires a `SHARE UPDATE EXCLUSIVE` lock.
 
 REPACK BY COLUMNS
-Physically reorders a table based on one or more columns to improve physical correlation. You specify one or more columns, and an optional column order. If not specified, the default is `ASC`. The command is equivalent to the [CLUSTER](CLUSTER.html) command, but it uses the provided column list instead of an index to determine the sorting order. 
+Physically reorders a table based on one or more columns to improve physical correlation. You specify one or more columns, and an optional column order. If not specified, the default is `ASC`. The command is equivalent to the [CLUSTER](CLUSTER.md) command, but it uses the provided column list instead of an index to determine the sorting order. 
 
 The command is especially useful for tables that are loaded in small batches. You may combine `REPACK BY COLUMNS` with most other `ALTER TABLE` commands that do not require a rewrite of the table. You may use `REPACK BY COLUMNS` to add compression or change the existing compression settings of a table while physically reordering the table, which results in better compression and storage. See [Examples](#section6) for more details.
 
 SET WITHOUT CLUSTER
-Removes the most recently used [CLUSTER](CLUSTER.html) index specification from the table. This affects future cluster operations that do not specify an index.
+Removes the most recently used [CLUSTER](CLUSTER.md) index specification from the table. This affects future cluster operations that do not specify an index.
 
 Changing cluster options acquires a `SHARE UPDATE EXCLUSIVE` lock.
 
 SET TABLESPACE
 Changes the table's tablespace to the specified tablespace and moves the data file(s) associated with the table to the new tablespace. Indexes on the table, if any, are not moved; but they can be moved separately with additional `SET TABLESPACE` commands. When applied to a partitioned table, nothing is moved, but any partitions created afterwards with `CREATE TABLE ... PARTITION OF` will use that tablespace, unless the `TABLESPACE` clause is used to override it.
 
-All tables in the current database in a tablespace can be moved by using the `ALL IN TABLESPACE` form, which will lock all tables to be moved first and then move each one. This form also supports `OWNED BY`, which will only move tables owned by the roles specified. If the `NOWAIT` option is specified then the command will fail if it is unable to acquire all of the locks required immediately. Note that system catalogs are not moved by this command, use `ALTER DATABASE` or explicit `ALTER TABLE` invocations instead if desired. The `information_schema` relations are not considered part of the system catalogs and will be moved. See also [CREATE TABLESPACE](CREATE_TABLESPACE.html).
+All tables in the current database in a tablespace can be moved by using the `ALL IN TABLESPACE` form, which will lock all tables to be moved first and then move each one. This form also supports `OWNED BY`, which will only move tables owned by the roles specified. If the `NOWAIT` option is specified then the command will fail if it is unable to acquire all of the locks required immediately. Note that system catalogs are not moved by this command, use `ALTER DATABASE` or explicit `ALTER TABLE` invocations instead if desired. The `information_schema` relations are not considered part of the system catalogs and will be moved. See also [CREATE TABLESPACE](CREATE_TABLESPACE.md).
 
 If changing the tablespace of a partitioned table, all child tables will also be moved to the new tablespace.
 
 SET { LOGGED | UNLOGGED }
 This form changes the table from unlogged to logged or vice-versa. It cannot be applied to a temporary table.
 
-SET ( storage_\parameter [= value] [, ... ] )
-This form changes one or more table-level options. See [Storage Parameters](CREATE_TABLE.html#storage_parameters) in the `CREATE TABLE` reference for details on the available parameters. Note that for heap tables, the table contents will not be modified immediately by this command; depending on the parameter, you may need to rewrite the table to get the desired effects. That can be done with [VACUUM FULL](VACUUM.html), [CLUSTER](CLUSTER.html) or one of the forms of `ALTER TABLE` that forces a table rewrite, see [Notes](#section5). For append-optimized column-oriented tables, changing a storage parameter always results in a table rewrite. For planner-related parameters, changes take effect from the next time the table is locked, so currently executing queries are not affected.
+SET ( storage\_\\parameter [= value][, ... ] )
+This form changes one or more table-level options. See [Storage Parameters](CREATE_TABLE.md#storage_parameters) in the `CREATE TABLE` reference for details on the available parameters. Note that for heap tables, the table contents will not be modified immediately by this command; depending on the parameter, you may need to rewrite the table to get the desired effects. That can be done with [VACUUM FULL](VACUUM.md), [CLUSTER](CLUSTER.md) or one of the forms of `ALTER TABLE` that forces a table rewrite, see [Notes](#section5). For append-optimized column-oriented tables, changing a storage parameter always results in a table rewrite. For planner-related parameters, changes take effect from the next time the table is locked, so currently executing queries are not affected.
 
 WarehousePG takes a `SHARE UPDATE EXCLUSIVE` lock when setting `fillfactor`, toast and autovacuum storage parameters, and the planner parameter `parallel_workers`.
 
@@ -333,20 +342,20 @@ This form resets one or more table level options to their defaults. As with `SET
 
 SET WITH (`<set_with_parameter>` = `<value>` [, ...])
 You can use this form of the command to reorganize the table, or to set the table access method and also optionally set storage parameters.
-  <p class="note">
-<strong>Note:</strong>
-Although you can specify the table's access method using the <code>appendoptimized</code> and <code>orientation</code> storage parameters, it is recommended to use use <code>SET ACCESS METHOD &lt;access_method></code> instead.
-</p>
 
-INHERIT parent\_table
+> **Note:** **Note:** Although you can specify the table's access method using the `appendoptimized` and `orientation` storage parameters, it is recommended to use use `SET ACCESS METHOD <access_method>` instead.
+
+
+
+INHERIT parent_table
 Adds the target table as a new child of the specified parent table. Queries against the parent will include records of the target table. To be added as a child, the target table must already contain all of the same columns as the parent (it could have additional columns, too). The columns must have matching data types, and if they have `NOT NULL` constraints in the parent then they must also have `NOT NULL` constraints in the child.
 
  There must also be matching child-table constraints for all `CHECK` constraints of the parent, except those marked non-inheritable (that is, created with `ALTER TABLE ... ADD CONSTRAINT ... NO INHERIT`) in the parent, which are ignored; all child-table constraints matched must not be marked non-inheritable. `UNIQUE`, `PRIMARY KEY`, and `FOREIGN KEY` constraints are not currently considered.
 
-NO INHERIT parent\_table
+NO INHERIT parent_table
 This form removes the target table from the list of children of the specified parent table. Queries against the parent table will no longer include records drawn from the target table.
 
-OF type\_name
+OF type_name
 This form links the table to a composite type as though `CREATE TABLE OF` had formed it. The table's list of column names and types must precisely match that of the composite type. The table must not inherit from any other table. These restrictions ensure that `CREATE TABLE OF` would permit an equivalent table definition.
 
 NOT OF
@@ -366,21 +375,20 @@ Changes the distribution policy of a table. Changing a hash distribution policy,
 
 :  While WarehousePG permits changing the distribution policy of a writable external table, the operation never results in physical redistribution of the external data.
 
-
 ATTACH PARTITION partition_name { FOR VALUES partition_bound_spec | DEFAULT }
-This form of the *modern partitioning syntax* attaches an existing table (which might itself be partitioned) as a partition of the target table. The table can be attached as a partition for specific values using `FOR VALUES` or as a default partition by using `DEFAULT`. For each index in the target table, a corresponding one will be created in the attached table; or, if an equivalent index already exists, it will be attached to the target table's index, as if you had run `ALTER INDEX ATTACH PARTITION`. Note that if the existing table is a foreign table, WarehousePG does not permit attaching the table as a partition of the target table if there are `UNIQUE` indexes on the target table. (See also [CREATE FOREIGN TABLE](CREATE_FOREIGN_TABLE.html).)
+This form of the *modern partitioning syntax* attaches an existing table (which might itself be partitioned) as a partition of the target table. The table can be attached as a partition for specific values using `FOR VALUES` or as a default partition by using `DEFAULT`. For each index in the target table, a corresponding one will be created in the attached table; or, if an equivalent index already exists, it will be attached to the target table's index, as if you had run `ALTER INDEX ATTACH PARTITION`. Note that if the existing table is a foreign table, WarehousePG does not permit attaching the table as a partition of the target table if there are `UNIQUE` indexes on the target table. (See also [CREATE FOREIGN TABLE](CREATE_FOREIGN_TABLE.md).)
 
-A partition using `FOR VALUES` uses the same syntax for partition\_bound\_spec> as [CREATE TABLE](CREATE_TABLE.html). The partition bound specification must correspond to the partitioning strategy and partition key of the target table. The table to be attached must have all the same columns as the target table and no more; moreover, the column types must also match. Also, it must have all of the `NOT NULL` and `CHECK` constraints of the target table. Currently `FOREIGN KEY` constraints are not considered. `UNIQUE` and `PRIMARY KEY` constraints from the parent table will be created in the partition, if they don't already exist. If any of the `CHECK` constraints of the table being attached are marked `NO INHERIT`, the command will fail; such constraints must be recreated without the `NO INHERIT` clause.
+A partition using `FOR VALUES` uses the same syntax for partition_bound_spec> as [CREATE TABLE](CREATE_TABLE.md). The partition bound specification must correspond to the partitioning strategy and partition key of the target table. The table to be attached must have all the same columns as the target table and no more; moreover, the column types must also match. Also, it must have all of the `NOT NULL` and `CHECK` constraints of the target table. Currently `FOREIGN KEY` constraints are not considered. `UNIQUE` and `PRIMARY KEY` constraints from the parent table will be created in the partition, if they don't already exist. If any of the `CHECK` constraints of the table being attached are marked `NO INHERIT`, the command will fail; such constraints must be recreated without the `NO INHERIT` clause.
 
 If the new partition is a regular table, WarehousePG performs a full table scan to check that existing rows in the table do not violate the partition constraint. It is possible to avoid this scan by adding a valid `CHECK` constraint to the table that allows only rows satisfying the desired partition constraint before running this command. The `CHECK` constraint will be used to determine that the table need not be scanned to validate the partition constraint. This does not work, however, if any of the partition keys is an expression and the partition does not accept `NULL` values. If attaching a list partition that will not accept `NULL` values, also add a `NOT NULL` constraint to the partition key column, unless it's an expression.
 
-If the new partition is a foreign table, nothing is done to verify that all of the rows in the foreign table obey the partition constraint. (See the discussion in [CREATE FOREIGN TABLE](CREATE_FOREIGN_TABLE.html) about constraints on the foreign table.)
+If the new partition is a foreign table, nothing is done to verify that all of the rows in the foreign table obey the partition constraint. (See the discussion in [CREATE FOREIGN TABLE](CREATE_FOREIGN_TABLE.md) about constraints on the foreign table.)
 
 When a table has a default partition, defining a new partition changes the partition constraint for the default partition. The default partition can't contain any rows that would need to be moved to the new partition, and will be scanned to verify that none are present. This scan, like the scan of the new partition, can be avoided if an appropriate `CHECK` constraint is present. Also like the scan of the new partition, it is always skipped when the default partition is a foreign table.
 
-Attaching a partition acquires a `SHARE UPDATE EXCLUSIVE` lock on the parent table, in addition to the `ACCESS EXCLUSIVE` locks on the table being attached and on the default partition (if any). You can run `SELECT` and `INSERT` queries in parallel with `ATTACH PARTITION`. You can also run `UPDATE` queries in parallel with `ATTACH PARTITION` when the parent table is a heap table and the Global Deadlock Detector is enabled (the [gp_enable_global_deadlock_detector](../config_params/guc-list.html#gp_enable_global_deadlock_detector) server configuration paramer is set to `on`).
+Attaching a partition acquires a `SHARE UPDATE EXCLUSIVE` lock on the parent table, in addition to the `ACCESS EXCLUSIVE` locks on the table being attached and on the default partition (if any). You can run `SELECT` and `INSERT` queries in parallel with `ATTACH PARTITION`. You can also run `UPDATE` queries in parallel with `ATTACH PARTITION` when the parent table is a heap table and the Global Deadlock Detector is enabled (the [gp_enable_global_deadlock_detector](../config_params/guc-list.md#gp_enable_global_deadlock_detector) server configuration paramer is set to `on`).
 
-Additional locks must also be held on all sub-partitions if the table being attached is itself a partitioned table. Likewise if the default partition is itself a partitioned table. The locking of the sub-partitions can be avoided by adding a `CHECK` constraint as described in [Partitioning Large Tables](../../admin_guide/ddl/ddl-partition.html.md).
+Additional locks must also be held on all sub-partitions if the table being attached is itself a partitioned table. Likewise if the default partition is itself a partitioned table. The locking of the sub-partitions can be avoided by adding a `CHECK` constraint as described in [Partitioning Large Tables](../../admin_guide/ddl/ddl-partition/index.md).
 
 DETACH PARTITION partition_name
 This form of the *modern partitioning syntax* detaches the specified partition of the target table. The detached partition continues to exist as a standalone table, but no longer has any ties to the table from which it was detached. Any indexes that were attached to the target table's indexes are detached.
@@ -388,15 +396,19 @@ This form of the *modern partitioning syntax* detaches the specified partition o
 ALTER PARTITION \| DROP PARTITION \| RENAME PARTITION \| TRUNCATE PARTITION \| ADD PARTITION \| SPLIT PARTITION \| EXCHANGE PARTITION \| SET SUBPARTITION TEMPLATE
 These forms of the *classic partitioning syntax* change the structure of a partitioned table. You must go through the parent table to alter one of its child tables.
 
-> **Note** If you add a partition to a table that has sub-partition encodings, the new partition inherits the storage directives for the sub-partitions. For more information about the precedence of compression settings, see [Using Compression](../../admin_guide/ddl/ddl-storage.html#topic40).
+> **Note** If you add a partition to a table that has sub-partition encodings, the new partition inherits the storage directives for the sub-partitions. For more information about the precedence of compression settings, see [Using Compression](../../admin_guide/ddl/ddl-storage.md#topic40).
 
 You can combine all forms of `ALTER TABLE` that act on a single table into a list of multiple alterations to apply together, except `RENAME`, `SET SCHEMA`, `ATTACH PARTITION`, and `DETACH PARTITION`. For example, it is possible to add several columns and/or alter the type of several columns in a single command. This is particularly useful with large tables, since only one pass over the table need be made.
 
 You must own the table to use `ALTER TABLE`. To change the schema or tablespace of a table, you must also have `CREATE` privilege on the new schema or tablespace. To add the table as a new child of a parent table, you must own the parent table as well. Also, to attach a table as a new partition of the table, you must own the table being attached. To alter the owner, you must also be a direct or indirect member of the new owning role, and that role must have `CREATE` privilege on the table's schema. To add a column or alter a column type or use the `OF` clause, you must also have `USAGE` privilege on the data type. A superuser has these privileges automatically.
 
-> **Note** Memory usage increases significantly when a table has many partitions, if a table has compression, or if the blocksize for a table is large. If the number of relations associated with the table is large, this condition can force an operation on the table to use more memory. For example, if the table is an append-optimized column-oriented table and has a large number of columns, each column is a relation. An operation that accesses all of the columns in the table allocates associated buffers. If the table has 40 columns and 100 partitions, and the columns are compressed and the blocksize is 2 MB \(with a system factor of 3\), the system attempts to allocate 24 GB, that is \(40 ×100\) × \(2 ×3\) MB or 24 GB.
+You can't use `ALTER TABLE ... SET DISTRIBUTED` to change a table to `COORDINATOR ONLY` distribution, nor can you change a `COORDINATOR ONLY` table to any other distribution using `ALTER TABLE`. The `COORDINATOR ONLY` distribution policy must be defined at the time of table creation. If you need to change the distribution of a coordinator-only table, you must drop the table and recreate it using the desired distribution policy.
 
-## <a id="section4"></a>Parameters 
+> **Note** Memory usage increases significantly when a table has many partitions, if a table has compression, or if the blocksize for a table is large. If the number of relations associated with the table is large, this condition can force an operation on the table to use more memory. For example, if the table is an append-optimized column-oriented table and has a large number of columns, each column is a relation. An operation that accesses all of the columns in the table allocates associated buffers. If the table has 40 columns and 100 partitions, and the columns are compressed and the blocksize is 2 MB (with a system factor of 3), the system attempts to allocate 24 GB, that is (40 ×100) × (2 ×3) MB or 24 GB.
+
+<a id="section4"></a>
+
+## Parameters
 
 IF EXISTS
 Do not throw an error if the table does not exist. WarehousePG issues a notice in this case.
@@ -404,36 +416,41 @@ Do not throw an error if the table does not exist. WarehousePG issues a notice i
 name
 The name (possibly schema-qualified) of an existing table to alter. If `ONLY` is specified, only that table is altered. If `ONLY` is not specified, the table and all of its descendant tables (if any) are updated.  You can optionally specify `*` after the table name to explicitly indicate that descendant tables are included.
 
-    > **Note** Adding or dropping a column, or changing a column's type, in a parent or descendant table only is not permitted. The parent table and its descendents must always have the same columns and types.
+```
+> **Note** Adding or dropping a column, or changing a column's type, in a parent or descendant table only is not permitted. The parent table and its descendents must always have the same columns and types.
+```
 
-column\_name
+column_name
 Name of a new or existing column. Note that WarehousePG distribution key columns must be treated with special care. Altering or dropping these columns can change the distribution policy for the table.
 
-new\_column\_name
+new_column_name
 New name for an existing column.
 
-new\_name
+new_name
 New name for the table.
 
 type
 Data type of the new column, or new data type for an existing column. If changing the data type of a WarehousePG distribution key column, you are only allowed to change it to a compatible type (for example, `text` to `varchar` is OK, but `text` to `int` is not).
 
-table\_constraint
+table_constraint
 New table constraint for the table. Note that foreign key constraints are currently not supported in WarehousePG. Also a table is only allowed one unique constraint and the uniqueness must be within the WarehousePG distribution key.
 
-constraint\_name
+constraint_name
 Name of an existing constraint to drop.
 
-ENCODING ( <storage_directive> [,...] )
+ENCODING ( &lt;storage_directive> [,...] )
 The `ENCODING` clause is valid only for append-optimized, column-oriented tables.
 
-When you add a column to an append-optimized, column-oriented table, WarehousePG sets each data compression parameter for the column \(`compresstype`, `compresslevel`, and `blocksize`\) based on the following setting, in order of preference.
+When you add a column to an append-optimized, column-oriented table, WarehousePG sets each data compression parameter for the column (`compresstype`, `compresslevel`, and `blocksize`) based on the following setting, in order of preference.
 
-    1.  The compression parameter setting specified in the `ALTER TABLE` command `ENCODING` clause.
-    2.  The table's data compression setting specified in the `WITH` clause when the table was created.
-    3.  The compression parameter setting specified in the server configuration parameter [gp\_default\_storage\_option](../config_params/guc-list.html).
-    4.  The default compression parameter value.
-For more information about the supported `ENCODING` storage directives, refer to [CREATE TABLE](CREATE_TABLE.html).
+```
+1.  The compression parameter setting specified in the `ALTER TABLE` command `ENCODING` clause.
+2.  The table's data compression setting specified in the `WITH` clause when the table was created.
+3.  The compression parameter setting specified in the server configuration parameter [gp\_default\_storage\_option](../config_params/guc-list.html).
+4.  The default compression parameter value.
+```
+
+For more information about the supported `ENCODING` storage directives, refer to [CREATE TABLE](CREATE_TABLE.md).
 
 CASCADE
 Automatically drop objects that depend on the dropped column or constraint (for example, views referencing the column), and in turn all objects that depend on those objects.
@@ -441,89 +458,89 @@ Automatically drop objects that depend on the dropped column or constraint (for 
 RESTRICT
 Refuse to drop the column or constraint if there are any dependent objects. This is the default behavior.
 
-index\_name
+index_name
 The name of an existing index.
 
 storage_parameter
-The name of a table storage parameter. Refer to the [Storage Parameters](CREATE_TABLE.html#storage_parameters) section on the `CREATE TABLE` reference page for a list of parameters.
+The name of a table storage parameter. Refer to the [Storage Parameters](CREATE_TABLE.md#storage_parameters) section on the `CREATE TABLE` reference page for a list of parameters.
 
 value
 The new value for the a table storage parameter. This might be a number or a word, depending on the parameter.
 
-parent\_table
+parent_table
 A parent table to associate or de-associate with this table.
 
-new\_owner
+new_owner
 The role name of the new owner of the table.
 
-new\_tablespace
+new_tablespace
 The name of the tablespace to which the table will be moved.
 
-new\_schema
+new_schema
 The name of the schema to which the table will be moved.
 
 partition_name
 The name of the table to attach as a new partition or to detach from this table.
 
 partition_bound_spec
-The partition bound specification for a new partition. Refer to [CREATE TABLE](CREATE_TABLE.html) for more details on the syntax of the same.
+The partition bound specification for a new partition. Refer to [CREATE TABLE](CREATE_TABLE.md) for more details on the syntax of the same.
 
 access_method
-The method to use for accessing the table. Refer to [Choosing the Storage Model](../../admin_guide/ddl/ddl-storage.html) for more information on the table storage models and access methods available in WarehousePG. Set to `heap` to access the table as a heap-storage table, `ao_row` to access the table as an append-optimized table with row-oriented storage (AO), or `ao_column` to access the table as an append-optimized table with column-oriented storage (AO/CO).
+The method to use for accessing the table. Refer to [Choosing the Storage Model](../../admin_guide/ddl/ddl-storage.md) for more information on the table storage models and access methods available in WarehousePG. Set to `heap` to access the table as a heap-storage table, `ao_row` to access the table as an append-optimized table with row-oriented storage (AO), or `ao_column` to access the table as an append-optimized table with column-oriented storage (AO/CO).
 
-  <p class="note">
-<strong>Note:</strong>
-Although you can specify the table's access method using <code>SET &lt;storage_parameter></code>, the recommendation is to use <code>SET ACCESS METHOD &lt;access_method></code> instead.
-</p>
+> **Note:** **Note:** Although you can specify the table's access method using `SET <storage_parameter>`, the recommendation is to use `SET ACCESS METHOD <access_method>` instead.
+
+
 
 SET WITH (reorganize=true\|false)
 Use `reorganize=true` when the hash distribution policy has not changed or when you have changed from a hash to a random distribution, and you want to redistribute the data anyway.
-If you are setting the distribution policy, you must specify the `WITH (reorganize=<value>)` clause before the `DISTRIBUTED ...` clause.   
+If you are setting the distribution policy, you must specify the `WITH (reorganize=<value>)` clause before the `DISTRIBUTED ...` clause.  
 Any attempt to reorganize an external table fails with an error.
 
+<a id="param_classic "></a>
 
-### <a id="param_classic "></a>Classic Partitioning Syntax Parameters
+### Classic Partitioning Syntax Parameters
 
 Descriptions of additional parameters that are specific to the *classic partitioning syntax* follow.
 
-ALTER \[DEFAULT\] PARTITION
+ALTER \[DEFAULT] PARTITION
 If altering a partition deeper than the first level of partitions, use `ALTER PARTITION` clauses to specify which sub-partition in the hierarchy you want to alter. For each partition level in the table hierarchy that is above the target partition, specify the partition that is related to the target partition in an `ALTER PARTITION` clause.
 
-DROP \[DEFAULT\] PARTITION
+DROP \[DEFAULT] PARTITION
 Drops the specified partition. If the partition has sub-partitions, the sub-partitions are automatically dropped as well.
 
-TRUNCATE \[DEFAULT\] PARTITION
+TRUNCATE \[DEFAULT] PARTITION
 Truncates the specified partition. If the partition has sub-partitions, the sub-partitions are automatically truncated as well.
 
-RENAME \[DEFAULT\] PARTITION
-Changes the partition name of a partition \(not the relation name\). Partitioned tables are created using the naming convention: `<`parentname`>_<`level`>_prt_<`partition\_name`>`.
+RENAME \[DEFAULT] PARTITION
+Changes the partition name of a partition (not the relation name). Partitioned tables are created using the naming convention: `<`parentname`>_<`level`>_prt_<`partition_name`>`.
 
 ADD DEFAULT PARTITION
 Adds a default partition to an existing partition design. When data does not match to an existing partition, it is inserted into the default partition. Partition designs that do not have a default partition will reject incoming rows that do not match to an existing partition. Default partitions must be given a name.
 
 ADD PARTITION
-partition\_element - Using the existing partition type of the table (range or list), defines the boundaries of new partition you are adding.  `ADD PARTITION` acquires an `ACCESS EXCLUSIVE` lock on the parent table.
+partition_element - Using the existing partition type of the table (range or list), defines the boundaries of new partition you are adding.  `ADD PARTITION` acquires an `ACCESS EXCLUSIVE` lock on the parent table.
 
 name - A name for this new partition.
 
-**VALUES** - For list partitions, defines the value\(s\) that the partition will contain.
+**VALUES** - For list partitions, defines the value(s) that the partition will contain.
 
 **START** - For range partitions, defines the starting range value for the partition. By default, start values are `INCLUSIVE`. For example, if you declared a start date of '`2016-01-01`', then the partition would contain all dates greater than or equal to '`2016-01-01`'. The data type of the `START` expression must support a suitable `+` operator, for example `timestamp` or `integer` (not `float` or `text`) if it is defined with the `EXCLUSIVE` keyword. Typically the data type of the `START` expression is the same type as the partition key column. If that is not the case, then you must explicitly cast to the intended data type.
 
 **END** - For range partitions, defines the ending range value for the partition. By default, end values are `EXCLUSIVE`. For example, if you declared an end date of '`2016-02-01`', then the partition would contain all dates less than but not equal to '`2016-02-01`'. The data type of the `END` expression must support a suitable `+` operator, for example `timestamp` or `integer` (not `float` or `text`) if it is defined with the `INCLUSIVE` keyword. Typically the data type of the `END` expression is the same type as the partition key column. If that is not the case, then you must explicitly cast to the intended data type.
 
-**WITH** - Sets the table storage options for a partition. For example, you may want older partitions to be append-optimized tables and newer partitions to be regular heap tables. See [CREATE TABLE](CREATE_TABLE.html) for a description of the storage options.
+**WITH** - Sets the table storage options for a partition. For example, you may want older partitions to be append-optimized tables and newer partitions to be regular heap tables. See [CREATE TABLE](CREATE_TABLE.md) for a description of the storage options.
 
 **TABLESPACE** - The name of the tablespace in which the partition is to be created.
 
-subpartition\_spec - Only allowed on partition designs that were created without a sub-partition template. Declares a sub-partition specification for the new partition you are adding. If the partitioned table was originally defined using a sub-partition template, then the template will be used to generate the sub-partitions automatically.
+subpartition_spec - Only allowed on partition designs that were created without a sub-partition template. Declares a sub-partition specification for the new partition you are adding. If the partitioned table was originally defined using a sub-partition template, then the template will be used to generate the sub-partitions automatically.
 
-EXCHANGE \[DEFAULT\] PARTITION
-Exchanges another table into the partition hierarchy into the place of an existing partition. In a multi-level partition design, you can only exchange the lowest level partitions \(those that contain data\).
+EXCHANGE \[DEFAULT] PARTITION
+Exchanges another table into the partition hierarchy into the place of an existing partition. In a multi-level partition design, you can only exchange the lowest level partitions (those that contain data).
 
-**WITH TABLE** table\_name - The name of the table you are swapping into the partition design. You can exchange a table where the table data is stored in the database. For example, the table is created with the `CREATE TABLE` command. The table must have the same number of columns, column order, column names, column types, and distribution policy as the parent table.
+**WITH TABLE** table_name - The name of the table you are swapping into the partition design. You can exchange a table where the table data is stored in the database. For example, the table is created with the `CREATE TABLE` command. The table must have the same number of columns, column order, column names, column types, and distribution policy as the parent table.
 
-With the `EXCHANGE PARTITION` clause, you can also exchange a readable external table \(created with the `CREATE EXTERNAL TABLE` command\) into the partition hierarchy in the place of an existing leaf partition.
+With the `EXCHANGE PARTITION` clause, you can also exchange a readable external table (created with the `CREATE EXTERNAL TABLE` command) into the partition hierarchy in the place of an existing leaf partition.
 
 Exchanging a leaf partition with an external table is not supported if the partitioned table contains a column with a check constraint or a `NOT NULL` constraint.
 
@@ -532,10 +549,10 @@ You cannot exchange a partition with a replicated table. Exchanging a partition 
 **WITH** \| **WITHOUT VALIDATION** - No-op (always validate the data against the partition constraint).
 
 SET SUBPARTITION TEMPLATE
-Modifies the sub-partition template for an existing partition. After a new sub-partition template is set, all new partitions added will have the new sub-partition design \(existing partitions are not modified\).
+Modifies the sub-partition template for an existing partition. After a new sub-partition template is set, all new partitions added will have the new sub-partition design (existing partitions are not modified).
 
 SPLIT DEFAULT PARTITION
-Splits a default partition. In a multi-level partition, only a range partition can be split, not a list partition, and you can only split the lowest level default partitions \(those that contain data\). Splitting a default partition creates a new partition containing the values specified and leaves the default partition containing any values that do not match to an existing partition.
+Splits a default partition. In a multi-level partition, only a range partition can be split, not a list partition, and you can only split the lowest level default partitions (those that contain data). Splitting a default partition creates a new partition containing the values specified and leaves the default partition containing any values that do not match to an existing partition.
 
 **AT** - For list partitioned tables, specifies a single list value that should be used as the criteria for the split.
 
@@ -543,22 +560,24 @@ Splits a default partition. In a multi-level partition, only a range partition c
 
 **END** - For range partitioned tables, specifies an ending value for the new partition.
 
-**INTO** - Allows you to specify a name for the new partition. When using the `INTO` clause to split a default partition, the second partition name specified should always be that of the existing default partition. If you do not know the name of the default partition, you can look it up using the pg\_partitions view.
+**INTO** - Allows you to specify a name for the new partition. When using the `INTO` clause to split a default partition, the second partition name specified should always be that of the existing default partition. If you do not know the name of the default partition, you can look it up using the pg_partitions view.
 
 SPLIT PARTITION
-Splits an existing partition into two partitions. In a multi-level partition, only a range partition can be split, not a list partition, and you can only split the lowest level partitions \(those that contain data\).
+Splits an existing partition into two partitions. In a multi-level partition, only a range partition can be split, not a list partition, and you can only split the lowest level partitions (those that contain data).
 
 **AT** - Specifies a single value that should be used as the criteria for the split. The partition will be divided into two new partitions with the split value specified being the starting range for the latter partition.
 
 **INTO** - Allows you to specify names for the two new partitions created by the split.
 
-partition\_name
-The given name of a partition. You can obtain the table names of the leaf partitions of a partitioned table using the `pg_partition_tree() function.
+partition_name
+The given name of a partition. You can obtain the table names of the leaf partitions of a partitioned table using the \`pg_partition_tree() function.
 
 FOR ('value')
 Specifies a partition by declaring a value that falls within the partition boundary specification. If the value declared with `FOR` matches to both a partition and one of its sub-partitions (for example, if the value is a date and the table is partitioned by month and then by day), then `FOR` will operate on the first level where a match is found (for example, the monthly partition). If your intent is to operate on a sub-partition, you must declare so as follows: `ALTER TABLE name ALTER PARTITION FOR ('2016-10-01') DROP PARTITION FOR ('2016-10-01');`
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 The key word `COLUMN` is noise and can be omitted.
 
@@ -578,11 +597,11 @@ To force immediate reclamation of space occupied by a dropped column, you can ru
 
 This table lists the `ALTER TABLE` operations that require a table rewrite when performed on tables defined with the specified type of table storage.
 
-|Operation \(See Note\)|Append-Optimized, Column-Oriented|Append-Optimized|Heap|
-|----------------------|---------------------------------|----------------|----|
-|`ALTER COLUMN TYPE`|No|Yes|Yes|
-|`ADD COLUMN`|No|No|No|
-| `ALTER COLUMN SET ENCODING`|No|N/A|N/A|
+| Operation (See Note)        | Append-Optimized, Column-Oriented | Append-Optimized | Heap |
+| --------------------------- | --------------------------------- | ---------------- | ---- |
+| `ALTER COLUMN TYPE`         | No                                | Yes              | Yes  |
+| `ADD COLUMN`                | No                                | No               | No   |
+| `ALTER COLUMN SET ENCODING` | No                                | N/A              | N/A  |
 
 > **Important** The forms of `ALTER TABLE` that perform a table rewrite are not MVCC-safe. After a table rewrite, the table will appear empty to concurrent transactions if they are using a snapshot taken before the rewrite occurred. See [MVCC Caveats](https://www.postgresql.org/docs/12/mvcc-caveats.html) for more details.
 
@@ -596,22 +615,24 @@ A recursive `DROP COLUMN` operation will remove a descendant table's column only
 
 The actions for identity columns (`ADD GENERATED`, `SET` etc., `DROP IDENTITY`), as well as the actions `CLUSTER`, `OWNER`, and `TABLESPACE` never recurse to descendant tables; that is, they always act as though `ONLY` were specified. Adding a constraint recurses only for `CHECK` constraints that are not marked `NO INHERIT`.
 
-WarehousePG does not currently support foreign key constraints. For a unique constraint to be enforced in WarehousePG, the table must be hash-distributed \(not `DISTRIBUTED RANDOMLY`\), and all of the distribution key columns must be the same as the initial columns of the unique constraint columns.
+WarehousePG does not currently support foreign key constraints. For a unique constraint to be enforced in WarehousePG, the table must be hash-distributed (not `DISTRIBUTED RANDOMLY`), and all of the distribution key columns must be the same as the initial columns of the unique constraint columns.
 
 WarehousePG does not permit changing any part of a system catalog table.
 
-Refer to [CREATE TABLE](CREATE_TABLE.html) for a further description of valid parameters.
+Refer to [CREATE TABLE](CREATE_TABLE.md) for a further description of valid parameters.
 
 Be aware of the following when altering partitioned tables using the *classic syntax*:
 
-- The table name specified in the `ALTER TABLE` command must be the actual table name of the partition, not the partition alias that is specified in the classic syntax.
-- Use the `pg_partition_tree()` function to view the structure of a partitioned table. This function returns the partition hierarchy, and can help you identify the particular partitions you may want to alter.
-- These `ALTER PARTITION` operations are supported if no data is changed on a partitioned table that contains a leaf partition that has been exchanged to use an external table. Otherwise, an error is returned.
+-   The table name specified in the `ALTER TABLE` command must be the actual table name of the partition, not the partition alias that is specified in the classic syntax.
+
+-   Use the `pg_partition_tree()` function to view the structure of a partitioned table. This function returns the partition hierarchy, and can help you identify the particular partitions you may want to alter.
+
+-   These `ALTER PARTITION` operations are supported if no data is changed on a partitioned table that contains a leaf partition that has been exchanged to use an external table. Otherwise, an error is returned.
 
     -   Adding or dropping a column.
     -   Changing the data type of column.
 
-- These `ALTER PARTITION` operations are not supported for a partitioned table that contains a leaf partition that has been exchanged to use an external table:
+-   These `ALTER PARTITION` operations are not supported for a partitioned table that contains a leaf partition that has been exchanged to use an external table:
 
     -   Setting a sub-partition template.
     -   Altering the partition properties.
@@ -621,8 +642,9 @@ Be aware of the following when altering partitioned tables using the *classic sy
     -   Adding or dropping constraints.
     -   Splitting an external partition.
 
+<a id="section6"></a>
 
-## <a id="section6"></a>Examples 
+## Examples
 
 Add a column of type `varchar` to a table:
 
@@ -822,7 +844,9 @@ ALTER TABLE distributors
     SET (compresstype=zstd, compresslevel=3);
 ```
 
-### <a id="examples_modern"></a>Modern Syntax Partioning Examples
+<a id="examples_modern"></a>
+
+### Modern Syntax Partioning Examples
 
 Attach a partition to a range-partitioned table:
 
@@ -859,7 +883,9 @@ ALTER TABLE measurement
     DETACH PARTITION measurement_y2015m12;
 ```
 
-### <a id="examples_classic"></a>Classic Syntax Partioning Examples
+<a id="examples_classic"></a>
+
+### Classic Syntax Partioning Examples
 
 Add a new partition to a partitioned table:
 
@@ -889,7 +915,7 @@ ALTER TABLE sales EXCHANGE PARTITION FOR ('2016-01-01') WITH
 TABLE jan08;
 ```
 
-Split the default partition \(where the existing default partition's name is `other`\) to add a new monthly partition for January 2017:
+Split the default partition (where the existing default partition's name is `other`) to add a new monthly partition for January 2017:
 
 ```
 ALTER TABLE sales SPLIT DEFAULT PARTITION 
@@ -914,15 +940,18 @@ ALTER TABLE sales ALTER PARTITION year_1 ALTER PARTITION quarter_4 EXCHANGE PART
 
 In the previous command, the two `ALTER PARTITION` clauses identify which `region` partition to exchange. Both clauses are required to identify the specific partition to exchange.
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 The forms `ADD` (without `USING INDEX`), `DROP [COLUMN]`, `DROP IDENTITY`, `RESTART`, `SET DEFAULT`, `SET DATA TYPE` (without `USING`), `SET GENERATED`, and `SET <sequence_option>` conform with the SQL standard. The other forms are WarehousePG extensions of the SQL standard. Also, the ability to specify more than one manipulation in a single `ALTER TABLE` command is an extension.
 
 `ALTER TABLE DROP COLUMN` can be used to drop the only column of a table, leaving a zero-column table. This is an extension of SQL, which disallows zero-column tables.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[CREATE TABLE](CREATE_TABLE.html), [DROP TABLE](DROP_TABLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE TABLE](CREATE_TABLE.md), [DROP TABLE](DROP_TABLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

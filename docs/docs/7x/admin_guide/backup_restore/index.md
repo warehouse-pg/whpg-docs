@@ -1,115 +1,101 @@
-# Backing up WarehousePG with `gpbackup` and `gprestore`
+---
+title: Backing up WarehousePG with gpbackup and gprestore
+
+---
 
 :::tip Associated Topics
-- [Incremental backups](/docs/7x/admin_guide/backup_restore/incremental.html)
-- [gpbackup syntax reference](/docs/7x/utility_guide/ref/gpbackup.html)
-- [gprestore syntax reference](/docs/7x/utility_guide/ref/gprestore.html) 
+-   [Incremental backups](incremental.md)
+-   [gpbackup syntax reference](../../ref_guide/utility_guide/reference/gpbackup.md)
+-   [gprestore syntax reference](../../ref_guide/utility_guide/reference/gprestore.md) 
 :::
 
-
-
-[gpbackup](/docs/7x/utility_guide/ref/gpbackup.html) and [gprestore](/docs/7x/utility_guide/ref/gprestore.html) 
+[gpbackup](../../ref_guide/utility_guide/reference/gpbackup.md) and [gprestore](../../ref_guide/utility_guide/reference/gprestore.md) 
  are WarehousePG utilities that create and restore backup sets in parallel for WarehousePG. By default, `gpbackup` stores only the object metadata files and DDL files for a backup in the WarehousePG Coordinator data directory. WarehousePG segments use the `COPY ... ON SEGMENT` command to store their data for backed-up tables in compressed CSV data files, located in each segment’s backups directory.
 
+<a id="parback"></a>
 
+## Parallel Backup with gpbackup and gprestore
 
-
-
-
-
-
-## <a id="parback"></a>Parallel Backup with gpbackup and gprestore
-![Parallel Restore Using Parallel Backup Files](/parallel_backup_restore.png "Parallel Restore Using Parallel Backup Files")
-
+![Parallel Restore Using Parallel Backup Files](../../images/parallel_backup_restore.png "Parallel Restore Using Parallel Backup Files")
 
 The backup metadata files contain all of the information that `gprestore` needs to restore a full backup set in parallel. Backup metadata also provides the framework for restoring only individual objects in the data set, along with any dependent objects, in future versions of `gprestore`. (See Understanding Backup Files for more information.) Storing the table data in CSV files also provides opportunities for using other restore utilities, such as gpload, to load the data either in the same cluster or another cluster. By default, one file is created for each table on the segment. You can specify the `--leaf-partition-data` option with `gpbackup` to create one data file per leaf partition of a partitioned table, instead of a single file. This option also enables you to filter backup sets by leaf partitions.
 
 Each `gpbackup` task uses a single transaction in WarehousePG. During this transaction, metadata is backed up on the Coordinator host, and data for each table on each segment host is written to CSV backup files using COPY ... ON SEGMENT commands in parallel. The backup process acquires an ACCESS SHARE lock on each table that is backed up.
 
-For additional documenation, visit the [gpbackup](/docs/7x/utility_guide/ref/gpbackup.html)  and [gprestore](/docs/7x/utility_guide/ref/gprestore.html)  cluster utilities reference page.
+For additional documenation, visit the [gpbackup](../../ref_guide/utility_guide/reference/gpbackup.md)  and [gprestore](../../ref_guide/utility_guide/reference/gprestore.md)  cluster utilities reference page.
 
+-   [Objects in a backup set](#objects)
 
-- [Objects in a backup set](#objects)
+-   [Backup and Restore Workflow](#workflow)
 
-- [Backup and Restore Workflow](#workflow)
+-   [Backup History Database](#db)
 
-- [Backup History Database](#db)
+-   [Using the --include and --exclude filters](#filter)
 
-- [Using the --include and --exclude filters](#filter)
+-   [Setting Up Email Alerts](#email)
 
-- [Setting Up Email Alerts](#email)
+-   [Backup files layout](#files)
 
-- [Backup files layout](#files)
+-   [Return Codes](#codes)
 
-- [Return Codes](#codes)
+-   [Supported WHPG versions](#versions)
 
-- [Supported WHPG versions](#versions)
+-   [Limitations](#limitations)
 
-- [Limitations](#limitations)
+<a id="objects"></a>
 
-
-## <a id="objects"></a>Objects in a backup set
+## Objects in a backup set
 
 Objects Included in a Backup or Restore
 The following table lists the objects that are backed up and restored with `gpbackup` and `gprestore`. 
 
-__Database objects__ are backed up for the database you specify with the `--dbname` option.  
+**Database objects** are backed up for the database you specify with the `--dbname` option.  
 
+**Global objects** (WarehousePG Cluster objects) are also backed up by default, but they are restored only if you include the `--with-globals option` when calling `gprestore`.  Conversely, the `gpbackup --without-globals` will skip the backup of global objects  
 
-__Global objects__ (WarehousePG Cluster objects) are also backed up by default, but they are restored only if you include the `--with-globals option` when calling `gprestore`.  Conversely, the `gpbackup --without-globals` will skip the backup of global objects  
+### Objects that are backed up and restored
 
-
-
-__Objects that are backed up and restored__
-
-|__Database objects__||
-|------|----|
-|Aggregates      |Readable External Tables <sup>1</sup>|                                            
-|Casts            |Rules|                                     
-|Comments            |Schemas <sup>4</sup>|                                     
-|Conversions      |Sequences|                                           
-|Domains        |Session-level configuration parameter settings (GUCs)|                                         
-|Extensions     |Table statistics <sup>2</sup>|                                            
-|Functions       |Tables|                                          
-|Indexes         |Text search parsers, dictionaries, templates, and configurations|                                        
-|Materialized Views  <sup>1</sup>       |Triggers  <sup>3</sup>|                                          
-|Operators, operator families, and operator classes        |Types|
-|Owners|Views|
-|Procedural language extensions|Writable External Tables <sup>1</sup>|
-|Protocols||
-
-
-
-
-
+| **Database objects**                               |                                                                  |
+| -------------------------------------------------- | ---------------------------------------------------------------- |
+| Aggregates                                         | Readable External Tables <sup>1</sup>                            |
+| Casts                                              | Rules                                                            |
+| Comments                                           | Schemas <sup>4</sup>                                             |
+| Conversions                                        | Sequences                                                        |
+| Domains                                            | Session-level configuration parameter settings (GUCs)            |
+| Extensions                                         | Table statistics <sup>2</sup>                                    |
+| Functions                                          | Tables                                                           |
+| Indexes                                            | Text search parsers, dictionaries, templates, and configurations |
+| Materialized Views  <sup>1</sup>                   | Triggers  <sup>3</sup>                                           |
+| Operators, operator families, and operator classes | Types                                                            |
+| Owners                                             | Views                                                            |
+| Procedural language extensions                     | Writable External Tables <sup>1</sup>                            |
+| Protocols                                          |                                                                  |
 
 <sup id="fn1">1. DDL Only</sup>  
 <sup id="fn2">2. when `--with-stats` flag is used</sup>  
 <sup id="fn3">3. While WarehousePG does not support triggers, trigger definitions present in the database are backed up and restored</sup>  
-<sup id="fn4">4. The following schemas are not part of the backup set: gp_toolkit, information_schema, pg_aoseg, pg_bitmapindex, pg_catalog, pg_toast*, pg_temp*</sup>  
+<sup id="fn4">4. The following schemas are not part of the backup set: gp_toolkit, information_schema, pg_aoseg, pg_bitmapindex, pg_catalog, pg_toast*, pg_temp*</sup>
 
-
-|__Global objects__|_|
-|------|----|
-|Databases|Resource queue definitions|
-|Database-wide configuration parameter settings (GUCs)|Roles|
-|GRANT assignments of roles to databases|Tablespaces|
-|Resource group definitions | |
-
+| **Global objects**                                    | \_                         |
+| ----------------------------------------------------- | -------------------------- |
+| Databases                                             | Resource queue definitions |
+| Database-wide configuration parameter settings (GUCs) | Roles                      |
+| GRANT assignments of roles to databases               | Tablespaces                |
+| Resource group definitions                            |                            |
 
 When restoring to an existing database, `gprestore` assumes the public schema exists when restoring objects to the public schema. When restoring to a new database (with the --create-db option), `gprestore` creates the public schema automatically when creating a database with the CREATE DATABASE command. The command uses the template0 database that contains the public schema.
 
+<a id="workflow"></a>
 
-## <a id="workflow"></a>Backup and Restore Workflow
+## Backup and Restore Workflow
 
 ### Full Backup
 
 This command will take a full backup (metadata and user data) using zstandard compression
 
-
 `$ gpbackup --dbname <database_name> --compression-type zstd`
 
-<br>
+<br />
 Example:
 
 ```
@@ -145,10 +131,9 @@ Tables backed up:  33 / 33 [====================================================
 
 ```
 
-
 The above command creates a file that contains global and database-specific metadata on the WarehousePG Coordinator host in the default directory, `$COORDINATOR_DATA_DIRECTORY/backups/<YYYYMMDD>/<YYYYMMDDHHMMSS>/`. 
 
-<br>
+<br />
 For example:
 
 ```
@@ -200,10 +185,6 @@ total 125764
 -rw------- 1 gpadmin gpadmin      441 May 14 20:27 gpbackup_0_20250514202713_74351.zst
 ```
 
-
-
-
-
 To consolidate all backup files into a single directory, include the `--backup-dir` option with an absolute path to the location you wish to backup to.  Optionally, when performing a backup, the `--single-data-file` option may be used in situations where the additional overhead of multiple files might be prohibitive such as third party storage solutions.
 
 The command below shows both options in use
@@ -243,6 +224,7 @@ Tables backed up:  33 / 33 [====================================================
 ```
 
 The contents of the corresponding backup directories show the single data file, and it's associated table of contents files (toc).  Both files are required for a successful restore. 
+
 ```
 [gpadmin@whpg_cdw ~]$ ls -ltr /tmp/single_file/gp*/backups/*/*
 
@@ -273,7 +255,6 @@ total 2112
 
 To use `gprestore` to restore from a backup set, you must use the `--timestamp` option to specify the exact timestamp value (YYYYMMDDHHMMSS) to restore. Include the `--create-db` option if the database does not exist in the cluster. If you specified a custom --backup-dir to consolidate the backup files, include the same `--backup-dir` option when using `gprestore` to locate the backup files.
 
-
 ```
 [gpadmin@whpg_cdw ~]$ psql -c "DROP DATABASE ww_sales";
 DROP DATABASE
@@ -297,11 +278,12 @@ Tables restored:  33 / 33 [=====================================================
 20250515:18:35:52 gprestore:gpadmin:whpg_cdw:032941-[INFO]:-Beginning cleanup
 20250515:18:36:00 gprestore:gpadmin:whpg_cdw:032941-[INFO]:-Cleanup complete
 20250515:18:36:00 gprestore:gpadmin:whpg_cdw:032941-[INFO]:-Restore completed successfully
-```   
+```
 
 `gprestore` does not attempt to restore global metadata for the WarehousePG Cluster by default. If this is required, include the `--with-globals` option.
 
-By default, `gprestore` uses 1 connection to restore table data and metadata. If you have a large backup set which __did not use__ the `--single-data-file` option, restore duration can be decreased by specifiying the number of parallel processes using the `--jobs` option.  Depending on system resourceds and database size, this number can be tuned for each specific environment.  
+By default, `gprestore` uses 1 connection to restore table data and metadata. If you have a large backup set which **did not use** the `--single-data-file` option, restore duration can be decreased by specifiying the number of parallel processes using the `--jobs` option.  Depending on system resourceds and database size, this number can be tuned for each specific environment.  
+
 ```
 [gpadmin@whpg_cdw ~]$ psql -c "DROP DATABASE ww_sales";
 DROP DATABASE
@@ -328,25 +310,22 @@ Tables restored:  33 / 33 [=====================================================
 [gpadmin@whpg_cdw ~]$
 ```
 
-
 ### Report Files
+
 When performing a backup or restore operation, `gpbackup` and `gprestore` generate a report file. When email notification is configured, the email sent contains the contents of the report file. For information about email notification, see Configuring Email Notifications.
 
 The report file is placed in the WarehousePG Coordinator backup directory. The report file name contains the timestamp of the operation. These are the formats of the `gpbackup` and `gprestore` report file names.
 
-- `gpbackup_<backup_timestamp>_report`
-- `gprestore_<backup_timestamp>_<restore_timesamp>_report`
-
+-   `gpbackup_<backup_timestamp>_report`
+-   `gprestore_<backup_timestamp>_<restore_timesamp>_report`
 
 For these example report file names, `20250518010000` is the timestamp of the backup and `20250530234643` is the timestamp of the restore operation.
 
-**`gpbackup_20250518010000_report`**
+#### `gpbackup_20250518010000_report`
 
-**`gprestore_20250518010000_20180213115426_report`**
-
+#### `gprestore_20250518010000_20180213115426_report`
 
 This backup directory on a WarehousePG Coordinator host contains both a `gpbackup` and `gprestore` report file.
-
 
 ```
 [gpadmin@cdw 20250530234643]$ ls -ltr
@@ -380,27 +359,27 @@ duration:                0:00:42
 restore status:          Success
 ```
 
+<a id="db"></a>
 
+## Backup History Database
 
-
-## <a id="db"></a>Backup History Database
 `gpbackup` stores details of each backup operation in a SQLite database found in `$COORDINATOR_DATA_DIRECTORY/gpbackup_history.db`.  Details such as timestamps, command line options, incremental backup details and status are stored in this database.  `gpbackup_history.db` is not backed up my `gpbackup`, but can be copied to a secondary location if a backup copy is desired. 
 
-`gpbackup` uses the metadata in `gpbackup_history.db` to create the backup/restore plan for an incremental backup sets when you run `gpbackup` with the `--incremental` option and do not specify the `--from-timesamp` option to indicate the backup that you want to use as the base backup of the incremental backup set. For information about incremental backups, refer to [Incremental Backups with `gpbackup` and `gprestore`](/docs/7x/admin_guide/backup_restore/incremental.html). 
+`gpbackup` uses the metadata in `gpbackup_history.db` to create the backup/restore plan for an incremental backup sets when you run `gpbackup` with the `--incremental` option and do not specify the `--from-timesamp` option to indicate the backup that you want to use as the base backup of the incremental backup set. For information about incremental backups, refer to [Incremental Backups with `gpbackup` and `gprestore`](incremental.md). 
 
+<a id="filter"></a>
 
+## Filtering the Contents of a Backup or Restore
 
-
-## <a id="filter"></a>Filtering the Contents of a Backup or Restore
 `gpbackup` backs up all schemas and tables in the specified database, unless you exclude or include individual schema or table objects with schema level or table level filter options.
 
 The schema level options are 
-- `--include-schema`
-- `--include-schema-file`
-- `--exclude-schema`
-- `--exclude-schema-file`  
-command-line options to `gpbackup`. For example, if the `ww_customer` database contains three schemas, `na_customer`, `apac_customer`, `emea_customer`, the following commands back up only the `apac_customer` and `emea_customer` schemas:
 
+-   `--include-schema`
+-   `--include-schema-file`
+-   `--exclude-schema`
+-   `--exclude-schema-file`  
+    command-line options to `gpbackup`. For example, if the `ww_customer` database contains three schemas, `na_customer`, `apac_customer`, `emea_customer`, the following commands back up only the `apac_customer` and `emea_customer` schemas:
 
 ```
 $ gpbackup --dbname ww_customer --exclude-schema na_customer
@@ -415,6 +394,7 @@ $ gpbackup --dbname ww_customer --include-schema apac_customer --include-schema 
 An alternative to multiple command line options is to use `--include-schema-file` or `--exclude-schema-file`.  Each line in the file  defines a single schema, and the file cannot contain trailing lines. 
 
 `/tmp/nw_states.schema` contents
+
 ```
 [gpadmin@whpg_cdw tmp]$ cat nw_states.schema
 Washington
@@ -431,12 +411,12 @@ Example of the command:
 gpbackup --dbname ww_customer --include-schema-file /tmp/nw_states.schema
 ```
 
-
 Filtering included or excluded tables is similar process to schemas.
-- `--include-table`
-- `--exclude-table`
-- `--include-table-file` 
-- `--exclude-table-file `
+
+-   `--include-table`
+-   `--exclude-table`
+-   `--include-table-file` 
+-   `--exclude-table-file `
 
 Options use the `schema-name.table-name` format as input on the command line, and in the text file. The individual table filtering options can be used multiple times, but `--include-table` and `--exclude-table` cannot both be used in the same command.
 
@@ -453,6 +433,7 @@ gpbackup --dbname ww_customer --exclude-table-file /tmp/exclude_tables.file
 ```
 
 where  `/tmp/include_tables.file` contents
+
 ```
 [gpadmin@whpg_cdw tmp]$ cat exclude_tables.file
 emea_customer.customer_fact
@@ -475,6 +456,7 @@ na_customer."ZipCodes"
 When `--include-table` or `--include-table-file` is specified on the command line,  dependent objects are not automatically backed up or restored.  Depenedent objects must be specified in your filter string or file. For example, if you back up or restore a view or materialized view, you must also list the table(s)  the view or the materialized view require. If you backup or restore a table containing a sequence, you must also specify the sequence name. 
 
 ### Filtering by Leaf Partition
+
 By default, `gpbackup` creates one file for each table on a data segment. When the `--leaf-partition-data` option is used, `gpbackup` will create one data file per leaf partition of a partitioned table, instead of a single file data file for the root table. You can also filter backups to specific leaf partitions by including the names of the leaf partitions names as you would a stand along table, using the `schema_name.table_name` format.
 
 ```
@@ -540,13 +522,10 @@ Using the `--include-table-file` and `--leaf-partition-data` options, `gpbackup`
 $ gpbackup --dbname ww_sales --include-table-file /tmp/may_week1.include --leaf-partition-data
 ```
 
-
-
-
-
 The `--exclude-table-file` option and `--leaf-partition-data` are not compatible. Although you can specify leaf partition names in a file specified with `--exclude-table-file`, `gpbackup` ignores the partition names.
 
 ### Filtering with `gprestore`
+
 After creating a backup set with `gpbackup`, you can filter the schemas and tables that you want to restore from the backup set using the `gprestore --include-schema` and `--include-table-file` options. These options work in the same way as their `gpbackup` counterparts, but have the following restrictions:
 
 The tables that you attempt to restore must not already exist in the database.
@@ -557,12 +536,14 @@ If you use the `--include-schema` option, `gprestore` cannot restore objects tha
 
 If you use the `--include-table-file` option, `gprestore` does not create roles or set the owner of the tables. The utility restores table indexes and rules. Triggers are also restored but are not supported in WarehousePG.
 
-The file that you specify with`--include-table-file` cannot include a leaf partition name, as it can when you specify this option with `gpbackup`. If you specified leaf partitions in the backup set, specify the partitioned table to restore the leaf partition data.
+The file that you specify with `--include-table-file` cannot include a leaf partition name, as it can when you specify this option with `gpbackup`. If you specified leaf partitions in the backup set, specify the partitioned table to restore the leaf partition data.
 
 When restoring a backup set that contains data from some leaf partitions of a partitioned table, the partitioned table is restored along with the data for the leaf partitions. For example, you create a backup with the `gpbackup` option `--include-table-file` and the text file lists some leaf partitions of a partitioned table. Restoring the backup creates the partitioned table and restores the data only for the leaf partitions listed in the file.  
 
+<a id="email"></a>
 
-## <a id="email">Setting Up Email Alerts</a>
+## Setting Up Email Alerts
+
 `gpbackup` and `gprestore` can send email notifications via `sendmail` after a backup or restore run completes.
 
 To have `gpbackup` or `gprestore` send out status email notifications, a `gp_email_contacts.yaml` file must exist in either home directory of the user running `gpbackup` or `gprestore` or the same directory as the utilities ($GPHOME/bin).
@@ -582,12 +563,11 @@ If the `gp_email_contacts.yaml` file is not present, the gpbackup/gprestore log 
 
 If the `gp_email_contacts.yaml` file is present, can configured properly, a similar message will be printed to the logs: 
 
-```
+````
 20250514:20:27:23 gpbackup:gpadmin:whpg_cdw:027069-[INFO]:-/home/gpadmin/gp_email_contacts.yaml list found, /data/coordinator/gpseg-1/backups/20250514/20250514202713/gpbackup_20250514202713_report will be sent```
-```
+````
 
 The `$HOME/gp_email_contacts.yaml` file will override any configurations found in the `$GPHOME/bin/gp_email_contacts.yaml`
-
 
 The email subject line includes the utility name, timestamp, status, and the name of the WarehousePG Coordinator. This is an example subject line for a `gpbackup` email.
 
@@ -603,7 +583,6 @@ gprestore 20250515182209 on whpg_cdw completed: Failure
 
 The email contains summary information about the operation including options, duration, and number of objects backed up or restored. For information about the contents of a notification email, see Report Files.
 
-
 ### gp_email_contacts.yaml file format
 
 The `gpbackup` and `gprestore` email notification YAML file gp_email_contacts.yaml uses indentation (spaces) to determine the document hierarchy and the relationships of the sections to one another. The use of white space is significant. White space should not be used simply for formatting purposes, and tabs should not be used at all.
@@ -611,6 +590,7 @@ The `gpbackup` and `gprestore` email notification YAML file gp_email_contacts.ya
 Note: If the status parameters are not specified correctly, the utility does not issue a warning. For example, if the success parameter is misspelled and is set to true, a warning is not issued and an email is not sent to the email address after a successful operation. To ensure email notification is configured correctly, run tests with email notifications configured.
 
 This is the format of the gp_email_contacts.yaml YAML file for `gpbackup` email notifications:
+
 ```
 contacts:
   gpbackup:
@@ -626,11 +606,10 @@ contacts:
          success_with_errors: [true | false]
          failure: [true | false]
 ```
-         
+
 ##### Email YAML File Sections
 
 **contacts:** Required. The section that contains the `gpbackup` and `gprestore` sections. The YAML file can contain a `gpbackup` section, a `gprestore` section, or one of each.
-
 
 **gpbackup** : Optional. Begins the gpbackup email section.
 
@@ -653,6 +632,7 @@ You specify sending email notifications based on the completion status of a back
 **gprestore** : Optional. Begins the gprestore email section. This section contains the address and status parameters that are used to send an email notification after a `gprestore` operation. The syntax is the same as the gpbackup section.
 
 #### Examples
+
 This example YAML file specifies sending email to email addresses depending on the success or failure of an operation. For a backup operation, an email is sent to a different address depending on the success or failure of the backup operation. For a restore operation, an email is sent to single address only when the operation succeeds or completes with errors.
 
 ```
@@ -672,37 +652,36 @@ contacts:
       success_with_errors: true
 ```
 
-## <a id="files"></a>Backup Files Details
+<a id="files"></a>
 
+## Backup Files Details
 
 A complete backup set for `gpbackup` includes multiple metadata files, supporting files, and CSV data files, each designated with the timestamp at which the backup was created.
 
-By default, metadata and supporting files are stored on the WarehousePG master host in the directory `$COORDINATOR_DATA_DIRECTORY/backups/YYYYMMDD/YYYYMMDDHHMMSS/`. If you specify a custom backup directory, this same file path is created as a subdirectory of the backup directory. The following table describes the names and contents of the metadata and supporting files.
+By default, metadata and supporting files are stored on the WarehousePG coordinator host in the directory `$COORDINATOR_DATA_DIRECTORY/backups/YYYYMMDD/YYYYMMDDHHMMSS/`. If you specify a custom backup directory, this same file path is created as a subdirectory of the backup directory. The following table describes the names and contents of the metadata and supporting files.
 
-::: tip Warning: 
+:::tip Warning:
 All `gpbackup` metadata files are created with read-only permissions. Never delete or modify the metadata files for a `gpbackup` backup set. Doing so may render the backup files non-functional.
 :::
 
-
-
 ### Coordinator Metadata Files
 
-#### `gpbackup_<YYYYMMDDHHMMSS>_metadata.sql`	
-
+#### `gpbackup_<YYYYMMDDHHMMSS>_metadata.sql`
 
 Contains global and database-specific metadata:
-- DDL for objects that are global to the WarehousePG cluster, and not owned by a specific database within the cluster.
-- DDL for objects in the backed-up database (specified with --dbname) that must be created before to restoring the actual data, and DDL for objects that must be created after restoring the data.
 
+-   DDL for objects that are global to the WarehousePG cluster, and not owned by a specific database within the cluster.
+-   DDL for objects in the backed-up database (specified with --dbname) that must be created before to restoring the actual data, and DDL for objects that must be created after restoring the data.
 
-**Global objects include:**
-- Tablespaces
-- Databases
-- Database-wide configuration parameter settings (GUCs)
-- Resource group definitions
-- Resource queue definitions
-- Roles
-- GRANT assignments of roles to databases
+##### Global objects include:
+
+-   Tablespaces
+-   Databases
+-   Database-wide configuration parameter settings (GUCs)
+-   Resource group definitions
+-   Resource queue definitions
+-   Roles
+-   GRANT assignments of roles to databases
 
 :::tip Note
 Note: Global metadata is not restored by default. You must include the --with-globals option to the `gprestore` command to restore global metadata.
@@ -711,27 +690,28 @@ Note: Global metadata is not restored by default. You must include the --with-gl
 **Database-specific objects** 
 that must be created before to restoring the actual data include:
 
-- Session-level configuration parameter settings (GUCs)
-- Schemas
-- Procedural language extensions
-- Types
-- Sequences
-- Functions
-- Tables
-- Protocols
-- Operators and operator classes
-- Conversions
-- Aggregates
-- Casts
-- Views
-- Materialized Views (only view definition is backed up / restored, not data)
-- Constraints
-- Database-specific objects that must be created after restoring the actual data include:
-- Indexes
-- Rules
-- Triggers. (While WarehousePG does not support triggers, any trigger definitions that are present are backed up and restored.)
+-   Session-level configuration parameter settings (GUCs)
+-   Schemas
+-   Procedural language extensions
+-   Types
+-   Sequences
+-   Functions
+-   Tables
+-   Protocols
+-   Operators and operator classes
+-   Conversions
+-   Aggregates
+-   Casts
+-   Views
+-   Materialized Views (only view definition is backed up / restored, not data)
+-   Constraints
+-   Database-specific objects that must be created after restoring the actual data include:
+-   Indexes
+-   Rules
+-   Triggers. (While WarehousePG does not support triggers, any trigger definitions that are present are backed up and restored.)
 
 example:
+
 ```
 CREATE TABLE uat.refund (
         returned_date_sk integer,
@@ -749,8 +729,7 @@ CREATE INDEX item_sk_cr_fee_idx ON uat.refund USING btree (item_sk, fee);
 CREATE INDEX item_sk_idx ON uat.refund USING btree (item_sk);
 ```
 
-
-####  `gpbackup_<YYYYMMDDHHMMSS>_toc.yaml`	
+#### `gpbackup_<YYYYMMDDHHMMSS>_toc.yaml`
 
 Table of contents file, containing location information of the various object DDL in the `gpbackup_<YYYYMMDDHHMMSS>_metadata.sql` files 
 
@@ -783,18 +762,18 @@ example:
   partitionroot: ""
   isreplicated: false
   distbyenum: false
-  ```
+```
 
 See [Segment Data Files](#segfiles)
 
-
-#### `gpbackup_<YYYYMMDDHHMMSS>_report`	
+#### `gpbackup_<YYYYMMDDHHMMSS>_report`
 
 Contains information about the backup operation that is used to populate the email notice (if configured) that is sent after the backup completes. This file contains information such as:
-- Command-line options that were provided
-- Database that was backed up
-- Database version
-- Backup type
+
+-   Command-line options that were provided
+-   Database that was backed up
+-   Database version
+-   Backup type
 
 example: 
 
@@ -839,20 +818,20 @@ foreign servers              0
 functions                    0
 indexes                      2
 ```
+
 See [Setting Up Email Alerts](#email)
 
-
-
-#### `gpbackup_<YYYYMMDDHHMMSS>_config.yaml`	
+#### `gpbackup_<YYYYMMDDHHMMSS>_config.yaml`
 
 Contains metadata about the execution of the particular backup task, including:
-- `gpbackup` version
-- Database name
-- WarehousePG version
-- Additional option settings such as `--no-compression`,` --compression-level`, `--metadata-only`, `--data-only`, and `--with-stats`.
 
+-   `gpbackup` version
+-   Database name
+-   WarehousePG version
+-   Additional option settings such as `--no-compression`,` --compression-level`, `--metadata-only`, `--data-only`, and `--with-stats`.
 
 example: 
+
 ```
 backupdir: /tmp/whpg_tpcds_backups
 backupversion: 1.30.5
@@ -886,9 +865,11 @@ restoreplan:
   - tpcds.customer
   - tpcds.customer_address
   - tpcds.customer_demographics
-  ```
+```
 
-### <a id="segfiles"></a>Segment Data Files
+<a id="segfiles"></a>
+
+### Segment Data Files
 
 By default, each segment creates one compressed CSV file for each table that is backed up on the segment. You can optionally specify the `--single-data-file` option to create a single data file on each segment. The files are stored in `<seg_dir>/backups/YYYYMMDD/YYYYMMDDHHMMSS/`.
 
@@ -901,8 +882,7 @@ The file uses a name format `gpbackup_<content_id>_<YYYYMMDDHHMMSS>_<oid>.gz` wh
 `<YYYYMMDDHHMMSS>` is the timestamp of the `gpbackup` operation.
 `<oid>` is the object ID of the table. 
 
-
-**default multiple data file example**
+#### default multiple data file example
 
 ```
 -rw------- 1 gpadmin gpadmin      216 May 30 23:46 gpbackup_1_20250530234643_32812.zst
@@ -922,49 +902,49 @@ The file uses a name format `gpbackup_<content_id>_<YYYYMMDDHHMMSS>_<oid>.gz` wh
 -rw------- 1 gpadmin gpadmin      152 May 30 23:46 gpbackup_1_20250530234643_37480.zst
 -rw------- 1 gpadmin gpadmin      327 May 30 23:46 gpbackup_1_20250530234643_37487.zst
 -rw------- 1 gpadmin gpadmin  4710343 May 30 23:46 gpbackup_1_20250530234643_37494.zst
-````
-
-
+```
 
  **`--single-data-file`** example
 
-
 All table data for a particular segment is written to a single file:
--  `gpbackup_<content_id>_<YYYYMMDDHHMMSS>`
+
+-   `gpbackup_<content_id>_<YYYYMMDDHHMMSS>`
 
 With a corresponding table of contents files: 
-- `gpbackup_<content_id>_<YYYYMMDDHHMMSS>_toc.yaml`
+
+-   `gpbackup_<content_id>_<YYYYMMDDHHMMSS>_toc.yaml`
 
 ```
 -rw-rw-r-- 1 gpadmin gpadmin 417025744 May 30 23:20 gpbackup_0_20250530232002
 -r--r--r-- 1 gpadmin gpadmin      2035 May 30 23:20 gpbackup_0_20250530232002_toc.yaml
 ```
 
-
-
 The metadata file `gpbackup_<YYYYMMDDHHMMSS>_toc.yaml` references this `<oid>` to locate the data for a specific table in a schema.
-
 
 You can optionally specify the gzip compression level (from 1-9) using the `--compression-level` option, or disable compression entirely with `--no-compression`. If you do not specify a compression level, `gpbackup` uses compression level 1 by default.
 
+<a id="codes"></a>
 
+## Return Codes
 
-## <a id="codes"></a>Return Codes
 One of these codes is returned after `gpbackup` or `gprestore` completes.
 
 0 – Backup or restore completed with no problems  
 1 – Backup or restore completed with non-fatal errors. See log file for more information.  
 2 – Backup or restore failed with a fatal error. See log file for more information.     
 
-## <a id="versions"></a>Supported WHPG versions
+<a id="versions"></a>
+
+## Supported WHPG versions
 
 The WarehousePG provided `gpbackup` and `gprestore` utilities are compatible with WarehousePG versions 
-- 6.27.1 or later
-- 7.2.1-WHPG or later
 
+-   6.27.1 or later
+-   7.2.1-WHPG or later
 
+<a id="limitations"></a>
 
-## <a id="limitations"></a>Limitations
+## Limitations
 
 `gpbackup` and `gprestore` have the following limitations:
 
@@ -990,5 +970,4 @@ For tables that might be dropped during a backup, you can exclude the tables fro
 
 A backup created with `gpbackup` can only be restored to a WarehousePG cluster with the same number of segment instances as the source cluster. If you run gpexpand to add segments to the cluster, backups you made before starting the expand cannot be restored after the expansion has completed.
 
-
-**Parent topic:** [WarehousePG Administrator Guide](/docs/7x/admin_guide/)
+**Parent topic:** [WarehousePG Administrator Guide](../index.md)

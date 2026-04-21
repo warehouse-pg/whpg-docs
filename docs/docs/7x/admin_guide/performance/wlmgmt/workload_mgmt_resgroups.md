@@ -1,4 +1,6 @@
-# Using Resource Groups
+---
+title: Using Resource Groups
+
 ---
 
 You use resource groups to manage and protect the resource allocation of CPU, memory, concurrent transaction limits, and disk I/O in WarehousePG. Once you define a resource group, you assign the group to one or more WarehousePG roles, or to an external component such as PL/Container, in order to control the resources used by them. 
@@ -7,11 +9,13 @@ When you assign a resource group to a role, the resource limits that you define 
 
 WarehousePG uses Linux-based control groups for CPU resource management, and Runaway Detector for statistics, tracking and management of memory. 
 
-When using resource groups to control resources like CPU cores, review the Hyperthreading note in [Hardware and Network](../install_guide/platform-requirements.html#hardware-requirements).
+When using resource groups to control resources like CPU cores, review the Hyperthreading note in [Hardware and Network](../../../install_guide/platform-requirements.md#hardware-requirements).
 
-**Parent topic:** [Managing Resources](wlmgmt.html)
+**Parent topic:** [Managing Resources](index.md)
 
-## <a id="topic8339intro"></a>Understanding Role and Component Resource Groups
+<a id="topic8339intro"></a>
+
+## Understanding Role and Component Resource Groups
 
 WarehousePG supports two types of resource groups: groups that manage resources for roles, and groups that manage resources for external components such as PL/Container.
 
@@ -23,23 +27,27 @@ Within a resource group for roles, transactions are evaluated on a first in, fir
 
 You can also use resource groups to manage the CPU and memory resources of external components such as PL/Container. Resource groups for external components use Linux cgroups to manage the total CPU resources for the component.
 
-## <a id="topic8339introattrlim"></a>Resource Group Attributes and Limits
+<a id="topic8339introattrlim"></a>
+
+## Resource Group Attributes and Limits
 
 When you create a resource group, you provide a set of limits that determine the amount of CPU and memory resources available to the group. The following table lists the available limits for resource groups:
 
-|Limit Type|Description|Value Range|Default|
-|----------|-----------|-----| ------| 
-|CONCURRENCY|The maximum number of concurrent transactions, including active and idle transactions, that are permitted in the resource group.| [0 - [max_connections](../ref_guide/config_params/guc-list.html#max_connections)] | 20 |
-|CPU_MAX_PERCENT|The maximum percentage of CPU resources the group can use.| [1 - 100] | -1 (not set)|
-|CPU_WEIGHT|The scheduling priority of the resource group.| [1 -  500] | 100 |
-|CPUSET|The specific CPU logical core (or logical thread in hyperthreading) reserved for this resource group.| It depends on system core configuration | -1 |
-|IO_LIMIT| The limit for the maximum read/write disk I/O throughput, and maximum read/write I/O operations per second. Set the value on a per-tablespace basis.| [2 - 4294967295 or `max`] | -1 |
-|MEMORY_QUOTA|The memory limit value specified for the resource group.| Integer (MB) | -1 (not set, use `statement_mem` as the memory limit for a single query) | 
-|MIN_COST| The minimum cost of a query plan to be included in the resource group.| Integer | 0 |
+| Limit Type      | Description                                                                                                                                          | Value Range                                                                            | Default                                                                  |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| CONCURRENCY     | The maximum number of concurrent transactions, including active and idle transactions, that are permitted in the resource group.                     | \[0 - [max_connections](../../../ref_guide/config_params/guc-list.md#max_connections)] | 20                                                                       |
+| CPU_MAX_PERCENT | The maximum percentage of CPU resources the group can use.                                                                                           | [1 - 100]                                                                              | -1 (not set)                                                             |
+| CPU_WEIGHT      | The scheduling priority of the resource group.                                                                                                       | [1 -  500]                                                                             | 100                                                                      |
+| CPUSET          | The specific CPU logical core (or logical thread in hyperthreading) reserved for this resource group.                                                | It depends on system core configuration                                                | -1                                                                       |
+| IO_LIMIT        | The limit for the maximum read/write disk I/O throughput, and maximum read/write I/O operations per second. Set the value on a per-tablespace basis. | [2 - 4294967295 or `max`]                                                              | -1                                                                       |
+| MEMORY_QUOTA    | The memory limit value specified for the resource group.                                                                                             | Integer (MB)                                                                           | -1 (not set, use `statement_mem` as the memory limit for a single query) |
+| MIN_COST        | The minimum cost of a query plan to be included in the resource group.                                                                               | Integer                                                                                | 0                                                                        |
 
 > **Note** Resource limits are not enforced on `SET`, `RESET`, and `SHOW` commands.
 
-### <a id="topic8339717179"></a>Transaction Concurrency Limit
+<a id="topic8339717179"></a>
+
+### Transaction Concurrency Limit
 
 The `CONCURRENCY` limit controls the maximum number of concurrent transactions permitted for a resource group. 
 
@@ -49,34 +57,40 @@ The default `CONCURRENCY` limit value for a resource group for roles is 20. A va
 
 WarehousePG queues any transactions submitted after the resource group reaches its `CONCURRENCY` limit. When a running transaction completes, WarehousePG un-queues and runs the earliest queued transaction if sufficient memory resources exist. Note that if a transaction is in `idle in transaction` state, even if no statement is running, the concurrency slot is still in use.
 
-You can set the server configuration parameter [gp_resource_group_queuing_timeout](../ref_guide/config_params/guc-list.html#gp_resource_group_queuing_timeout) to specify the amount of time a transaction remains in the queue before WarehousePG cancels the transaction. The default timeout is zero, WarehousePG queues transactions indefinitely.
+You can set the server configuration parameter [gp_resource_group_queuing_timeout](../../../ref_guide/config_params/guc-list.md#gp_resource_group_queuing_timeout) to specify the amount of time a transaction remains in the queue before WarehousePG cancels the transaction. The default timeout is zero, WarehousePG queues transactions indefinitely.
 
-### <a id="bypass"></a>Bypass and Unassign from Resource Groups
+<a id="bypass"></a>
 
-A query bypasses the resource group concurrency limit if you set the server configuration parameter [gp_resource_group_bypass](../ref_guide/config_params/guc-list.html#gp_resource_group_bypass). This parameter enables or disables the concurrent transaction limit for the resource group so a query can run immediately. The default value is false, which enforces the limit of the `CONCURRENCY` limit. You may only set this parameter for a single session, not within a transaction or a function. If you set `gp_resource_group_bypass` to true, the query no longer enforces the CPU or memory limits assigned to its resource group. Instead, the memory quota assigned to this query is `statement_mem` per query. If there is not enough memory to satisfy the memory allocation request, the query will fail.
+### Bypass and Unassign from Resource Groups
 
-You may bypass queries that only use catalog tables, such as the database Graphical User Interface (GUI) client, which runs catalog queries to obtain metadata. If the server configuration parameter [gp_resource_group_bypass_catalog_query](../ref_guide/config_params/guc-list.html#gp_resource_group_bypass_catalog_query) is set to true (the default), WarehousePG's resource group scheduler bypasses all queries that read exclusively from system catalogs, or queries that contain in their query text `pg_catalog` schema tables only. These queries are automatically unassigned from its current resource group; they do not enforce the limits of the resource group and do not account for resource usage. The query resources are assigned out of the resource groups and run immediately. The memory quota is `statement_mem` per the query.
+A query bypasses the resource group concurrency limit if you set the server configuration parameter [gp_resource_group_bypass](../../../ref_guide/config_params/guc-list.md#gp_resource_group_bypass). This parameter enables or disables the concurrent transaction limit for the resource group so a query can run immediately. The default value is false, which enforces the limit of the `CONCURRENCY` limit. You may only set this parameter for a single session, not within a transaction or a function. If you set `gp_resource_group_bypass` to true, the query no longer enforces the CPU or memory limits assigned to its resource group. Instead, the memory quota assigned to this query is `statement_mem` per query. If there is not enough memory to satisfy the memory allocation request, the query will fail.
 
-You may bypass direct dispatch queries with the server configuration parameter [gp_resource_group_bypass_direct_dispatch](../ref_guide/config_params/guc-list.html#gp_resource_group_bypass_direct_dispatch). A direct dispatch query is a special type of query that only requires a single segment to participate in the execution. In order to improve efficiency, WarehousePG optimizes this type of query, using direct dispatch optimization. The system sends the query plan to the execution of a single segment that needs to execute the plan, instead of sending it to all segments for execution. If you set `gp_resource_group_bypass_direct_dispatch` to true, the query no longer enforces the CPU or memory limits assigned to its resource group, so it runs immediately. Instead, the memory quota assigned to this query is `statement_mem` per query. If there is not enough memory to satisfy the memory allocation request, the query will fail. You may only set this parameter for a single session, not within a transaction or a function.
+You may bypass queries that only use catalog tables, such as the database Graphical User Interface (GUI) client, which runs catalog queries to obtain metadata. If the server configuration parameter [gp_resource_group_bypass_catalog_query](../../../ref_guide/config_params/guc-list.md#gp_resource_group_bypass_catalog_query) is set to true (the default), WarehousePG's resource group scheduler bypasses all queries that read exclusively from system catalogs, or queries that contain in their query text `pg_catalog` schema tables only. These queries are automatically unassigned from its current resource group; they do not enforce the limits of the resource group and do not account for resource usage. The query resources are assigned out of the resource groups and run immediately. The memory quota is `statement_mem` per the query.
+
+You may bypass direct dispatch queries with the server configuration parameter [gp_resource_group_bypass_direct_dispatch](../../../ref_guide/config_params/guc-list.md#gp_resource_group_bypass_direct_dispatch). A direct dispatch query is a special type of query that only requires a single segment to participate in the execution. In order to improve efficiency, WarehousePG optimizes this type of query, using direct dispatch optimization. The system sends the query plan to the execution of a single segment that needs to execute the plan, instead of sending it to all segments for execution. If you set `gp_resource_group_bypass_direct_dispatch` to true, the query no longer enforces the CPU or memory limits assigned to its resource group, so it runs immediately. Instead, the memory quota assigned to this query is `statement_mem` per query. If there is not enough memory to satisfy the memory allocation request, the query will fail. You may only set this parameter for a single session, not within a transaction or a function.
 
 Queries whose plan cost is less than the limit `MIN_COST` are automatically unassigned from their resource group and do not enforce any of its limits. The resources used by the query do not account for the resources of the resource group. The query has a memory quota of `statement_mem`. The default value of `MIN_COST` is 0.
 
-### <a id="topic833971717"></a>CPU Limits
+<a id="topic833971717"></a>
+
+### CPU Limits
 
 WarehousePG leverages Linux control groups to implement CPU resource management. WarehousePG allocates CPU resources in two ways: 
 
-- By assigning a percentage of CPU resources to resource groups. 
-- By assigning specific CPU cores to resource groups 
+-   By assigning a percentage of CPU resources to resource groups. 
+-   By assigning specific CPU cores to resource groups 
 
 When you set one of the allocation modes for a resource group, WarehousePG deactivates the other allocation mode. You may employ both modes of CPU resource allocation simultaneously for different resource groups on the same WarehousePG cluster. You may also change the CPU resource allocation mode for a resource group at runtime.
 
-WarehousePG uses the server configuration parameter [gp_resource_group_cpu_limit](../ref_guide/config_params/guc-list.html#gp_resource_group_cpu_limit) to identify the maximum percentage of system CPU resources to allocate to resource groups on each WarehousePG segment node. The remaining unreserved CPU resources are used for the operating system kernel and WarehousePG daemons. The amount of CPU available to WarehousePG queries per host is then divided equally among each segment on the WarehousePG node.
+WarehousePG uses the server configuration parameter [gp_resource_group_cpu_limit](../../../ref_guide/config_params/guc-list.md#gp_resource_group_cpu_limit) to identify the maximum percentage of system CPU resources to allocate to resource groups on each WarehousePG segment node. The remaining unreserved CPU resources are used for the operating system kernel and WarehousePG daemons. The amount of CPU available to WarehousePG queries per host is then divided equally among each segment on the WarehousePG node.
 
 > **Note** The default `gp_resource_group_cpu_limit` value may not leave sufficient CPU resources if you are running other workloads on your WarehousePG cluster nodes, so be sure to adjust this server configuration parameter accordingly. 
 
 > **Caution** Avoid setting `gp_resource_group_cpu_limit` to a value higher than .9. Doing so may result in high workload queries taking near all CPU resources, potentially starving WarehousePG auxiliary processes.
 
-#### <a id="cpuset"></a>Assigning CPU Resources by Core
+<a id="cpuset"></a>
+
+#### Assigning CPU Resources by Core
 
 You identify the CPU cores that you want to reserve for a resource group with the `CPUSET` property. The CPU cores that you specify must be available in the system and cannot overlap with any CPU cores that you reserved for other resource groups. Although WarehousePG uses the cores that you assign to a resource group exclusively for that group, note that those CPU cores may also be used by non-WarehousePG processes in the system. When you configure `CPUSET` for a resource group, WarehousePG deactivates `CPU_MAX_PERCENT` and `CPU_WEIGHT` for the group and sets their value to -1.
 
@@ -92,9 +106,11 @@ When you assign CPU cores to `CPUSET` groups, consider the following:
 
 Resource groups that you configure with `CPUSET` have a higher priority on CPU resources. The maximum CPU resource usage percentage for all resource groups configured with `CPUSET` on a segment host is the number of CPU cores reserved divided by the number of all CPU cores, multiplied by 100.
 
-> **Note** You must configure `CPUSET` for a resource group *after* you have enabled resource group-based resource management for your WarehousePG cluster with the [gp_resource_manager](../ref_guide/config_params/guc-list.html#gp_resource_manager) server configuration parameter.
+> **Note** You must configure `CPUSET` for a resource group *after* you have enabled resource group-based resource management for your WarehousePG cluster with the [gp_resource_manager](../../../ref_guide/config_params/guc-list.md#gp_resource_manager) server configuration parameter.
 
-#### <a id="cpu_max_percent"></a>Assigning CPU Resources by Percentage
+<a id="cpu_max_percent"></a>
+
+#### Assigning CPU Resources by Percentage
 
 You configure a resource group with `CPU_MAX_PERCENT` in order to assign CPU resources by percentage. When you configure `CPU_MAX_PERCENT` for a resource group, WarehousePG deactivates `CPUSET` for the group. 
 
@@ -108,12 +124,12 @@ You set the parameter `CPU_WEIGHT` to assign the scheduling priority of the curr
 
 For example, consider the following groups:
 
-| Group Name | CONCURRENCY | CPU_MAX_PERCENT | CPU_WEIGHT |
-| --------- | ----------- | -------------------- | ----------------- |
-| default_group | 20 | 50 | 10 |
-| admin_group | 10 | 70 | 30 |
-| system_group |10 | 30 | 10 |
-| test | 10 | 10 | 10 | 
+| Group Name    | CONCURRENCY | CPU_MAX_PERCENT | CPU_WEIGHT |
+| ------------- | ----------- | --------------- | ---------- |
+| default_group | 20          | 50              | 10         |
+| admin_group   | 10          | 70              | 30         |
+| system_group  | 10          | 30              | 10         |
+| test          | 10          | 10              | 10         |
 
 Roles in `default_group` have an available CPU ratio (determined by `CPU_WEIGHT`) of 10/(10+30+10+10)=16%. This means that they can use at least 16% of the CPU when the system workload is high. When the system has idle CPU resources, they can use more resources, as the hard limit (set by `CPU_MAX_PERCENT`) is 50%.
 
@@ -121,39 +137,46 @@ Roles in `admin_group` have an available CPU ratio of 30/(10+30+10+10)=50% when 
 
 Roles in `test` have a CPU ratio of 10/(10+30+10+10)=16%. However, as the hard limit determined by `CPU_MAX_PERCENT` is 10%, they can only use up to 10% of the resources even when the system is idle.
 
-### <a id="topic8339717"></a>Memory Limits
+<a id="topic8339717"></a>
 
-When you enable resource groups, memory usage is managed at the WarehousePG segment and resource group levels. You can also manage memory at the transaction level. See [WarehousePG Memory Overview](wlmgmt_intro.html) to estimate how much memory each WarehousePG segment has available to use. This will help you estimate how much memory to assign to the resource groups. 
+### Memory Limits
+
+When you enable resource groups, memory usage is managed at the WarehousePG segment and resource group levels. You can also manage memory at the transaction level. See [WarehousePG Memory Overview](../wlmgmt_intro.md) to estimate how much memory each WarehousePG segment has available to use. This will help you estimate how much memory to assign to the resource groups. 
 
 The amount of memory allocated to a query is determined by the following parameters:
 
 The parameter `MEMORY_QUOTA` of a resource group sets the maximum amount of memory reserved for this resource group on a segment. This determines the total amount of memory that all worker processes for a query can consume on the segment host during query execution. The amount of memory allotted to a query is the group memory limit divided by the group concurrency limit: `MEMORY_QUOTA` / `CONCURRENCY`. 
 
-If a query requires a large amount of memory, you may use the server configuration parameter [gp_resgroup_memory_query_fixed_mem](../ref_guide/config_params/guc-list.html#gp_resgroup_memory_query_fixed_mem) to set a fixed memory amount for the query at the session level. This parameter overrides and can surpass the allocated memory of the resource group.
+If a query requires a large amount of memory, you may use the server configuration parameter [gp_resgroup_memory_query_fixed_mem](../../../ref_guide/config_params/guc-list.md#gp_resgroup_memory_query_fixed_mem) to set a fixed memory amount for the query at the session level. This parameter overrides and can surpass the allocated memory of the resource group.
 
-WarehousePG allocates memory for an incoming query using the `gp_resgroup_memory_query_fixed_mem` value, if set, to bypass the resource group settings. Otherwise, it uses `MEMORY_QUOTA` / `CONCURRENCY` as the memory allocated for the query. If `MEMORY_QUOTA` is not set, the value for the query memory allocation defaults to [statement_mem](../ref_guide/config_params/guc-list.html#statement_mem).
+WarehousePG allocates memory for an incoming query using the `gp_resgroup_memory_query_fixed_mem` value, if set, to bypass the resource group settings. Otherwise, it uses `MEMORY_QUOTA` / `CONCURRENCY` as the memory allocated for the query. If `MEMORY_QUOTA` is not set, the value for the query memory allocation defaults to [statement_mem](../../../ref_guide/config_params/guc-list.md#statement_mem).
 
-For all queries, if there is not enough memory in the system, they spill to disk. When the limit [gp_workfile_limit_files_per_query](../ref_guide/config_params/guc-list.html#gp_workfile_limit_files_per_query) is reached, WarehousePG generates an out of memory (OOM) error.
+For all queries, if there is not enough memory in the system, they spill to disk. When the limit [gp_workfile_limit_files_per_query](../../../ref_guide/config_params/guc-list.md#gp_workfile_limit_files_per_query) is reached, WarehousePG generates an out of memory (OOM) error.
 
 For example, consider a resource group named `adhoc` with `MEMORY_QUOTA`set to 1.5 GB and `CONCURRENCY` set to 3. By default, each statement submitted to the group is allocated 500 MB of memory. Now consider the following series of events:
 
-1. User `ADHOC_1` submits query `Q1`, overriding `gp_resgroup_memory_query_fixed_mem` to 800MB. The `Q1` statement is admitted into the system.
-1. User `ADHOC_2` submits query `Q2`, using the default 500MB.
-1. With `Q1` and `Q2` still running, user `ADHOC3` submits query `Q3`, using the default 500MB.
+1.  User `ADHOC_1` submits query `Q1`, overriding `gp_resgroup_memory_query_fixed_mem` to 800MB. The `Q1` statement is admitted into the system.
+
+2.  User `ADHOC_2` submits query `Q2`, using the default 500MB.
+
+3.  With `Q1` and `Q2` still running, user `ADHOC3` submits query `Q3`, using the default 500MB.
 
     Queries `Q1` and `Q2` have used 1300MB of the group's 1500MB. However, if there is enough system memory available for query `Q3` in the segment at that time, it can run normally.
 
-1. User `ADHOC4` submits query `Q4`, using `gp_resgroup_memory_query_fixed_mem` set to 700 MB.
+4.  User `ADHOC4` submits query `Q4`, using `gp_resgroup_memory_query_fixed_mem` set to 700 MB.
 
     Query `Q4` runs immediately as it bypasses the resource group limits.
 
 There are some special usage considerations regarding memory limits:
-- If you set the configuration parameters `gp_resource_group_bypass` or `gp_resource_group_bypass_catalog_query` to bypass the resource group limits, the memory limit for the query takes the value of `statement_mem`.
-- When (`MEMORY_QUOTA` / `CONCURRENCY`) < `statement_mem`, WarehousePG uses `statement_mem` as the fixed amount of memory allocated by query.
-- The maximum value of `statement_mem` is capped at [max_statement_mem](../ref_guide/config_params/guc-list.html#max_statement_mem).
-- Queries whose plan cost is less than the limit `MIN_COST` use a memory quota of `statement_mem`. 
 
-### <a id="diskio"></a>Disk I/O Limits
+-   If you set the configuration parameters `gp_resource_group_bypass` or `gp_resource_group_bypass_catalog_query` to bypass the resource group limits, the memory limit for the query takes the value of `statement_mem`.
+-   When (`MEMORY_QUOTA` / `CONCURRENCY`) &lt; `statement_mem`, WarehousePG uses `statement_mem` as the fixed amount of memory allocated by query.
+-   The maximum value of `statement_mem` is capped at [max_statement_mem](../../../ref_guide/config_params/guc-list.md#max_statement_mem).
+-   Queries whose plan cost is less than the limit `MIN_COST` use a memory quota of `statement_mem`. 
+
+<a id="diskio"></a>
+
+### Disk I/O Limits
 
 WarehousePG leverages Linux control groups to implement disk I/O limits. The parameter `IO_LIMIT` limits the maximum read/write disk I/O throughput, and the maximum read/write I/O operations per second for the queries assigned to a specific resource group. It allocates bandwidth, ensures the use of high-priority resource groups, and avoids excessive use of disk bandwidth. The value of the parameter is set on a per-tablespace basis. 
 
@@ -161,19 +184,23 @@ WarehousePG leverages Linux control groups to implement disk I/O limits. The par
 
 When you limit disk I/O you specify:
 
-- The tablespace name or the tablespace object ID (OID) you set the limits for. Use `*` to set limits for all tablespaces.
+-   The tablespace name or the tablespace object ID (OID) you set the limits for. Use `*` to set limits for all tablespaces.
 
-- The values for `rbps` and `wbps` to limit the maximum read and write disk I/O throughput in the resource group, in MB/sec. The default value is `max`, which means there is no limit. 
+-   The values for `rbps` and `wbps` to limit the maximum read and write disk I/O throughput in the resource group, in MB/sec. The default value is `max`, which means there is no limit. 
 
-- The values for `riops` and `wiops` to limit the maximum read and write I/O operations per second in the resource group. The default value is `max`, which means there is no limit. 
+-   The values for `riops` and `wiops` to limit the maximum read and write I/O operations per second in the resource group. The default value is `max`, which means there is no limit. 
 
-If the parameter `IO_LIMIT` is not set, the default value for `rbps`, `wpbs`, `riops`, and `wiops`s is set to `max`, which means that there are no disk I/O limits. In this scenario, the `gp_toolkit.gp_resgroup_config` system view displays its value as `-1`. If only some of the values of `IO_LIMIT` are set (for example. `rbps`), the parameters that are not set default to `max` (in this example, `wbps`, `riops`, wiops`).
+If the parameter `IO_LIMIT` is not set, the default value for `rbps`, `wpbs`, `riops`, and `wiops`s is set to `max`, which means that there are no disk I/O limits. In this scenario, the `gp_toolkit.gp_resgroup_config` system view displays its value as `-1`. If only some of the values of `IO_LIMIT` are set (for example. `rbps`), the parameters that are not set default to `max` (in this example, `wbps`, `riops`, wiops\`).
 
-## <a id="topic71717999"></a>Configuring and Using Resource Groups
+<a id="topic71717999"></a>
 
-### <a id="topic833"></a>Prerequisites
+## Configuring and Using Resource Groups
 
-WarehousePG resource groups use Linux Control Groups \(cgroups\) to manage CPU resources and disk I/O. There are two versions of cgroups: cgroup v1 and cgroup v2. WarehousePG 7 supports both versions, but it only supports the parameter `IO_LIMIT` for cgroup v2. The version of Linux Control Groups shipped by default with your Linux distribution depends on the operating system version. For Enterprise Linux 8 and older, the default version is v1. For Enterprise Linux 9 and later, the default version is v2. For detailed information about cgroups, refer to the Control Groups documentation for your Linux distribution.
+<a id="topic833"></a>
+
+### Prerequisites
+
+WarehousePG resource groups use Linux Control Groups (cgroups) to manage CPU resources and disk I/O. There are two versions of cgroups: cgroup v1 and cgroup v2. WarehousePG 7 supports both versions, but it only supports the parameter `IO_LIMIT` for cgroup v2. The version of Linux Control Groups shipped by default with your Linux distribution depends on the operating system version. For Enterprise Linux 8 and older, the default version is v1. For Enterprise Linux 9 and later, the default version is v2. For detailed information about cgroups, refer to the Control Groups documentation for your Linux distribution.
 
 Verify what version of cgroup is configured in your environment by checking what filesystem is mounted by default during system boot:
 
@@ -185,11 +212,11 @@ For cgroup v1, the output is `tmpfs`. For cgroup v2, output is `cgroup2fs`.
 
 You do not need to change your version of cgroup, you can simply skip to [Configuring cgroup v1](#cgroupv1) or [Configuring cgroup v2](#cgroupv2) in order to complete the configuration prerequisites. However, if you prefer to switch from cgroup v1 to v2, run the following commands as root:
 
-- Red Hat 8/Rocky 8/Oracle 8 systems:
+-   Red Hat 8/Rocky 8/Oracle 8 systems:
     ```
     grubby --update-kernel=/boot/vmlinuz-$(uname -r) --args="systemd.unified_cgroup_hierarchy=1"
     ```
-- Ubuntu systems:
+-   Ubuntu systems:
     ```
     vim /etc/default/grub
     # add or modify: GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=1"
@@ -198,11 +225,11 @@ You do not need to change your version of cgroup, you can simply skip to [Config
 
 If you want to switch from cgroup v2 to v1, run the following commands as root:
 
-- Red Hat 8/Rocky 8/Oracle 8 systems:
+-   Red Hat 8/Rocky 8/Oracle 8 systems:
     ```
     grubby --update-kernel=/boot/vmlinuz-$(uname -r) --args="systemd.unified_cgroup_hierarchy=0 systemd.legacy_systemd_cgroup_controller"
     ```
-- Ubuntu systems:
+-   Ubuntu systems:
     ```
     vim /etc/default/grub
     # add or modify: GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=0"
@@ -211,17 +238,19 @@ If you want to switch from cgroup v2 to v1, run the following commands as root:
 
 After that, reboot your host in order for the changes to take effect.
 
-#### <a id="cgroupv1"></a>Configuring cgroup v1
+<a id="cgroupv1"></a>
+
+#### Configuring cgroup v1
 
 Complete the following tasks on each node in your WarehousePG cluster to set up cgroups v1 for use with resource groups:
 
-1. Locate the cgroups configuration file `/etc/cgconfig.conf`. You must be the superuser or have `sudo` access to edit this file:
+1.  Locate the cgroups configuration file `/etc/cgconfig.conf`. You must be the superuser or have `sudo` access to edit this file:
 
     ```
     vi /etc/cgconfig.conf
     ```
 
-1. Add the following configuration information to the file:
+2.  Add the following configuration information to the file:
 
     ```
     group gpdb {
@@ -248,25 +277,25 @@ Complete the following tasks on each node in your WarehousePG cluster to set up 
 
     This content configures CPU, CPU accounting, CPU core set, and memory control groups managed by the `gpadmin` user. WarehousePG uses the memory control group only for monitoring the memory usage.
 
-1. Start the cgroups service on each WarehousePG node. For Redhat/Oracle/Rocky 8.x and older, run the following as root:
+3.  Start the cgroups service on each WarehousePG node. For Redhat/Oracle/Rocky 8.x and older, run the following as root:
 
     ```
     cgconfigparser -l /etc/cgconfig.conf 
     ```
 
-1. To automatically recreate WarehousePG required cgroup hierarchies and parameters when your system is restarted, configure your system to enable the Linux cgroup service daemon `cgconfig.service` at node start-up. To ensure the configuration is persisten after reboot, run the following commands as user root. For Redhat/Oracle/Rocky 8.x and older:
+4.  To automatically recreate WarehousePG required cgroup hierarchies and parameters when your system is restarted, configure your system to enable the Linux cgroup service daemon `cgconfig.service` at node start-up. To ensure the configuration is persisten after reboot, run the following commands as user root. For Redhat/Oracle/Rocky 8.x and older:
 
     ```
     systemctl enable cgconfig.service
     ```
 
-    To start the service immediately \(without having to reboot\) enter:
+    To start the service immediately (without having to reboot) enter:
 
     ```
     systemctl start cgconfig.service
     ```
 
-1. Identify the `cgroup` directory mount point for the node. For Redhat/Oracle/Rocky 8.x and older, run the following as root:
+5.  Identify the `cgroup` directory mount point for the node. For Redhat/Oracle/Rocky 8.x and older, run the following as root:
 
     ```
     grep cgroup /proc/mounts
@@ -274,7 +303,7 @@ Complete the following tasks on each node in your WarehousePG cluster to set up 
 
     The first line of output identifies the `cgroup` mount point.
 
-1. Verify that you set up the WarehousePG cgroups configuration correctly by running the following commands. Replace \<cgroup\_mount\_point\> with the mount point that you identified in the previous step:
+6.  Verify that you set up the WarehousePG cgroups configuration correctly by running the following commands. Replace \\&lt;cgroup_mount_point> with the mount point that you identified in the previous step:
 
     ```
     ls -l <cgroup_mount_point>/cpu/gpdb
@@ -284,19 +313,22 @@ Complete the following tasks on each node in your WarehousePG cluster to set up 
 
     If these directories exist and are owned by `gpadmin:gpadmin`, you have successfully configured cgroups for WarehousePG resource management.
 
-#### <a id="cgroupv2"></a>Configuring cgroup v2
+<a id="cgroupv2"></a>
 
-1. Configure the system to mount `cgroups-v2` by default during system boot by the `systemd` system and service manager as user root.
+#### Configuring cgroup v2
+
+1.  Configure the system to mount `cgroups-v2` by default during system boot by the `systemd` system and service manager as user root.
 
     ```
     grubby --update-kernel=ALL --args="systemd.unified_cgroup_hierarchy=1"
     ```
 
-1. Reboot the system for the changes to take effect.
+2.  Reboot the system for the changes to take effect.
     ```
     reboot now
     ```
-1. Create the directory `/sys/fs/cgroup/gpdb`, add all the necessary controllers, and ensure `gpadmin` user has read and write permission on it.
+
+3.  Create the directory `/sys/fs/cgroup/gpdb`, add all the necessary controllers, and ensure `gpadmin` user has read and write permission on it.
     ```
     mkdir -p /sys/fs/cgroup/gpdb
     echo "+cpuset +io +cpu +memory" | tee -a /sys/fs/cgroup/cgroup.subtree_control
@@ -305,48 +337,53 @@ Complete the following tasks on each node in your WarehousePG cluster to set up 
 
 You may encounter the error `Invalid argument` after running the above commands. This is because cgroups v2 do not support control of real-time processes, and the `cpu` controller can only be enabled when all the real-time processes are in the root cgroup. In this situation, find all real-time processes and move them to the root cgroup before you re-enable the controllers. 
 
-1. Ensure that `gpadmin` has write permission on `/sys/fs/cgroup/cgroup.procs`. This is required to move the WarehousePG processes from the user slices to `/sys/fs/cgroup/gpdb/` after the cluster is started in order to manage the postmaster services and all its auxiliary processes.
+1.  Ensure that `gpadmin` has write permission on `/sys/fs/cgroup/cgroup.procs`. This is required to move the WarehousePG processes from the user slices to `/sys/fs/cgroup/gpdb/` after the cluster is started in order to manage the postmaster services and all its auxiliary processes.
+    ````
     ```
     chmod a+w /sys/fs/cgroup/cgroup.procs
     ```
-Since resource groups manually manage cgroup files, the above settings will become ineffective after a system reboot. Add the following bash script for systemd so it runs automatically during system startup. Perform the following steps as user root:
+    ````
+    Since resource groups manually manage cgroup files, the above settings will become ineffective after a system reboot. Add the following bash script for systemd so it runs automatically during system startup. Perform the following steps as user root:
 
-1. Create `gpdb.service`.
-   ```
-   vim /etc/systemd/system/gpdb.service 
-   ```
+2.  Create `gpdb.service`.
+    ```
+    vim /etc/systemd/system/gpdb.service 
+    ```
 
-2. Write the following content into `gpdb.service`, if the user is not `gpadmin`, replace it with the appropriate user.
+3.  Write the following content into `gpdb.service`, if the user is not `gpadmin`, replace it with the appropriate user.
 
-   ```
-   [Unit]
-   Description=WarehousePG Cgroup v2 Configuration Service
-   [Service]
-   Type=simple
-   WorkingDirectory=/sys/fs/cgroup/gpdb.service
-   Delegate=yes
-   Slice=-.slice
+    ```
+    [Unit]
+    Description=WarehousePG Cgroup v2 Configuration Service
+    [Service]
+    Type=simple
+    WorkingDirectory=/sys/fs/cgroup/gpdb.service
+    Delegate=yes
+    Slice=-.slice
 
-   # set hierarchies only if cgroup v2 mounted
-   ExecCondition=bash -c '[ xcgroup2fs = x$(stat -fc "%%T" /sys/fs/cgroup) ] || exit 1'
-   ExecStartPre=bash -ec " \
-   chown -R gpadmin:gpadmin .; \
-   chmod a+w ../cgroup.procs; \
-   mkdir -p helper.scope"
-   ExecStart=sleep infinity
-   ExecStartPost=bash -ec "echo $MAINPID > ./helper.scope/cgroup.procs;"
-   [Install]
-   WantedBy=basic.target
-   ```
-1. Reload systemd daemon and enable the service:
-   ```
-   systemctl daemon-reload
-   systemctl enable gpdb.service
-   ```
+    # set hierarchies only if cgroup v2 mounted
+    ExecCondition=bash -c '[ xcgroup2fs = x$(stat -fc "%%T" /sys/fs/cgroup) ] || exit 1'
+    ExecStartPre=bash -ec " \
+    chown -R gpadmin:gpadmin .; \
+    chmod a+w ../cgroup.procs; \
+    mkdir -p helper.scope"
+    ExecStart=sleep infinity
+    ExecStartPost=bash -ec "echo $MAINPID > ./helper.scope/cgroup.procs;"
+    [Install]
+    WantedBy=basic.target
+    ```
 
-## <a id="topic8"></a>Enabling Resource Groups
+4.  Reload systemd daemon and enable the service:
+    ```
+    systemctl daemon-reload
+    systemctl enable gpdb.service
+    ```
 
-When you install WarehousePG, no resource management policy is enabled by default. To use resource groups, set the [gp_resource_manager](../ref_guide/config_params/guc-list.html#gp_resource_manager) server configuration parameter.
+<a id="topic8"></a>
+
+## Enabling Resource Groups
+
+When you install WarehousePG, no resource management policy is enabled by default. To use resource groups, set the [gp_resource_manager](../../../ref_guide/config_params/guc-list.md#gp_resource_manager) server configuration parameter.
 
 1.  Set the `gp_resource_manager` server configuration parameter to the value `"group"` or `"group-v2"`, depending on the version of cgroup configured on your Linux distribution. For example:
 
@@ -355,7 +392,7 @@ When you install WarehousePG, no resource management policy is enabled by defaul
     gpconfig -c gp_resource_manager -v "group-v2"
     ```
 
-1.  Restart WarehousePG:
+2.  Restart WarehousePG:
 
     ```
     gpstop
@@ -368,19 +405,21 @@ WarehousePG creates three default resource groups for roles named `admin_group`,
 
 The default resource groups `admin_group`, `default_group`, and `system_group`  are created with the following resource limits:
 
-|Limit Type|admin\_group|default\_group|system_group|
-|----------|------------|--------------|------------|
-|CONCURRENCY|10|5|0|
-|CPU_MAX_PERCENT|10|20|10|
-|CPU_WEIGHT|100|100|100|
-|CPUSET|-1|-1|-1|
-|IO_LIMIT|-1|-1|-1|
-|MEMORY\_LIMIT|-1|-1|-1|
-|MIN_COST|0|0|0|
+| Limit Type      | admin_group | default_group | system_group |
+| --------------- | ----------- | ------------- | ------------ |
+| CONCURRENCY     | 10          | 5             | 0            |
+| CPU_MAX_PERCENT | 10          | 20            | 10           |
+| CPU_WEIGHT      | 100         | 100           | 100          |
+| CPUSET          | -1          | -1            | -1           |
+| IO_LIMIT        | -1          | -1            | -1           |
+| MEMORY_LIMIT    | -1          | -1            | -1           |
+| MIN_COST        | 0           | 0             | 0            |
 
-## <a id="topic10"></a>Creating Resource Groups
+<a id="topic10"></a>
 
-When you create a resource group for a role, you provide a name and a CPU resource allocation mode (core or percentage). You can optionally provide a concurrent transaction limit, a memory limit, a CPU soft priority, disk I/O limits, and a minimum cost. Use the [CREATE RESOURCE GROUP](../ref_guide/sql_commands/CREATE_RESOURCE_GROUP.html) command to create a new resource group.
+## Creating Resource Groups
+
+When you create a resource group for a role, you provide a name and a CPU resource allocation mode (core or percentage). You can optionally provide a concurrent transaction limit, a memory limit, a CPU soft priority, disk I/O limits, and a minimum cost. Use the [CREATE RESOURCE GROUP](../../../ref_guide/sql_commands/CREATE_RESOURCE_GROUP.md) command to create a new resource group.
 
 When you create a resource group for a role, you must provide a `CPU_MAX_PERCENT` or `CPUSET` limit value. These limits identify the percentage of WarehousePG CPU resources to allocate to this resource group. You may specify a `MEMORY_QUOTA` to reserve a fixed amount of memory for the resource group. 
 
@@ -393,7 +432,7 @@ CREATE RESOURCE GROUP rgroup1 WITH (CONCURRENCY=20, CPU_MAX_PERCENT=20, MEMORY_Q
 
 The CPU limit of 20 is shared by every role to which `rgroup1` is assigned. Similarly, the memory limit of 25 is shared by every role to which `rgroup1` is assigned. `rgroup1` utilizes the default `CONCURRENCY` setting of 20.
 
-The [ALTER RESOURCE GROUP](../ref_guide/sql_commands/ALTER_RESOURCE_GROUP.html) command updates the limits of a resource group. To change the limits of a resource group, specify the new values that you want for the group. For example:
+The [ALTER RESOURCE GROUP](../../../ref_guide/sql_commands/ALTER_RESOURCE_GROUP.md) command updates the limits of a resource group. To change the limits of a resource group, specify the new values that you want for the group. For example:
 
 ```
 ALTER RESOURCE GROUP rg_role_light SET CONCURRENCY 7;
@@ -402,9 +441,9 @@ ALTER RESOURCE GROUP rgroup1 SET CPUSET '1;2,4';
 ALTER RESOURCE GROUP sales SET IO_LIMIT 'tablespace1:wbps=2000,wiops=2000;tablespace2:rbps=2024,riops=2024'; 
 ```
 
-> **Note** You cannot set or alter the `CONCURRENCY` value for the `admin_group` to zero \(0\).
+> **Note** You cannot set or alter the `CONCURRENCY` value for the `admin_group` to zero (0).
 
-The [DROP RESOURCE GROUP](../ref_guide/sql_commands/DROP_RESOURCE_GROUP.html) command drops a resource group. To drop a resource group for a role, the group cannot be assigned to any role, nor can there be any transactions active or waiting in the resource group.
+The [DROP RESOURCE GROUP](../../../ref_guide/sql_commands/DROP_RESOURCE_GROUP.md) command drops a resource group. To drop a resource group for a role, the group cannot be assigned to any role, nor can there be any transactions active or waiting in the resource group.
 
 To drop a resource group:
 
@@ -412,17 +451,21 @@ To drop a resource group:
 DROP RESOURCE GROUP exec; 
 ```
 
-## <a id="topic_jlz_hzg_pkb"></a>Configuring Automatic Query Termination Based on Memory Usage
+<a id="topic_jlz_hzg_pkb"></a>
+
+## Configuring Automatic Query Termination Based on Memory Usage
 
 WarehousePG supports the Runaway detector, which automatically terminates queries based on the amount of memory used by the query. For resource group-managed queries, WarehousePG terminates a running query based on the amount of memory used by the query. The relevant configuration parameters are:
 
-- [gp_vmem_protect_limit](../ref_guide/config_params/guc-list.html#gp_vmem_protect_limit) sets the amount of memory that all `postgres` processes of the active segment instance can consume. If a query causes this limit to be exceeded, no memory will be allocated and the query will fail. 
+-   [gp_vmem_protect_limit](../../../ref_guide/config_params/guc-list.md#gp_vmem_protect_limit) sets the amount of memory that all `postgres` processes of the active segment instance can consume. If a query causes this limit to be exceeded, no memory will be allocated and the query will fail. 
 
-- [runaway_detector_activation_percent](../ref_guide/config_params/guc-list.html#runaway_detector_activation_percent). When resource groups are enabled, if the used memory exceeds the specified value `gp_vmem_protect_limit` * `runaway_detector_activation_percent`, WarehousePG terminates queries based on memory usage, selecting queries from the queries managed by user resource groups (excluding those in the `system_group` resource group). WarehousePG starts with the query that consumes the largest amount of memory. The query will terminate until the percentage of memory used falls below the specified percentage.
+-   [runaway_detector_activation_percent](../../../ref_guide/config_params/guc-list.md#runaway_detector_activation_percent). When resource groups are enabled, if the used memory exceeds the specified value `gp_vmem_protect_limit` \* `runaway_detector_activation_percent`, WarehousePG terminates queries based on memory usage, selecting queries from the queries managed by user resource groups (excluding those in the `system_group` resource group). WarehousePG starts with the query that consumes the largest amount of memory. The query will terminate until the percentage of memory used falls below the specified percentage.
 
-## <a id="topic17"></a>Assigning a Resource Group to a Role
+<a id="topic17"></a>
 
-You assign a resource group to a database role using the `RESOURCE GROUP` clause of the [CREATE ROLE](../ref_guide/sql_commands/CREATE_ROLE.html) or [ALTER ROLE](../ref_guide/sql_commands/ALTER_ROLE.html) commands. If you do not specify a resource group for a role, the role is assigned the default group for the role's capability. `SUPERUSER` roles are assigned the `admin_group`, non-admin roles are assigned the group named `default_group`.
+## Assigning a Resource Group to a Role
+
+You assign a resource group to a database role using the `RESOURCE GROUP` clause of the [CREATE ROLE](../../../ref_guide/sql_commands/CREATE_ROLE.md) or [ALTER ROLE](../../../ref_guide/sql_commands/ALTER_ROLE.md) commands. If you do not specify a resource group for a role, the role is assigned the default group for the role's capability. `SUPERUSER` roles are assigned the `admin_group`, non-admin roles are assigned the group named `default_group`.
 
 Use the `ALTER ROLE` or `CREATE ROLE` commands to assign a resource group to a role. For example:
 
@@ -439,54 +482,68 @@ If you wish to remove a resource group assignment from a role and assign the rol
 ALTER ROLE mary RESOURCE GROUP NONE;
 ```
 
-## <a id="topic22"></a>Monitoring Resource Group Status
+<a id="topic22"></a>
+
+## Monitoring Resource Group Status
 
 Monitoring the status of your resource groups and queries may involve the following tasks.
 
-### <a id="topic221"></a>Viewing Resource Group Limits
+<a id="topic221"></a>
 
-The [gp\_resgroup\_config](../ref_guide/system_catalogs/catalog_ref-views.html#gp_resgroup_config) `gp_toolkit` system view displays the current limits for a resource group. To view the limits of all resource groups:
+### Viewing Resource Group Limits
+
+The [gp_resgroup_config](../../../ref_guide/system_catalogs/catalog_ref-views.md#gp_resgroup_config) `gp_toolkit` system view displays the current limits for a resource group. To view the limits of all resource groups:
 
 ```
 SELECT * FROM gp_toolkit.gp_resgroup_config;
 ```
 
-### <a id="topic23"></a>Viewing Resource Group Query Status
+<a id="topic23"></a>
 
-The [gp\_resgroup\_status](../ref_guide/system_catalogs/catalog_ref-views.html#gp_resgroup_status) `gp_toolkit` system view enables you to view the status and activity of a resource group. The view displays the number of running and queued transactions. To view this information:
+### Viewing Resource Group Query Status
+
+The [gp_resgroup_status](../../../ref_guide/system_catalogs/catalog_ref-views.md#gp_resgroup_status) `gp_toolkit` system view enables you to view the status and activity of a resource group. The view displays the number of running and queued transactions. To view this information:
 
 ```
 SELECT * FROM gp_toolkit.gp_resgroup_status;
 ```
 
-### <a id="topic23a"></a>Viewing Resource Group Memory Usage Per Host
+<a id="topic23a"></a>
 
-The [gp\_resgroup\_status\_per\_host](../ref_guide/system_catalogs/catalog_ref-views.html#gp_resgroup_status_per_host) `gp_toolkit` system view enables you to view the real-time memory usage of a resource group on a per-host basis. To view this information:
+### Viewing Resource Group Memory Usage Per Host
+
+The [gp_resgroup_status_per_host](../../../ref_guide/system_catalogs/catalog_ref-views.md#gp_resgroup_status_per_host) `gp_toolkit` system view enables you to view the real-time memory usage of a resource group on a per-host basis. To view this information:
 
 ```
 SELECT * FROM gp_toolkit.gp_resgroup_status_per_host;
 ```
 
-### <a id="topic25"></a>Viewing the Resource Group Assigned to a Role
+<a id="topic25"></a>
 
-To view the resource group-to-role assignments, perform the following query on the [pg\_roles](../ref_guide/system_catalogs/pg_roles.html) and [pg\_resgroup](../ref_guide/system_catalogs/pg_resgroup.html) system catalog tables:
+### Viewing the Resource Group Assigned to a Role
+
+To view the resource group-to-role assignments, perform the following query on the [pg_roles](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_roles.md) and [pg_resgroup](../../../ref_guide/system_catalogs/system_catalogs_definitions/pg_resgroup.md) system catalog tables:
 
 ```
 SELECT rolname, rsgname FROM pg_roles, pg_resgroup
 WHERE pg_roles.rolresgroup=pg_resgroup.oid;
 ```
 
-### <a id="topic25"></a>Viewing Resource Group Disk I/O Usage Per Host
+<a id="topic25"></a>
 
-The [gp_resgroup_iostats_per_host](../ref_guide/system_catalogs/catalog_ref-views.html#gp_resgroup_iostats_per_host) `gp_toolkit` system view enables you to view the real-time disk I/O usage of a resource group on a per-host basis. To view this information:
+### Viewing Resource Group Disk I/O Usage Per Host
+
+The [gp_resgroup_iostats_per_host](../../../ref_guide/system_catalogs/catalog_ref-views.md#gp_resgroup_iostats_per_host) `gp_toolkit` system view enables you to view the real-time disk I/O usage of a resource group on a per-host basis. To view this information:
 
 ```
 SELECT * FROM gp_toolkit.gp_resgroup_iostats_per_host;
 ```
 
-### <a id="topic252525"></a>Viewing a Resource Group's Running and Pending Queries
+<a id="topic252525"></a>
 
-To view a resource group's running queries, pending queries, and how long the pending queries have been queued, examine the [pg\_stat\_activity](../ref_guide/system_catalogs/catalog_ref-views.html#pg_stat_activity) system catalog table:
+### Viewing a Resource Group's Running and Pending Queries
+
+To view a resource group's running queries, pending queries, and how long the pending queries have been queued, examine the [pg_stat_activity](../../../ref_guide/system_catalogs/catalog_ref-views.md#pg_stat_activity) system catalog table:
 
 ```
 SELECT query, rsgname,wait_event_type, wait_event 
@@ -495,13 +552,15 @@ FROM pg_stat_activity;
 
 `pg_stat_activity` displays information about the user/role that initiated a query. A query that uses an external component such as PL/Container is composed of two parts: the query operator that runs in WarehousePG and the UDF that runs in a PL/Container instance. WarehousePG processes the query operators under the resource group assigned to the role that initiated the query. A UDF running in a PL/Container instance runs under the resource group assigned to the PL/Container runtime. The latter is not represented in the `pg_stat_activity` view; WarehousePG does not have any insight into how external components such as PL/Container manage memory in running instances.
 
-### <a id="topic27"></a>Cancelling a Running or Queued Transaction in a Resource Group
+<a id="topic27"></a>
+
+### Cancelling a Running or Queued Transaction in a Resource Group
 
 There may be cases when you want to cancel a running or queued transaction in a resource group. For example, you may want to remove a query that is waiting in the resource group queue but has not yet been run. Or, you may want to stop a running query that is taking too long to run, or one that is sitting idle in a transaction and taking up resource group transaction slots that are needed by other users.
 
-By default, transactions can remain queued in a resource group indefinitely. If you want WarehousePG to cancel a queued transaction after a specific amount of time, set the server configuration parameter [gp\_resource\_group\_queuing\_timeout](../ref_guide/config_params/guc-list.html#gp_resource_group_queuing_timeout). When this parameter is set to a value \(milliseconds\) greater than 0, WarehousePG cancels any queued transaction when it has waited longer than the configured timeout.
+By default, transactions can remain queued in a resource group indefinitely. If you want WarehousePG to cancel a queued transaction after a specific amount of time, set the server configuration parameter [gp_resource_group_queuing_timeout](../../../ref_guide/config_params/guc-list.md#gp_resource_group_queuing_timeout). When this parameter is set to a value (milliseconds) greater than 0, WarehousePG cancels any queued transaction when it has waited longer than the configured timeout.
 
-To manually cancel a running or queued transaction, you must first determine the process id \(pid\) associated with the transaction. Once you have obtained the process id, you can invoke `pg_cancel_backend()` to end that process, as shown below.
+To manually cancel a running or queued transaction, you must first determine the process id (pid) associated with the transaction. Once you have obtained the process id, you can invoke `pg_cancel_backend()` to end that process, as shown below.
 
 For example, to view the process information associated with all statements currently active or waiting in all resource groups, run the following query. If the query returns no results, then there are no running or queued transactions in any resource group.
 
@@ -521,7 +580,7 @@ Sample partial query output:
   billy  | rg_light |  31905  |    t    | active | SELECT * FROM topten;    | testdb
 ```
 
-Use this output to identify the process id \(`pid`\) of the transaction you want to cancel, and then cancel the process. For example, to cancel the pending query identified in the sample output above:
+Use this output to identify the process id (`pid`) of the transaction you want to cancel, and then cancel the process. For example, to cancel the pending query identified in the sample output above:
 
 ```
 SELECT pg_cancel_backend(31905);
@@ -531,13 +590,15 @@ You can provide an optional message in a second argument to `pg_cancel_backend()
 
 > **Note** Do not use an operating system `KILL` command to cancel any WarehousePG process.
 
-## <a id="moverg"></a>Moving a Query to a Different Resource Group
+<a id="moverg"></a>
+
+## Moving a Query to a Different Resource Group
 
 A user with WarehousePG superuser privileges can run the `gp_toolkit.pg_resgroup_move_query()` function to move a running query from one resource group to another, without stopping the query. Use this function to expedite a long-running query by moving it to a resource group with a higher resource allotment or availability.
 
 > **Note** You can move only an active or running query to a new resource group. You cannot move a queued or pending query that is in an idle state due to concurrency or memory limits.
 
-`pg_resgroup_move_query()` requires the process id \(pid\) of the running query, as well as the name of the resource group to which you want to move the query. The signature of the function follows:
+`pg_resgroup_move_query()` requires the process id (pid) of the running query, as well as the name of the resource group to which you want to move the query. The signature of the function follows:
 
 ```
 pg_resgroup_move_query( pid int4, group_name text );
@@ -556,47 +617,47 @@ After WarehousePG moves the query, there is no way to guarantee that a query cur
 
 `pg_resgroup_move_query()` moves only the specified query to the destination resource group. WarehousePG assigns subsequent queries that you submit in the session to the original resource group.
 
+<a id="topic777999"></a>
 
+## Frequently Asked Questions
 
-## <a id="topic777999"></a>Frequently Asked Questions
-
-**Why is CPU usage lower than the `CPU_MAX_PERCENT` configured for the resource group?**
+### Why is CPU usage lower than the `CPU_MAX_PERCENT` configured for the resource group?
 
 You may run into this situation when a low number of queries and slices are running in the resource group, and these processes are not utilizing all of the cores on the system.
 
-**My resource group has a `CPU_WEIGHT` equivalent to 40%. Why is the CPU usage never reaching this limit?
+\*\*My resource group has a `CPU_WEIGHT` equivalent to 40%. Why is the CPU usage never reaching this limit?
 
 The value of `CPU_MAX_PERCENT` might be lower than 40, hence it might be limiting the CPU usage even with idle resources.
 
-**Why is the number of running transactions lower than the `CONCURRENCY` limit configured for the resource group?**
+### Why is the number of running transactions lower than the `CONCURRENCY` limit configured for the resource group?
 
 WarehousePG considers memory availability before running a transaction, and will queue the transaction if there is not enough memory available to serve it. If you use `ALTER RESOURCE GROUP` to increase the `CONCURRENCY` limit for a resource group but do not also adjust memory limits, currently running transactions may be consuming all allotted memory resources for the group. When in this state, WarehousePG queues subsequent transactions in the resource group.
 
-**Why is the number of running transactions in the resource group higher than the configured `CONCURRENCY` limit?**
+### Why is the number of running transactions in the resource group higher than the configured `CONCURRENCY` limit?
 
 This behaviour is expected. There are several reasons why this may happen:
 
-- Resource groups do not enforce resource restrictions on `SET`, `RESET` and `SHOW` commands
-- The server configuration parameter `gp_resource_group_bypass` disables the concurrent transaction limit for the resource group so a query can run immediately.
-- If the server configuration parameter `gp_resource_group_bypass_catalog_query` is set to true (the default), all queries that read exclusively from system catalogs, or queries that contain in their query text `pg_catalog` schema tables only will not enforce the limits of the resource group. 
-- Queries whose plan cost is less than the limit `MIN_COST` will be automatically unassigned from their resource group and will not enforce any of the limits set for this.
+-   Resource groups do not enforce resource restrictions on `SET`, `RESET` and `SHOW` commands
+-   The server configuration parameter `gp_resource_group_bypass` disables the concurrent transaction limit for the resource group so a query can run immediately.
+-   If the server configuration parameter `gp_resource_group_bypass_catalog_query` is set to true (the default), all queries that read exclusively from system catalogs, or queries that contain in their query text `pg_catalog` schema tables only will not enforce the limits of the resource group. 
+-   Queries whose plan cost is less than the limit `MIN_COST` will be automatically unassigned from their resource group and will not enforce any of the limits set for this.
 
-**Why did my query return a "memory limit reached" error?**
+### Why did my query return a "memory limit reached" error?
 
 WarehousePG automatically adjusts transaction and group memory to the new settings when you use `ALTER RESOURCE GROUP` to change a resource group's memory and/or concurrency limits. An "out of memory" error may occur if you recently altered resource group attributes and there is no longer a sufficient amount of memory available for a currently running query.
 
-**My query cannot run due to insufficient memory, resulting in memory leak Out of Memory (OOM).**
+### My query cannot run due to insufficient memory, resulting in memory leak Out of Memory (OOM).
 
 First, ensure that the resource group is allocating enough memory required by the query by tuning resource group parameters such as `CONCURRENCY` and `MEMORY_QUOTA`. Analyze the type of query, whether there will be a lot of intermediate results using memory. If it does exist, you can set a reasonable `gp_resgroup_memory_query_fixed_mem` to allocate more memory at the session level for this specific query. 
 
-**After a memory leak OOM the system has a high concurrent load**.
+### After a memory leak OOM the system has a high concurrent load
 
 When the system starts to clean up the sessions left over by the memory leak, the concurrent load of the system is high at this time, and the OOM error message may reappear. Due to the current design, we cannot expedite the cleanup process of the Runaway Session. The solution to this problem is to adjust the `runaway_detector_activation_percent` to 0.85 or 0.8, or even lower, in order to increase the available memory of the segment host. 
 
-**Some transaction requests only run during a certain period of time, and do not run at other times.**
+### Some transaction requests only run during a certain period of time, and do not run at other times.
 
 You may change the configuration of resource groups can be changed dynamically at regular intervals to match the requirements of your workload, and customize resource allocation at different times to achieve higher efficiency. For example, change the configuration of resources within a group, add or delete resource groups. 
 
-**After upgrading WarehousePG, the performance seems to be degraded.**
+### After upgrading WarehousePG, the performance seems to be degraded.
 
-There are many factors that can affect performance degradation. A possible cause is that after upgrading to WarehousePG 7, SWAP is enabled by default and hence affecting your performance. We recommend disabling SWAP and use RAM memory instead, in order to improve running speed and efficiency. If your memory configuration is sufficient, there is no need to use SWAP space. If you decide to use SWAP, be sure you understand how it takes part in the calculation of memory management allocation. See [WarehousePG Memory Overview](wlmgmt_intro.html) for more information.
+There are many factors that can affect performance degradation. A possible cause is that after upgrading to WarehousePG 7, SWAP is enabled by default and hence affecting your performance. We recommend disabling SWAP and use RAM memory instead, in order to improve running speed and efficiency. If your memory configuration is sufficient, there is no need to use SWAP space. If you decide to use SWAP, be sure you understand how it takes part in the calculation of memory management allocation. See [WarehousePG Memory Overview](../wlmgmt_intro.md) for more information.

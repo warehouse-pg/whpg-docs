@@ -1,4 +1,6 @@
-# Example 9—Writable External Web Table with Script
+---
+title: Example 9—Writable External Web Table with Script
+
 ---
 
 Creates a writable external web table, `campaign_out`, that pipes output data received by the segments to an executable script, `to_adreport_etl.sh`:
@@ -10,5 +12,4 @@ Creates a writable external web table, `campaign_out`, that pipes output data re
     FORMAT 'TEXT' (DELIMITER '|');
 ```
 
-**Parent topic:** [Examples for Creating External Tables](../external/creating-external-tables---examples.html)
-
+**Parent topic:** [Examples for Creating External Tables](index.md)

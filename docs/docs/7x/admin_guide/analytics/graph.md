@@ -1,4 +1,6 @@
-# Graph Analytics
+---
+title: Graph Analytics
+
 ---
 
 Many modern business problems involve connections and relationships between entities, and are not solely based on discrete data. Graphs are powerful at representing complex interconnections, and graph data modeling is very effective and flexible when the number and depth of relationships increase exponentially.
@@ -8,24 +10,27 @@ The use cases for graph analytics are diverse: social networks, transportation r
 This chapter contains the following information:
 
 -   [What is a Graph?](#topic_graph)
--   [Graph Analytics on WarehousePG](#graph_on_greenplum)
+-   [Graph Analytics on WarehousePG](#graph-analytics-on-warehousepg)
 -   [Using Graph](#topic_using_graph)
 -   [Graph Modules](#topic_graph_modules)
 -   [References](#topic_graph_references)
 
-## <a id="topic_graph"></a>What is a Graph?
+<a id="topic_graph"></a>
 
-Graphs represent the interconnections between objects \(vertices\) and their relationships \(edges\). Example objects could be people, locations, cities, computers, or components on a circuit board. Example connections could be roads, circuits, cables, or interpersonal relationships. Edges can have directions and weights, for example the distance between towns.
+## What is a Graph?
 
-![Graph connection example](/graph_example.png)
+Graphs represent the interconnections between objects (vertices) and their relationships (edges). Example objects could be people, locations, cities, computers, or components on a circuit board. Example connections could be roads, circuits, cables, or interpersonal relationships. Edges can have directions and weights, for example the distance between towns.
+
+![Graph connection example](../../images/graph_example.png)
 
 Graphs can be small and easily traversed - as with a small group of friends - or extremely large and complex, similar to contacts in a modern-day social network.
 
-## <a id="graph_on_greenplum"></a>Graph Analytics on WarehousePG
+## Graph Analytics on WarehousePG
 
 Efficient processing of very large graphs can be challenging. WarehousePG offers a suitable environment for this work for these key reasons:
 
 1.  Using MADlib graph functions in WarehousePG brings the graph computation close to where the data lives. Otherwise, large data sets need to be moved to a specialized graph database, requiring additional time and resources.
+
 2.  Specialized graph databases frequently use purpose-built languages. With WarehousePG, you can invoke graph functions using the familiar SQL interface. For example, for the [PageRank](http://madlib.apache.org/docs/latest/group__grp__pagerank.html) graph algorithm:
 
     ```
@@ -39,17 +44,20 @@ Efficient processing of very large graphs can be challenging. WarehousePG offers
     ```
 
 3.  A lot of data science problems are solved using a combination of models, with graphs being just one. Regression, clustering, and other methods available in WarehousePG, make for a powerful combination.
+
 4.  WarehousePG offers great benefits of scale, taking advantage of years of query execution and optimization research focused on large data sets.
 
-## <a id="topic_using_graph"></a>Using Graph
+<a id="topic_using_graph"></a>
 
-**Installing Graph Modules**
+## Using Graph
+
+### Installing Graph Modules
 
 To use the MADlib graph modules, install the version of MADlib corresponding to your WarehousePG version. 
 
 Graph modules on MADlib support many algorithms.
 
-**Creating a Graph in WarehousePG**
+### Creating a Graph in WarehousePG
 
 To represent a graph in WarehousePG, create tables that represent the vertices, edges, and their properties.
 
@@ -102,13 +110,17 @@ testdb#=> INSERT INTO edge VALUES
 
 Now select the [Graph Module](#topic_graph_modules) that suits your analysis.
 
-## <a id="topic_graph_modules"></a>Graph Modules
+<a id="topic_graph_modules"></a>
 
-This section lists the graph functions supported in MADlib. They include: [All Pairs Shortest Path \(APSP\)](#section_m2x_rkr_xlb), [Breadth-First Search](#section_ykg_53s_xlb), [Hyperlink-Induced Topic Search \(HITS\)](#section_evh_t3s_xlb), [PageRank and Personalized PageRank](#section_e3f_s3s_xlb), [Single Source Shortest Path \(SSSP\)](#section_rxc_r3s_xlb), [Weakly Connected Components](#section_zmd_q3s_xlb), and [Measures](#section_wcn_w3s_xlb). Explore each algorithm using the example `edge` and `vertex` tables already created.
+## Graph Modules
 
-### <a id="section_m2x_rkr_xlb"></a>All Pairs Shortest Path \(APSP\)
+This section lists the graph functions supported in MADlib. They include: [All Pairs Shortest Path (APSP)](#section_m2x_rkr_xlb), [Breadth-First Search](#section_ykg_53s_xlb), [Hyperlink-Induced Topic Search (HITS)](#section_evh_t3s_xlb), [PageRank and Personalized PageRank](#section_e3f_s3s_xlb), [Single Source Shortest Path (SSSP)](#section_rxc_r3s_xlb), [Weakly Connected Components](#section_zmd_q3s_xlb), and [Measures](#section_wcn_w3s_xlb). Explore each algorithm using the example `edge` and `vertex` tables already created.
 
-The all pairs shortest paths \(APSP\) algorithm finds the length \(summed weights\) of the shortest paths between all pairs of vertices, such that the sum of the weights of the path edges is minimized.
+<a id="section_m2x_rkr_xlb"></a>
+
+### All Pairs Shortest Path (APSP)
+
+The all pairs shortest paths (APSP) algorithm finds the length (summed weights) of the shortest paths between all pairs of vertices, such that the sum of the weights of the path edges is minimized.
 
 The function is:
 
@@ -124,9 +136,11 @@ grouping_cols
 
 For details on the parameters, with examples, see the [All Pairs Shortest Path](http://madlib.apache.org/docs/latest/group__grp__apsp.html) in the Apache MADlib documentation.
 
-### <a id="section_ykg_53s_xlb"></a>Breadth-First Search
+<a id="section_ykg_53s_xlb"></a>
 
-Given a graph and a source vertex, the breadth-first search \(BFS\) algorithm finds all nodes reachable from the source vertex by searching / traversing the graph in a breadth-first manner.
+### Breadth-First Search
+
+Given a graph and a source vertex, the breadth-first search (BFS) algorithm finds all nodes reachable from the source vertex by searching / traversing the graph in a breadth-first manner.
 
 The function is:
 
@@ -145,9 +159,11 @@ graph_bfs( vertex_table,
 
 For details on the parameters, with examples, see the [Breadth-First Search](http://madlib.apache.org/docs/latest/group__grp__bfs.html) in the Apache MADlib documentation.
 
-### <a id="section_evh_t3s_xlb"></a>Hyperlink-Induced Topic Search \(HITS\)
+<a id="section_evh_t3s_xlb"></a>
 
-The all pairs shortest paths \(APSP\) algorithm finds the length \(summed weights\) of the shortest paths between all pairs of vertices, such that the sum of the weights of the path edges is minimized.
+### Hyperlink-Induced Topic Search (HITS)
+
+The all pairs shortest paths (APSP) algorithm finds the length (summed weights) of the shortest paths between all pairs of vertices, such that the sum of the weights of the path edges is minimized.
 
 The function is:
 
@@ -163,7 +179,9 @@ graph_apsp( vertex_table,
 
 For details on the parameters, with examples, see the [Hyperlink-Induced Topic Search](http://madlib.apache.org/docs/latest/group__grp__hits.html) in the Apache MADlib documentation.
 
-### <a id="section_e3f_s3s_xlb"></a>PageRank and Personalized PageRank
+<a id="section_e3f_s3s_xlb"></a>
+
+### PageRank and Personalized PageRank
 
 Given a graph, the PageRank algorithm outputs a probability distribution representing a person’s likelihood to arrive at any particular vertex while randomly traversing the graph.
 
@@ -187,9 +205,11 @@ pagerank( vertex_table,
 
 For details on the parameters, with examples, see the [PageRank](http://madlib.apache.org/docs/latest/group__grp__pagerank.html) in the Apache MADlib documentation.
 
-### <a id="section_rxc_r3s_xlb"></a>Single Source Shortest Path \(SSSP\)
+<a id="section_rxc_r3s_xlb"></a>
 
-Given a graph and a source vertex, the single source shortest path \(SSSP\) algorithm finds a path from the source vertex to every other vertex in the graph, such that the sum of the weights of the path edges is minimized.
+### Single Source Shortest Path (SSSP)
+
+Given a graph and a source vertex, the single source shortest path (SSSP) algorithm finds a path from the source vertex to every other vertex in the graph, such that the sum of the weights of the path edges is minimized.
 
 The function is:
 
@@ -206,9 +226,11 @@ grouping_cols
 
 For details on the parameters, with examples, see the [Single Source Shortest Path](http://madlib.apache.org/docs/latest/group__grp__sssp.html) in the Apache MADlib documentation.
 
-### <a id="section_zmd_q3s_xlb"></a>Weakly Connected Components
+<a id="section_zmd_q3s_xlb"></a>
 
-Given a directed graph, a weakly connected component \(WCC\) is a subgraph of the original graph where all vertices are connected to each other by some path, ignoring the direction of edges.
+### Weakly Connected Components
+
+Given a directed graph, a weakly connected component (WCC) is a subgraph of the original graph where all vertices are connected to each other by some path, ignoring the direction of edges.
 
 The function is:
 
@@ -225,11 +247,15 @@ grouping_cols
 
 For details on the parameters, with examples, see the [Weakly Connected Components](http://madlib.apache.org/docs/latest/group__grp__wcc.html) in the Apache MADlib documentation.
 
-### <a id="section_wcn_w3s_xlb"></a>*Measures*
+<a id="section_wcn_w3s_xlb"></a>
+
+### *Measures*
 
 These algorithms relate to metrics computed on a graph and include: [Average Path Length](#section_k4q_x3s_xlb), [Closeness Centrality](#section_a2q_y3s_xlb) , [Graph Diameter](#section_pft_k4s_xlb), and [In-Out Degree](#section_srk_j4s_xlb).
 
-### <a id="section_k4q_x3s_xlb"></a>Average Path Length
+<a id="section_k4q_x3s_xlb"></a>
+
+### Average Path Length
 
 This function computes the shortest path average between pairs of vertices. Average path length is based on "reachable target vertices", so it averages the path lengths in each connected component and ignores infinite-length paths between unconnected vertices. If the user requires the average path length of a particular component, the weakly connected components function may be used to isolate the relevant vertices.
 
@@ -241,9 +267,11 @@ graph_avg_path_length( apsp_table,
                        )
 ```
 
-This function uses a previously run APSP \(All Pairs Shortest Path\) output. For details on the parameters, with examples, see the [Average Path Length](http://madlib.apache.org/docs/latest/group__grp__graph__avg__path__length.html) in the Apache MADlib documentation.
+This function uses a previously run APSP (All Pairs Shortest Path) output. For details on the parameters, with examples, see the [Average Path Length](http://madlib.apache.org/docs/latest/group__grp__graph__avg__path__length.html) in the Apache MADlib documentation.
 
-### <a id="section_a2q_y3s_xlb"></a>Closeness Centrality
+<a id="section_a2q_y3s_xlb"></a>
+
+### Closeness Centrality
 
 The closeness centrality algorithm helps quantify how much information passes through a given vertex. The function returns various closeness centrality measures and the k-degree for a given subset of vertices.
 
@@ -256,9 +284,11 @@ vertex_filter_expr
 )
 ```
 
-This function uses a previously run APSP \(All Pairs Shortest Path\) output. For details on the parameters, with examples, see the [Closeness](http://madlib.apache.org/docs/latest/group__grp__graph__closeness.html) in the Apache MADlib documentation.
+This function uses a previously run APSP (All Pairs Shortest Path) output. For details on the parameters, with examples, see the [Closeness](http://madlib.apache.org/docs/latest/group__grp__graph__closeness.html) in the Apache MADlib documentation.
 
-### <a id="section_pft_k4s_xlb"></a>Graph Diameter
+<a id="section_pft_k4s_xlb"></a>
+
+### Graph Diameter
 
 Graph diameter is defined as the longest of all shortest paths in a graph. The function is:
 
@@ -268,9 +298,11 @@ output_table
 )
 ```
 
-This function uses a previously run APSP \(All Pairs Shortest Path\) output. For details on the parameters, with examples, see the [Graph Diameter](http://madlib.apache.org/docs/latest/group__grp__graph__diameter.html) in the Apache MADlib documentation.
+This function uses a previously run APSP (All Pairs Shortest Path) output. For details on the parameters, with examples, see the [Graph Diameter](http://madlib.apache.org/docs/latest/group__grp__graph__diameter.html) in the Apache MADlib documentation.
 
-### <a id="section_srk_j4s_xlb"></a>In-Out Degree
+<a id="section_srk_j4s_xlb"></a>
+
+### In-Out Degree
 
 This function computes the degree of each node. The node degree is the number of edges adjacent to that node. The node in-degree is the number of edges pointing in to the node and node out-degree is the number of edges pointing out of the node.
 
@@ -288,11 +320,12 @@ grouping_cols
 
 For details on the parameters, with examples, see the [In-out Degree](http://madlib.apache.org/docs/latest/group__grp__graph__vertex__degrees.html) page in the Apache MADlib documentation.
 
-## <a id="topic_graph_references"></a>References
+<a id="topic_graph_references"></a>
 
-MADlib on WarehousePG is at [Machine Learning and Deep Learning using MADlib](madlib.html).
+## References
+
+MADlib on WarehousePG is at [Machine Learning and Deep Learning using MADlib](madlib.md).
 
 MADlib Apache web site and MADlib release notes are at [http://madlib.apache.org/](http://madlib.apache.org/).
 
 MADlib user documentation is at [http://madlib.apache.org/documentation.html](http://madlib.apache.org/documentation.html).
-

@@ -1,10 +1,17 @@
-# ALTER COLLATION 
+---
+title: ALTER COLLATION
+
+---
 
 Changes the definition of a collation.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER COLLATION <name> REFRESH VERSION
 
 ALTER COLLATION <name> RENAME TO <new_name>
@@ -12,31 +19,36 @@ ALTER COLLATION <name> OWNER TO { <new_owner> | CURRENT_USER | SESSION_USER }
 ALTER COLLATION <name> SET SCHEMA <new_schema>
 ```
 
-## <a id="section3"></a>Description
+<a id="section3"></a>
+
+## Description
 
 `ALTER COLLATION` changes the definition of a collation.
 
-You must own the collation to use `ALTER COLLATION`. To alter the owner, you must also be a direct or indirect member of the new owning role, and that role must have `CREATE` privilege on the collation's schema. \(These restrictions enforce that altering the owner doesn't do anything you couldn't do by dropping and recreating the collation. However, a superuser can alter ownership of any collation anyway.\)
+You must own the collation to use `ALTER COLLATION`. To alter the owner, you must also be a direct or indirect member of the new owning role, and that role must have `CREATE` privilege on the collation's schema. (These restrictions enforce that altering the owner doesn't do anything you couldn't do by dropping and recreating the collation. However, a superuser can alter ownership of any collation anyway.)
 
+<a id="section4"></a>
 
-## <a id="section4"></a>Parameters 
+## Parameters
 
 name
-The name \(optionally schema-qualified\) of an existing collation.
+The name (optionally schema-qualified) of an existing collation.
 
-new\_name
+new_name
 The new name of the collation.
 
-new\_owner
+new_owner
 The new owner of the collation.
 
-new\_schema
+new_schema
 The new schema for the collation.
 
 REFRESH VERSION
 Update the collation's version. See the [Notes](#section4a) below.
 
-## <a id="section4a"></a>Notes
+<a id="section4a"></a>
+
+## Notes
 
 When using collations provided by the ICU library, the ICU-specific version of the collator is recorded in the system catalog when the collation object is created. When the collation is used, the current version is checked against the recorded version, and a warning is issued when there is a mismatch, for example:
 
@@ -59,9 +71,11 @@ SELECT pg_describe_object(refclassid, refobjid, refobjsubid) AS "Collation",
   ORDER BY 1, 2;
 ```
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
 
-To rename the collation de\_DE to `german`:
+## Examples
+
+To rename the collation de_DE to `german`:
 
 ```
 ALTER COLLATION "de_DE" RENAME TO german;
@@ -73,13 +87,16 @@ To change the owner of the collation `en_US` to `joe`:
 ALTER COLLATION "en_US" OWNER TO joe;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 There is no `ALTER COLLATION` statement in the SQL standard.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE COLLATION](CREATE_COLLATION.html), [DROP COLLATION](DROP_COLLATION.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE COLLATION](CREATE_COLLATION.md), [DROP COLLATION](DROP_COLLATION.md)
 
+**Parent topic:** [SQL Commands](index.md)

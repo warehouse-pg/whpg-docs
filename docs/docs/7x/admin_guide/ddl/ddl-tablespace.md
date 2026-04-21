@@ -1,17 +1,21 @@
-# Creating and Managing Tablespaces
+---
+title: Creating and Managing Tablespaces
+
 ---
 
-Tablespaces allow database administrators to have multiple file systems per machine and decide how to best use physical storage to store database objects. Tablespaces allow you to assign different storage for frequently and infrequently used database objects or to control the I/O performance on certain database objects. For example, place frequently-used tables on file systems that use high performance solid-state drives \(SSD\), and place other tables on standard hard drives.
+Tablespaces allow database administrators to have multiple file systems per machine and decide how to best use physical storage to store database objects. Tablespaces allow you to assign different storage for frequently and infrequently used database objects or to control the I/O performance on certain database objects. For example, place frequently-used tables on file systems that use high performance solid-state drives (SSD), and place other tables on standard hard drives.
 
 A tablespace requires a host file system location to store its database files. In WarehousePG, the file system location must exist on all hosts including the hosts running the coordinator, standby coordinator, each primary segment, and each mirror segment.
 
-A tablespace is WarehousePG cluster object \(a global object\), you can use a tablespace from any database if you have appropriate privileges.
+A tablespace is WarehousePG cluster object (a global object), you can use a tablespace from any database if you have appropriate privileges.
 
 > **Note** WarehousePG does not support different tablespace locations for a primary-mirror pair with the same content ID. It is only possible to configure different locations for different content IDs. Do not modify symbolic links under the `pg_tblspc` directory so that primary-mirror pairs point to different file locations; this will lead to erroneous behavior.
 
-**Parent topic:** [DDL: Defining Database Objects](../ddl/ddl.html)
+**Parent topic:** [DDL: Defining Database Objects](index.md)
 
-## <a id="topic13"></a>Creating a Tablespace
+<a id="topic13"></a>
+
+## Creating a Tablespace
 
 The `CREATE TABLESPACE` command defines a tablespace. For example:
 
@@ -20,14 +24,16 @@ CREATE TABLESPACE fastspace LOCATION '/fastdisk/gpdb';
 
 ```
 
-Database superusers define tablespaces and grant access to database users with the `GRANT``CREATE`command. For example:
+Database superusers define tablespaces and grant access to database users with the ```GRANT``CREATE```command. For example:
 
 ```
 GRANT CREATE ON TABLESPACE fastspace TO admin;
 
 ```
 
-## <a id="topic14"></a>Using a Tablespace to Store Database Objects
+<a id="topic14"></a>
+
+## Using a Tablespace to Store Database Objects
 
 Users with the `CREATE` privilege on a tablespace can create database objects in that tablespace, such as tables, indexes, and databases. The command is:
 
@@ -57,7 +63,9 @@ The tablespace associated with a database stores that database's system catalogs
 
 You can use a tablespace from any database in the WarehousePG cluster if you have appropriate privileges.
 
-## <a id="topic15"></a>Viewing Existing Tablespaces
+<a id="topic15"></a>
+
+## Viewing Existing Tablespaces
 
 Every WarehousePG cluster has the following default tablespaces.
 
@@ -66,7 +74,7 @@ Every WarehousePG cluster has the following default tablespaces.
 
 These tablespaces use the default system location, the data directory locations created at system initialization.
 
-To see tablespace information, use the `pg_tablespace` catalog table to get the object ID \(OID\) of the tablespace and then use `gp_tablespace_location()` function to display the tablespace directories. This is an example that lists one user-defined tablespace, `myspace`:
+To see tablespace information, use the `pg_tablespace` catalog table to get the object ID (OID) of the tablespace and then use `gp_tablespace_location()` function to display the tablespace directories. This is an example that lists one user-defined tablespace, `myspace`:
 
 ```
 SELECT oid, * FROM pg_tablespace ;
@@ -114,7 +122,9 @@ This is information for a test system that consists of two segment instances and
 (3 rows)
 ```
 
-## <a id="topic16"></a>Dropping Tablespaces
+<a id="topic16"></a>
+
+## Dropping Tablespaces
 
 To drop a tablespace, you must be the tablespace owner or a superuser. You cannot drop a tablespace until all objects in all databases using the tablespace are removed.
 
@@ -122,16 +132,17 @@ The `DROP TABLESPACE` command removes an empty tablespace.
 
 > **Note** You cannot drop a tablespace if it is not empty or if it stores temporary or transaction files.
 
-## <a id="topic11"></a>Moving the Location of Temporary or Transaction Files
+<a id="topic11"></a>
+
+## Moving the Location of Temporary or Transaction Files
 
 You can move temporary or transaction files to a specific tablespace to improve database performance when running queries, creating backups, and to store data more sequentially.
 
 The WarehousePG server configuration parameter `temp_tablespaces` controls the location for both temporary tables and temporary spill files for hash aggregate and hash join queries. Temporary files for purposes such as sorting large data sets are also created in these tablespaces.
 
-`temp_tablespaces` specifies tablespaces in which to create temporary objects \(temp tables and indexes on temp tables\) when a `CREATE` command does not explicitly specify a tablespace.
+`temp_tablespaces` specifies tablespaces in which to create temporary objects (temp tables and indexes on temp tables) when a `CREATE` command does not explicitly specify a tablespace.
 
 Also note the following information about temporary or transaction files:
 
 -   You can dedicate only one tablespace for temporary or transaction files, although you can use the same tablespace to store other types of files.
 -   You cannot drop a tablespace if it used by temporary files.
-

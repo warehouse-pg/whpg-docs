@@ -1,28 +1,32 @@
-# Example of Managing Transaction IDs
+---
+title: Example of Managing Transaction IDs
+
 ---
 
-For WarehousePG, the transaction ID \(XID\) value an incrementing 32-bit \(2<sup>32</sup>\) value. The maximum unsigned 32-bit value is 4,294,967,295, or about four billion. The XID values restart at 3 after the maximum is reached. WarehousePG handles the limit of XID values with two features:
+For WarehousePG, the transaction ID (XID) value an incrementing 32-bit (2<sup>32</sup>) value. The maximum unsigned 32-bit value is 4,294,967,295, or about four billion. The XID values restart at 3 after the maximum is reached. WarehousePG handles the limit of XID values with two features:
 
 -   Calculations on XID values using modulo-2<sup>32</sup> arithmetic that allow WarehousePG to reuse XID values. The modulo calculations determine the order of transactions, whether one transaction has occurred before or after another, based on the XID.
 
-    Every XID value can have up to two billion \(2<sup>31</sup>\) XID values that are considered previous transactions and two billion \(231 -1 \) XID values that are considered newer transactions. The XID values can be considered a circular set of values with no endpoint similar to a 24 hour clock.
+    Every XID value can have up to two billion (2<sup>31</sup>) XID values that are considered previous transactions and two billion (231 -1 ) XID values that are considered newer transactions. The XID values can be considered a circular set of values with no endpoint similar to a 24 hour clock.
 
     Using the WarehousePG modulo calculations, as long as two XIDs are within 2<sup>31</sup> transactions of each other, comparing them yields the correct result.
 
--   A frozen XID value that WarehousePG uses as the XID for current \(visible\) data rows. Setting a row's XID to the frozen XID performs two functions.
+-   A frozen XID value that WarehousePG uses as the XID for current (visible) data rows. Setting a row's XID to the frozen XID performs two functions.
     -   When WarehousePG compares XIDs using the modulo calculations, the frozen XID is always smaller, earlier, when compared to any other XID. If a row's XID is not set to the frozen XID and 2<sup>31</sup> new transactions are run, the row appears to be run in the future based on the modulo calculation.
-    -   When the row's XID is set to the frozen XID, the original XID can be used, without duplicating the XID. This keeps the number of data rows on disk with assigned XIDs below \(2<sup>32</sup>\).
+    -   When the row's XID is set to the frozen XID, the original XID can be used, without duplicating the XID. This keeps the number of data rows on disk with assigned XIDs below (2<sup>32</sup>).
 
 > **Note** WarehousePG assigns XID values only to transactions that involve DDL or DML operations, which are typically the only transactions that require an XID.
 
-**Parent topic:** [About Concurrency Control in WarehousePG](../intro/about_mvcc.html)
+**Parent topic:** [About Concurrency Control in WarehousePG](index.md)
 
-## <a id="topic_zsw_yck_wv"></a>Simple MVCC Example
+<a id="topic_zsw_yck_wv"></a>
+
+## Simple MVCC Example
 
 This is a simple example of the concepts of a MVCC database and how it manages data and transactions with transaction IDs. This simple MVCC database example consists of a single table:
 
 -   The table is a simple table with 2 columns and 4 rows of data.
--   The valid transaction ID \(XID\) values are from 0 up to 9, after 9 the XID restarts at 0.
+-   The valid transaction ID (XID) values are from 0 up to 9, after 9 the XID restarts at 0.
 -   The frozen XID is -2. This is different than the WarehousePG frozen XID.
 -   Transactions are performed on a single row.
 -   Only insert and update operations are performed.
@@ -34,18 +38,20 @@ The example shows these concepts.
 
 -   [How transaction IDs are used to manage multiple, simultaneous transactions on a table.](#transactions)
 -   [How transaction IDs are managed with the frozen XID](#managin_xid)
--   [How the modulo calculation determines the order of transactions based on transaction IDs](#table_itw_yck_wv)
+-   [How the modulo calculation determines the order of transactions based on transaction IDs](#example-of-xid-modulo-calculations)
 
-### <a id="transactions"></a>Managing Simultaneous Transactions
+<a id="transactions"></a>
 
-This table is the initial table data on disk with no updates. The table contains two database columns for transaction IDs, `xmin` \(transaction that created the row\) and `xmax` \(transaction that updated the row\). In the table, changes are added, in order, to the bottom of the table.
+### Managing Simultaneous Transactions
 
-|item|amount|xmin|xmax|
-|----|------|----|----|
-|widget|100|0|null|
-|giblet|200|1|null|
-|sprocket|300|2|null|
-|gizmo|400|3|null|
+This table is the initial table data on disk with no updates. The table contains two database columns for transaction IDs, `xmin` (transaction that created the row) and `xmax` (transaction that updated the row). In the table, changes are added, in order, to the bottom of the table.
+
+| item     | amount | xmin | xmax |
+| -------- | ------ | ---- | ---- |
+| widget   | 100    | 0    | null |
+| giblet   | 200    | 1    | null |
+| sprocket | 300    | 2    | null |
+| gizmo    | 400    | 3    | null |
 
 The next table shows the table data on disk after some updates on the amount values have been performed.
 
@@ -55,24 +61,26 @@ The next table shows the table data on disk after some updates on the amount val
 
 In the next table, the bold items are the current rows for the table. The other rows are obsolete rows, table data that on disk but is no longer current. Using the xmax value, you can determine the current rows of the table by selecting the rows with `null` value. WarehousePG uses a slightly different method to determine current table rows.
 
-|item|amount|xmin|xmax|
-|----|------|----|----|
-|widget|100|0|4|
-|**giblet**|**200**|1|**null**|
-|sprocket|300|2|5|
-|**gizmo**|**400**|3|**null**|
-|widget|208|4|6|
-|**sprocket**|**133**|5|**null**|
-|**widget**|**16**|6|**null**|
+| item         | amount  | xmin | xmax     |
+| ------------ | ------- | ---- | -------- |
+| widget       | 100     | 0    | 4        |
+| **giblet**   | **200** | 1    | **null** |
+| sprocket     | 300     | 2    | 5        |
+| **gizmo**    | **400** | 3    | **null** |
+| widget       | 208     | 4    | 6        |
+| **sprocket** | **133** | 5    | **null** |
+| **widget**   | **16**  | 6    | **null** |
 
 The simple MVCC database works with XID values to determine the state of the table. For example, both these independent transactions run concurrently.
 
--   `UPDATE` command changes the sprocket amount value to `133` \(xmin value `5`\)
+-   `UPDATE` command changes the sprocket amount value to `133` (xmin value `5`)
 -   `SELECT` command returns the value of sprocket.
 
 During the `UPDATE` transaction, the database returns the value of sprocket `300`, until the `UPDATE` transaction completes.
 
-### <a id="managin_xid"></a>Managing XIDs and the Frozen XID
+<a id="managin_xid"></a>
+
+### Managing XIDs and the Frozen XID
 
 For this simple example, the database is close to running out of available XID values. When WarehousePG is close to running out of available XID values, WarehousePG takes these actions.
 
@@ -88,7 +96,6 @@ For this simple example, the database is close to running out of available XID v
     FATAL: database is not accepting commands to avoid wraparound data loss in database "<database_name>" 
     ```
 
-
 To manage transaction IDs and table data that is stored on disk, WarehousePG provides the `VACUUM` command.
 
 -   A `VACUUM` operation frees up XID values so that a table can have more than 10 rows by changing the xmin values to the frozen XID.
@@ -99,47 +106,47 @@ For the example table, a `VACUUM` operation has been performed on the table. The
 -   For the widget and sprocket rows on disk that are no longer current, the rows have been marked as `obsolete`.
 -   For the giblet and gizmo rows that are current, the xmin has been changed to the frozen XID.
 
-    The values are still current table values \(the row's xmax value is `null`\). However, the table row is visible to all transactions because the xmin value is frozen XID value that is older than all other XID values when modulo calculations are performed.
-
+    The values are still current table values (the row's xmax value is `null`). However, the table row is visible to all transactions because the xmin value is frozen XID value that is older than all other XID values when modulo calculations are performed.
 
 After the `VACUUM` operation, the XID values `0`, `1`, `2`, and `3` available for use.
 
-|item|amount|xmin|xmax|
-|----|------|----|----|
-|widget|100|obsolete|obsolete|
-|**giblet**|**200**|-2|**null**|
-|sprocket|300|obsolete|obsolete|
-|**gizmo**|**400**|-2|**null**|
-|widget|208|4|6|
-|**sprocket**|**133**|5|**null**|
-|**widget**|**16**|6|**null**|
+| item         | amount  | xmin     | xmax     |
+| ------------ | ------- | -------- | -------- |
+| widget       | 100     | obsolete | obsolete |
+| **giblet**   | **200** | -2       | **null** |
+| sprocket     | 300     | obsolete | obsolete |
+| **gizmo**    | **400** | -2       | **null** |
+| widget       | 208     | 4        | 6        |
+| **sprocket** | **133** | 5        | **null** |
+| **widget**   | **16**  | 6        | **null** |
 
 When a row disk with the xmin value of `-2` is updated, the xmax value is replaced with the transaction XID as usual, and the row on disk is considered obsolete after any concurrent transactions that access the row have completed.
 
 Obsolete rows can be deleted from disk. For WarehousePG, the `VACUUM` command, with `FULL` option, does more extensive processing to reclaim disk space.
 
-### <a id="modulo_calc"></a>Example of XID Modulo Calculations
+<a id="modulo_calc"></a>
+
+### Example of XID Modulo Calculations
 
 The next table shows the table data on disk after more `UPDATE` transactions. The XID values have rolled over and start over at `0`. No additional `VACUUM` operations have been performed.
 
-|item|amount|xmin|xmax|
-|----|------|----|----|
-|widget|100|obsolete|obsolete|
-|giblet|200|-2|1|
-|sprocket|300|obsolete|obsolete|
-|gizmo|400|-2|9|
-|widget|208|4|6|
-|**sprocket**|**133**|5|**null**|
-|widget|16|6|7|
-|**widget**|**222**|7|**null**|
-|giblet|233|8|0|
-|**gizmo**|**18**|9|**null**|
-|giblet|88|0|1|
-|**giblet**|**44**|1|**null**|
+| item         | amount  | xmin     | xmax     |
+| ------------ | ------- | -------- | -------- |
+| widget       | 100     | obsolete | obsolete |
+| giblet       | 200     | -2       | 1        |
+| sprocket     | 300     | obsolete | obsolete |
+| gizmo        | 400     | -2       | 9        |
+| widget       | 208     | 4        | 6        |
+| **sprocket** | **133** | 5        | **null** |
+| widget       | 16      | 6        | 7        |
+| **widget**   | **222** | 7        | **null** |
+| giblet       | 233     | 8        | 0        |
+| **gizmo**    | **18**  | 9        | **null** |
+| giblet       | 88      | 0        | 1        |
+| **giblet**   | **44**  | 1        | **null** |
 
 When performing the modulo calculations that compare XIDs, WarehousePG, considers the XIDs of the rows and the current range of available XIDs to determine if XID wrapping has occurred between row XIDs.
 
 For the example table XID wrapping has occurred. The XID `1` for giblet row is a later transaction than the XID `7` for widget row based on the modulo calculations for XID values even though the XID value `7` is larger than `1`.
 
 For the widget and sprocket rows, XID wrapping has not occurred and XID `7` is a later transaction than XID `5`.
-

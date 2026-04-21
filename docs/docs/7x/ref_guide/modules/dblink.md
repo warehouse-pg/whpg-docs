@@ -1,4 +1,7 @@
-# dblink 
+---
+title: dblink
+
+---
 
 The `dblink` module supports connections to other WarehousePG databases from within a database session. These databases can reside in the same WarehousePG cluster, or in a remote system.
 
@@ -8,11 +11,15 @@ WarehousePG supports `dblink` connections between databases in WarehousePG insta
 
 The WarehousePG `dblink` module is a modified version of the PostgreSQL `dblink` module. There are some restrictions and limitations when you use the module in WarehousePG.
 
-## <a id="topic_reg"></a>Installing and Registering the Module 
+<a id="topic_reg"></a>
 
-The `dblink` module is installed when you install WarehousePG. Before you can use any of the functions defined in the module, you must register the `dblink` extension in each database in which you want to use the functions. Refer to [Installing Extensions](../../install_guide/install_extensions.html) for more information.
+## Installing and Registering the Module
 
-## <a id="topic_mpp"></a>WarehousePG Considerations 
+The `dblink` module is installed when you install WarehousePG. Before you can use any of the functions defined in the module, you must register the `dblink` extension in each database in which you want to use the functions. Refer to [Installing Extensions](../../install_guide/install_extensions.md) for more information.
+
+<a id="topic_mpp"></a>
+
+## WarehousePG Considerations
 
 In this release of WarehousePG, statements that modify table data cannot use named or implicit `dblink` connections. Instead, you must provide the connection string directly in the `dblink()` function. For example:
 
@@ -29,7 +36,9 @@ The WarehousePG version of `dblink` deactivates the following asynchronous funct
 -   `dblink_is_busy()`
 -   `dblink_get_result()`
 
-## <a id="topic_using"></a>Using dblink 
+<a id="topic_using"></a>
+
+## Using dblink
 
 The following procedure identifies the basic steps for configuring and using `dblink` in WarehousePG. The examples use `dblink_connect()` to create a connection to a database and `dblink()` to run an SQL query.
 
@@ -39,7 +48,7 @@ The following procedure identifies the basic steps for configuring and using `db
     $ psql -d postgres
     psql (9.4.20)
     Type "help" for help.
-    
+
     postgres=# CREATE TABLE testdblink (a int, b text) DISTRIBUTED BY (a);
     CREATE TABLE
     postgres=# INSERT INTO testdblink VALUES (1, 'Cheese'), (2, 'Fish');
@@ -54,7 +63,7 @@ The following procedure identifies the basic steps for configuring and using `db
     $ psql -d testdb
     psql (9.4beta1)
     Type "help" for help.
-    
+
     testdb=# CREATE EXTENSION dblink;
     CREATE EXTENSION
     ```
@@ -82,7 +91,6 @@ The following procedure identifies the basic steps for configuring and using `db
     (2 rows)
     ```
 
-
 To connect to the local database as another user, specify the `user` in the connection string. This example connects to the database as the user `test_user`. Using `dblink_connect()`, a superuser can create a connection to another local database without specifying a password.
 
 ```
@@ -95,7 +103,9 @@ To make a connection to a remote database system, include host and password info
 testdb=# SELECT dblink_connect('host=remotehost port=5432 dbname=postgres user=gpadmin password=secret');
 ```
 
-### <a id="dblink_u"></a>Using dblink as a Non-Superuser 
+<a id="dblink_u"></a>
+
+### Using dblink as a Non-Superuser
 
 To make a connection to a database with `dblink_connect()`, non-superusers must include host, user, and password information in the connection string. The host, user, and password information must be included even when connecting to a local database. For example, the user `test_user` can create a `dblink` connection to the local system `cdw` with this command:
 
@@ -132,8 +142,9 @@ Also, even if the `dblink` connection requires a password, it is possible for th
     testdb=> SELECT * FROM dblink('testconn', 'SELECT * FROM testdblink') AS dbltab(id int, product text);
     ```
 
+<a id="dblink_ssl"></a>
 
-### <a id="dblink_ssl"></a>Using dblink with SSL-Encrypted Connections to WarehousePG 
+### Using dblink with SSL-Encrypted Connections to WarehousePG
 
 When you use `dblink` to connect to WarehousePG over an encrypted connection, you must specify the `sslmode` property in the connection string. Set `sslmode` to at least `require` to disallow unencrypted transfers. For example:
 
@@ -141,9 +152,10 @@ When you use `dblink` to connect to WarehousePG over an encrypted connection, yo
 testdb=# SELECT dblink_connect('greenplum_con_sales', 'dbname=sales host=gpcoordinator user=gpadmin sslmode=require');
 ```
 
-Refer to [SSL Client Authentication](../../security_guide/authentication.html#ssl_postgresql) for information about configuring WarehousePG to use SSL.
+Refer to [SSL Client Authentication](../../security_guide/authentication.md#ssl_postgresql) for information about configuring WarehousePG to use SSL.
 
-## <a id="topic_info"></a>Additional Module Documentation 
+<a id="topic_info"></a>
+
+## Additional Module Documentation
 
 Refer to the [dblink](https://www.postgresql.org/docs/12/dblink.html) PostgreSQL documentation for detailed information about the individual functions in this module.
-

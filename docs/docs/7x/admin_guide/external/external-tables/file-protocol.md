@@ -1,9 +1,11 @@
-# file:// Protocol
+---
+title: file:// Protocol
+
 ---
 
 The `file://` protocol is used in a URI that specifies the location of an operating system file. External tables that you create that specify the `file://` protocol are read-only tables.
 
-The URI includes the host name, port, and path to the file. Each file must reside on a segment host in a location accessible by the WarehousePG superuser \(`gpadmin`\). The host name used in the URI must match a segment host name registered in the `gp_segment_configuration` system catalog table.
+The URI includes the host name, port, and path to the file. Each file must reside on a segment host in a location accessible by the WarehousePG superuser (`gpadmin`). The host name used in the URI must match a segment host name registered in the `gp_segment_configuration` system catalog table.
 
 The `LOCATION` clause can have multiple URIs, as shown in this example:
 
@@ -24,5 +26,4 @@ The system view `pg_max_external_files` shows how many external table files are 
 SELECT * FROM pg_max_external_files;
 ```
 
-**Parent topic:** [Defining External Tables](../external/external-tables.html)
-
+**Parent topic:** [Defining External Tables](index.md)

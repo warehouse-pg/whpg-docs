@@ -1,10 +1,17 @@
-# ALTER DEFAULT PRIVILEGES 
+---
+title: ALTER DEFAULT PRIVILEGES
+
+---
 
 Changes default access privileges.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 
 ALTER DEFAULT PRIVILEGES
     [ FOR { ROLE | USER } <target_role> [, ...] ]
@@ -69,36 +76,44 @@ REVOKE [ GRANT OPTION FOR ]
 
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`ALTER DEFAULT PRIVILEGES` allows you to set the privileges that will be applied to objects created in the future. \(It does not affect privileges assigned to already-existing objects.\) Currently, only the privileges for schemas, tables \(including views and foreign tables\), sequences, functions, and types \(including domains\) can be altered. For this command, functions include aggregates and procedures. The words `FUNCTIONS` and `ROUTINES` are equivalent in this command. \(`ROUTINES` is preferred going forward as the standard term for functions and procedures taken together. In earlier WarehousePG releases, only the word `FUNCTIONS` was allowed. It is not possible to set default privileges for functions and procedures separately.\)
+## Description
 
-You can change default privileges only for objects that will be created by yourself or by roles that you are a member of. The privileges can be set globally \(i.e., for all objects created in the current database\), or just for objects created in specified schemas.
+`ALTER DEFAULT PRIVILEGES` allows you to set the privileges that will be applied to objects created in the future. (It does not affect privileges assigned to already-existing objects.) Currently, only the privileges for schemas, tables (including views and foreign tables), sequences, functions, and types (including domains) can be altered. For this command, functions include aggregates and procedures. The words `FUNCTIONS` and `ROUTINES` are equivalent in this command. (`ROUTINES` is preferred going forward as the standard term for functions and procedures taken together. In earlier WarehousePG releases, only the word `FUNCTIONS` was allowed. It is not possible to set default privileges for functions and procedures separately.)
 
-As explained under [GRANT](GRANT.html), the default privileges for any object type normally grant all grantable permissions to the object owner, and may grant some privileges to `PUBLIC` as well. However, this behavior can be changed by altering the global default privileges with `ALTER DEFAULT PRIVILEGES`.
+You can change default privileges only for objects that will be created by yourself or by roles that you are a member of. The privileges can be set globally (i.e., for all objects created in the current database), or just for objects created in specified schemas.
 
-Default privileges that are specified per-schema are added to whatever the global default privileges are for the particular object type. This means you cannot revoke privileges per-schema if they are granted globally \(either by default, or according to a previous `ALTER DEFAULT PRIVILEGES` command that did not specify a schema\). Per-schema `REVOKE` is only useful to reverse the effects of a previous per-schema `GRANT`.
+As explained under [GRANT](GRANT.md), the default privileges for any object type normally grant all grantable permissions to the object owner, and may grant some privileges to `PUBLIC` as well. However, this behavior can be changed by altering the global default privileges with `ALTER DEFAULT PRIVILEGES`.
 
-## <a id="parms"></a>Parameters 
+Default privileges that are specified per-schema are added to whatever the global default privileges are for the particular object type. This means you cannot revoke privileges per-schema if they are granted globally (either by default, or according to a previous `ALTER DEFAULT PRIVILEGES` command that did not specify a schema). Per-schema `REVOKE` is only useful to reverse the effects of a previous per-schema `GRANT`.
 
-target\_role
+<a id="parms"></a>
+
+## Parameters
+
+target_role
 The name of an existing role of which the current role is a member. If `FOR ROLE` is omitted, the current role is assumed.
 
-schema\_name
+schema_name
 The name of an existing schema. If specified, the default privileges are altered for objects later created in that schema. If `IN SCHEMA` is omitted, the global default privileges are altered. `IN SCHEMA` is not allowed when setting privileges for schemas, since schemas can't be nested.
 
-role\_name
-The name of an existing role to grant or revoke privileges for. This parameter, and all the other parameters in abbreviated\_grant\_or\_revoke, act as described under [GRANT](GRANT.html) or [REVOKE](REVOKE.html), except that one is setting permissions for a whole class of objects rather than specific named objects.
+role_name
+The name of an existing role to grant or revoke privileges for. This parameter, and all the other parameters in abbreviated_grant_or_revoke, act as described under [GRANT](GRANT.md) or [REVOKE](REVOKE.md), except that one is setting permissions for a whole class of objects rather than specific named objects.
 
-## <a id="sql-alterdefaultprivileges-notes"></a>Notes 
+<a id="sql-alterdefaultprivileges-notes"></a>
 
-Use [psql](../../utility_guide/ref/psql.html)'s `\ddp` command to obtain information about existing assignments of default privileges. The meaning of the privilege values is the same as explained for `\dp` under [GRANT](GRANT.html).
+## Notes
+
+Use [psql](../utility_guide/reference/psql.md)'s `\ddp` command to obtain information about existing assignments of default privileges. The meaning of the privilege values is the same as explained for `\dp` under [GRANT](GRANT.md).
 
 If you wish to drop a role for which the default privileges have been altered, it is necessary to reverse the changes in its default privileges or use `DROP OWNED BY` to get rid of the default privileges entry for the role.
 
-## <a id="sql-alterdefaultprivileges-examples"></a>Examples 
+<a id="sql-alterdefaultprivileges-examples"></a>
 
-Grant SELECT privilege to everyone for all tables \(and views\) you subsequently create in schema `myschema`, and allow role `webuser` to INSERT into them too:
+## Examples
+
+Grant SELECT privilege to everyone for all tables (and views) you subsequently create in schema `myschema`, and allow role `webuser` to INSERT into them too:
 
 ```
 ALTER DEFAULT PRIVILEGES IN SCHEMA myschema GRANT SELECT ON TABLES TO PUBLIC;
@@ -126,13 +141,16 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE EXECUTE ON FUNCTIONS FROM PUBLI
 
 That's because per-schema default privileges can only add privileges to the global setting, not remove privileges granted by it.
 
-## <a id="compat"></a>Compatibility 
+<a id="compat"></a>
+
+## Compatibility
 
 There is no `ALTER DEFAULT PRIVILEGES` statement in the SQL standard.
 
-## <a id="see-also"></a>See Also 
+<a id="see-also"></a>
 
-[GRANT](GRANT.html), [REVOKE](REVOKE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[GRANT](GRANT.md), [REVOKE](REVOKE.md)
 
+**Parent topic:** [SQL Commands](index.md)

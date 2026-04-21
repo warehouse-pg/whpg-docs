@@ -1,31 +1,35 @@
-# About WarehousePG Query Processing
+---
+title: About WarehousePG Query Processing
+
 ---
 
 This topic provides an overview of how WarehousePG processes queries. Understanding this process can be useful when writing and tuning queries.
 
 Users issue queries to WarehousePG as they would to any database management system. They connect to the database instance on the WarehousePG coordinator host using a client application such as `psql` and submit SQL statements.
 
-**Parent topic:** [SQL: Querying Data](../../query/topics/query.html)
+**Parent topic:** [Querying Data](index.md)
 
-## <a id="topic2"></a>Understanding Query Planning and Dispatch
+<a id="topic2"></a>
+
+## Understanding Query Planning and Dispatch
 
 The coordinator receives, parses, and optimizes the query. The resulting query plan is either parallel or targeted. The coordinator dispatches parallel query plans to all data segments. 
 
 ### Dispatched Parallel Query Plan
 
-![Dispatching the Parallel Query Plan](/parallel_dispatch.png "Dispatching the Parallel Query Plan")
+![Dispatching the Parallel Query Plan](../../images/parallel_dispatch.png "Dispatching the Parallel Query Plan")
 
 The coordinator dispatches targeted query plans to a single segment. Each segment is responsible for running local database operations on its own set of data. Most database operations—such as table scans, joins, aggregations, and sorts—run across all segments in parallel. Each operation is performed on a segment database independent of the data stored in the other segment databases.
 
-
 ### Dispatched Targeted Query Plan
 
-![Dispatching a Targeted Query Plan](/targeted_dispatch.png "Dispatching a Targeted Query Plan")
+![Dispatching a Targeted Query Plan](../../images/targeted_dispatch.png "Dispatching a Targeted Query Plan")
 
-Certain queries may access only data on a single segment, such as single-row `INSERT`, `UPDATE`, `DELETE`, or `SELECT` operations or queries that filter on the table distribution key column\(s\). In queries such as these, the query plan is not dispatched to all segments, but is targeted at the segment that contains the affected or relevant row\(s\).
+Certain queries may access only data on a single segment, such as single-row `INSERT`, `UPDATE`, `DELETE`, or `SELECT` operations or queries that filter on the table distribution key column(s). In queries such as these, the query plan is not dispatched to all segments, but is targeted at the segment that contains the affected or relevant row(s).
 
+<a id="topic3"></a>
 
-## <a id="topic3"></a>Understanding WarehousePG Query Plans
+## Understanding WarehousePG Query Plans
 
 A query plan is the set of operations WarehousePG will perform to produce the answer to a query. Each *node* or step in the plan represents a database operation such as a table scan, join, aggregation, or sort. Plans are read and run from bottom to top.
 
@@ -44,15 +48,17 @@ WHERE dateCol = '04-30-2025';
 
 The following figure shows the query plan. Each segment receives a copy of the query plan and works on it in parallel.
 
-![Query Slice Plan](/slice_plan.png "Query Slice Plan")
+![Query Slice Plan](../../images/slice_plan.png "Query Slice Plan")
 
 The query plan for this example has a *redistribute motion* that moves tuples between the segments to complete the join. The redistribute motion is necessary because the customer table is distributed across the segments by `cust_id`, but the sales table is distributed across the segments by `sale_id`. To perform the join, the `sales` tuples must be redistributed by `cust_id`. The plan is sliced on either side of the redistribute motion, creating *slice 1* and *slice 2*.
 
-This query plan has another type of motion operation called a *gather motion*. A gather motion is when the segments send results back up to the coordinator for presentation to the client. Because a query plan is always sliced wherever a motion occurs, this plan also has an implicit slice at the very top of the plan \(*slice 3*\). Not all query plans involve a gather motion. For example, a `CREATE TABLE x AS SELECT...` statement would not have a gather motion because tuples are sent to the newly created table, not to the coordinator.
+This query plan has another type of motion operation called a *gather motion*. A gather motion is when the segments send results back up to the coordinator for presentation to the client. Because a query plan is always sliced wherever a motion occurs, this plan also has an implicit slice at the very top of the plan (*slice 3*). Not all query plans involve a gather motion. For example, a `CREATE TABLE x AS SELECT...` statement would not have a gather motion because tuples are sent to the newly created table, not to the coordinator.
 
-## <a id="topic4"></a>Understanding Parallel Query Execution
+<a id="topic4"></a>
 
-WarehousePG creates a number of database processes to handle the work of a query. On the coordinator, the query worker process is called the *query dispatcher* \(QD\). The QD is responsible for creating and dispatching the query plan. It also accumulates and presents the final results. On the segments, a query worker process is called a *query executor* \(QE\). A QE is responsible for completing its portion of work and communicating its intermediate results to the other worker processes.
+## Understanding Parallel Query Execution
+
+WarehousePG creates a number of database processes to handle the work of a query. On the coordinator, the query worker process is called the *query dispatcher* (QD). The QD is responsible for creating and dispatching the query plan. It also accumulates and presents the final results. On the segments, a query worker process is called a *query executor* (QE). A QE is responsible for completing its portion of work and communicating its intermediate results to the other worker processes.
 
 There is at least one worker process assigned to each *slice* of the query plan. A worker process works on its assigned portion of the query plan independently. During query runtime, each segment will have a number of processes working on the query in parallel.
 
@@ -60,5 +66,4 @@ Related processes that are working on the same slice of the query plan but on di
 
 The following figure shows the query worker processes on the coordinator and two segment instances for previous query plan.
 
-![Query Worker Processes](/gangs.png "Query Worker Processes")
-
+![Query Worker Processes](../../images/gangs.png "Query Worker Processes")

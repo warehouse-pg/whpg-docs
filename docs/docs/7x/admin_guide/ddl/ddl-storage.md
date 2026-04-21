@@ -1,4 +1,6 @@
-# Choosing the Table Storage Model
+---
+title: Choosing the Table Storage Model
+
 ---
 
 WarehousePG supports several storage models and a mix of storage models. When you create a table, you choose how to store its data. This topic explains the options for table storage and how to choose the best storage model for your workload.
@@ -6,7 +8,7 @@ WarehousePG supports several storage models and a mix of storage models. When yo
 -   [Heap Storage](#topic37)
 -   [Append-Optimized Storage](#topic38)
 -   [Choosing Row or Column-Oriented Storage](#topic39)
--   [Using Compression \(Append-Optimized Tables Only\)](#topic40)
+-   [Using Compression (Append-Optimized Tables Only)](#topic40)
 -   [Checking the Compression and Distribution of an Append-Optimized Table](#topic41)
 -   [Altering a Table](#topic55)
 -   [Dropping a Table](#topic62)
@@ -15,17 +17,23 @@ WarehousePG supports several storage models and a mix of storage models. When yo
 
 For information about the parameter, see "Server Configuration Parameters" in the *WarehousePG Reference Guide*.
 
-**Parent topic:** [DDL: Defining Database Objects](../ddl/ddl.html)
+**Parent topic:** [DDL: Defining Database Objects](index.md)
 
-## <a id="topic37"></a>Heap Storage
+<a id="topic37"></a>
+
+## Heap Storage
 
 By default, WarehousePG uses the same heap storage model as PostgreSQL. Heap table storage works best with OLTP-type workloads where the data is often modified after it is initially loaded. `UPDATE` and `DELETE` operations require storing row-level versioning information to ensure reliable database transaction processing. Heap tables are best suited for smaller tables, such as dimension tables, that are often updated after they are initially loaded.
 
-## <a id="topic38"></a>Append-Optimized Storage
+<a id="topic38"></a>
+
+## Append-Optimized Storage
 
 Append-optimized table storage works best with denormalized fact tables in a data warehouse environment. Denormalized fact tables are typically the largest tables in the system. Fact tables are usually loaded in batches and accessed by read-only queries. Moving large fact tables to an append-optimized storage model eliminates the storage overhead of the per-row update visibility information, saving about 20 bytes per row. This allows for a leaner and easier-to-optimize page structure. The storage model of append-optimized tables is optimized for bulk data loading. Single row `INSERT` statements are not recommended.
 
-### <a id="im168504"></a>To create a heap table
+<a id="im168504"></a>
+
+### To create a heap table
 
 Row-oriented heap tables are the default storage type.
 
@@ -45,7 +53,9 @@ Use the `WITH` clause of the `CREATE TABLE` command to declare the table storage
 
 `UPDATE` and `DELETE` are not allowed on append-optimized tables in a repeatable read or serizalizable transaction and will cause the transaction to end prematurely. `DECLARE...FOR UPDATE` and triggers are not supported with append-optimized tables.  `CLUSTER` on append-optimized tables is only supported over B-tree indexes.
 
-## <a id="topic39"></a>Choosing Row or Column-Oriented Storage
+<a id="topic39"></a>
+
+## Choosing Row or Column-Oriented Storage
 
 WarehousePG provides a choice of storage orientation models: row, column, or a combination of both. This topic provides general guidelines for choosing the optimum storage orientation for a table. Evaluate performance using your own data and query workloads.
 
@@ -59,6 +69,7 @@ For most general purpose or mixed workloads, row-oriented storage offers the bes
     See [Heap Storage](#topic37) for more information.
 
 -   **Frequent INSERTs.** If rows are frequently inserted into the table, consider a row-oriented model. Column-oriented tables are not optimized for write operations, as column values for a row must be written to different places on disk.
+
 -   **Number of columns requested in queries.** If you typically request all or the majority of columns in the `SELECT` list or `WHERE` clause of your queries, consider a row-oriented model. Column-oriented tables are best suited to queries that aggregate many values of a single column where the `WHERE` or `HAVING` predicate is also on the aggregate column. For example:
 
     ```
@@ -76,9 +87,12 @@ For most general purpose or mixed workloads, row-oriented storage offers the bes
     ```
 
 -   **Number of columns in the table.** Row-oriented storage is more efficient when many columns are required at the same time, or when the row-size of a table is relatively small. Column-oriented tables can offer better query performance on tables with many columns where you access a small subset of columns in your queries.
+
 -   **Compression.** Column data has the same data type, so storage size optimizations are available in column-oriented data that are not available in row-oriented data. For example, many compression schemes use the similarity of adjacent data to compress. However, the greater adjacent compression achieved, the more difficult random access can become, as data must be uncompressed to be read.
 
-### <a id="im169305"></a>To create a column-oriented table
+<a id="im169305"></a>
+
+### To create a column-oriented table
 
 The `WITH` clause of the `CREATE TABLE` command specifies the table's storage options. The default is a row-orientedheap table. Tables that use column-oriented storage must be append-optimized tables. For example, to create a column-oriented table:
 
@@ -89,7 +103,9 @@ The `WITH` clause of the `CREATE TABLE` command specifies the table's storage op
 
 ```
 
-## <a id="topic40"></a>Using Compression \(Append-Optimized Tables Only\)
+<a id="topic40"></a>
+
+## Using Compression (Append-Optimized Tables Only)
 
 There are two types of in-database compression available in the WarehousePG for append-optimized tables:
 
@@ -98,10 +114,10 @@ There are two types of in-database compression available in the WarehousePG for 
 
 The following table summarizes the available compression algorithms.
 
-|Table Orientation|Available Compression Types|Supported Algorithms|
-|-----------------|---------------------------|--------------------|
-|Row|Table|`ZLIB` and `ZSTD`|
-|Column|Column and Table|`RLE_TYPE`, `ZLIB`, and `ZSTD`|
+| Table Orientation | Available Compression Types | Supported Algorithms           |
+| ----------------- | --------------------------- | ------------------------------ |
+| Row               | Table                       | `ZLIB` and `ZSTD`              |
+| Column            | Column and Table            | `RLE_TYPE`, `ZLIB`, and `ZSTD` |
 
 When choosing a compression type and level for append-optimized tables, consider these factors:
 
@@ -112,14 +128,15 @@ When choosing a compression type and level for append-optimized tables, consider
 
     > **Note** Do not create compressed append-optimized tables on file systems that use compression. If the file system on which your segment data directory resides is a compressed file system, your append-optimized table must not use compression.
 
-
 Performance with compressed append-optimized tables depends on hardware, query tuning settings, and other factors. You should perform comparison testing to determine the actual performance in your environment.
 
 > **Note** `ZTSD` compression level can be set to values between 1 and 19. Compression level with `ZLIB` can be set to values from 1 - 9. Compression level with `RLE` can be set to values from 1 - 4.
 
 An `ENCODING` clause specifies compression type and level for individual columns. When an `ENCODING` clause conflicts with a `WITH` clause, the `ENCODING` clause has higher precedence than the `WITH` clause.
 
-### <a id="im159764"></a>To create a compressed table
+<a id="im159764"></a>
+
+### To create a compressed table
 
 The `WITH` clause of the `CREATE TABLE` command declares the table storage options. Tables that use compression must be append-optimized tables. For example, to create an append-optimized table with zlib compression at a compression level of 5:
 
@@ -129,11 +146,13 @@ The `WITH` clause of the `CREATE TABLE` command declares the table storage optio
 
 ```
 
-## <a id="topic41"></a>Checking the Compression and Distribution of an Append-Optimized Table
+<a id="topic41"></a>
+
+## Checking the Compression and Distribution of an Append-Optimized Table
 
 WarehousePG provides built-in functions to check the compression ratio and the distribution of an append-optimized table. The functions take either the object ID or a table name. You can qualify the table name with a schema name.
 
-<table class="table" id="topic41__im161827"><caption><span class="table--title-label">Table 2. </span><span class="title">Functions for compressed append-optimized table metadata</span></caption><colgroup><col style="width:183pt"><col style="width:98pt"><col style="width:169pt"></colgroup><thead class="thead">
+<table class="table" id="topic41__im161827"><caption><span class="table--title-label">Table 2. </span><span class="title">Functions for compressed append-optimized table metadata</span></caption><colgroup><col style="width:183pt" /><col style="width:98pt" /><col style="width:169pt" /></colgroup><thead class="thead">
             <tr class="row">
               <th class="entry" id="topic41__im161827__entry__1">Function</th>
               <th class="entry" id="topic41__im161827__entry__2">Return Type</th>
@@ -172,9 +191,11 @@ The distribution of the table is returned as a set of rows that indicate how man
 
 ```
 
-## <a id="topic42"></a>Support for Run-length Encoding
+<a id="topic42"></a>
 
-WarehousePG supports Run-length Encoding \(RLE\) for column-level compression. RLE data compression stores repeated data as a single data value and a count. For example, in a table with two columns, a date and a description, that contains 200,000 entries containing the value `date1` and 400,000 entries containing the value `date2`, RLE compression for the date field is similar to `date1 200000 date2 400000`. RLE is not useful with files that do not have large sets of repeated data as it can greatly increase the file size.
+## Support for Run-length Encoding
+
+WarehousePG supports Run-length Encoding (RLE) for column-level compression. RLE data compression stores repeated data as a single data value and a count. For example, in a table with two columns, a date and a description, that contains 200,000 entries containing the value `date1` and 400,000 entries containing the value `date2`, RLE compression for the date field is similar to `date1 200000 date2 400000`. RLE is not useful with files that do not have large sets of repeated data as it can greatly increase the file size.
 
 There are four levels of RLE compression available. The levels progressively increase the compression ratio, but decrease the compression speed.
 
@@ -182,7 +203,9 @@ WarehousePG versions 4.2.1 and later support column-oriented RLE compression. To
 
 WarehousePG combines delta compression with RLE compression for data in columns of type `BIGINT`, `INTEGER`, `DATE`, `TIME`, or `TIMESTAMP`. The delta compression algorithm is based on the change between consecutive column values and is designed to improve compression when data is loaded in sorted order or when the compression is applied to data in sorted order.
 
-## <a id="topic43"></a>Adding Column-level Compression
+<a id="topic43"></a>
+
+## Adding Column-level Compression
 
 You can add the following storage parameters to a column for append-optimized tables with column orientation:
 
@@ -194,7 +217,7 @@ Add storage parameters using the `CREATE TABLE`, `ALTER TABLE`, and `CREATE TYPE
 
 The following table details the types of storage parameters and possible values for each.
 
-<table class="table" id="topic43__im198636"><caption><span class="table--title-label">Table 3. </span><span class="title">Storage Parameters for Column-level Compression</span></caption><colgroup><col style="width:87pt"><col style="width:95pt"><col style="width:147pt"><col style="width:167.25pt"></colgroup><thead class="thead">
+<table class="table" id="topic43__im198636"><caption><span class="table--title-label">Table 3. </span><span class="title">Storage Parameters for Column-level Compression</span></caption><colgroup><col style="width:87pt" /><col style="width:95pt" /><col style="width:147pt" /><col style="width:167.25pt" /></colgroup><thead class="thead">
             <tr class="row">
               <th class="entry" id="topic43__im198636__entry__1">Name</th>
               <th class="entry" id="topic43__im198636__entry__2">Definition</th>
@@ -300,11 +323,15 @@ DEFAULT COLUMN ENCODING (compresstype=zlib)
 
 ```
 
-### <a id="topic44"></a>Default Compression Values
+<a id="topic44"></a>
+
+### Default Compression Values
 
 If the compression type, compression level and block size are not defined, the default is no compression, and the block size is set to the Server Configuration Parameter `block_size`.
 
-### <a id="topic45"></a>Precedence of Compression Settings
+<a id="topic45"></a>
+
+### Precedence of Compression Settings
 
 Column compression settings are inherited from the type level to the table level to the partition level to the sub-partition level. The lowest-level settings have priority.
 
@@ -318,15 +345,21 @@ Column compression settings are inherited from the type level to the table level
 
 Tables created using the `LIKE` clause ignore storage parameter and column reference storage parameters.
 
-### <a id="topic46"></a>Optimal Location for Column Compression Settings
+<a id="topic46"></a>
+
+### Optimal Location for Column Compression Settings
 
 The best practice is to set the column compression settings at the level where the data resides. See [Example 5](#topic52), which shows a table with a partition depth of 2. `RLE_TYPE` compression is added to a column at the sub-partition level.
 
-### <a id="topic47"></a>Storage Parameters Examples
+<a id="topic47"></a>
+
+### Storage Parameters Examples
 
 The following examples show the use of storage parameters in `CREATE TABLE` statements.
 
-#### <a id="topic48"></a>Example 1
+<a id="topic48"></a>
+
+#### Example 1
 
 In this example, column `c1` is compressed using `zstd` and uses the block size defined by the system. Column `c2` is compressed with `zlib`, and uses a block size of `65536`. Column `c3` is not compressed and uses the block size defined by the system.
 
@@ -336,7 +369,9 @@ CREATE TABLE T1 (c1 int ENCODING (compresstype=zstd),
                   c3 char)    WITH (appendoptimized=true, orientation=column);
 ```
 
-#### <a id="topic49"></a>Example 2
+<a id="topic49"></a>
+
+#### Example 2
 
 In this example, column `c1` is compressed using `zlib` and uses the block size defined by the system. Column `c2` is compressed with `zstd`, and uses a block size of `65536`. Column `c3` is compressed using `RLE_TYPE` and uses the block size defined by the system.
 
@@ -349,9 +384,11 @@ CREATE TABLE T2 (c1 int ENCODING (compresstype=zlib),
     WITH (appendoptimized=true, orientation=column);
 ```
 
-#### <a id="topic50"></a>Example 3
+<a id="topic50"></a>
 
-In this example, column `c1` is compressed using `zlib` and uses the block size defined by the system. Column `c2` is compressed with `zstd`, and uses a block size of `65536`. Column `c3` is compressed using `zlib` and uses the block size defined by the system. Note that column `c3` uses `zlib` \(not `RLE_TYPE`\) in the partitions, because the column storage in the partition clause has precedence over the storage parameter in the column definition for the table.
+#### Example 3
+
+In this example, column `c1` is compressed using `zlib` and uses the block size defined by the system. Column `c2` is compressed with `zstd`, and uses a block size of `65536`. Column `c3` is compressed using `zlib` and uses the block size defined by the system. Note that column `c3` uses `zlib` (not `RLE_TYPE`) in the partitions, because the column storage in the partition clause has precedence over the storage parameter in the column definition for the table.
 
 ```
 CREATE TABLE T3 (c1 int ENCODING (compresstype=zlib),
@@ -363,9 +400,11 @@ CREATE TABLE T3 (c1 int ENCODING (compresstype=zlib),
                              COLUMN c3 ENCODING (compresstype=zlib));
 ```
 
-#### <a id="topic51"></a>Example 4
+<a id="topic51"></a>
 
-In this example, `CREATE TABLE` assigns the `zlib` `compresstype` storage parameter to `c1`. Column `c2` has no storage parameter and inherits the compression type \(`zstd`\) and block size \(`65536`\) from the `DEFAULT COLUMN ENCODING` clause.
+#### Example 4
+
+In this example, `CREATE TABLE` assigns the `zlib` `compresstype` storage parameter to `c1`. Column `c2` has no storage parameter and inherits the compression type (`zstd`) and block size (`65536`) from the `DEFAULT COLUMN ENCODING` clause.
 
 Column `c3`'s `ENCODING` clause defines its compression type, `RLE_TYPE`. The `ENCODING` clause defined for a specific column overrides the `DEFAULT ENCODING` clause, so column `c3` uses the default block size, `32768`.
 
@@ -383,7 +422,9 @@ CREATE TABLE T4 (c1 int ENCODING (compresstype=zlib),
    WITH (appendoptimized=true, orientation=column);
 ```
 
-#### <a id="topic52"></a>Example 5
+<a id="topic52"></a>
+
+#### Example 5
 
 This example creates an append-optimized, column-oriented table, T5. T5 has two partitions, `p1` and `p2`, each of which has sub-partitions. Each sub-partition has `ENCODING` clauses:
 
@@ -407,10 +448,11 @@ This example creates an append-optimized, column-oriented table, T5. T5 has two 
         );
     ```
 
-
 For an example showing how to add a compressed column to an existing table with the `ALTER TABLE` command, see [Adding a Compressed Column to Table](#topic60).
 
-### <a id="topic53"></a>Adding Compression in a TYPE Command
+<a id="topic53"></a>
+
+### Adding Compression in a TYPE Command
 
 When you create a new type, you can define default compression attributes for the type. For example, the following `CREATE TYPE` command defines a type named `int33` that specifies `zlib` compression.
 
@@ -446,30 +488,38 @@ CREATE TABLE t2 (c1 int33)
     WITH (appendoptimized=true, orientation=column);
 ```
 
-Table- or column- level storage attributes that you specify in a table definition override type-level storage attributes. For information about creating and adding compression attributes to a type, see [CREATE TYPE](../../ref_guide/sql_commands/CREATE_TYPE.html). For information about changing compression specifications in a type, see [ALTER TYPE](../../ref_guide/sql_commands/ALTER_TYPE.html).
+Table- or column- level storage attributes that you specify in a table definition override type-level storage attributes. For information about creating and adding compression attributes to a type, see [CREATE TYPE](../../ref_guide/sql_commands/CREATE_TYPE.md). For information about changing compression specifications in a type, see [ALTER TYPE](../../ref_guide/sql_commands/ALTER_TYPE.md).
 
-#### <a id="topic54"></a>Choosing Block Size
+<a id="topic54"></a>
+
+#### Choosing Block Size
 
 The blocksize is the size, in bytes, for each block in a table. Block sizes must be between 8192 and 2097152 bytes, and be a multiple of 8192. The default is 32768.
 
 Specifying large block sizes can consume large amounts of memory. Block size determines buffering in the storage layer. WarehousePG maintains a buffer per partition, and per column in column-oriented tables. Tables with many partitions or columns consume large amounts of memory.
 
-## <a id="topic55"></a>Altering a Table
+<a id="topic55"></a>
 
-The `ALTER TABLE` command changes the definition of a table. Use `ALTER TABLE` to change table attributes such as column definitions, distribution policy, access method, storage parameters, and partition structure \(see also [Partitioning Large Tables](ddl-partition.html)\). For example, to add a not-null constraint to a table column:
+## Altering a Table
+
+The `ALTER TABLE` command changes the definition of a table. Use `ALTER TABLE` to change table attributes such as column definitions, distribution policy, access method, storage parameters, and partition structure (see also [Partitioning Large Tables](ddl-partition/index.md)). For example, to add a not-null constraint to a table column:
 
 ```
 => ALTER TABLE address ALTER COLUMN street SET NOT NULL;
 
 ```
 
-### <a id="topic56"></a>Altering Table Distribution
+<a id="topic56"></a>
+
+### Altering Table Distribution
 
 `ALTER TABLE` provides options to change a table's distribution policy. When the table distribution options change, the table data may be redistributed on disk, which can be resource intensive. You can also redistribute table data using the existing distribution policy.
 
-### <a id="topic57"></a>Changing the Distribution Policy
+<a id="topic57"></a>
 
-For partitioned tables, changes to the distribution policy apply recursively to the child partitions. This operation preserves the ownership and all other attributes of the table. For example, the following command redistributes the table sales across all segments using the customer\_id column as the distribution key:
+### Changing the Distribution Policy
+
+For partitioned tables, changes to the distribution policy apply recursively to the child partitions. This operation preserves the ownership and all other attributes of the table. For example, the following command redistributes the table sales across all segments using the customer_id column as the distribution key:
 
 ```
 ALTER TABLE sales SET DISTRIBUTED BY (customer_id); 
@@ -485,9 +535,11 @@ ALTER TABLE sales SET DISTRIBUTED RANDOMLY;
 
 Changing the distribution policy of a table to `DISTRIBUTED REPLICATED` or from `DISTRIBUTED REPLICATED` automatically redistributes the table data.
 
-### <a id="topic58"></a>Redistributing Table Data
+<a id="topic58"></a>
 
-To redistribute table data for tables with a random distribution policy \(or when the hash distribution policy has not changed\) use `REORGANIZE=TRUE`. Reorganizing data may be necessary to correct a data skew problem, or when segment resources are added to the system. For example, the following command redistributes table data across all segments using the current distribution policy, including random distribution.
+### Redistributing Table Data
+
+To redistribute table data for tables with a random distribution policy (or when the hash distribution policy has not changed) use `REORGANIZE=TRUE`. Reorganizing data may be necessary to correct a data skew problem, or when segment resources are added to the system. For example, the following command redistributes table data across all segments using the current distribution policy, including random distribution.
 
 ```
 ALTER TABLE sales SET WITH (REORGANIZE=TRUE);
@@ -496,31 +548,35 @@ ALTER TABLE sales SET WITH (REORGANIZE=TRUE);
 
 Changing the distribution policy of a table to `DISTRIBUTED REPLICATED` or from `DISTRIBUTED REPLICATED` always redistributes the table data, even when you use `REORGANIZE=FALSE`.
 
-### <a id="access_method"></a>Altering the Table Access Method
+<a id="access_method"></a>
+
+### Altering the Table Access Method
 
 You may alter the method for accessing a table using the `SET ACCESS METHOD` clause. Set to `heap` to alter the table to be a heap-storage table, `ao_row` to alter the table to be append-optimized with row-oriented storage (AO), or `ao_column` to alter the table to be append-optimized with column-oriented storage (AOCO).
 
-  <p class="note">
-<strong>Note:</strong>
-Although you can specify the table's access method using <code>SET &lt;storage_parameter></code> or  <code>SET WITH&lt;storage_parameter></code>, WarehousePG recommends that you use <code>SET ACCESS METHOD &lt;access_method></code> instead.
-</p>
+> **Note:** **Note:** Although you can specify the table's access method using `SET <storage_parameter>` or `SET WITH<storage_parameter>`, WarehousePG recommends that you use `SET ACCESS METHOD <access_method>` instead.
 
-### <a id="topic59"></a>Altering the Table Storage Model
+<a id="topic59"></a>
+
+### Altering the Table Storage Model
 
 You may dynamically update a table's storage model -- including whether the table is heap, AO or AOCO; the table's compression and blocksize settings; and the table's fillfactor; --  by setting a variety of storage parameters when you invoke `ALTER TABLE` with the `SET <storage_parameter>` clause. This is true for both regular tables and partitioned tables.
 
-#### <a id="storage_model_partition"></a>Inheritance Rules for Altering a Partitioned Table's Storage Model
+<a id="storage_model_partition"></a>
+
+#### Inheritance Rules for Altering a Partitioned Table's Storage Model
 
 The following inheritance rules apply to the storage model of a partitioned table:
 
-- Altering the storage model at the partition root changes the storage model for all existing children and all future children.
+-   Altering the storage model at the partition root changes the storage model for all existing children and all future children.
 
-- Altering the storage model at the partition root with the `ONLY` keyword changes the storage model only for all future children.
+-   Altering the storage model at the partition root with the `ONLY` keyword changes the storage model only for all future children.
 
-- Altering the storage model at a leaf changes the storage model only for that leaf.
+-   Altering the storage model at a leaf changes the storage model only for that leaf.
 
+<a id="topic60"></a>
 
-#### <a id="topic60"></a>Adding a Compressed Column to Table
+#### Adding a Compressed Column to Table
 
 Use `ALTER TABLE` command to add a compressed column to a table. All of the options and constraints for compressed columns described in [Adding Column-level Compression](#topic43) apply to columns added with the `ALTER TABLE` command.
 
@@ -533,7 +589,9 @@ ALTER TABLE T1
 
 ```
 
-#### <a id="topic61"></a>Inheritance of Compression Settings
+<a id="topic61"></a>
+
+#### Inheritance of Compression Settings
 
 A partition added to a table that has sub-partitions defined with compression settings inherits the compression settings from the sub-partition. The following example shows how to create a table with sub-partition encodings, then alter it to add a partition.
 
@@ -561,7 +619,9 @@ ALTER TABLE ccddl
 
 Running the `ALTER TABLE` command creates partitions of table `ccddl` named `ccddl_1_prt_p3` and `ccddl_1_prt_p3_2_prt_sp1`. Partition `ccddl_1_prt_p3` inherits the different compression encodings of sub-partition `sp1`.
 
-## <a id="topic62"></a>Dropping a Table
+<a id="topic62"></a>
+
+## Dropping a Table
 
 The`DROP TABLE`command removes tables from the database. For example:
 
@@ -580,4 +640,3 @@ TRUNCATE mytable;
 ```
 
 `DROP TABLE`always removes any indexes, rules, triggers, and constraints that exist for the target table. Specify `CASCADE`to drop a table that is referenced by a view. `CASCADE` removes dependent views.
-

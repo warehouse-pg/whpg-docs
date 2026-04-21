@@ -1,4 +1,6 @@
-# Best Practices when Creating Views
+---
+title: Best Practices when Creating Views
+
 ---
 
 When defining and using a view, remember that a view is just an SQL statement and is replaced by its definition when the query is run.
@@ -21,5 +23,3 @@ These are two patterns of creating views that tend to be problematic because the
 -   Defining a denormalized "world" view. A view that joins a large number of database tables that is used for a wide variety of queries.
 
     Performance issues can occur for some queries that use the view for some `WHERE` conditions while other `WHERE` conditions work well.
-
-

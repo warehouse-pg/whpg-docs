@@ -1,4 +1,6 @@
-# PL/Perl Language
+---
+title: PL/Perl Language
+
 ---
 
 This chapter includes the following information:
@@ -9,7 +11,9 @@ This chapter includes the following information:
 -   [Developing Functions with PL/Perl](#topic33)
 -   [About Developing PL/Perl Procedures](#topic35)
 
-## <a id="topic2"></a>About WarehousePG PL/Perl
+<a id="topic2"></a>
+
+## About WarehousePG PL/Perl
 
 With the WarehousePG PL/Perl extension, you can write user-defined functions and procedures in Perl that take advantage of its advanced string manipulation operators and functions. PL/Perl provides both trusted and untrusted variants of the language.
 
@@ -17,7 +21,9 @@ PL/Perl is embedded in your WarehousePG distribution. WarehousePG PL/Perl requir
 
 Refer to the [PostgreSQL PL/Perl documentation](https://www.postgresql.org/docs/12/plperl.html) for additional information.
 
-## <a id="topic3"></a>WarehousePG PL/Perl Limitations
+<a id="topic3"></a>
+
+## WarehousePG PL/Perl Limitations
 
 Limitations of the WarehousePG PL/Perl language include:
 
@@ -25,9 +31,11 @@ Limitations of the WarehousePG PL/Perl language include:
 -   PL/Perl functions cannot call each other directly.
 -   SPI is not yet fully implemented.
 -   If you fetch very large data sets using `spi_exec_query()`, you should be aware that these will all go into memory. You can avoid this problem by using `spi_query()/spi_fetchrow()`. A similar problem occurs if a set-returning function passes a large set of rows back to WarehousePG via a `return` statement. Use `return_next` for each row returned to avoid this problem.
--   When a session ends normally, not due to a fatal error, PL/Perl runs any `END` blocks that you have defined. No other actions are currently performed. \(File handles are not automatically flushed and objects are not automatically destroyed.\)
+-   When a session ends normally, not due to a fatal error, PL/Perl runs any `END` blocks that you have defined. No other actions are currently performed. (File handles are not automatically flushed and objects are not automatically destroyed.)
 
-## <a id="topic31"></a>Trusted/Untrusted Language
+<a id="topic31"></a>
+
+## Trusted/Untrusted Language
 
 PL/Perl includes trusted and untrusted language variants.
 
@@ -37,7 +45,9 @@ The PL/Perl untrusted language is named `plperlu`. You cannot restrict the opera
 
 PL/Perl has limitations with respect to communication between interpreters and the number of interpreters running in a single process. Refer to the PostgreSQL [Trusted and Untrusted PL/Perl](https://www.postgresql.org/docs/12/plperl-trusted.html) documentation for additional information.
 
-## <a id="topic6"></a>Enabling and Removing PL/Perl Support
+<a id="topic6"></a>
+
+## Enabling and Removing PL/Perl Support
 
 You must register the PL/Perl language with a database before you can create and run a PL/Perl user-defined function within that database. To remove PL/Perl support, you must explicitly remove the extension from each database in which it was registered. You must be a database superuser or owner to register or remove trusted languages in WarehousePGs.
 
@@ -49,31 +59,37 @@ Before you enable or remove PL/Perl support in a database, ensure that:
 -   You have sourced `greenplum_path.sh`.
 -   You have set the `$COORDINATOR_DATA_DIRECTORY` and `$GPHOME` environment variables.
 
-### <a id="topic61"></a>Enabling PL/Perl Support
+<a id="topic61"></a>
 
-For each database in which you want to enable PL/Perl, register the language using the SQL [CREATE EXTENSION](../ref_guide/sql_commands/CREATE_EXTENSION.html) command. For example, run the following command as the `gpadmin` user to register the trusted PL/Perl language for the database named `testdb`:
+### Enabling PL/Perl Support
+
+For each database in which you want to enable PL/Perl, register the language using the SQL [CREATE EXTENSION](../../../ref_guide/sql_commands/CREATE_EXTENSION.md) command. For example, run the following command as the `gpadmin` user to register the trusted PL/Perl language for the database named `testdb`:
 
 ```
 $ psql -d testdb -c 'CREATE EXTENSION plperl;'
 ```
 
-### <a id="topic62"></a>Removing PL/Perl Support
+<a id="topic62"></a>
 
-To remove support for PL/Perl from a database, run the SQL [DROP EXTENSION](../ref_guide/sql_commands/DROP_EXTENSION.html) command. For example, run the following command as the `gpadmin` user to remove support for the trusted PL/Perl language from the database named `testdb`:
+### Removing PL/Perl Support
+
+To remove support for PL/Perl from a database, run the SQL [DROP EXTENSION](../../../ref_guide/sql_commands/DROP_EXTENSION.md) command. For example, run the following command as the `gpadmin` user to remove support for the trusted PL/Perl language from the database named `testdb`:
 
 ```
 $ psql -d testdb -c 'DROP EXTENSION plperl;'
 ```
 
-The default command fails if any existing objects \(such as functions\) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/Perl.
+The default command fails if any existing objects (such as functions) depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/Perl.
 
-## <a id="topic33"></a>Developing Functions with PL/Perl
+<a id="topic33"></a>
 
-You define a PL/Perl function using the standard SQL [CREATE FUNCTION](../ref_guide/sql_commands/CREATE_FUNCTION.html) syntax. The body of a PL/Perl user-defined function is ordinary Perl code. The PL/Perl interpreter wraps this code inside a Perl subroutine.
+## Developing Functions with PL/Perl
 
-You can also create an anonymous code block with PL/Perl. An anonymous code block, called with the SQL [DO](../ref_guide/sql_commands/DO.html) command, receives no arguments, and whatever value it might return is discarded. Otherwise, a PL/Perl anonymous code block behaves just like a function. Only database superusers create an anonymous code block with the untrusted `plperlu` language.
+You define a PL/Perl function using the standard SQL [CREATE FUNCTION](../../../ref_guide/sql_commands/CREATE_FUNCTION.md) syntax. The body of a PL/Perl user-defined function is ordinary Perl code. The PL/Perl interpreter wraps this code inside a Perl subroutine.
 
-The syntax of the `CREATE FUNCTION` command requires that you write the PL/Perl function body as a string constant. While it is more convenient to use dollar-quoting, you can choose to use escape string syntax \(`E''`\) provided that you double any single quote marks and backslashes used in the body of the function.
+You can also create an anonymous code block with PL/Perl. An anonymous code block, called with the SQL [DO](../../../ref_guide/sql_commands/DO.md) command, receives no arguments, and whatever value it might return is discarded. Otherwise, a PL/Perl anonymous code block behaves just like a function. Only database superusers create an anonymous code block with the untrusted `plperlu` language.
+
+The syntax of the `CREATE FUNCTION` command requires that you write the PL/Perl function body as a string constant. While it is more convenient to use dollar-quoting, you can choose to use escape string syntax (`E''`) provided that you double any single quote marks and backslashes used in the body of the function.
 
 PL/Perl arguments and results are handled as they are in Perl. Arguments you pass in to a PL/Perl function are accessed via the `@_` array. You return a result value with the `return` statement, or as the last expression evaluated in the function. A PL/Perl function cannot directly return a non-scalar type because you call it in a scalar context. You can return non-scalar types such as arrays, records, and sets in a PL/Perl function by returning a reference.
 
@@ -102,11 +118,13 @@ SELECT perl_max( 1, null );
 
 ```
 
-PL/Perl considers anything in a function argument that is not a reference to be a string, the standard WarehousePG external text representation. The argument values supplied to a PL/Perl function are simply the input arguments converted to text form \(just as if they had been displayed by a `SELECT` statement\). In cases where the function argument is not an ordinary numeric or text type, you must convert the WarehousePG type to a form that is more usable by Perl. Conversely, the `return` and `return_next` statements accept any string that is an acceptable input format for the function's declared return type.
+PL/Perl considers anything in a function argument that is not a reference to be a string, the standard WarehousePG external text representation. The argument values supplied to a PL/Perl function are simply the input arguments converted to text form (just as if they had been displayed by a `SELECT` statement). In cases where the function argument is not an ordinary numeric or text type, you must convert the WarehousePG type to a form that is more usable by Perl. Conversely, the `return` and `return_next` statements accept any string that is an acceptable input format for the function's declared return type.
 
 Refer to the PostgreSQL [PL/Perl Functions and Arguments](https://www.postgresql.org/docs/12/plperl-funcs.html) documentation for additional information, including composite type and result set manipulation.
 
-### <a id="topic3311"></a>Built-in PL/Perl Functions
+<a id="topic3311"></a>
+
+### Built-in PL/Perl Functions
 
 PL/Perl includes built-in functions to access the database, including those to prepare and perform queries and manipulate query results. The language also includes utility functions for error logging and string manipulation.
 
@@ -158,7 +176,9 @@ SELECT return_match( 'iff' );
 
 Refer to the PostgreSQL PL/Perl [Built-in Functions](https://www.postgresql.org/docs/12/plperl-builtins.html) documentation for a detailed discussion of available functions.
 
-### <a id="topic331"></a>Global Values in PL/Perl
+<a id="topic331"></a>
+
+### Global Values in PL/Perl
 
 You can use the global hash map `%_SHARED` to share data, including code references, between PL/Perl function calls for the lifetime of the current session.
 
@@ -194,9 +214,11 @@ SELECT get_var('key1');
 
 For security reasons, PL/Perl creates a separate Perl interpreter for each role. This prevents accidental or malicious interference by one user with the behavior of another user's PL/Perl functions. Each such interpreter retains its own value of the `%_SHARED` variable and other global state. Two PL/Perl functions share the same value of `%_SHARED` if and only if they are run by the same SQL role.
 
-There are situations where you must take explicit steps to ensure that PL/Perl functions can share data in `%_SHARED`. For example, if an application runs under multiple SQL roles \(via `SECURITY DEFINER` functions, use of `SET ROLE`, etc.\) in a single session, make sure that functions that need to communicate are owned by the same user, and mark these functions as `SECURITY DEFINER`.
+There are situations where you must take explicit steps to ensure that PL/Perl functions can share data in `%_SHARED`. For example, if an application runs under multiple SQL roles (via `SECURITY DEFINER` functions, use of `SET ROLE`, etc.) in a single session, make sure that functions that need to communicate are owned by the same user, and mark these functions as `SECURITY DEFINER`.
 
-### <a id="topic335"></a>Notes
+<a id="topic335"></a>
+
+### Notes
 
 Additional considerations when developing PL/Perl functions:
 
@@ -205,15 +227,17 @@ Additional considerations when developing PL/Perl functions:
 -   Only the untrusted PL/Perl language variant supports module import. Use `plperlu` with care.
 -   Any module that you use in a `plperlu` function must be available from the same location on all WarehousePG hosts.
 
-## <a id="topic35"></a>About Developing PL/Perl Procedures
+<a id="topic35"></a>
 
-A PL/Perl procedure is similar to a PL/Perl function. Refer to [User-Defined Procedures](../admin_guide/query/topics/functions-operators.html#topic28a) for more information on procedures in WarehousePG and how they differ from functions.
+## About Developing PL/Perl Procedures
+
+A PL/Perl procedure is similar to a PL/Perl function. Refer to [User-Defined Procedures](../../query/functions-operators.md#userproc) for more information on procedures in WarehousePG and how they differ from functions.
 
 In a PL/Perl procedure, any return value from the Perl code is ignored.
 
 Output arguments of PL/Perl procedures can be returned as a hash reference:
 
-``` sql
+```sql
 CREATE PROCEDURE perl_triple(INOUT a integer, INOUT b integer) AS $$
     my ($a, $b) = @_;
     return {a => $a * 3, b => $b * 3};
@@ -226,7 +250,7 @@ CALL perl_triple(5, 10);
 
 Here is an example:
 
-``` sql
+```sql
 CREATE PROCEDURE transaction_test1()
 LANGUAGE plperl
 AS $$
@@ -242,4 +266,3 @@ $$;
 
 CALL transaction_test1();
 ```
-
