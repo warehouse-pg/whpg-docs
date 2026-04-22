@@ -38,8 +38,6 @@ WarehousePG (WHPG) extends the core capabilities of Postgres with a suite of add
 
 -   **WHPG Open Source Modules**: These are open-source extensions specifically developed or optimized for the WarehousePG MPP ecosystem.
 
--   [**EDB Provided Modules**](edb_modules/index.md): These are specialized enhancements provided by EDB to deliver enterprise-grade security, governance, and support for business-critical environments.
-
 The following WarehousePG and PostgreSQL `contrib` modules are installed; refer to the linked module documentation for usage instructions.
 
 -   [auto_explain](auto-explain.md) Provides a means for logging execution plans of slow statements automatically.
