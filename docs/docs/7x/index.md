@@ -11,7 +11,7 @@ WarehousePG is based on **PostgreSQL open-source technology**. It is essentially
 
 ## WarehousePG Architecture
 
-![High-Level WarehousePG Architecture](/whpg_architecture.png "High-Level WarehousePG Architecture")
+![High-Level WarehousePG Architecture](images/whpg_architecture.png "High-Level WarehousePG Architecture")
 
 
 
@@ -27,17 +27,17 @@ WarehousePG is based on **PostgreSQL open-source technology**. It is essentially
 [Admin Guide](/docs/7x/admin_guide/)
 
 
-[Utility Guide](/docs/7x/utility_guide/reference.html)     
+[Utility Guide](/docs/7x/ref_guide/utility_guide/)     
 
 
 
-[Analytics Guide](/docs/7x/analytics/)     
+[Analytics Guide](/docs/7x/admin_guide/analytics/)     
 
 
 [Reference Guide](/docs/7x/ref_guide/)    
 
 
-[Backup & Restore Guide](/docs/7x/admin_guide/backup_restore/gpbackup_gprestore.html)
+[Backup & Restore Guide](/docs/7x/admin_guide/backup_restore/)
 
 
 
