@@ -1,0 +1,17 @@
+---
+title: pg_namespace
+
+---
+
+<a id="topic1"></a><a id="gx143896"></a>
+
+The `pg_namespace` system catalog table stores namespaces. A namespace is the structure underlying SQL schemas: each namespace can have a separate collection of relations, types, etc. without name conflicts.
+
+| column     | type       | references    | description                                                    |
+| ---------- | ---------- | ------------- | -------------------------------------------------------------- |
+| `oid`      | oid        |               | Row identifier (hidden attribute; must be explicitly selected) |
+| `nspname`  | name       |               | Name of the namespace                                          |
+| `nspowner` | oid        | pg_authid.oid | Owner of the namespace                                         |
+| `nspacl`   | aclitem\[] |               | Access privileges as given by `GRANT` and `REVOKE`             |
+
+**Parent topic:** [System Catalogs Definitions](index.md)
