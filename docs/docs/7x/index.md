@@ -1,5 +1,5 @@
-# Introducing Open Source WarehousePG
-
+---
+title: Introducing Open Source WarehousePG
 ---
 
 **WarehousePG** is an **open source**,  massively parallel processing (**MPP**) database server for **petabayte** scale analytic data warehouse and business intelligence workloads. 
@@ -18,28 +18,21 @@ WarehousePG is based on **PostgreSQL open-source technology**. It is essentially
 
 ## Documentation
 
+
 [Release Notes](/docs/7x/release_notes/index.md)
 
+[Install Guide](/docs/7x/install_guide/index.md)
 
-[Install Guide](/docs/7x/install_guide/)
+[Admin Guide](/docs/7x/admin_guide/index.md)
 
+[Best Practices](/docs/7x/best_practices/index.md)
 
-[Admin Guide](/docs/7x/admin_guide/)
+[Utility Guide](/docs/7x/ref_guide/utility_guide/index.md)         
 
+[Analytics Guide](/docs/7x/admin_guide/analytics/index.md)      
 
-[Utility Guide](/docs/7x/ref_guide/utility_guide/)     
+[Reference Guide](/docs/7x/ref_guide/index.md)        
 
+[Security Guide](/docs/7x/security_guide/index.md)        
 
-
-[Analytics Guide](/docs/7x/admin_guide/analytics/)     
-
-
-[Reference Guide](/docs/7x/ref_guide/)    
-
-
-[Backup & Restore Guide](/docs/7x/admin_guide/backup_restore/)
-
-
-
-
-
+[Backup & Restore Guide](/docs/7x/admin_guide/backup_restore/index.md)

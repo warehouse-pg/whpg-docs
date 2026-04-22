@@ -70,6 +70,14 @@ export default defineConfig(
       link: "/docs/6x/index.html" ,
       collapsed: true,
       items: [
+          { text: "Release Notes", link: "/docs/6x/release_notes/" },
+          { text: "Install Guide", link: "/docs/6x/install_guide/" },
+          { text: "Admin Guide", link: "/docs/6x/admin_guide/" },
+          { text: "Best Practices", link: "/docs/6x/best_practices/" },
+          { text: "Utility Guide", link: "/docs/6x/ref_guide/utility_guide/" },         
+          { text: "Analytics Guide", link: "/docs/6x/admin_guide/analytics/" },      
+          { text: "Reference Guide", link: "/docs/6x/ref_guide/" },        
+          { text: "Security Guide", link: "/docs/6x/security-guide/" },        
 
       
       ],
