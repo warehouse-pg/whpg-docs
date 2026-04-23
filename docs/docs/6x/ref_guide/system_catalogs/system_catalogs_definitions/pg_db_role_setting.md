@@ -1,0 +1,20 @@
+---
+title: pg_db_role_setting
+
+---
+
+<a id="topic1"></a><a id="gj143896"></a>
+
+The `pg_db_role_setting` system catalog table records the default values of server configuration settings for each role and database combination.
+
+There is a single copy of `pg_db_role_settings` per WarehousePG cluster. This system catalog table is shared across all databases.
+
+You can view the server configuration settings for your WarehousePG cluster with `psql`'s `\drds` meta-command.
+
+| column        | type    | references      | description                                                                                       |
+| ------------- | ------- | --------------- | ------------------------------------------------------------------------------------------------- |
+| `setdatabase` | oid     | pg_database.oid | The database to which the setting is applicable, or zero if the setting is not database-specific. |
+| `setrole`     | oid     | pg_authid.oid   | The role to which the setting is applicable, or zero if the setting is not role-specific.         |
+| `setconfig`   | text\[] |                 | Per-database- and per-role-specific defaults for user-settable server configuration parameters.   |
+
+**Parent topic:** [System Catalogs Definitions](index.md)

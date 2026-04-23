@@ -1,36 +1,49 @@
-# CREATE USER MAPPING 
+---
+title: CREATE USER MAPPING
+
+---
 
 Defines a new mapping of a user to a foreign server.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CREATE USER MAPPING [ IF NOT EXISTS ] FOR { <user_name> | USER | CURRENT_USER | PUBLIC }
     SERVER <server_name>
     [ OPTIONS ( <option> '<value>' [, ... ] ) ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `CREATE USER MAPPING` defines a mapping of a user to a foreign server. A user mapping typically encapsulates connection information that a foreign-data wrapper uses together with the information encapsulated by a foreign server to access an external data resource.
 
 The owner of a foreign server can create user mappings for that server for any user. Also, a user can create a user mapping for their own user name if they have been granted `USAGE` privilege on the server.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF NOT EXISTS
 Do not throw an error if a mapping of the given user to the given foreign server already exists. WarehousePG issues a notice in this case. Note that there is no guarantee that the existing user mapping is anything like the one that would have been created.
 
-user\_name
+user_name
 The name of an existing user that is mapped to the foreign server. `CURRENT_USER` and `USER` match the name of the current user. When `PUBLIC` is specified, WarehousePG creates a so-called public mapping that is used when no user-specific mapping is applicable.
 
-server\_name
+server_name
 The name of an existing server for which WarehousePG is to create the user mapping.
 
-OPTIONS \( option 'value' \[, ... \] \)
+OPTIONS ( option 'value' \[, ... ] )
 The options for the new user mapping. The options typically define the actual user name and password of the mapping. Option names must be unique. The option names and values are specific to the server's foreign-data wrapper.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Create a user mapping for user `bob`, server `foo`:
 
@@ -38,13 +51,16 @@ Create a user mapping for user `bob`, server `foo`:
 CREATE USER MAPPING FOR bob SERVER foo OPTIONS (user 'bob', password 'secret');
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-`CREATE USER MAPPING` conforms to ISO/IEC 9075-9 \(SQL/MED\).
+## Compatibility
 
-## <a id="section8"></a>See Also 
+`CREATE USER MAPPING` conforms to ISO/IEC 9075-9 (SQL/MED).
 
-[ALTER USER MAPPING](ALTER_USER_MAPPING.html), [DROP USER MAPPING](DROP_USER_MAPPING.html), [CREATE FOREIGN DATA WRAPPER](CREATE_FOREIGN_DATA_WRAPPER.html), [CREATE SERVER](CREATE_SERVER.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[ALTER USER MAPPING](ALTER_USER_MAPPING.md), [DROP USER MAPPING](DROP_USER_MAPPING.md), [CREATE FOREIGN DATA WRAPPER](CREATE_FOREIGN_DATA_WRAPPER.md), [CREATE SERVER](CREATE_SERVER.md)
+
+**Parent topic:** [SQL Commands](index.md)

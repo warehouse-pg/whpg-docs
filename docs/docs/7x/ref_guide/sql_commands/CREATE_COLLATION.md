@@ -1,10 +1,17 @@
-# CREATE COLLATION 
+---
+title: CREATE COLLATION
+
+---
 
 Defines a new collation.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CREATE COLLATION [ IF NOT EXISTS ] <name> (
     [ LOCALE = <locale>, ]    
     [ LC_COLLATE = <lc_collate>, ]    
@@ -16,27 +23,31 @@ CREATE COLLATION [ IF NOT EXISTS ] <name> (
 CREATE COLLATION [ IF NOT EXISTS ] <name> FROM <existing_collation>
 ```
 
-## <a id="section3"></a>Description
+<a id="section3"></a>
+
+## Description
 
 `CREATE COLLATION` defines a new collation using the specified operating system locale settings, or by copying an existing collation.
 
 To be able to create a collation, you must have `CREATE` privilege on the destination schema.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF NOT EXISTS
 Do not throw an error if a collation with the same name already exists. A notice is issued in this case. Note that there is no guarantee that the existing collation is anything like the one that would have been created.
 
 name
-The name of the collation. The collation name can be schema-qualified. If it is not, the collation is defined in the current schema. The collation name must be unique within that schema. \(The system catalogs can contain collations with the same name for other encodings, but these are ignored if the database encoding does not match.\)
+The name of the collation. The collation name can be schema-qualified. If it is not, the collation is defined in the current schema. The collation name must be unique within that schema. (The system catalogs can contain collations with the same name for other encodings, but these are ignored if the database encoding does not match.)
 
 locale
 This is a shortcut for setting `LC_COLLATE` and `LC_CTYPE` at once. If you specify this, you cannot specify either of those parameters.
 
-lc\_collate
+lc_collate
 Use the specified operating system locale for the `LC_COLLATE` locale category.
 
-lc\_ctype
+lc_ctype
 Use the specified operating system locale for the `LC_CTYPE` locale category.
 
 provider
@@ -48,24 +59,28 @@ Nondeterministic collations are only supported with the `icu` provider.
 
 version
 Specifies the version string to store with the collation. Normally, this should be omitted, which will cause the version to be computed from the actual version of the collation as provided by the operating system. This option is intended to be used by `pg_upgrade` for copying the version from an existing installation.
-See also [ALTER COLLATION](ALTER_COLLATION.html) for how to handle collation version mismatches.
+See also [ALTER COLLATION](ALTER_COLLATION.md) for how to handle collation version mismatches.
 
-existing\_collation
+existing_collation
 The name of an existing collation to copy. The new collation will have the same properties as the existing one, but it will be an independent object.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 `CREATE COLLATION` takes a `SHARE ROW EXCLUSIVE` lock, which is self-conflicting, on the `pg_collation` system catalog, so only one `CREATE COLLATION` command can run at a time.
 
-Use [DROP COLLATION](DROP_COLLATION.html) to remove user-defined collations.
+Use [DROP COLLATION](DROP_COLLATION.md) to remove user-defined collations.
 
 See [Collation Support](https://www.postgresql.org/docs/12/collation.html) in the PostgreSQL documentation for more information about collation support in WarehousePG.
 
-When using the `libc` collation provider, the, locale must be applicable to the current database encoding. See [CREATE DATABASE](CREATE_DATABASE.html) for the precise rules.
+When using the `libc` collation provider, the, locale must be applicable to the current database encoding. See [CREATE DATABASE](CREATE_DATABASE.md) for the precise rules.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
 
-To create a collation from the operating system locale `fr_FR.utf8` \(assuming the current database encoding is `UTF8`\):
+## Examples
+
+To create a collation from the operating system locale `fr_FR.utf8` (assuming the current database encoding is `UTF8`):
 
 ```
 CREATE COLLATION french (LOCALE = 'fr_FR.utf8');
@@ -85,13 +100,16 @@ CREATE COLLATION german FROM "de_DE";
 
 This can be convenient to be able to use operating-system-independent collation names in applications.
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 There is a `CREATE COLLATION` statement in the SQL standard, but it is limited to copying an existing collation. The syntax to create a new collation is a WarehousePG extension.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[ALTER COLLATION](ALTER_COLLATION.html), [DROP COLLATION](DROP_COLLATION.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[ALTER COLLATION](ALTER_COLLATION.md), [DROP COLLATION](DROP_COLLATION.md)
 
+**Parent topic:** [SQL Commands](index.md)

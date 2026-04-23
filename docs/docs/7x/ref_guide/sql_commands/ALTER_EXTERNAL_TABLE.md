@@ -1,10 +1,17 @@
-# ALTER EXTERNAL TABLE 
+---
+title: ALTER EXTERNAL TABLE
+
+---
 
 Changes the definition of an external table.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER EXTERNAL TABLE <name> <action> [, ... ]
 ```
 
@@ -17,7 +24,9 @@ where action is one of:
   OWNER TO <new_owner>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER EXTERNAL TABLE` changes the definition of an existing external table. These are the supported `ALTER EXTERNAL TABLE` actions:
 
@@ -26,34 +35,36 @@ where action is one of:
 -   **ALTER COLUMN TYPE** — Changes the data type of a table column.
 -   **OWNER** — Changes the owner of the external table to the specified user.
 
-Use the [ALTER TABLE](ALTER_TABLE.html) command to perform these actions on an external table:
+Use the [ALTER TABLE](ALTER_TABLE.md) command to perform these actions on an external table:
 
--   Set \(change\) the table schema.
+-   Set (change) the table schema.
 -   Rename the table.
 -   Rename a table column.
--   Set \(change\) the distribution policy \(writable external table only\).
+-   Set (change) the distribution policy (writable external table only).
 
 You must own the external table to use `ALTER EXTERNAL TABLE` or `ALTER TABLE`. To change the schema of an external table, you must also have `CREATE` privilege on the new schema. To alter the owner, you must also be a direct or indirect member of the new owning role, and that role must have `CREATE` privilege on the external table's schema. A superuser has these privileges automatically.
 
 Changes that you make to an external table definition with either `ALTER EXTERNAL TABLE` or `ALTER TABLE` do not affect the external data.
 
-The `ALTER EXTERNAL TABLE` and `ALTER TABLE` commands cannot modify the type of the external table \(read, write, web\), the table `FORMAT` information, or the location of the external data. To modify this information, you must drop and recreate the external table definition.
+The `ALTER EXTERNAL TABLE` and `ALTER TABLE` commands cannot modify the type of the external table (read, write, web), the table `FORMAT` information, or the location of the external data. To modify this information, you must drop and recreate the external table definition.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
-The name \(possibly schema-qualified\) of an existing external table definition to alter.
+The name (possibly schema-qualified) of an existing external table definition to alter.
 
 column
 Name of an existing column.
 
-new\_column
+new_column
 Name of a new column.
 
 type
 Data type of the new column, or new data type for an existing column.
 
-new\_owner
+new_owner
 The role name of the new owner of the external table.
 
 CASCADE
@@ -62,7 +73,9 @@ Automatically drop objects that depend on the dropped column, such as a view tha
 RESTRICT
 Refuse to drop the column or constraint if there are any dependent objects. This is the default behavior.
 
-## <a id="section5"></a>Examples 
+<a id="section5"></a>
+
+## Examples
 
 Add a new column to an external table definition:
 
@@ -82,13 +95,16 @@ Change the data type of an external table:
 ALTER EXTERNAL TABLE ext_leads ALTER COLUMN acct_code TYPE integer;
 ```
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 `ALTER EXTERNAL TABLE` is a WarehousePG extension. There is no `ALTER EXTERNAL TABLE` statement in the SQL standard or regular PostgreSQL.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE EXTERNAL TABLE](CREATE_EXTERNAL_TABLE.html), [DROP EXTERNAL TABLE](DROP_EXTERNAL_TABLE.html), [ALTER TABLE](ALTER_TABLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE EXTERNAL TABLE](CREATE_EXTERNAL_TABLE.md), [DROP EXTERNAL TABLE](DROP_EXTERNAL_TABLE.md), [ALTER TABLE](ALTER_TABLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

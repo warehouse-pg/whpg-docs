@@ -1,10 +1,17 @@
-# COMMENT 
+---
+title: COMMENT
+
+---
 
 Defines or changes the comment of an object.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 COMMENT ON
 { ACCESS METHOD <object_name> |
   AGGREGATE <aggregate_name> (<aggregate_signature>) |
@@ -57,7 +64,9 @@ where <aggregate_signature> is:
 [ [ <argmode> ] [ <argname> ] <argtype> [ , ... ] ] ORDER BY [ <argmode> ] [ <argname> ] <argtype> [ , ... ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `COMMENT` stores a comment about a database object. Only one comment string is stored for each object, so to modify a comment, issue a new `COMMENT` command for the same object. To remove a comment, specify `NULL` in place of the text string. Comments are automatically dropped when the object is dropped.
 
@@ -67,31 +76,35 @@ For most kinds of object, only the object's owner can set the comment. Roles don
 
 You can view comments using the `psql` meta-commands `\dd`, `\d+`, and `\l+`. Other user interfaces to retrieve comments can be built atop the same built-in functions that `psql` uses, namely `obj_description()`, `col_description()`, and `shobj_description()`.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-object\_name
-relation\_name.column\_name
-aggregate\_name
-constraint\_name
-function\_name
-operator\_name
-policy\_name
-procedure\_name
-routine\_name
-rule\_name
-trigger\_name
-The name of the object to be commented. Names of tables, aggregates, collations, conversions, domains, foreign tables, functions, indexes, operators, operator classes, operator families, procedures, routines, sequences, statistics, text search objects, types, views, and materialized views can be schema-qualified. When commenting on a column, relation\_name must refer to a table, view, materialized view, composite type, or foreign table.
+## Parameters
 
-    > **Note** WarehousePG does not support triggers.
+object_name
+relation_name.column_name
+aggregate_name
+constraint_name
+function_name
+operator_name
+policy_name
+procedure_name
+routine_name
+rule_name
+trigger_name
+The name of the object to be commented. Names of tables, aggregates, collations, conversions, domains, foreign tables, functions, indexes, operators, operator classes, operator families, procedures, routines, sequences, statistics, text search objects, types, views, and materialized views can be schema-qualified. When commenting on a column, relation_name must refer to a table, view, materialized view, composite type, or foreign table.
+
+```
+> **Note** WarehousePG does not support triggers.
+```
 
 table_name
 domain_name
 When creating a comment on a constraint, a trigger, a rule, or a policy, these parameters specify the name of the table or domain on which that object is defined.
 
-source\_type
+source_type
 The name of the source data type of the cast.
 
-target\_type
+target_type
 The name of the target data type of the cast.
 
 argmode
@@ -103,9 +116,9 @@ The name of a function, procedure, or aggregate argument. Note that `COMMENT` do
 argtype
 The data type of a function, procedure, or aggregate argument.
 
-left\_type
-right\_type
-The data type\(s\) of the operator's arguments \(optionally schema-qualified\). Specify `NONE` for the missing argument of a prefix or postfix operator.
+left_type
+right_type
+The data type(s) of the operator's arguments (optionally schema-qualified). Specify `NONE` for the missing argument of a prefix or postfix operator.
 
 PROCEDURAL
 WarehousePG ignores this noise word.
@@ -122,13 +135,17 @@ The new comment contents, written as a string literal.
 NULL
 Specify `NULL` to drop the comment.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 There is presently no security mechanism for viewing comments: any user connected to a database can see all of the comments for objects in that database. For shared objects such as databases, roles, and tablespaces, comments are stored globally so any user connected to any database in the cluster can see all the comments for shared objects.
 
 > **Caution** Do not put security-critical information in comments.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Attach a comment to the table `mytable`:
 
@@ -188,9 +205,10 @@ COMMENT ON TYPE complex IS 'Complex number data type';
 COMMENT ON VIEW my_view IS 'View of departmental costs';
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 There is no `COMMENT` command in the SQL standard.
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
-
+**Parent topic:** [SQL Commands](index.md)

@@ -1,13 +1,17 @@
-# Enabling iptables (Optional)
+---
+title: Enabling iptables (Optional)
+
 ---
 
 On Linux systems, you can configure and enable the `iptables` firewall to work with WarehousePG.
 
 > **Note** WarehousePG performance might be impacted when `iptables` is enabled. You should test the performance of your application with `iptables` enabled to ensure that performance is acceptable.
 
-For more information about `iptables` see the `iptables` and firewall documentation for your operating system. See also [Deactivating SELinux and Firewall Software](config_os.html).
+For more information about `iptables` see the `iptables` and firewall documentation for your operating system. See also [Deactivating SELinux and Firewall Software](config_os.md).
 
-## <a id="ji163124"></a>How to Enable iptables
+<a id="ji163124"></a>
+
+## How to Enable iptables
 
 1.  As `gpadmin`, run this command on the WarehousePG coordinator host to stop WarehousePG:
 
@@ -16,6 +20,7 @@ For more information about `iptables` see the `iptables` and firewall documentat
     ```
 
 2.  On the WarehousePG hosts:
+
     1.  Update the file `/etc/sysconfig/iptables` based on the [Example iptables Rules](#topic16).
     2.  As root user, run these commands to enable `iptables`:
 
@@ -29,7 +34,6 @@ For more information about `iptables` see the `iptables` and firewall documentat
     ```
     $ gpstart -a
     ```
-
 
 > **Caution** After enabling `iptables`, this error in the `/var/log/messages` file indicates that the setting for the `iptables` table is too low and needs to be increased.
 
@@ -49,34 +53,39 @@ To ensure that the WarehousePG workload does not overflow the `iptables` table, 
 # sysctl net.ipv4.netfilter.ip_conntrack_max=6553600
 ```
 
-The value might need to be adjusted for your hosts. To maintain the value after reboot, you can update the `/etc/sysctl.conf` file as discussed in [Setting the WarehousePG Recommended OS Parameters](config_os.html).
+The value might need to be adjusted for your hosts. To maintain the value after reboot, you can update the `/etc/sysctl.conf` file as discussed in [Setting the WarehousePG Recommended OS Parameters](config_os.md).
 
-**Parent topic:** [Installing and Upgrading WarehousePG](install_guide/)
+**Parent topic:** [Installing and Upgrading WarehousePG](index.md)
 
-## <a id="topic16"></a>Example iptables Rules
+<a id="topic16"></a>
 
-When `iptables` is enabled, `iptables` manages the IP communication on the host system based on configuration settings \(rules\). The example rules are used to configure `iptables` for WarehousePG coordinator host, standby coordinator host, and segment hosts.
+## Example iptables Rules
+
+When `iptables` is enabled, `iptables` manages the IP communication on the host system based on configuration settings (rules). The example rules are used to configure `iptables` for WarehousePG coordinator host, standby coordinator host, and segment hosts.
 
 -   [Example Coordinator and Standby Coordinator iptables Rules](#topic17)
 -   [Example Segment Host iptables Rules](#topic18)
 
-The two sets of rules account for the different types of communication WarehousePG expects on the coordinator \(primary and standby\) and segment hosts. The rules should be added to the `/etc/sysconfig/iptables` file of the WarehousePG hosts. For WarehousePG, `iptables` rules should allow the following communication:
+The two sets of rules account for the different types of communication WarehousePG expects on the coordinator (primary and standby) and segment hosts. The rules should be added to the `/etc/sysconfig/iptables` file of the WarehousePG hosts. For WarehousePG, `iptables` rules should allow the following communication:
 
--   For customer facing communication with the WarehousePG coordinator, allow at least `postgres` and `28080` \(`eth1` interface in the example\).
--   For WarehousePG cluster interconnect, allow communication using `tcp`, `udp`, and `icmp` protocols \(`eth4` and `eth5` interfaces in the example\).
+-   For customer facing communication with the WarehousePG coordinator, allow at least `postgres` and `28080` (`eth1` interface in the example).
 
-    The network interfaces that you specify in the `iptables` settings are the interfaces for the WarehousePG hosts that you list in the hostfile\_gpinitsystem file. You specify the file when you run the `gpinitsystem` command to initialize a WarehousePG cluster. See [Initializing WarehousePG](init_whpg.html) for information about the hostfile\_gpinitsystem file and the `gpinitsystem` command.
+-   For WarehousePG cluster interconnect, allow communication using `tcp`, `udp`, and `icmp` protocols (`eth4` and `eth5` interfaces in the example).
 
--   For the administration network on a WarehousePG DCA, allow communication using `ssh`, `ntp`, and `icmp` protocols. \(`eth0` interface in the example\).
+    The network interfaces that you specify in the `iptables` settings are the interfaces for the WarehousePG hosts that you list in the hostfile_gpinitsystem file. You specify the file when you run the `gpinitsystem` command to initialize a WarehousePG cluster. See [Initializing WarehousePG](init_whpg.md) for information about the hostfile_gpinitsystem file and the `gpinitsystem` command.
 
-In the `iptables` file, each append rule command \(lines starting with `-A`\) is a single line.
+-   For the administration network on a WarehousePG DCA, allow communication using `ssh`, `ntp`, and `icmp` protocols. (`eth0` interface in the example).
+
+In the `iptables` file, each append rule command (lines starting with `-A`) is a single line.
 
 The example rules should be adjusted for your configuration. For example:
 
 -   The append command, the `-A` lines and connection parameter `-i` should match the connectors for your hosts.
 -   the CIDR network mask information for the source parameter `-s` should match the IP addresses for your network.
 
-### <a id="topic17"></a>Example Coordinator and Standby Coordinator iptables Rules
+<a id="topic17"></a>
+
+### Example Coordinator and Standby Coordinator iptables Rules
 
 Example `iptables` rules with comments for the `/etc/sysconfig/iptables` file on the WarehousePG coordinator host and standby coordinator host.
 
@@ -121,7 +130,9 @@ Example `iptables` rules with comments for the `/etc/sysconfig/iptables` file on
 COMMIT
 ```
 
-### <a id="topic18"></a>Example Segment Host iptables Rules
+<a id="topic18"></a>
+
+### Example Segment Host iptables Rules
 
 Example `iptables` rules for the `/etc/sysconfig/iptables` file on the WarehousePG segment hosts. The rules for segment hosts are similar to the coordinator rules with fewer interfaces and fewer `udp` and `tcp` services.
 
@@ -143,4 +154,3 @@ Example `iptables` rules for the `/etc/sysconfig/iptables` file on the Warehouse
 -A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
 COMMIT
 ```
-

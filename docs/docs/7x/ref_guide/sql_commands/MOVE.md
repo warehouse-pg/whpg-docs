@@ -1,14 +1,21 @@
-# MOVE 
+---
+title: MOVE
+
+---
 
 Positions a cursor.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 MOVE [ <forward_direction> [ FROM | IN ] ] <cursor_name>
 ```
 
-where <forward_direction> can be empty or one of:
+where &lt;forward_direction> can be empty or one of:
 
 ```
     NEXT
@@ -23,17 +30,21 @@ where <forward_direction> can be empty or one of:
     FORWARD ALL
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`MOVE` repositions a cursor without retrieving any data. `MOVE` works exactly like the [FETCH](FETCH.html) command, except it only positions the cursor and does not return rows.
+## Description
+
+`MOVE` repositions a cursor without retrieving any data. `MOVE` works exactly like the [FETCH](FETCH.md) command, except it only positions the cursor and does not return rows.
 
 > **Note** You cannot `MOVE` a `PARALLEL RETRIEVE CURSOR`.
 
 > **Note** Because WarehousePG does not support scrollable cursors, it is not possible to move a cursor position backwards. You can only move a cursor forward in position using `MOVE`.
 
-The parameters for the `MOVE` command are identical to those of the `FETCH` command; refer to [FETCH](FETCH.html) for details on syntax and usage.
+The parameters for the `MOVE` command are identical to those of the `FETCH` command; refer to [FETCH](FETCH.md) for details on syntax and usage.
 
-## <a id="section5a"></a>Outputs
+<a id="section5a"></a>
+
+## Outputs
 
 On successful completion, a `MOVE` command returns a command tag of the form
 
@@ -41,9 +52,11 @@ On successful completion, a `MOVE` command returns a command tag of the form
 MOVE <count>
 ```
 
-The count is the number of rows that a `FETCH` command with the same parameters would have returned \(possibly zero\).
+The count is the number of rows that a `FETCH` command with the same parameters would have returned (possibly zero).
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Start the transaction:
 
@@ -64,7 +77,7 @@ MOVE FORWARD 5 IN mycursor;
 MOVE 5
 ```
 
-Fetch the next row after that \(row 6\):
+Fetch the next row after that (row 6):
 
 ```
 FETCH 1 FROM mycursor;
@@ -81,13 +94,16 @@ CLOSE mycursor;
 COMMIT;
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 There is no `MOVE` statement in the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[DECLARE](DECLARE.html), [FETCH](FETCH.html), [CLOSE](CLOSE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[DECLARE](DECLARE.md), [FETCH](FETCH.md), [CLOSE](CLOSE.md)
 
+**Parent topic:** [SQL Commands](index.md)

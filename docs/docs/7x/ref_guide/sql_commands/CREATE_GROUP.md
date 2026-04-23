@@ -1,10 +1,17 @@
-# CREATE GROUP 
+---
+title: CREATE GROUP
+
+---
 
 Defines a new database role.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CREATE GROUP <name> [[WITH] <option> [ ... ]]
 ```
 
@@ -38,17 +45,22 @@ where option can be:
     | [ DENY BETWEEN <deny_point> AND <deny_point>]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`CREATE GROUP` is an alias for [CREATE ROLE](CREATE_ROLE.html).
+## Description
 
-## <a id="section4"></a>Compatibility 
+`CREATE GROUP` is an alias for [CREATE ROLE](CREATE_ROLE.md).
+
+<a id="section4"></a>
+
+## Compatibility
 
 There is no `CREATE GROUP` statement in the SQL standard.
 
-## <a id="section5"></a>See Also 
+<a id="section5"></a>
 
-[CREATE ROLE](CREATE_ROLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE ROLE](CREATE_ROLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

@@ -1,18 +1,24 @@
-# Best Practices Summary
+---
+title: Best Practices Summary
+
 ---
 
 A summary of best practices for WarehousePG.
 
-## <a id="datmod"></a>Data Model
+<a id="datmod"></a>
+
+## Data Model
 
 WarehousePG is an analytical MPP shared-nothing database. This model is significantly different from a highly normalized/transactional SMP database. Because of this, the following best practices are recommended.
 
 -   WarehousePG performs best with a denormalized schema design suited for MPP analytical processing for example, Star or Snowflake schema, with large fact tables and smaller dimension tables.
 -   Use the same data types for columns used in joins between tables.
 
-See [Schema Design](schema.html).
+See [Schema Design](schema.md).
 
-## <a id="heapapp"></a>Heap vs. Append-Optimized Storage
+<a id="heapapp"></a>
+
+## Heap vs. Append-Optimized Storage
 
 -   Use heap storage for tables and partitions that will receive iterative batch and singleton `UPDATE`, `DELETE`, and `INSERT` operations.
 -   Use heap storage for tables and partitions that will receive concurrent `UPDATE`, `DELETE`, and `INSERT` operations.
@@ -20,9 +26,11 @@ See [Schema Design](schema.html).
 -   Avoid performing singleton `INSERT`, `UPDATE`, or `DELETE` operations on append-optimized tables.
 -   Avoid performing concurrent batch `UPDATE` or `DELETE` operations on append-optimized tables. Concurrent batch `INSERT` operations are acceptable.
 
-See [Heap Storage or Append-Optimized Storage](schema.html#heap_vs_ao).
+See [Heap Storage or Append-Optimized Storage](schema.md#heap_vs_ao).
 
-## <a id="rowcol"></a>Row vs. Column Oriented Storage
+<a id="rowcol"></a>
+
+## Row vs. Column Oriented Storage
 
 -   Use row-oriented storage for workloads with iterative transactions where updates are required and frequent inserts are performed.
 -   Use row-oriented storage when selects against the table are wide.
@@ -30,17 +38,21 @@ See [Heap Storage or Append-Optimized Storage](schema.html#heap_vs_ao).
 -   Use column-oriented storage where selects are narrow and aggregations of data are computed over a small number of columns.
 -   Use column-oriented storage for tables that have single columns that are regularly updated without modifying other columns in the row.
 
-See [Row or Column Orientation](schema.html#row_vs_column).
+See [Row or Column Orientation](schema.md#row_vs_column).
 
-## <a id="comp"></a>Compression
+<a id="comp"></a>
+
+## Compression
 
 -   Use compression on large append-optimized and partitioned tables to improve I/O across the system.
 -   Set the column compression settings at the level where the data resides.
 -   Balance higher levels of compression with the time and CPU cycles needed to compress and uncompress data.
 
-See [Compression](schema.html).
+See [Compression](schema.md).
 
-## <a id="dist"></a>Distributions
+<a id="dist"></a>
+
+## Distributions
 
 -   Explicitly define a column or random distribution for all tables. Do not use the default.
 -   Use a single column that will distribute data across all segments evenly.
@@ -50,14 +62,20 @@ See [Compression](schema.html).
 -   Achieve local joins to significantly improve performance by distributing on the same column for large tables commonly joined together.
 -   To ensure there is no data skew, validate that data is evenly distributed after the initial load and after incremental loads.
 
-See [Distributions](schema.html).
+See [Distributions](schema.md).
 
-## <a id="rqman"></a>Resource Queue Memory Management
+<a id="rqman"></a>
+
+## Resource Queue Memory Management
 
 -   Set `vm.overcommit_memory` to 2.
+
 -   Do not configure the OS to use huge pages.
+
 -   Use `gp_vmem_protect_limit` to set the maximum memory that the instance can allocate for *all* work being done in each segment database.
+
 -   You can use `gp_vmem_protect_limit` by calculating:
+
     -   `gp_vmem` – the total memory available to WarehousePG
 
         -   If the total system memory is less than 256 GB, use this formula:
@@ -75,6 +93,7 @@ See [Distributions](schema.html).
         where `SWAP` is the host's swap space in GB, and `RAM` is the host's RAM in GB.
 
     -   `max_acting_primary_segments` – the maximum number of primary segments that could be running on a host when mirror segments are activated due to a host or segment failure.
+
     -   `gp_vmem_protect_limit`
 
         ```
@@ -84,6 +103,7 @@ See [Distributions](schema.html).
         Convert to MB to set the value of the configuration parameter.
 
 -   In a scenario where a large number of workfiles are generated calculate the `gp_vmem` factor with this formula to account for the workfiles.
+
     -   If the total system memory is less than 256 GB:
 
         ```
@@ -99,6 +119,7 @@ See [Distributions](schema.html).
         ```
 
 -   Never set `gp_vmem_protect_limit` too high or larger than the physical RAM on the system.
+
 -   Use the calculated `gp_vmem` value to calculate the setting for the `vm.overcommit_ratio` operating system parameter:
 
     ```
@@ -106,29 +127,38 @@ See [Distributions](schema.html).
     ```
 
 -   Use `statement_mem` to allocate memory used for a query per segment db.
--   Use resource queues to set both the numbers of active queries \(`ACTIVE_STATEMENTS`\) and the amount of memory \(`MEMORY_LIMIT`\) that can be utilized by queries in the queue.
+
+-   Use resource queues to set both the numbers of active queries (`ACTIVE_STATEMENTS`) and the amount of memory (`MEMORY_LIMIT`) that can be utilized by queries in the queue.
+
 -   Associate all users with a resource queue. Do not use the default queue.
+
 -   Set `PRIORITY` to match the real needs of the queue for the workload and time of day. Avoid using MAX priority.
+
 -   Ensure that resource queue memory allocations do not exceed the setting for `gp_vmem_protect_limit`.
+
 -   Dynamically update resource queue settings to match daily operations flow.
 
-See [Setting the WarehousePG Recommended OS Parameters](../install_guide/config_os.html#topic3__sysctl_file) and [Memory and Resource Management with Resource Queues](workloads.html).
+See [Setting the WarehousePG Recommended OS Parameters](../install_guide/config_os.md#topic3) and [Memory and Resource Management with Resource Queues](workloads.md).
 
-## <a id="part"></a>Partitioning
+<a id="part"></a>
+
+## Partitioning
 
 -   Partition large tables only. Do not partition small tables.
--   Use partitioning only if partition elimination \(partition pruning\) can be achieved based on the query criteria.
+-   Use partitioning only if partition elimination (partition pruning) can be achieved based on the query criteria.
 -   Choose range partitioning over list partitioning.
 -   Partition the table based on a commonly-used column, such as a date column.
 -   Never partition and distribute tables on the same column.
 -   Do not use default partitions.
 -   Do not use multi-level partitioning; create fewer partitions with more data in each partition.
--   Validate that queries are selectively scanning partitioned tables \(partitions are being eliminated\) by examining the query `EXPLAIN` plan.
+-   Validate that queries are selectively scanning partitioned tables (partitions are being eliminated) by examining the query `EXPLAIN` plan.
 -   Do not create too many partitions with column-oriented storage because of the total number of physical files on every segment: `physical files = segments x columns x partitions`
 
-See [Partitioning](schema.html).
+See [Partitioning](schema.md).
 
-## <a id="indexes"></a>Indexes
+<a id="indexes"></a>
+
+## Indexes
 
 -   In general indexes are not needed in WarehousePG.
 -   Create an index on a single column of a columnar table for drill-through purposes for high cardinality tables that require queries with high selectivity.
@@ -140,9 +170,11 @@ See [Partitioning](schema.html).
 -   Do not use bitmap indexes for transactional workloads.
 -   In general do not index partitioned tables. If indexes are needed, the index columns must be different than the partition columns.
 
-See [Indexes](schema.html).
+See [Indexes](schema.md).
 
-## <a id="_Toc286661611"></a>Resource Queues
+<a id="_toc286661611"></a>
+
+## Resource Queues
 
 -   Use resource queues to manage the workload on the cluster.
 -   Associate all roles with a user-defined resource queue.
@@ -150,9 +182,11 @@ See [Indexes](schema.html).
 -   Use the `MEMORY_LIMIT` parameter to control the total amount of memory that queries running through the queue can utilize.
 -   Alter resource queues dynamically to match the workload and time of day.
 
-See [Configuring Resource Queues](workloads.html#configuring_rq).
+See [Configuring Resource Queues](workloads.md#configuring_rq).
 
-## <a id="monmat"></a>Monitoring and Maintenance
+<a id="monmat"></a>
+
+## Monitoring and Maintenance
 
 -   Implement the "Recommended Monitoring and Maintenance Tasks" in the *WarehousePG Administrator Guide*.
 -   Run `gpcheckperf` at install time and periodically thereafter, saving the output to compare system performance over time.
@@ -162,11 +196,13 @@ See [Configuring Resource Queues](workloads.html#configuring_rq).
 -   Review plans to determine whether index are being used and partition elimination is occurring as expected.
 -   Know the location and content of system log files and monitor them on a regular basis, not just when problems arise.
 
-See [System Monitoring and Maintenance](maintenance.html), [Query Profiling](../admin_guide/query/topics/query-profiling.html#in198649) and [Monitoring WarehousePG Log Files](logfiles.html).
+See [System Monitoring and Maintenance](maintenance/index.md), [Query Profiling](../admin_guide/query/query-profiling.md) and [Monitoring WarehousePG Log Files](maintenance/logfiles.md).
 
-## <a id="_Toc286661612"></a>ANALYZE
+<a id="_toc286661612"></a>
 
--   Determine if analyzing the database is actually needed. Analyzing is not needed if `gp_autostats_mode` is set to `on_no_stats` \(the default\) and the table is not partitioned.
+## ANALYZE
+
+-   Determine if analyzing the database is actually needed. Analyzing is not needed if `gp_autostats_mode` is set to `on_no_stats` (the default) and the table is not partitioned.
 -   Use `analyzedb` in preference to `ANALYZE` when dealing with large sets of tables, as it does not require analyzing the entire database. The `analyzedb` utility updates statistics data for the specified tables incrementally and concurrently. For append optimized tables, `analyzedb` updates statistics incrementally only if the statistics are not current. For heap tables, statistics are always updated. `ANALYZE` does not update the table metadata that the `analyzedb` utility uses to determine whether table statistics are up to date.
 -   Selectively run `ANALYZE` at the table level when needed.
 -   Always run `ANALYZE` after `INSERT`, `UPDATE`. and `DELETE` operations that significantly changes the underlying data.
@@ -175,18 +211,22 @@ See [System Monitoring and Maintenance](maintenance.html), [Query Profiling](../
 -   When dealing with large sets of tables, use `analyzedb` instead of `ANALYZE.`
 -   Run `analyzedb` on the root partition any time that you add a new partition(s) to a partitioned table. This operation both analyzes the leaf partitions in parallel and merges any updated statistics into the root partition.
 
-See [Updating Statistics with ANALYZE](analyze.html).
+See [Updating Statistics with ANALYZE](maintenance/analyze.md).
 
-## <a id="_Toc286661609"></a>Vacuum
+<a id="_toc286661609"></a>
+
+## Vacuum
 
 -   Run `VACUUM` after large `UPDATE` and `DELETE` operations.
 -   Do not run `VACUUM FULL`. Instead run a `CREATE TABLE...AS` operation, then rename and drop the original table.
 -   Frequently run `VACUUM` on the system catalogs to avoid catalog bloat and the need to run `VACUUM FULL` on catalog tables.
 -   Never issue a `kill` command against `VACUUM` on catalog tables.
 
-See [Managing Bloat in a Database](bloat.html).
+See [Managing Bloat in a Database](maintenance/bloat.md).
 
-## <a id="_Toc286661610"></a>Loading
+<a id="_toc286661610"></a>
+
+## Loading
 
 -   Maximize the parallelism as the number of segments increase.
 -   Spread the data evenly across as many ETL nodes as possible.
@@ -198,12 +238,14 @@ See [Managing Bloat in a Database](bloat.html).
 -   Always drop indexes before loading into existing tables and re-create the index after loading.
 -   Run `VACUUM` after load errors to recover space.
 
-See [Loading Data](data_loading.html).
+See [Loading Data](data_loading.md).
 
-## <a id="secty"></a>Security
+<a id="secty"></a>
+
+## Security
 
 -   Secure the `gpadmin` user id and only allow essential system administrators access to it.
--   Administrators should only log in to WarehousePG as `gpadmin` when performing certain system maintenance tasks \(such as upgrade or expansion\).
+-   Administrators should only log in to WarehousePG as `gpadmin` when performing certain system maintenance tasks (such as upgrade or expansion).
 -   Limit users who have the `SUPERUSER` role attribute. Roles that are superusers bypass all access privilege checks in WarehousePG, as well as resource queuing. Only system administrators should be given superuser rights. See "Altering Role Attributes" in the *WarehousePG Administrator Guide*.
 -   Database users should never log on as `gpadmin`, and ETL or production workloads should never run as `gpadmin`.
 -   Assign a distinct WarehousePG role to each user, application, or service that logs in.
@@ -213,21 +255,25 @@ See [Loading Data](data_loading.html).
 -   Enforce a strong password password policy for operating system passwords.
 -   Ensure that important operating system files are protected.
 
-See [Security](security.html).
+See [Security](security.md).
 
-## <a id="enc1"></a>Encryption
+<a id="enc1"></a>
+
+## Encryption
 
 -   Encrypting and decrypting data has a performance cost; only encrypt data that requires encryption.
 -   Do performance testing before implementing any encryption solution in a production system.
--   Server certificates in a production WarehousePG cluster should be signed by a certificate authority \(CA\) so that clients can authenticate the server. The CA may be local if all clients are local to the organization.
+-   Server certificates in a production WarehousePG cluster should be signed by a certificate authority (CA) so that clients can authenticate the server. The CA may be local if all clients are local to the organization.
 -   Client connections to WarehousePG should use SSL encryption whenever the connection goes through an insecure link.
 -   A symmetric encryption scheme, where the same key is used to both encrypt and decrypt, has better performance than an asymmetric scheme and should be used when the key can be shared safely.
 -   Use cryptographic functions to encrypt data on disk. The data is encrypted and decrypted in the database process, so it is important to secure the client connection with SSL to avoid transmitting unencrypted data.
 -   Use the gpfdists protocol to secure ETL data as it is loaded into or unloaded from the database.
 
-See [Encrypting Data and Database Connections](encryption.html)
+See [Encrypting Data and Database Connections](encryption.md)
 
-## <a id="havail"></a>High Availability
+<a id="havail"></a>
+
+## High Availability
 
 > **Note** The following guidelines apply to actual hardware deployments, but not to public cloud-based infrastructure, where high availability solutions may already exist.
 
@@ -248,7 +294,6 @@ See [Encrypting Data and Database Connections](encryption.html)
 -   If backups are saved to local cluster storage, move the files to a safe, off-cluster location when the backup is complete.
 -   If backups are saved to NFS mounts, use a scale-out NFS solution such as Dell PowerScale (Isilon) to prevent IO bottlenecks.
 
-See [High Availability](ha.html).
+See [High Availability](ha.md).
 
-**Parent topic:** [WarehousePG Best Practices](intro.html)
-
+**Parent topic:** [WarehousePG Best Practices](index.md)

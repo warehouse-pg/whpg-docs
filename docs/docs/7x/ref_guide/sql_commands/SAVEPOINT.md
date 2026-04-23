@@ -1,31 +1,46 @@
-# SAVEPOINT 
+---
+title: SAVEPOINT
+
+---
 
 Defines a new savepoint within the current transaction.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 SAVEPOINT <savepoint_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `SAVEPOINT` establishes a new savepoint within the current transaction.
 
 A savepoint is a special mark inside a transaction that allows all commands that are run after it was established to be rolled back, restoring the transaction state to what it was at the time of the savepoint.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
 
-savepoint\_name
+## Parameters
+
+savepoint_name
 The name of the new savepoint. If savepoints with the same name already exist, they are inaccessible until newer identically-named savepoints are released.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-Use [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.html) to rollback to a savepoint. Use [RELEASE SAVEPOINT](RELEASE_SAVEPOINT.html) to destroy a savepoint, keeping the effects of commands run after it was established.
+## Notes
+
+Use [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.md) to rollback to a savepoint. Use [RELEASE SAVEPOINT](RELEASE_SAVEPOINT.md) to destroy a savepoint, keeping the effects of commands run after it was established.
 
 Savepoints can be established only inside a transaction block. You can define multiple savepoints within a transaction.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 To establish a savepoint and later undo the effects of all commands run after it was established:
 
@@ -56,7 +71,7 @@ The above transaction inserts both 3 and 4.
 
 To use a single savepoint name:
 
-``` sql
+```sql
 BEGIN;
     INSERT INTO table1 VALUES (1);
     SAVEPOINT my_savepoint;
@@ -79,13 +94,16 @@ COMMIT;
 
 The above transaction shows row 3 being rolled back first, then row 2.
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-SQL requires a savepoint to be destroyed automatically when another savepoint with the same name is established. In WarehousePG, the old savepoint is kept, though only the more recent one is used when rolling back or releasing. \(Releasing the newer savepoint will cause the older one to again become accessible to [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.html) and [RELEASE SAVEPOINT](RELEASE_SAVEPOINT.html).\) Otherwise, `SAVEPOINT` is fully SQL conforming.
+## Compatibility
 
-## <a id="section8"></a>See Also 
+SQL requires a savepoint to be destroyed automatically when another savepoint with the same name is established. In WarehousePG, the old savepoint is kept, though only the more recent one is used when rolling back or releasing. (Releasing the newer savepoint will cause the older one to again become accessible to [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.md) and [RELEASE SAVEPOINT](RELEASE_SAVEPOINT.md).) Otherwise, `SAVEPOINT` is fully SQL conforming.
 
-[BEGIN](BEGIN.html), [COMMIT](COMMIT.html), [RELEASE SAVEPOINT](RELEASE_SAVEPOINT.html), [ROLLBACK](ROLLBACK.html), [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[BEGIN](BEGIN.md), [COMMIT](COMMIT.md), [RELEASE SAVEPOINT](RELEASE_SAVEPOINT.md), [ROLLBACK](ROLLBACK.md), [ROLLBACK TO SAVEPOINT](ROLLBACK_TO_SAVEPOINT.md)
+
+**Parent topic:** [SQL Commands](index.md)

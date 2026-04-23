@@ -1,14 +1,23 @@
-# DROP PROTOCOL 
+---
+title: DROP PROTOCOL
+
+---
 
 Removes a data access protocol from a database.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP PROTOCOL [IF EXISTS] <name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `DROP PROTOCOL` removes the specified protocol from a database. You specify a protocol name in the `CREATE EXTERNAL TABLE` command to read data from or write data to an external data source.
 
@@ -16,7 +25,9 @@ You must be a superuser or the protocol owner to drop a protocol.
 
 > **Caution** If you drop a data access prococol, external tables that have been defined specifying the protocol will no longer be able to access the external data source.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 IF EXISTS
 Do not throw an error if the protocol does not exist. WarehousePG issues a notice in this case.
@@ -24,19 +35,24 @@ Do not throw an error if the protocol does not exist. WarehousePG issues a notic
 name
 The name of an existing data access protocol.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
+
+## Notes
 
 Dropping a data access protocol, does not drop the protocol's call handlers. You must drop these functions manually.
 
 Be sure to remove any shared libraries that were used by the protocol from the WarehousePG hosts.
 
-## <a id="section6"></a>Compatibility 
+<a id="section6"></a>
+
+## Compatibility
 
 `DROP PROTOCOL` is a WarehousePG extension.
 
-## <a id="section7"></a>See Also 
+<a id="section7"></a>
 
-[CREATE EXTERNAL TABLE](CREATE_EXTERNAL_TABLE.html), [CREATE PROTOCOL](CREATE_PROTOCOL.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE EXTERNAL TABLE](CREATE_EXTERNAL_TABLE.md), [CREATE PROTOCOL](CREATE_PROTOCOL.md)
 
+**Parent topic:** [SQL Commands](index.md)

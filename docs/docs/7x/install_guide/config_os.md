@@ -1,33 +1,36 @@
-# Configure Operating System
+---
+title: Configure Operating System
+
 ---
 
 Describes how to prepare your operating system environment for WarehousePG software installation.
 
 Perform the following tasks in order:
 
-1.  Make sure your host systems meet the requirements described in [On-Premise Hardware Requirements](./platform-requirements.html#on-prem).
+1.  Make sure your host systems meet the requirements described in [On-Premise Hardware Requirements](platform-requirements.md#hardware-requirements).
 2.  [Deactivate or configure SELinux.](#topic_sqj_lt1_nfb)
 3.  [Deactivate or configure firewall software.](#topic_et2_y22_4nb)
 4.  [Set the required operating system parameters.](#topic3)
 5.  [Synchronize system clocks.](#topic_qst_s5t_wy)
 6.  [Create the gpadmin account.](#topic23)
 
-Unless noted, these tasks should be performed for *all* hosts in your WarehousePG cluster \(coordinator, standby coordinator, and segment hosts\).
+Unless noted, these tasks should be performed for *all* hosts in your WarehousePG cluster (coordinator, standby coordinator, and segment hosts).
 
 The WarehousePG host naming convention for the coordinator host is `cdw` and for the standby coordinator host is `scdw`.
 
-The segment host naming convention is sdwN where sdw is a prefix and N is an integer. For example, segment host names would be `sdw1`, `sdw2` and so on. NIC bonding is recommended for hosts with multiple interfaces, but when the interfaces are not bonded, the convention is to append a dash \(`-`\) and number to the host name. For example, `sdw1-1` and `sdw1-2` are the two interface names for host `sdw1`.
-
+The segment host naming convention is sdwN where sdw is a prefix and N is an integer. For example, segment host names would be `sdw1`, `sdw2` and so on. NIC bonding is recommended for hosts with multiple interfaces, but when the interfaces are not bonded, the convention is to append a dash (`-`) and number to the host name. For example, `sdw1-1` and `sdw1-2` are the two interface names for host `sdw1`.
 
 > **Important** When data loss is not acceptable for a WarehousePG cluster, WarehousePG coordinator and segment mirroring is recommended. If mirroring is not enabled then WarehousePG stores only one copy of the data, so the underlying storage media provides the only guarantee for data availability and correctness in the event of a hardware failure.
 
 > **Note** For information about upgrading WarehousePG from a previous version, see the *WarehousePG Release Notes* for the release that you are installing.
 
-> **Note** Automating the configuration steps described in this topic and [Installing WarehousePG](install_whpg.html) with a system provisioning tool, such as Ansible, Chef, or Puppet, can save time and ensure a reliable and repeatable WarehousePG installation.
+> **Note** Automating the configuration steps described in this topic and [Installing WarehousePG](install_whpg.md) with a system provisioning tool, such as Ansible, Chef, or Puppet, can save time and ensure a reliable and repeatable WarehousePG installation.
 
-**Parent topic:** [Installing and Upgrading WarehousePG](install_guide/)
+**Parent topic:** [Installing and Upgrading WarehousePG](index.md)
 
-## <a id="topic_sqj_lt1_nfb"></a>Deactivate or Configure SELinux
+<a id="topic_sqj_lt1_nfb"></a>
+
+## Deactivate or Configure SELinux
 
 For all WarehousePG host systems running RHEL/Oracle/Rocky Linux, SELinux must either be `Disabled` or configured to allow unconfined access to WarehousePG processes, directories, and the gpadmin user.
 
@@ -46,7 +49,7 @@ If you choose to deactivate SELinux:
     SELINUX=disabled
     ```
 
-3.  If the System Security Services Daemon \(SSSD\) is installed on your systems, edit the SSSD configuration file and set the `selinux_provider` parameter to `none` to prevent SELinux-related SSH authentication denials that could occur even with SELinux deactivated. As root, edit `/etc/sssd/sssd.conf` and add this parameter:
+3.  If the System Security Services Daemon (SSSD) is installed on your systems, edit the SSSD configuration file and set the `selinux_provider` parameter to `none` to prevent SELinux-related SSH authentication denials that could occur even with SELinux deactivated. As root, edit `/etc/sssd/sssd.conf` and add this parameter:
 
     ```
     selinux_provider=none
@@ -56,11 +59,13 @@ If you choose to deactivate SELinux:
 
 If you choose to enable SELinux in `Enforcing` mode, then WarehousePG processes and users can operate successfully in the default `Unconfined` context. If you require increased SELinux confinement for WarehousePG processes and users, you must test your configuration to ensure that there are no functionality or performance impacts to WarehousePG. See the [SELinux User's and Administrator's Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/selinux_users_and_administrators_guide/index) for detailed information about configuring SELinux and SELinux users.
 
-## <a id="topic_et2_y22_4nb"></a>Deactivate or Configure Firewall Software
+<a id="topic_et2_y22_4nb"></a>
 
-You should also deactivate firewall software such as `firewalld` \(on systems such as RHEL). If firewall software is not deactivated, you must instead configure your software to allow required communication between WarehousePG hosts.
+## Deactivate or Configure Firewall Software
 
-1. Check the status of `firewalld` with the command:
+You should also deactivate firewall software such as `firewalld` (on systems such as RHEL). If firewall software is not deactivated, you must instead configure your software to allow required communication between WarehousePG hosts.
+
+1.  Check the status of `firewalld` with the command:
 
     ```
     # systemctl status firewalld
@@ -83,13 +88,15 @@ You should also deactivate firewall software such as `firewalld` \(on systems su
 
 See the documentation for the firewall or your operating system for additional information.
 
-## <a id="topic3"></a>Recommended OS Parameters Settings
+<a id="topic3"></a>
 
-WarehousePG requires that certain Linux operating system \(OS\) parameters be set on all hosts in your WarehousePG cluster \(coordinators and segments\).
+## Recommended OS Parameters Settings
+
+WarehousePG requires that certain Linux operating system (OS) parameters be set on all hosts in your WarehousePG cluster (coordinators and segments).
 
 In general, the following categories of system parameters need to be altered:
 
--   **Shared Memory** - A WarehousePG instance will not work unless the shared memory segment for your kernel is properly sized. Most default OS installations have the shared memory values set too low for WarehousePG. On Linux systems, you must also deactivate the OOM \(out of memory\) killer. For information about WarehousePG shared memory requirements, see the WarehousePG server configuration parameter [shared\_buffers](../ref_guide/config_params/guc-list.html) in the *WarehousePG Reference Guide*.
+-   **Shared Memory** - A WarehousePG instance will not work unless the shared memory segment for your kernel is properly sized. Most default OS installations have the shared memory values set too low for WarehousePG. On Linux systems, you must also deactivate the OOM (out of memory) killer. For information about WarehousePG shared memory requirements, see the WarehousePG server configuration parameter [shared_buffers](../ref_guide/config_params/guc-list.md) in the *WarehousePG Reference Guide*.
 -   **Network** - On high-volume WarehousePG clusters, certain network-related tuning parameters must be set to optimize network connections made by the WarehousePG interconnect.
 -   **User Limits** - User limits control the resources available to processes started by a user's shell. WarehousePG requires a higher limit on the allowed number of file descriptors that a single process can have open. The default settings may cause some WarehousePG queries to fail because they will run out of file descriptors needed to process the query.
 
@@ -104,15 +111,19 @@ More specifically, you need to edit the following Linux configuration settings:
     -   Read ahead values
     -   Disk I/O scheduler disk access
 -   [Networking](#networking)
--   [Transparent Huge Pages \(THP\)](#huge_pages)
+-   [Transparent Huge Pages (THP)](#huge_pages)
 -   [IPC Object Removal](#ipc_object_removal)
 -   [SSH Connection Threshold](#ssh_max_connections)
 
-### <a id="linux_hosts_file"></a>The hosts File
+<a id="linux_hosts_file"></a>
+
+### The hosts File
 
 Edit the `/etc/hosts` file and make sure that it includes the host names and all interface address names for every machine participating in your WarehousePG cluster.
 
-### <a id="sysctl_file"></a>The sysctl.conf File
+<a id="sysctl_file"></a>
+
+### The sysctl.conf File
 
 The `sysctl.conf` parameters listed in this topic are for performance, optimization, and consistency in a wide variety of environments. Change these settings according to your specific situation and setup.
 
@@ -155,7 +166,7 @@ vm.dirty_background_bytes = 1610612736
 vm.dirty_bytes = 4294967296
 ```
 
-**Shared Memory Pages**
+### Shared Memory Pages
 
 WarehousePG uses shared memory to communicate between `postgres` processes that are part of the same `postgres` instance. `kernel.shmall` sets the total amount of shared memory, in pages, that can be used system wide. `kernel.shmmax` sets the maximum size of a single shared memory segment in bytes.
 
@@ -175,24 +186,24 @@ $ echo $(expr $(getconf _PHYS_PAGES) / 2)
 $ echo $(expr $(getconf _PHYS_PAGES) / 2 \* $(getconf PAGE_SIZE))
 ```
 
-As best practice, we recommend you set the following values in the `/etc/sysctl.conf` file using calculated values. For example, a host system has 1583 GB of memory installed and returns these values: \_PHYS\_PAGES = 395903676 and PAGE\_SIZE = 4096. These would be the `kernel.shmall` and `kernel.shmmax` values:
+As best practice, we recommend you set the following values in the `/etc/sysctl.conf` file using calculated values. For example, a host system has 1583 GB of memory installed and returns these values: \_PHYS_PAGES = 395903676 and PAGE_SIZE = 4096. These would be the `kernel.shmall` and `kernel.shmmax` values:
 
 ```
 kernel.shmall = 197951838
 kernel.shmmax = 810810728448
 ```
 
-If the WarehousePG coordinator has a different shared memory configuration than the segment hosts, the \_PHYS\_PAGES and PAGE\_SIZE values might differ, and the `kernel.shmall` and `kernel.shmmax` values on the coordinator host will differ from those on the segment hosts.
+If the WarehousePG coordinator has a different shared memory configuration than the segment hosts, the \_PHYS_PAGES and PAGE_SIZE values might differ, and the `kernel.shmall` and `kernel.shmmax` values on the coordinator host will differ from those on the segment hosts.
 
-**Segment Host Memory**
+#### Segment Host Memory
 
 The `vm.overcommit_memory` Linux kernel parameter is used by the OS to determine how much memory can be allocated to processes. For WarehousePG, this parameter should always be set to 2.
 
 `vm.overcommit_ratio` is the percent of RAM that is used for application processes and the remainder is reserved for the operating system. The default is 50 on Red Hat Enterprise Linux.
 
-For `vm.overcommit_ratio` tuning and calculation recommendations with resource group-based resource management or resource queue-based resource management, refer to [Options for Configuring Segment Host Memory](../admin_guide/wlmgmt_intro.html) in the *WarehousePG Administrator Guide*.
+For `vm.overcommit_ratio` tuning and calculation recommendations with resource group-based resource management or resource queue-based resource management, refer to [Options for Configuring Segment Host Memory](../admin_guide/performance/wlmgmt_intro.md) in the *WarehousePG Administrator Guide*.
 
-**Port Settings**
+#### Port Settings
 
 To avoid port conflicts between WarehousePG and other applications during WarehousePG initialization, make a note of the port range specified by the operating system parameter `net.ipv4.ip_local_port_range`. When initializing WarehousePG using the `gpinitsystem` cluster configuration file, do not specify WarehousePG ports in that range. For example, if `net.ipv4.ip_local_port_range = 10000 65535`, set the WarehousePG base port numbers to these values.
 
@@ -201,7 +212,7 @@ PORT_BASE = 6000
 MIRROR_PORT_BASE = 7000
 ```
 
-For information about the `gpinitsystem` cluster configuration file, see [Initializing WarehousePG](../install_guide/init_whpg.html).
+For information about the `gpinitsystem` cluster configuration file, see [Initializing WarehousePG](init_whpg.md).
 
 For Azure deployments with WarehousePG avoid using port 65330; add the following line to sysctl.conf:
 
@@ -209,9 +220,9 @@ For Azure deployments with WarehousePG avoid using port 65330; add the following
 net.ipv4.ip_local_reserved_ports=65330 
 ```
 
-For additional requirements and recommendations for cloud deployments, see [Public Cloud Requirements](./platform-requirements.html#public-cloud).
+For additional requirements and recommendations for cloud deployments, see [Public Cloud Requirements](platform-requirements.md#public-cloud).
 
-**IP Fragmentation Settings**
+#### IP Fragmentation Settings
 
 When the WarehousePG interconnect uses UDP (the default), the network interface card controls IP packet fragmentation and reassemblies.
 
@@ -219,21 +230,21 @@ If the UDP message size is larger than the size of the maximum transmission unit
 
 The following `sysctl.conf` operating system parameters control the reassembly process:
 
-| OS Parameter | Description |
-|--------------|-------------|
+| OS Parameter                | Description                                                                                                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | net.ipv4.ipfrag_high_thresh | The maximum amount of memory used to reassemble IP fragments before the kernel starts to remove fragments to free up resources. The default value is 4194304 bytes (4MB). |
-| net.ipv4.ipfrag_low_thresh | The minimum amount of memory used to reassemble IP fragments. The default value is 3145728 bytes (3MB). (Deprecated after kernel version 4.17.) |
-| net.ipv4.ipfrag_time | The maximum amount of time (in seconds) to keep an IP fragment in memory. The default value is 30. |
+| net.ipv4.ipfrag_low_thresh  | The minimum amount of memory used to reassemble IP fragments. The default value is 3145728 bytes (3MB). (Deprecated after kernel version 4.17.)                           |
+| net.ipv4.ipfrag_time        | The maximum amount of time (in seconds) to keep an IP fragment in memory. The default value is 30.                                                                        |
 
 The recommended settings for these parameters for WarehousePG follow:
 
-``` pre
+```pre
 net.ipv4.ipfrag_high_thresh = 41943040
 net.ipv4.ipfrag_low_thresh = 31457280
 net.ipv4.ipfrag_time = 60
 ```
 
-**System Memory**
+#### System Memory
 
 For host systems with more than 64GB of memory, these settings are recommended:
 
@@ -260,7 +271,9 @@ awk 'BEGIN {OFMT = "%.0f";} /MemTotal/ {print "vm.min_free_kbytes =", $2 * .03;}
 
 Do not set `vm.min_free_kbytes` to higher than 5% of system memory as doing so might cause out of memory conditions.
 
-### <a id="system_resources"></a>System Resources Limits
+<a id="system_resources"></a>
+
+### System Resources Limits
 
 Set the following parameters in the `/etc/security/limits.conf` file:
 
@@ -271,11 +284,13 @@ Set the following parameters in the `/etc/security/limits.conf` file:
 * hard nproc 131072
 ```
 
-For Red Hat Enterprise Linux \(RHEL\) systems, parameter values in the `/etc/security/limits.d/20-nproc.conf` file override the values in the `limits.conf` file. Ensure that any parameters in the override file are set to the required value. The Linux module `pam_limits` sets user limits by reading the values from the `limits.conf` file and then from the override file. For information about PAM and user limits, see the documentation on PAM and `pam_limits`.
+For Red Hat Enterprise Linux (RHEL) systems, parameter values in the `/etc/security/limits.d/20-nproc.conf` file override the values in the `limits.conf` file. Ensure that any parameters in the override file are set to the required value. The Linux module `pam_limits` sets user limits by reading the values from the `limits.conf` file and then from the override file. For information about PAM and user limits, see the documentation on PAM and `pam_limits`.
 
 Run the `ulimit -u` command on each segment host to display the maximum number of processes that are available to each user. Validate that the return value is 131072.
 
-### <a id="core_dump"></a>Core Dump
+<a id="core_dump"></a>
+
+### Core Dump
 
 Enable core file generation to a known location by adding the following line to `/etc/sysctl.conf`:
 
@@ -296,7 +311,9 @@ To apply the changes to the live kernel, run the following command:
 # sysctl -p
 ```
 
-### <a id="xfs_mount"></a>XFS Mount Options
+<a id="xfs_mount"></a>
+
+### XFS Mount Options
 
 XFS is the preferred data storage file system on Linux platforms. Use the `mount` command with the following recommended XFS mount options for RHEL systems:
 
@@ -304,7 +321,7 @@ XFS is the preferred data storage file system on Linux platforms. Use the `mount
 rw,nodev,noatime,inode64
 ```
 
-See the `mount` manual page \(`man mount` opens the man page\) for more information about using this command.
+See the `mount` manual page (`man mount` opens the man page) for more information about using this command.
 
 The XFS options can also be set in the `/etc/fstab` file. This example entry from an `fstab` file specifies the XFS options.
 
@@ -314,11 +331,13 @@ The XFS options can also be set in the `/etc/fstab` file. This example entry fro
 
 > **Note** You must have root permission to edit the `/etc/fstab` file.
 
-### <a id="disk_io_settings"></a>Disk I/O Settings
+<a id="disk_io_settings"></a>
+
+### Disk I/O Settings
 
 -   Read-ahead value
 
-    Each disk device file should have a read-ahead \(`blockdev`\) value of 16384. To verify the read-ahead value of a disk device:
+    Each disk device file should have a read-ahead (`blockdev`) value of 16384. To verify the read-ahead value of a disk device:
 
     ```
     # sudo /sbin/blockdev --getra <devname>
@@ -330,7 +349,7 @@ The XFS options can also be set in the `/etc/fstab` file. This example entry fro
     # sudo /sbin/blockdev --getra /dev/sdb
     ```
 
-    To set blockdev \(read-ahead\) on a device:
+    To set blockdev (read-ahead) on a device:
 
     ```
     # sudo /sbin/blockdev --setra <bytes> <devname>
@@ -342,7 +361,7 @@ The XFS options can also be set in the `/etc/fstab` file. This example entry fro
     # sudo /sbin/blockdev --setra 16384 /dev/sdb
     ```
 
-    See the manual page \(man\) for the `blockdev` command for more information about using that command \(`man blockdev` opens the man page\).
+    See the manual page (man) for the `blockdev` command for more information about using that command (`man blockdev` opens the man page).
 
     > **Note** The `blockdev --setra` command is not persistent. You must ensure the read-ahead value is set whenever the system restarts. How to set the value will vary based on your system.
 
@@ -366,13 +385,13 @@ The XFS options can also be set in the `/etc/fstab` file. This example entry fro
 
     A typical Linux disk I/O scheduler supports multiple access policies. The optimal policy selection depends on the underlying storage infrastructure. The recommended scheduler policy settings for WarehousePG clusters for specific OSs and storage device types follow:
 
-    | Storage Device Type | OS | Recommended Scheduler Policy |
-    | :--- | :--- | :--- |
-    | Non-Volatile Memory Express (NVMe) | RHEL 7<br />RHEL 8<br />RHEL 9<br />Ubuntu | `none` |
-    | Solid-State Drives (SSD) | RHEL 7 | `noop` |
-    | Solid-State Drives (SSD) | RHEL 8<br />RHEL 9<br />Ubuntu | `none` |
-    | Other | RHEL 7 | `deadline` |
-    | Other | RHEL 8<br />RHEL 9<br />Ubuntu | `mq-deadline` |
+    | Storage Device Type                | OS                                         | Recommended Scheduler Policy |
+    | :--------------------------------- | :----------------------------------------- | :--------------------------- |
+    | Non-Volatile Memory Express (NVMe) | RHEL 7<br />RHEL 8<br />RHEL 9<br />Ubuntu | `none`                       |
+    | Solid-State Drives (SSD)           | RHEL 7                                     | `noop`                       |
+    | Solid-State Drives (SSD)           | RHEL 8<br />RHEL 9<br />Ubuntu             | `none`                       |
+    | Other                              | RHEL 7                                     | `deadline`                   |
+    | Other                              | RHEL 8<br />RHEL 9<br />Ubuntu             | `mq-deadline`                |
 
     To specify a scheduler until the next system reboot, run the following:
 
@@ -406,25 +425,27 @@ The XFS options can also be set in the `/etc/fstab` file. This example entry fro
 
     For additional information about configuring the disk scheduler, refer to the RedHat Enterprise Linux documentation for [RHEL 8](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/monitoring_and_managing_system_status_and_performance/setting-the-disk-scheduler_monitoring-and-managing-system-status-and-performance).
 
+<a id="networking"></a>
 
-### <a id="networking"></a>Networking
+### Networking
 
 The maximum transmission unit (MTU) of a network specifies the size (in bytes) of the largest data packet/frame accepted by a network-connected device. A jumbo frame is a frame that contains more than the standard MTU of 1500 bytes.
 
 WarehousePG utilizes 3 distinct MTU settings:
 
-- The WarehousePG [gp_max_packet_size](../ref_guide/config_params/guc-list.html#gp_max_packet_size) server configuration parameter. The default max packet size is 8192. This default assumes a jumbo frame MTU.
-- The operating system MTU setting.
-- The rack switch MTU setting.
+-   The WarehousePG [gp_max_packet_size](../ref_guide/config_params/guc-list.md#gp_max_packet_size) server configuration parameter. The default max packet size is 8192. This default assumes a jumbo frame MTU.
+-   The operating system MTU setting.
+-   The rack switch MTU setting.
 
-These settings are connected, in that they should always be either the same, or close to the same, value, or otherwise in the order of WarehousePG < OS < switch for MTU size.
+These settings are connected, in that they should always be either the same, or close to the same, value, or otherwise in the order of WarehousePG &lt; OS &lt; switch for MTU size.
 
 9000 is a common supported setting for switches, and is the recommended OS and rack switch MTU setting for your WarehousePG hosts.
 
+<a id="huge_pages"></a>
 
-### <a id="huge_pages"></a>Transparent Huge Pages \(THP\)
+### Transparent Huge Pages (THP)
 
-Deactivate Transparent Huge Pages \(THP\) as it degrades WarehousePG performance. RHEL 6.0 or higher enables THP by default. One way to deactivate THP on RHEL 6.x is by adding the parameter `transparent_hugepage=never` to the kernel command in the file `/boot/grub/grub.conf`, the GRUB boot loader configuration file. This is an example kernel command from a `grub.conf` file. The command is on multiple lines for readability:
+Deactivate Transparent Huge Pages (THP) as it degrades WarehousePG performance. RHEL 6.0 or higher enables THP by default. One way to deactivate THP on RHEL 6.x is by adding the parameter `transparent_hugepage=never` to the kernel command in the file `/boot/grub/grub.conf`, the GRUB boot loader configuration file. This is an example kernel command from a `grub.conf` file. The command is on multiple lines for readability:
 
 ```
 kernel /vmlinuz-2.6.18-274.3.1.el5 ro root=LABEL=/
@@ -456,7 +477,9 @@ always [never]
 
 For more information about Transparent Huge Pages or the `grubby` utility, see your operating system documentation. If the `grubby` command does not update the kernels, see the [Note](#grubby_note) at the end of the section.
 
-### <a id="ipc_object_removal"></a>IPC Object Removal
+<a id="ipc_object_removal"></a>
+
+### IPC Object Removal
 
 Deactivate IPC object removal. The default `systemd` setting `RemoveIPC=yes` removes IPC connections when non-system user accounts log out. This causes the WarehousePG utility `gpinitsystem` to fail with semaphore errors. Perform one of the following to avoid this issue.
 
@@ -473,16 +496,17 @@ Deactivate IPC object removal. The default `systemd` setting `RemoveIPC=yes` rem
     service systemd-logind restart
     ```
 
+<a id="ssh_max_connections"></a>
 
-### <a id="ssh_max_connections"></a>SSH Connection Threshold
+### SSH Connection Threshold
 
-Certain WarehousePG management utilities including `gpexpand`, `gpinitsystem`, and `gpaddmirrors`, use secure shell \(SSH\) connections between systems to perform their tasks. In large WarehousePG deployments, cloud deployments, or deployments with a large number of segments per host, these utilities may exceed the host's maximum threshold for unauthenticated connections. When this occurs, you receive errors such as: `ssh_exchange_identification: Connection closed by remote host`.
+Certain WarehousePG management utilities including `gpexpand`, `gpinitsystem`, and `gpaddmirrors`, use secure shell (SSH) connections between systems to perform their tasks. In large WarehousePG deployments, cloud deployments, or deployments with a large number of segments per host, these utilities may exceed the host's maximum threshold for unauthenticated connections. When this occurs, you receive errors such as: `ssh_exchange_identification: Connection closed by remote host`.
 
 To increase this connection threshold for your WarehousePG cluster, update the SSH `MaxStartups` and `MaxSessions` configuration parameters in one of the `/etc/ssh/sshd_config` or `/etc/sshd_config` SSH daemon configuration files.
 
 > **Note** You must have root permission to edit these two files.
 
-If you specify `MaxStartups` and `MaxSessions` using a single integer value, you identify the maximum number of concurrent unauthenticated connections \(`MaxStartups`\) and maximum number of open shell, login, or subsystem sessions permitted per network connection \(`MaxSessions`\). For example:
+If you specify `MaxStartups` and `MaxSessions` using a single integer value, you identify the maximum number of concurrent unauthenticated connections (`MaxStartups`) and maximum number of open shell, login, or subsystem sessions permitted per network connection (`MaxSessions`). For example:
 
 ```
 MaxStartups 200
@@ -530,20 +554,24 @@ For detailed information about SSH configuration options, refer to the SSH docum
 
 3.  Reboot the system.
 
-## <a id="topic_qst_s5t_wy"></a>Synchronizing System Clocks
+<a id="topic_qst_s5t_wy"></a>
+
+## Synchronizing System Clocks
 
 You must use NTP (Network Time Protocol) to synchronize the system clocks on all hosts that comprise your WarehousePG cluster. Accurate time keeping is essential to ensure reliable operations on the database and data integrity.
 
 There are many different architectures you may choose from to implement NTP. We recommend you use one of the following:
 
-- Configure coordinator as the NTP primary source and the other hosts in the cluster connect to it.
-- Configure an external NTP primary source and all hosts in the cluster connect to it.
+-   Configure coordinator as the NTP primary source and the other hosts in the cluster connect to it.
+-   Configure an external NTP primary source and all hosts in the cluster connect to it.
 
 Depending on your operating system version, the NTP protocol may be implemented by the `ntpd` daemon, the `chronyd` daemon, or other. Refer to your preferred NTP protocol documentation for more details.
 
-### <a id="ji162603"></a>Option 1: Configure System Clocks with the Coordinator as the Primary Source
+<a id="ji162603"></a>
 
-1.  On the coordinator host, log in as root and edit your NTP daemon configuration file. Set the `server` parameter to point to your data center's NTP time server. For example \(if `10.6.220.20` was the IP address of your data center's NTP server\):
+### Option 1: Configure System Clocks with the Coordinator as the Primary Source
+
+1.  On the coordinator host, log in as root and edit your NTP daemon configuration file. Set the `server` parameter to point to your data center's NTP time server. For example (if `10.6.220.20` was the IP address of your data center's NTP server):
 
     ```
     server 10.6.220.20
@@ -575,17 +603,19 @@ Depending on your operating system version, the NTP protocol may be implemented 
 
     ```
     systemctl restart chronyd
-    ``` 
+    ```
 
-### <a id="ji162603"></a>Option 2: Configure System Clocks with an External Primary Source
+<a id="ji162603"></a>
+
+### Option 2: Configure System Clocks with an External Primary Source
 
 1.  On each host, including coordinator, standby coordinator, and segments, log in as root and edit your NTP daemon configuration file. Set the first `server` parameter to point to your data center's NTP time server. For example (if `10.6.220.20` was the IP address of your data center's NTP server):
-    
+
     ```
     server 10.6.220.20
     ```
 
-1.  On the coordinator host, use your NTP daemon to synchronize the system clocks on all WarehousePG hosts. For example, using [gpssh](../utility_guide/ref/gpssh.html):
+2.  On the coordinator host, use your NTP daemon to synchronize the system clocks on all WarehousePG hosts. For example, using [gpssh](../ref_guide/utility_guide/reference/gpssh.md):
 
     If you are using the `ntpd` daemon:
 
@@ -594,11 +624,14 @@ Depending on your operating system version, the NTP protocol may be implemented 
     ```
 
     If you are using the `chronyd` daemon:
- 
+
     ```
     gpssh -f hostfile_gpssh_allhosts -v -e 'chronyd'
+    ```
 
-## <a id="topic23"></a>Creating the WarehousePG Administrative User 
+<a id="topic23"></a>
+
+## Creating the WarehousePG Administrative User
 
 Create a dedicated operating system user account on each node to run and administer WarehousePG. This user account is named `gpadmin` by convention.
 
@@ -606,15 +639,15 @@ Create a dedicated operating system user account on each node to run and adminis
 
 The `gpadmin` user must have permission to access the services and directories required to install and run WarehousePG.
 
-The `gpadmin` user on each WarehousePG host must have an SSH key pair installed and be able to SSH from any host in the cluster to any other host in the cluster without entering a password or passphrase \(called "passwordless SSH"\). If you enable passwordless SSH from the coordinator host to every other host in the cluster \("1-*n* passwordless SSH"\), you can use the WarehousePG `gpssh-exkeys` command-line utility later to enable passwordless SSH from every host to every other host \("*n*-*n* passwordless SSH"\).
+The `gpadmin` user on each WarehousePG host must have an SSH key pair installed and be able to SSH from any host in the cluster to any other host in the cluster without entering a password or passphrase (called "passwordless SSH"). If you enable passwordless SSH from the coordinator host to every other host in the cluster ("1-*n* passwordless SSH"), you can use the WarehousePG `gpssh-exkeys` command-line utility later to enable passwordless SSH from every host to every other host ("*n*-*n* passwordless SSH").
 
 You can optionally give the `gpadmin` user sudo privilege, so that you can easily administer all hosts in the WarehousePG cluster as `gpadmin` using the `sudo`, `ssh/rsync`, and `gpssh/gpsync` commands.
 
-The following steps show how to set up the `gpadmin` user on a host, set a password, create an SSH key pair, and \(optionally\) enable sudo capability. These steps must be performed as root on every WarehousePG cluster host. \(For a large WarehousePG cluster you will want to automate these steps using your system provisioning tools.\)
+The following steps show how to set up the `gpadmin` user on a host, set a password, create an SSH key pair, and (optionally) enable sudo capability. These steps must be performed as root on every WarehousePG cluster host. (For a large WarehousePG cluster you will want to automate these steps using your system provisioning tools.)
 
 1.  Create the `gpadmin` group and user.
 
-    > **Note** If you are installing WarehousePG on RHEL 7.2 or CentOS 7.2 and want to deactivate IPC object removal by creating the `gpadmin` user as a system account, provide both the `-r` option \(create the user as a system account\) and the `-m` option \(create a home directory\) to the `useradd` command. On Ubuntu systems, you must use the `-m` option with the `useradd` command to create a home directory for a user.
+    > **Note** If you are installing WarehousePG on RHEL 7.2 or CentOS 7.2 and want to deactivate IPC object removal by creating the `gpadmin` user as a system account, provide both the `-r` option (create the user as a system account) and the `-m` option (create a home directory) to the `useradd` command. On Ubuntu systems, you must use the `-m` option with the `useradd` command to create a home directory for a user.
 
     This example creates the `gpadmin` group, creates the `gpadmin` user as a system account with a home directory and as a member of the `gpadmin` group, and creates a password for the user.
 
@@ -628,7 +661,7 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
 
     > **Note** You must have root permission to create the `gpadmin` group and user.
 
-    > **Note** Make sure the `gpadmin` user has the same user id \(uid\) and group id \(gid\) numbers on each host to prevent problems with scripts or services that use them for identity or permissions. For example, backing up WarehousePGs to some networked filesy stems or storage appliances could fail if the `gpadmin` user has different uid or gid numbers on different segment hosts. When you create the `gpadmin` group and user, you can use the `groupadd -g` option to specify a gid number and the `useradd -u` option to specify the uid number. Use the command `id gpadmin` to see the uid and gid for the `gpadmin` user on the current host.
+    > **Note** Make sure the `gpadmin` user has the same user id (uid) and group id (gid) numbers on each host to prevent problems with scripts or services that use them for identity or permissions. For example, backing up WarehousePGs to some networked filesy stems or storage appliances could fail if the `gpadmin` user has different uid or gid numbers on different segment hosts. When you create the `gpadmin` group and user, you can use the `groupadd -g` option to specify a gid number and the `useradd -u` option to specify the uid number. Use the command `id gpadmin` to see the uid and gid for the `gpadmin` user on the current host.
 
 2.  Switch to the `gpadmin` user and generate an SSH key pair for the `gpadmin` user.
 
@@ -640,7 +673,7 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
     Created directory '/home/gpadmin/.ssh'.
     Enter passphrase (empty for no passphrase):
     Enter same passphrase again:
-    
+
     ```
 
     At the passphrase prompts, press Enter so that SSH connections will not require entry of a passphrase.
@@ -661,10 +694,10 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
     # usermod -aG wheel gpadmin
     ```
 
+<a id="topic_acx_5xb_vhb"></a>
 
-## <a id="topic_acx_5xb_vhb"></a>Next Steps 
+## Next Steps
 
--   [Installing WarehousePG Software](install_whpg.html)
--   [Validating the WHPG Cluster](validate.html)
--   [Initializing WarehousePG](init_whpg.html)
-
+-   [Installing WarehousePG Software](install_whpg.md)
+-   [Validating the WHPG Cluster](validate.md)
+-   [Initializing WarehousePG](init_whpg.md)

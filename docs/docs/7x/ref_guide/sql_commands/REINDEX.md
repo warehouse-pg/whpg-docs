@@ -1,14 +1,23 @@
-# REINDEX 
+---
+title: REINDEX
+
+---
 
 Rebuilds indexes.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 REINDEX [ (VERBOSE) ] { INDEX | TABLE | SCHEMA | DATABASE | SYSTEM } <name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `REINDEX` rebuilds an index using the data stored in the index's table, replacing the old copy of the index. There are several scenarios in which to use `REINDEX`:
 
@@ -16,7 +25,9 @@ REINDEX [ (VERBOSE) ] { INDEX | TABLE | SCHEMA | DATABASE | SYSTEM } <name>
 -   An index has become bloated, that is, it contains many empty or nearly-empty pages. This can occur with B-tree indexes in WarehousePG under certain uncommon access patterns. `REINDEX` provides a way to reduce the space consumption of the index by writing a new version of the index without the dead pages.
 -   You have altered a storage parameter (such as `fillfactor`) for an index, and wish to ensure that the change has taken full effect.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 INDEX
 Recreate the specified index.
@@ -39,19 +50,23 @@ The name of the specific index, table, or database to be reindexed. Index and ta
 VERBOSE
 Prints a progress report as each index is reindexed.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-WarehousePG does not support concurrently recreating indexes \(`CONCURRENTLY` keyword is not supported\).
+## Notes
+
+WarehousePG does not support concurrently recreating indexes (`CONCURRENTLY` keyword is not supported).
 
 `REINDEX` causes locking of system catalog tables, which could affect currently running queries. To avoid disrupting ongoing business operations, schedule the `REINDEX` operation during a period of low activity.
 
 `REINDEX` is similar to a drop and recreate of the index in that the index contents are rebuilt from scratch. However, the locking considerations are rather different. `REINDEX` locks out writes but not reads of the index's parent table. It also takes an `ACCESS EXCLUSIVE` lock on the specific index being processed, which will block reads that attempt to use that index. In contrast, `DROP INDEX` momentarily takes an `ACCESS EXCLUSIVE` lock on the parent table, blocking both writes and reads. The subsequent `CREATE INDEX` locks out writes but not reads; since the index is not there, no read will attempt to use it, meaning that there will be no blocking but reads may be forced into expensive sequential scans.
 
-Reindexing a single index or table requires being the owner of that index or table. Reindexing a schema or database requires being the owner of the schema or database. Note that it is therefore sometimes possible for non-superusers to rebuild indexes of tables owned by other users. However, as a special exception, when a non-superuser issues `REINDEX DATABASE`, `REINDEX SCHEMA` or `REINDEX SYSTEM`, WarehousePG skips indexes on shared catalogs unless the user owns the catalog \(which typically won't be the case\). Of course, superusers can always reindex anything.
+Reindexing a single index or table requires being the owner of that index or table. Reindexing a schema or database requires being the owner of the schema or database. Note that it is therefore sometimes possible for non-superusers to rebuild indexes of tables owned by other users. However, as a special exception, when a non-superuser issues `REINDEX DATABASE`, `REINDEX SCHEMA` or `REINDEX SYSTEM`, WarehousePG skips indexes on shared catalogs unless the user owns the catalog (which typically won't be the case). Of course, superusers can always reindex anything.
 
-REINDEX` does not update the `reltuples` and `relpages` statistics for the index. To update those statistics, run `ANALYZE` on the table after reindexing.
+REINDEX`does not update the`reltuples`and`relpages`statistics for the index. To update those statistics, run`ANALYZE\` on the table after reindexing.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Rebuild a single index:
 
@@ -75,13 +90,16 @@ broken_db=> REINDEX DATABASE broken_db;
 broken_db=> \q
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 There is no `REINDEX` command in the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[CREATE INDEX](CREATE_INDEX.html), [DROP INDEX](DROP_INDEX.html), [VACUUM](VACUUM.html), [reindexdb](../../utility_guide/ref/reindexdb.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE INDEX](CREATE_INDEX.md), [DROP INDEX](DROP_INDEX.md), [VACUUM](VACUUM.md), [reindexdb](../utility_guide/reference/reindexdb.md)
 
+**Parent topic:** [SQL Commands](index.md)

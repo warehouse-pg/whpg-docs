@@ -1,10 +1,17 @@
-# VALUES 
+---
+title: VALUES
+
+---
 
 Computes a set of rows.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 VALUES ( <expression> [, ...] ) [, ...]
    [ORDER BY <sort_expression> [ ASC | DESC | USING <operator> ] [, ...] ]
    [LIMIT { <count> | ALL } ] 
@@ -12,34 +19,42 @@ VALUES ( <expression> [, ...] ) [, ...]
    [FETCH { FIRST | NEXT } [<count> ] { ROW | ROWS } ONLY ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `VALUES` computes a row value or set of row values specified by value expressions. It is most commonly used to generate a "constant table" within a larger command, but it can be used on its own.
 
 When more than one row is specified, all the rows must have the same number of elements. The data types of the resulting table's columns are determined by combining the explicit or inferred types of the expressions appearing in that column, using the same rules as for `UNION`.
 
-Within larger commands, `VALUES` is syntactically allowed anywhere that `SELECT` is. Because it is treated like a `SELECT` by the grammar, it is possible to use the `ORDER BY`, `LIMIT` \(or equivalent `FETCH FIRST`\), and `OFFSET` clauses with a `VALUES` command.
+Within larger commands, `VALUES` is syntactically allowed anywhere that `SELECT` is. Because it is treated like a `SELECT` by the grammar, it is possible to use the `ORDER BY`, `LIMIT` (or equivalent `FETCH FIRST`), and `OFFSET` clauses with a `VALUES` command.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 expression
-A constant or expression to compute and insert at the indicated place in the resulting table \(set of rows\). In a `VALUES` list appearing at the top level of an `INSERT`, an expression can be replaced by `DEFAULT` to indicate that the destination column's default value should be inserted. `DEFAULT` cannot be used when `VALUES` appears in other contexts.
+A constant or expression to compute and insert at the indicated place in the resulting table (set of rows). In a `VALUES` list appearing at the top level of an `INSERT`, an expression can be replaced by `DEFAULT` to indicate that the destination column's default value should be inserted. `DEFAULT` cannot be used when `VALUES` appears in other contexts.
 
-sort\_expression
-An expression or integer constant indicating how to sort the result rows. This expression may refer to the columns of the `VALUES` result as `column1`, `column2`, etc. For more details, see "The ORDER BY Clause" in the parameters for [SELECT](SELECT.html).
+sort_expression
+An expression or integer constant indicating how to sort the result rows. This expression may refer to the columns of the `VALUES` result as `column1`, `column2`, etc. For more details, see "The ORDER BY Clause" in the parameters for [SELECT](SELECT.md).
 
 operator
-A sorting operator. For more details, see "The ORDER BY Clause" in the parameters for [SELECT](SELECT.html).
+A sorting operator. For more details, see "The ORDER BY Clause" in the parameters for [SELECT](SELECT.md).
 
 LIMIT count
 OFFSET start
-The maximum number of rows to return. For more details, see "The LIMIT Clause" in the parameters for [SELECT](SELECT.html).
+The maximum number of rows to return. For more details, see "The LIMIT Clause" in the parameters for [SELECT](SELECT.md).
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-`VALUES` lists with very large numbers of rows should be avoided, as you may encounter out-of-memory failures or poor performance. `VALUES` appearing within `INSERT` is a special case \(because the desired column types are known from the `INSERT`'s target table, and need not be inferred by scanning the `VALUES` list\), so it can handle larger lists than are practical in other contexts.
+## Notes
 
-## <a id="section6"></a>Examples 
+`VALUES` lists with very large numbers of rows should be avoided, as you may encounter out-of-memory failures or poor performance. `VALUES` appearing within `INSERT` is a special case (because the desired column types are known from the `INSERT`'s target table, and need not be inferred by scanning the `VALUES` list), so it can handle larger lists than are practical in other contexts.
+
+<a id="section6"></a>
+
+## Examples
 
 A bare `VALUES` command:
 
@@ -97,13 +112,16 @@ SELECT * FROM machines WHERE ip_address IN
 
 > **Note** For simple `IN` tests, it is better to rely on the list-of-scalars form of `IN` than to write a `VALUES` query as shown above. The list of scalars method requires less writing and is often more efficient.
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-`VALUES` conforms to the SQL standard. `LIMIT` and `OFFSET` are WarehousePG extensions; see also under [SELECT](SELECT.html).
+## Compatibility
 
-## <a id="section8"></a>See Also 
+`VALUES` conforms to the SQL standard. `LIMIT` and `OFFSET` are WarehousePG extensions; see also under [SELECT](SELECT.md).
 
-[INSERT](INSERT.html), [SELECT](SELECT.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[INSERT](INSERT.md), [SELECT](SELECT.md)
+
+**Parent topic:** [SQL Commands](index.md)

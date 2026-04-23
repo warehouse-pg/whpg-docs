@@ -1,13 +1,17 @@
-# High Availability
+---
+title: High Availability
+
 ---
 
 WarehousePG supports highly available, fault-tolerant database services when you enable and properly configure WarehousePG high availability features. To guarantee a required level of service, each component must have a standby ready to take its place if it should fail.
 
-**Parent topic:** [WarehousePG Best Practices](intro.html)
+**Parent topic:** [WarehousePG Best Practices](index.md)
 
-## <a id="topic_vrb_sxc_54"></a>Disk Storage
+<a id="topic_vrb_sxc_54"></a>
 
-With the WarehousePG "shared-nothing" MPP architecture, the coordinator host and segment hosts each have their own dedicated memory and disk storage, and each coordinator or segment instance has its own independent data directory. For both reliability and high performance, a hardware RAID storage solution with from 8 to 24 disks is recommended. A larger number of disks improves I/O throughput when using RAID 5 \(or 6\) because striping increases parallel disk I/O. The RAID controller can continue to function with a failed disk because it saves parity data on each disk in a way that it can reconstruct the data on any failed member of the array. If a hot spare is configured \(or an operator replaces the failed disk with a new one\) the controller rebuilds the failed disk automatically.
+## Disk Storage
+
+With the WarehousePG "shared-nothing" MPP architecture, the coordinator host and segment hosts each have their own dedicated memory and disk storage, and each coordinator or segment instance has its own independent data directory. For both reliability and high performance, a hardware RAID storage solution with from 8 to 24 disks is recommended. A larger number of disks improves I/O throughput when using RAID 5 (or 6) because striping increases parallel disk I/O. The RAID controller can continue to function with a failed disk because it saves parity data on each disk in a way that it can reconstruct the data on any failed member of the array. If a hot spare is configured (or an operator replaces the failed disk with a new one) the controller rebuilds the failed disk automatically.
 
 RAID 1 exactly mirrors disks, so if a disk fails, a replacement is immediately available with performance equivalent to that before the failure. With RAID 5 each I/O for data on the failed array member must be reconstructed from data on the remaining active drives until the replacement disk is rebuilt, so there is a temporary performance degradation. If the WarehousePG coordinator and segments are mirrored, you can switch any affected WarehousePG instances to their mirrors during the rebuild to maintain acceptable performance.
 
@@ -17,7 +21,9 @@ It is important to regularly monitor available disk space on each segment host. 
 
 See `gp_toolkit.gp_disk_free` in the *WarehousePG Reference Guide*.
 
-### <a id="bestpract"></a>Best Practices
+<a id="bestpract"></a>
+
+### Best Practices
 
 -   Use a hardware RAID storage solution with 8 to 24 disks.
 -   Use RAID 1, 5, or 6 so that the disk array can tolerate a failed disk.
@@ -26,24 +32,30 @@ See `gp_toolkit.gp_disk_free` in the *WarehousePG Reference Guide*.
 -   Monitor disk utilization regularly and add additional space when needed.
 -   Monitor segment skew to ensure that data is distributed evenly and storage is consumed evenly at all segments.
 
-## <a id="topic_b5s_txc_54"></a>Coordinator Mirroring
+<a id="topic_b5s_txc_54"></a>
+
+## Coordinator Mirroring
 
 The WarehousePG coordinator instance is clients' single point of access to the system. The coordinator instance stores the global system catalog, the set of system tables that store metadata about the database instance, but no user data. If an unmirrored coordinator instance fails or becomes inaccessible, the WarehousePG instance is effectively off-line, since the entry point to the system has been lost. For this reason, a standby coordinator must be ready to take over if the primary coordinator fails.
 
-Coordinator mirroring uses two processes, a sender on the active coordinator host and a receiver on the mirror host, to synchronize the mirror with the coordinator. As changes are applied to the coordinator system catalogs, the active coordinator streams its write-ahead log \(WAL\) to the mirror so that each transaction applied on the coordinator is applied on the mirror.
+Coordinator mirroring uses two processes, a sender on the active coordinator host and a receiver on the mirror host, to synchronize the mirror with the coordinator. As changes are applied to the coordinator system catalogs, the active coordinator streams its write-ahead log (WAL) to the mirror so that each transaction applied on the coordinator is applied on the mirror.
 
 The mirror is a *warm standby*. If the primary coordinator fails, switching to the standby requires an administrative user to run the `gpactivatestandby` utility on the standby host so that it begins to accept client connections. Clients must reconnect to the new coordinator and will lose any work that was not committed when the primary failed.
 
 See "Enabling High Availability Features" in the *WarehousePG Administrator Guide* for more information.
 
-### <a id="bp2"></a>Best Practices
+<a id="bp2"></a>
+
+### Best Practices
 
 -   Set up a standby coordinator instance—a *mirror*—to take over if the primary coordinator fails.
 -   The standby can be on the same host or on a different host, but it is best practice to place it on a different host from the primary coordinator to protect against host failure.
 -   Plan how to switch clients to the new coordinator instance when a failure occurs, for example, by updating the coordinator address in DNS.
 -   Set up monitoring to send notifications in a system monitoring application or by email when the primary fails.
 
-## <a id="topic_cnm_vxc_54"></a>Segment Mirroring
+<a id="topic_cnm_vxc_54"></a>
+
+## Segment Mirroring
 
 WarehousePG segment instances each store and manage a portion of the database data, with coordination from the coordinator instance. If any unmirrored segment fails, the database may have to be shutdown and recovered, and transactions occurring after the most recent backup could be lost. Mirroring segments is, therefore, an essential element of a high availability solution.
 
@@ -53,16 +65,17 @@ A segment mirror is a hot standby for a primary segment. WarehousePG detects whe
 
 -   Second, segment mirroring uses physical file replication to update heap tables. WarehousePG Server stores table data on disk as fixed-size blocks packed with tuples. To optimize disk I/O, blocks are cached in memory until the cache fills and some blocks must be evicted to make room for newly updated blocks. When a block is evicted from the cache it is written to disk and replicated over the network to the mirror. Because of the caching mechanism, table updates at the mirror can lag behind the primary. However, because the transaction log is also replicated, the mirror remains consistent with the primary. If the mirror is activated, the activation process updates the tables with any unapplied changes in the transaction commit log.
 
-
 When the acting primary is unable to access its mirror, replication stops and state of the primary changes to "Change Tracking." The primary saves changes that have not been replicated to the mirror in a system table to be replicated to the mirror when it is back on-line.
 
 The coordinator automatically detects segment failures and activates the mirror. Transactions in progress at the time of failure are restarted using the new primary. Depending on how mirrors are deployed on the hosts, the database system may be unbalanced until the original primary segment is recovered. For example, if each segment host has four primary segments and four mirror segments, and a mirror is activated on one host, that host will have five active primary segments. Queries are not complete until the last segment has finished its work, so performance can be degraded until the balance is restored by recovering the original primary.
 
 Administrators perform the recovery while WarehousePG is up and running by running the `gprecoverseg` utility. This utility locates the failed segments, verifies they are valid, and compares the transactional state with the currently active segment to determine changes made while the segment was offline. `gprecoverseg` synchronizes the changed database files with the active segment and brings the segment back online.
 
-It is important to reserve enough memory and CPU resources on segment hosts to allow for increased activity from mirrors that assume the primary role during a failure. The formulas provided in [Configuring Memory for WarehousePG](workloads.html#section_r52_rbl_zt) for configuring segment host memory include a factor for the maximum number of primary hosts on any one segment during a failure. The arrangement of mirrors on the segment hosts affects this factor and how the system will respond during a failure. See [Segment Mirroring Configurations](#topic_ngz_qf4_tt) for a discussion of segment mirroring options.
+It is important to reserve enough memory and CPU resources on segment hosts to allow for increased activity from mirrors that assume the primary role during a failure. The formulas provided in [Configuring Memory for WarehousePG](workloads.md#section_r52_rbl_zt) for configuring segment host memory include a factor for the maximum number of primary hosts on any one segment during a failure. The arrangement of mirrors on the segment hosts affects this factor and how the system will respond during a failure. See [Segment Mirroring Configurations](#topic_ngz_qf4_tt) for a discussion of segment mirroring options.
 
-### <a id="bp3"></a>Best Practices
+<a id="bp3"></a>
+
+### Best Practices
 
 -   Set up mirrors for all segments.
 -   Locate primary segments and their mirrors on different hosts to protect against host failure.
@@ -70,19 +83,25 @@ It is important to reserve enough memory and CPU resources on segment hosts to a
 -   Set up monitoring to send notifications in a system monitoring application or by email when a primary segment fails.
 -   Recover failed segments promptly, using the `gprecoverseg` utility, to restore redundancy and return the system to optimal balance.
 
-## <a id="topic_tlk_zw4_1s"></a>Dual Clusters
+<a id="topic_tlk_zw4_1s"></a>
+
+## Dual Clusters
 
 For some use cases, an additional level of redundancy can be provided by maintaining two WarehousePG clusters that store the same data. The decision to implement dual clusters should be made with business requirements in mind.
 
-There are two recommended methods for keeping the data synchronized in a dual cluster configuration. The first method is called Dual ETL. ETL \(extract, transform, and load\) is the common data warehousing process of cleansing, transforming, validating, and loading data into a data warehouse. With Dual ETL, the ETL processes are performed twice, in parallel on each cluster, and validated each time. Dual ETL provides for a complete standby cluster with the same data. It also provides the capability to query the data on both clusters, doubling the processing throughput. The application can take advantage of both clusters as needed and also ensure that the ETL is successful and validated on both sides.
+There are two recommended methods for keeping the data synchronized in a dual cluster configuration. The first method is called Dual ETL. ETL (extract, transform, and load) is the common data warehousing process of cleansing, transforming, validating, and loading data into a data warehouse. With Dual ETL, the ETL processes are performed twice, in parallel on each cluster, and validated each time. Dual ETL provides for a complete standby cluster with the same data. It also provides the capability to query the data on both clusters, doubling the processing throughput. The application can take advantage of both clusters as needed and also ensure that the ETL is successful and validated on both sides.
 
 The second mechanism for maintaining dual clusters is backup and restore. The data is backed­up on the primary cluster, then the backup is replicated to and restored on the second cluster. The backup and restore mechanism has higher latency than Dual ETL, but requires less application logic to be developed. Backup and restore is ideal for use cases where data modifications and ETL are done daily or less frequently.
 
-### <a id="bp4"></a>Best Practices
+<a id="bp4"></a>
+
+### Best Practices
 
 -   Consider a Dual Cluster configuration to provide an additional level of redundancy and additional query processing throughput.
 
-## <a id="topic_mc5_k1p_1s"></a>Backup and Restore
+<a id="topic_mc5_k1p_1s"></a>
+
+## Backup and Restore
 
 Backups are recommended for WarehousePG databases unless the data in the database can be easily and cleanly regenerated from source data. Backups protect from operational, software, or hardware errors.
 
@@ -92,9 +111,9 @@ A backup strategy must consider where the backups will be written and where they
 
 An alternative is to back up directly to an NFS mount. If each host in the cluster has an NFS mount, the backups can be written directly to NFS storage. A scale-out NFS solution is recommended to ensure that backups do not bottleneck on the IO throughput of the NFS device. Dell PowerScale (Isilon) is an example of this type of solution and can scale alongside the WarehousePG cluster.
 
+<a id="bp5"></a>
 
-
-### <a id="bp5"></a>Best Practices
+### Best Practices
 
 -   Back up WarehousePGs regularly unless the data is easily restored from sources.
 
@@ -103,35 +122,43 @@ An alternative is to back up directly to an NFS mount. If each host in the clust
 -   `gpbackup` places `SHARED ACCESS` locks on the set of tables to back up. Backups with fewer tables are more efficient for selectively restoring schemas and tables, since `gprestore` does not have to search through the entire database.
 
 -   If backups are saved to local cluster storage, move the files to a safe, off-cluster location when the backup is complete. Backup files and database files that reside on the same storage can be lost simultaneously.
+
 -   If backups are saved to NFS mounts, use a scale-out NFS solution such as Dell PowerScale (Isilon) to prevent IO bottlenecks.
 
+<a id="topic_wlw_wxc_54"></a>
 
-## <a id="topic_wlw_wxc_54"></a>Detecting Failed Coordinator and Segment Instances
+## Detecting Failed Coordinator and Segment Instances
 
 Recovering from system failures requires intervention from a system administrator, even when the system detects a failure and activates a standby for the failed component. In each case, the failed component must be replaced or recovered to restore full redundancy. Until the failed component is recovered, the active component lacks a standby, and the system may not be performing optimally. For these reasons, it is important to perform recovery operations promptly. Constant system monitoring ensures that administrators are aware of failures that demand their attention.
 
 The WarehousePG server `ftsprobe` subprocess handles fault detection. `ftsprobe` connects to and scans all segments and database processes at intervals that you can configure with the `gp_fts_probe_interval` configuration parameter. If `ftsprobe` cannot connect to a segment, it marks the segment “down” in the WarehousePG cluster catalog. The segment remains down until an administrator runs the `gprecoverseg` recovery utility.
 
-### <a id="bp6"></a>Best Practices
+<a id="bp6"></a>
+
+### Best Practices
 
 -   Run the `gpstate` utility to see the overall state of the WarehousePG cluster.
 
-### <a id="add_info"></a>Additional Information
+<a id="add_info"></a>
+
+### Additional Information
 
 *WarehousePG Administrator Guide*:
 
--   [Monitoring a WarehousePG cluster](../admin_guide/managing/monitor.html)
--   [Recovering from Segment Failures](../admin_guide/ha/recovering-from-segment-failures.html)
+-   [Monitoring a WarehousePG cluster](../admin_guide/managing/monitor.md)
+-   [Recovering from Segment Failures](../admin_guide/managing/ha/recovering-from-segment-failures.md)
 
 *WarehousePG Utility Guide*:
 
--   [gpstate](../utility_guide/ref/gpstate.html) - view state of the WarehousePG cluster
--   [gprecoverseg](../utility_guide/ref/gprecoverseg.html) - recover a failed segment
--   [gpactivatestandby](../utility_guide/ref/gpactivatestandby.html) - make the standby coordinator the active coordinator
+-   [gpstate](../ref_guide/utility_guide/reference/gpstate.md) - view state of the WarehousePG cluster
+-   [gprecoverseg](../ref_guide/utility_guide/reference/gprecoverseg.md) - recover a failed segment
+-   [gpactivatestandby](../ref_guide/utility_guide/reference/gpactivatestandby.md) - make the standby coordinator the active coordinator
 
 [RDBMS MIB Specification](https://datatracker.ietf.org/doc/html/rfc1697)
 
-## <a id="topic_ngz_qf4_tt"></a>Segment Mirroring Configurations
+<a id="topic_ngz_qf4_tt"></a>
+
+## Segment Mirroring Configurations
 
 Segment mirroring allows database queries to fail over to a backup segment if the primary segment fails or becomes unavailable.  Mirroring is required for production supported WarehousePG clusters.
 
@@ -147,46 +174,52 @@ You can allow WarehousePG to arrange mirrors on the hosts in the cluster using o
 
 The two standard mirroring arrangements are *group mirroring* and *spread mirroring*:
 
--   **Group mirroring** — Each host mirrors another host's primary segments. This is the default for [gpinitsystem](../utility_guide/ref/gpinitsystem.html) and [gpaddmirrors](../utility_guide/ref/gpaddmirrors.html).
+-   **Group mirroring** — Each host mirrors another host's primary segments. This is the default for [gpinitsystem](../ref_guide/utility_guide/reference/gpinitsystem.md) and [gpaddmirrors](../ref_guide/utility_guide/reference/gpaddmirrors.md).
 -   **Spread mirroring** — Mirrors are spread across the available hosts. This requires that the number of hosts in the cluster is greater than the number of segments per host.
 
-You can design a custom mirroring configuration and use the WarehousePG `gpaddmirrors` or [gpmovemirrors](../utility_guide/ref/gpmovemirrors.html) utilities to set up the configuration.
+You can design a custom mirroring configuration and use the WarehousePG `gpaddmirrors` or [gpmovemirrors](../ref_guide/utility_guide/reference/gpmovemirrors.md) utilities to set up the configuration.
 
 *Block mirroring* is a custom mirror configuration that divides hosts in the cluster into equally sized blocks and distributes mirrors evenly to hosts within the block. If a primary segment fails, its mirror on another host within the same block becomes the active primary. If a segment host fails, mirror segments on each of the other hosts in the block become active.
 
 The following sections compare the group, spread, and block mirroring configurations.
 
-### <a id="groupmirr"></a>Group Mirroring
+<a id="groupmirr"></a>
+
+### Group Mirroring
 
 Group mirroring is easiest to set up and is the default WarehousePG mirroring configuration. It is least expensive to expand, since it can be done by adding as few as two hosts. There is no need to move mirrors after expansion to maintain a consistent mirror configuration.
 
 The following diagram shows a group mirroring configuration with eight primary segments on four hosts.
 
-![Group mirroring configuration](/group_mirroring.png)
+![Group mirroring configuration](../images/group_mirroring.png)
 
-Unless both the primary and mirror of the same segment instance fail, up to half of your hosts can fail and the cluster will continue to run as long as resources \(CPU, memory, and IO\) are sufficient to meet the needs.
+Unless both the primary and mirror of the same segment instance fail, up to half of your hosts can fail and the cluster will continue to run as long as resources (CPU, memory, and IO) are sufficient to meet the needs.
 
 Any host failure will degrade performance by half or more because the host with the mirrors will have twice the number of active primaries. If your resource utilization is normally greater than 50%, you will have to adjust your workload until the failed host is recovered or replaced. If you normally run at less than 50% resource utilization the cluster can continue to operate at a degraded level of performance until the failure is corrected.
 
-### <a id="spreadmirr"></a>Spread Mirroring
+<a id="spreadmirr"></a>
+
+### Spread Mirroring
 
 With spread mirroring, mirrors for each host's primary segments are spread across as many hosts as there are segments per host. Spread mirroring is easy to set up when the cluster is initialized, but requires that the cluster have at least one more host than there are segments per host.
 
 The following diagram shows the spread mirroring configuration for a cluster with three primaries on four hosts.
 
-![Spread mirroring configuration](/spread_mirroring.png)
+![Spread mirroring configuration](../images/spread_mirroring.png)
 
 Expanding a cluster with spread mirroring requires more planning and may take more time. You must either add a set of hosts equal to the number of primaries per host plus one, or you can add two nodes in a group mirroring configuration and, when the expansion is complete, move mirrors to recreate the spread mirror configuration.
 
 Spread mirroring has the least performance impact for a single failed host because each host's mirrors are spread across the maximum number of hosts. Load is increased by 1/*Nth*, where *N* is the number of primaries per host. Spread mirroring is, however, the most likely configuration to have a catastrophic failure if two or more hosts fail simultaneously.
 
-### <a id="blockmirr"></a>Block Mirroring
+<a id="blockmirr"></a>
+
+### Block Mirroring
 
 With block mirroring, nodes are divided into blocks, for example a block of four or eight hosts, and the mirrors for segments on each host are placed on other hosts within the block. Depending on the number of hosts in the block and the number of primary segments per host, each host maintains more than one mirror for each other host's segments.
 
 The following diagram shows a single block mirroring configuration for a block of four hosts, each with eight primary segments:
 
-![Block mirroring configuration](/block_mirroring.png)
+![Block mirroring configuration](../images/block_mirroring.png)
 
 If there are eight hosts, an additional four-host block is added with the mirrors for primary segments 32 through 63 set up in the same pattern.
 
@@ -194,7 +227,9 @@ A cluster with block mirroring is easy to expand because each block is a self-co
 
 Because each host in a block has multiple mirror instances for each other host in the block, block mirroring has a higher performance impact for host failures than spread mirroring, but a lower impact than group mirroring. The expected performance impact varies by block size and primary segments per node. As with group mirroring, if the resources are available, performance will be negatively impacted but the cluster will remain available. If resources are insufficient to accommodate the added load you must reduce the workload until the failed node is replaced.
 
-### <a id="implblock"></a>Implementing Block Mirroring
+<a id="implblock"></a>
+
+### Implementing Block Mirroring
 
 Block mirroring is not one of the automatic options WarehousePG offers when you set up or expand a cluster. To use it, you must create your own configuration.
 
@@ -213,6 +248,7 @@ To implement block mirroring with an existing system that has a different mirror
     The `gp_segment_configuration` system catalog table contains the current segment configuration.
 
 2.  Create a list with the current mirror location and the desired block mirroring location, then remove any mirrors from the list that are already on the correct host.
+
 3.  Create an input file for the `gpmovemirrors` utility with an entry for each mirror that must be moved.
 
     The `gpmovemirrors` input file has the following format:
@@ -229,7 +265,7 @@ To implement block mirroring with an existing system that has a different mirror
     sdw2|50001|/data2/mirror/gpseg1 sdw3|50001|/data/mirror/gpseg1
     sdw2|50001|/data2/mirror/gpseg2 sdw4|50001|/data/mirror/gpseg2
     sdw3|50001|/data2/mirror/gpseg3 sdw1|50001|/data/mirror/gpseg3
-    
+
     ```
 
 4.  Run `gpmovemirrors` with a command like the following:
@@ -238,8 +274,6 @@ To implement block mirroring with an existing system that has a different mirror
     gpmovemirrors -i mirror_config_file
     ```
 
-
 The `gpmovemirrors` utility validates the input file, calls `gprecoverseg` to relocate each specified mirror, and removes the original mirror. It creates a backout configuration file which can be used as input to `gpmovemirrors` to undo the changes that were made. The backout file has the same name as the input file, with the suffix `_backout_timestamp` added.
 
 See the *WarehousePG Management Utility Reference* for complete information about the `gpmovemirrors` utility.
-

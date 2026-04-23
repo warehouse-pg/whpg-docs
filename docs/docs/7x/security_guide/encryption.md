@@ -1,14 +1,19 @@
-# Encrypting Data and Database Connections 
+---
+title: Encrypting Data and Database Connections
+
+---
 
 This topic describes how to encrypt data at rest in the database or in transit over the network, to protect from eavesdroppers or man-in-the-middle attacks.
 
--   Connections between clients and the coordinator database can be encrypted with SSL. This is enabled with the `ssl` server configuration parameter, which is `off` by default. Setting the `ssl` parameter to `on` allows client communications with the coordinator to be encrypted. The coordinator database must be set up for SSL. See [OpenSSL Configuration](authentication.html#openssl_config) for more about encrypting client connections with SSL.
--   WarehousePG allows SSL encryption of data in transit between the WarehousePG parallel file distribution server, `gpfdist`, and segment hosts. See [Encrypting gpfdist Connections](#gpfdist_connections) for more information. 
--   The `pgcrypto` module of encryption/decryption functions protects data at rest in the database. Encryption at the column level protects sensitive information, such as social security numbers or credit card numbers. See [Encrypting Data at Rest with pgcrypto](#pgcrypto) for more information.
+-   Connections between clients and the coordinator database can be encrypted with SSL. This is enabled with the `ssl` server configuration parameter, which is `off` by default. Setting the `ssl` parameter to `on` allows client communications with the coordinator to be encrypted. The coordinator database must be set up for SSL. See [OpenSSL Configuration](authentication.md#openssl-configuration) for more about encrypting client connections with SSL.
+-   WarehousePG allows SSL encryption of data in transit between the WarehousePG parallel file distribution server, `gpfdist`, and segment hosts. See [Encrypting gpfdist Connections](#encrypting-gpfdist-connections) for more information. 
+-   The `pgcrypto` module of encryption/decryption functions protects data at rest in the database. Encryption at the column level protects sensitive information, such as social security numbers or credit card numbers. See [Encrypting Data at Rest with pgcrypto](#encrypting-data-at-rest-with-pgcrypto) for more information.
 
-**Parent topic:** [WarehousePG Security Configuration Guide](..../security_guide//)
+**Parent topic:** [WarehousePG Security Configuration Guide](index.md)
 
-## <a id="gpfdist_connections"></a>Encrypting gpfdist Connections 
+<a id="gpfdist_connections"></a>
+
+## Encrypting gpfdist Connections
 
 The `gpfdists` protocol is a secure version of the `gpfdist` protocol that securely identifies the file server and the WarehousePG and encrypts the communications between them. Using `gpfdists` protects against eavesdropping and man-in-the-middle attacks.
 
@@ -16,11 +21,11 @@ The `gpfdists` protocol implements client/server SSL security with the following
 
 -   Client certificates are required.
 -   Multilingual certificates are not supported.
--   A Certificate Revocation List \(CRL\) is not supported.
+-   A Certificate Revocation List (CRL) is not supported.
 -   A minimum TLS version of 1.2 is required.
 -   SSL renegotiation is supported.
 -   The SSL ignore host mismatch parameter is set to false.
--   Private keys containing a passphrase are not supported for the `gpfdist` file server \(server.key\) or for the WarehousePG \(client.key\).
+-   Private keys containing a passphrase are not supported for the `gpfdist` file server (server.key) or for the WarehousePG (client.key).
 -   It is the user's responsibility to issue certificates that are appropriate for the operating system in use. Generally, converting certificates to the required format is supported, for example using the SSL Converter at [https://www.sslshopper.com/ssl-converter.html](http://www.commoncriteriaportal.org/products/?expand#ALL).
 
 A `gpfdist` server started with the `--ssl` option can only communicate with the `gpfdists` protocol. A `gpfdist` server started without the `--ssl` option can only communicate with the `gpfdist` protocol. For more detail about `gpfdist` refer to the *WarehousePG Administrator Guide*.
@@ -40,22 +45,23 @@ When using gpfdists, the following client certificates must be located in the `$
 
 When using `gpload` with SSL you specify the location of the server certificates in the YAML control file. When using `gpfdist` with SSL, you specify the location of the server certificates with the --ssl option.
 
-The following example shows how to securely load data into an external table. The example creates a readable external table named `ext_expenses` from all files with the `txt` extension, using the `gpfdists` protocol. The files are formatted with a pipe \(`|`\) as the column delimiter and an empty space as null.
+The following example shows how to securely load data into an external table. The example creates a readable external table named `ext_expenses` from all files with the `txt` extension, using the `gpfdists` protocol. The files are formatted with a pipe (`|`) as the column delimiter and an empty space as null.
 
 1.  Run `gpfdist` with the `--ssl` option on the segment hosts.
 2.  Log into the database and run the following command:
 
     ```
-    
+
     =# CREATE EXTERNAL TABLE ext_expenses 
        ( name text, date date, amount float4, category text, desc1 text )
     LOCATION ('gpfdists://etlhost-1:8081/*.txt', 'gpfdists://etlhost-2:8082/*.txt')
     FORMAT 'TEXT' ( DELIMITER '|' NULL ' ') ;
-    
+
     ```
 
+<a id="pgcrypto"></a>
 
-## <a id="pgcrypto"></a>Encrypting Data at Rest with pgcrypto 
+## Encrypting Data at Rest with pgcrypto
 
 The pgcrypto module for WarehousePG provides functions for encrypting data at rest in the database. Administrators can encrypt columns with sensitive information, such as social security numbers or credit card numbers, to provide an extra layer of protection. Database data stored in encrypted form cannot be read by users who do not have the encryption key, and the data cannot be read directly from disk.
 
@@ -81,24 +87,26 @@ When compiled with `zlib`, pgcrypto encryption functions are able to compress da
 
 Pgcrypto has various levels of encryption ranging from basic to advanced built-in functions. The following table shows the supported encryption algorithms.
 
-|Value Functionality|Built-in|With OpenSSL|
-|:------------------|:-------|:-----------|
-|MD5|yes|yes|
-|SHA1|yes|yes|
-|SHA224/256/384/512|yes|yes <sup>[1](#fnsrc)</sup>|
-|Other digest algorithms|no|yes <sup>[2](#fnsrc)</sup>|
-|Blowfish|yes|yes|
-|AES|yes|yes<sup>[3](#fnsrc)</sup>|
-|DES/3DES/CAST5|no|yes|
-|Raw Encryption|yes|yes|
-|PGP Symmetric-Key|yes|yes|
-|PGP Public Key|yes|yes|
+| Value Functionality     | Built-in | With OpenSSL |
+| :---------------------- | :------- | :----------- |
+| MD5                     | yes      | yes          |
+| SHA1                    | yes      | yes          |
+| SHA224/256/384/512      | yes      | yes [^1]     |
+| Other digest algorithms | no       | yes [^2]     |
+| Blowfish                | yes      | yes          |
+| AES                     | yes      | yes [^3]     |
+| DES/3DES/CAST5          | no       | yes          |
+| Raw Encryption          | yes      | yes          |
+| PGP Symmetric-Key       | yes      | yes          |
+| PGP Public Key          | yes      | yes          |
 
-### <a id="creating_pgp_keys"></a>Creating PGP Keys 
+<a id="creating_pgp_keys"></a>
+
+### Creating PGP Keys
 
 To use PGP asymmetric encryption in WarehousePG, you must first create public and private keys and install them.
 
-This section assumes you are installing WarehousePG on a Linux machine with the Gnu Privacy Guard \(`gpg`\) command line tool. Use the latest version of GPG to create keys. Download and install Gnu Privacy Guard \(GPG\) for your operating system from [https://www.gnupg.org/download/](https://www.gnupg.org/download/). On the GnuPG website you will find installers for popular Linux distributions and links for Windows and Mac OS X installers.
+This section assumes you are installing WarehousePG on a Linux machine with the Gnu Privacy Guard (`gpg`) command line tool. Use the latest version of GPG to create keys. Download and install Gnu Privacy Guard (GPG) for your operating system from [https://www.gnupg.org/download/](https://www.gnupg.org/download/). On the GnuPG website you will find installers for popular Linux distributions and links for Windows and Mac OS X installers.
 
 1.  As root, run the following command and choose option 1 from the menu:
 
@@ -136,15 +144,15 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
      Key is valid for? (0) **365**
     Key expires at Wed 13 Jan 2016 10:35:39 AM PST
     Is this correct? (y/N) **y**
-    
+
     GnuPG needs to construct a user ID to identify your key.
-    
+
     Real name: **John Doe**
     Email address: **jdoe@email.com**
     Comment: 
     You selected this USER-ID:
      "John Doe <jdoe@email.com>"
-    
+
     Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? **O**
     You need a Passphrase to protect your secret key.
     *\(For this demo the passphrase is blank.\)*
@@ -152,7 +160,7 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
     You don't want a passphrase - this is probably a *bad* idea!
     I will do it anyway.  You can change your passphrase at any time,
     using this program with the option "--edit-key".
-    
+
     We need to generate a lot of random bytes. It is a good idea to perform
     some other action (type on the keyboard, move the mouse, utilize the
     disks) during the prime generation; this gives the random number
@@ -164,7 +172,7 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
     gpg: /root/.gnupg/trustdb.gpg: trustdb created
     gpg: key 2027CC30 marked as ultimately trusted
     public and secret key created and signed.
-    
+
     gpg:  checking the trustdbgpg: 
           3 marginal(s) needed, 1 complete(s) needed, PGP trust model
     gpg:  depth: 0  valid1  signed0  trust: 0-, 0q, 0n, 0m, 0f, 1u
@@ -173,7 +181,7 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
           Key fingerprint = 7EDA 6AD0 F5E0 400F 4D45   3259 077D 725E 2027 CC30
     uid                  John Doe <jdoe@email.com>
     sub   2048R/4FD2EFBB 2015-01-13 [expires: 2016-01-13]
-    
+
     ```
 
 3.  List the PGP keys by entering the following command:
@@ -187,7 +195,7 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
     ssb   2048R/4FD2EFBB 2015-01-13
     ```
 
-    2027CC30 is the public key and will be used to *encrypt* data in the database. 4FD2EFBB is the private \(secret\) key and will be used to *decrypt* data.
+    2027CC30 is the public key and will be used to *encrypt* data in the database. 4FD2EFBB is the private (secret) key and will be used to *decrypt* data.
 
 4.  Export the keys using the following commands:
 
@@ -196,10 +204,11 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
     # gpg -a --export-secret-keys 2027CC30 > secret.key
     ```
 
-
 See the [pgcrypto](https://www.postgresql.org/docs/12/pgcrypto.html) documentation for more information about PGP encryption functions.
 
-### <a id="encpgp"></a>Encrypting Data in Tables using PGP 
+<a id="encpgp"></a>
+
+### Encrypting Data in Tables using PGP
 
 This section shows how to encrypt data inserted into a column using the PGP keys you generated.
 
@@ -237,15 +246,15 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     Pv2MikPS2fKOAg1R3LpMa8zDEtl4w3vckPQNrQNnYuUtfj6ZoCxv
     =XZ8J
     -----END PGP PUBLIC KEY BLOCK-----
-    
+
     ```
 
-2.  Create a table called `userssn` and insert some sensitive data, social security numbers for Bob and Alice, in this example. Paste the public.key contents after "dearmor\(".
+2.  Create a table called `userssn` and insert some sensitive data, social security numbers for Bob and Alice, in this example. Paste the public.key contents after "dearmor(".
 
     ```
     CREATE TABLE userssn( ssn_id SERIAL PRIMARY KEY, 
         username varchar(100), ssn bytea); 
-    
+
     INSERT INTO userssn(username, ssn)
     SELECT robotccs.username, pgp_pub_encrypt(robotccs.ssn, keys.pubkey) AS ssn
     FROM ( 
@@ -281,7 +290,7 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     Pv2MikPS2fKOAg1R3LpMa8zDEtl4w3vckPQNrQNnYuUtfj6ZoCxv
     =XZ8J
     -----END PGP PUBLIC KEY BLOCK-----' AS pubkey) AS keys;
-    
+
     ```
 
 3.  Verify that the `ssn` column is encrypted.
@@ -322,7 +331,7 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     12\342y^\202\262|A7\202t\240\333p\345G\373\253\243oCO\011\360\247\211\014\024{\272\271\322<\001\267
     \347\240\005\213\0078\036\210\307$\317\322\311\222\035\354\006<\266\264\004\376\251q\256\220(+\030\
     3270\013c\327\272\212%\363\033\252\322\337\354\276\225\232\201\212^\304\210\2269@\3230\370{
-    
+
     ```
 
 4.  Extract the public.key ID from the database:
@@ -330,7 +339,7 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     ```
     SELECT pgp_key_id(dearmor('-----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
-    
+
     mQENBFS1Zf0BCADNw8Qvk1V1C36Kfcwd3Kpm/dijPfRyyEwB6PqKyA05jtWiXZTh
     2His1ojSP6LI0cSkIqMU9LAlncecZhRIhBhuVgKlGSgd9texg2nnSL9Admqik/yX
     R5syVKG+qcdWuvyZg9oOOmeyjhc3n+kkbRTEMuM3flbMs8shOwzMvstCUVmuHU/V
@@ -358,9 +367,9 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     Pv2MikPS2fKOAg1R3LpMa8zDEtl4w3vckPQNrQNnYuUtfj6ZoCxv
     =XZ8J
     -----END PGP PUBLIC KEY BLOCK-----'));
-    
+
     pgp_key_id | 9D4D255F4FD2EFBB
-    
+
     ```
 
     This shows that the PGP key ID used to encrypt the `ssn` column is 9D4D255F4FD2EFBB. It is recommended to perform this step whenever a new key is created and then store the ID for tracking.
@@ -375,10 +384,10 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     ---------+-----------------
     username | Alice
     key_used | 9D4D255F4FD2EFBB
-    
+
     ```
 
-    > **Note** Different keys may have the same ID. This is rare, but is a normal event. The client application should try to decrypt with each one to see which fits — like handling `ANYKEY`. See [pgp\_key\_id\(\)](https://www.postgresql.org/docs/12/pgcrypto.html) in the pgcrypto documentation.
+    > **Note** Different keys may have the same ID. This is rare, but is a normal event. The client application should try to decrypt with each one to see which fits — like handling `ANYKEY`. See [pgp_key_id()](https://www.postgresql.org/docs/12/pgcrypto.html) in the pgcrypto documentation.
 
 5.  Decrypt the data using the private key.
 
@@ -388,7 +397,7 @@ This section shows how to encrypt data inserted into a column using the PGP keys
                      CROSS JOIN
                      (SELECT dearmor('-----BEGIN PGP PRIVATE KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
-    
+
     lQOYBFS1Zf0BCADNw8Qvk1V1C36Kfcwd3Kpm/dijPfRyyEwB6PqKyA05jtWiXZTh
     2His1ojSP6LI0cSkIqMU9LAlncecZhRIhBhuVgKlGSgd9texg2nnSL9Admqik/yX
     R5syVKG+qcdWuvyZg9oOOmeyjhc3n+kkbRTEMuM3flbMs8shOwzMvstCUVmuHU/V
@@ -443,22 +452,21 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     yC65KJciPv2MikPS2fKOAg1R3LpMa8zDEtl4w3vckPQNrQNnYuUtfj6ZoCxv
     =fa+6
     -----END PGP PRIVATE KEY BLOCK-----') AS privkey) AS keys;
-    
+
     username | decrypted_ssn 
     ----------+---------------
      Alice    | 123-45-6788
      Bob      | 123-45-6799
     (2 rows)
-    
-    
     ```
 
-    If you created a key with passphrase, you may have to enter it here. However for the purpose of this example, the passphrase is blank.
+If you created a key with passphrase, you may have to enter it here. However for the purpose of this example, the passphrase is blank.
 
+<a id="keymgmt"></a>
 
-### <a id="keymgmt"></a>Key Management 
+### Key Management
 
-Whether you are using symmetric \(single private key\) or asymmetric \(public and private key\) cryptography, it is important to store the coordinator or private key securely. There are many options for storing encryption keys, for example, on a file system, key vault, encrypted USB, trusted platform module \(TPM\), or hardware security module \(HSM\).
+Whether you are using symmetric (single private key) or asymmetric (public and private key) cryptography, it is important to store the coordinator or private key securely. There are many options for storing encryption keys, for example, on a file system, key vault, encrypted USB, trusted platform module (TPM), or hardware security module (HSM).
 
 Consider the following questions when planning for key management:
 
@@ -468,8 +476,10 @@ Consider the following questions when planning for key management:
 -   How are keys accessed?
 -   How can keys be recovered and revoked?
 
-The Open Web Application Security Project \(OWASP\) provides a very comprehensive [guide to securing encryption keys](https://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet).
+The Open Web Application Security Project (OWASP) provides a very comprehensive [guide to securing encryption keys](https://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet).
 
-<a id="fnsrc"></a>
-<sup>[1](#fnsrc_1)</sup> SHA2 algorithms were added to OpenSSL in version 0.9.8. For older versions, pgcrypto will use built-in code.<br/><sup>[2](#fnsrc_2)</sup> Any digest algorithm OpenSSL supports is automatically picked up. This is not possible with ciphers, which need to be supported explicitly.<br/><sup>[3](#fnsrc_3)</sup> AES is included in OpenSSL since version 0.9.7. For older versions, pgcrypto will use built-in code.
+[^1]&#x3A; SHA2 algorithms were added to OpenSSL in version 0.9.8. For older versions, pgcrypto will use built-in code.
 
+[^2]&#x3A; Any digest algorithm OpenSSL supports is automatically picked up. This is not possible with ciphers, which need to be supported explicitly.
+
+[^3]&#x3A; AES is included in OpenSSL since version 0.9.7. For older versions, pgcrypto will use built-in code.

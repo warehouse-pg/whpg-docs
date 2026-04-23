@@ -1,5 +1,5 @@
-# Introducing Open Source WarehousePG
-
+---
+title: Introducing Open Source WarehousePG
 ---
 
 **WarehousePG** is an **open source**,  massively parallel processing (**MPP**) database server for **petabayte** scale analytic data warehouse and business intelligence workloads. 
@@ -11,35 +11,28 @@ WarehousePG is based on **PostgreSQL open-source technology**. It is essentially
 
 ## WarehousePG Architecture
 
-![High-Level WarehousePG Architecture](/whpg_architecture.png "High-Level WarehousePG Architecture")
+![High-Level WarehousePG Architecture](images/whpg_architecture.png "High-Level WarehousePG Architecture")
 
 
 
 
 ## Documentation
 
-[Release Notes](/docs/7x/release_notes)
 
+[Release Notes](/docs/7x/release_notes/index.md)
 
-[Install Guide](/docs/7x/install_guide/)
+[Install Guide](/docs/7x/install_guide/index.md)
 
+[Admin Guide](/docs/7x/admin_guide/index.md)
 
-[Admin Guide](/docs/7x/admin_guide/)
+[Best Practices](/docs/7x/best_practices/index.md)
 
+[Utility Guide](/docs/7x/ref_guide/utility_guide/index.md)         
 
-[Utility Guide](/docs/7x/utility_guide/reference.html)     
+[Analytics Guide](/docs/7x/admin_guide/analytics/index.md)      
 
+[Reference Guide](/docs/7x/ref_guide/index.md)        
 
+[Security Guide](/docs/7x/security_guide/index.md)        
 
-[Analytics Guide](/docs/7x/analytics/)     
-
-
-[Reference Guide](/docs/7x/ref_guide/)    
-
-
-[Backup & Restore Guide](/docs/7x/admin_guide/backup_restore/gpbackup_gprestore.html)
-
-
-
-
-
+[Backup & Restore Guide](/docs/7x/admin_guide/backup_restore/index.md)

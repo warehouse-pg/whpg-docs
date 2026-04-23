@@ -1,4 +1,6 @@
-# Tuning SQL Queries
+---
+title: Tuning SQL Queries
+
 ---
 
 The WarehousePG cost-based optimizer evaluates many strategies for running a query and chooses the least costly method.
@@ -7,23 +9,27 @@ Like other RDBMS optimizers, the WarehousePG optimizer takes into account factor
 
 When a query runs slower than you expect, you can view the plan the optimizer selected as well as the cost it calculated for each step of the plan. This will help you determine which steps are consuming the most resources and then modify the query or the schema to provide the optimizer with more efficient alternatives. You use the SQL `EXPLAIN` statement to view the plan for a query.
 
-The optimizer produces plans based on statistics generated for tables. It is important to have accurate statistics to produce the best plan. See [Updating Statistics with ANALYZE](analyze.html) in this guide for information about updating statistics.
+The optimizer produces plans based on statistics generated for tables. It is important to have accurate statistics to produce the best plan. See [Updating Statistics with ANALYZE](maintenance/analyze.md) in this guide for information about updating statistics.
 
-**Parent topic:** [WarehousePG Best Practices](intro.html)
+**Parent topic:** [WarehousePG Best Practices](index.md)
 
-## <a id="topic_s1r_jfb_s4"></a>How to Generate Explain Plans
+<a id="topic_s1r_jfb_s4"></a>
 
-The `EXPLAIN` and `EXPLAIN ANALYZE` statements are useful tools to identify opportunities to improve query performance. `EXPLAIN` displays the query plan and estimated costs for a query, but does not run the query. `EXPLAIN ANALYZE` runs the query in addition to displaying the query plan. `EXPLAIN ANALYZE` discards any output from the `SELECT` statement; however, other operations in the statement are performed \(for example, `INSERT`, `UPDATE`, or `DELETE`\). To use `EXPLAIN ANALYZE` on a DML statement without letting the command affect the data, explicitly use `EXPLAIN ANALYZE` in a transaction \(`BEGIN; EXPLAIN ANALYZE ...; ROLLBACK;`\).
+## How to Generate Explain Plans
+
+The `EXPLAIN` and `EXPLAIN ANALYZE` statements are useful tools to identify opportunities to improve query performance. `EXPLAIN` displays the query plan and estimated costs for a query, but does not run the query. `EXPLAIN ANALYZE` runs the query in addition to displaying the query plan. `EXPLAIN ANALYZE` discards any output from the `SELECT` statement; however, other operations in the statement are performed (for example, `INSERT`, `UPDATE`, or `DELETE`). To use `EXPLAIN ANALYZE` on a DML statement without letting the command affect the data, explicitly use `EXPLAIN ANALYZE` in a transaction (`BEGIN; EXPLAIN ANALYZE ...; ROLLBACK;`).
 
 `EXPLAIN ANALYZE` runs the statement in addition to displaying the plan with additional information as follows:
 
--   Total elapsed time \(in milliseconds\) to run the query
--   Number of workers \(segments\) involved in a plan node operation
--   Maximum number of rows returned by the segment \(and its segment ID\) that produced the most rows for an operation
+-   Total elapsed time (in milliseconds) to run the query
+-   Number of workers (segments) involved in a plan node operation
+-   Maximum number of rows returned by the segment (and its segment ID) that produced the most rows for an operation
 -   The memory used by the operation
--   Time \(in milliseconds\) it took to retrieve the first row from the segment that produced the most rows, and the total time taken to retrieve all rows from that segment.
+-   Time (in milliseconds) it took to retrieve the first row from the segment that produced the most rows, and the total time taken to retrieve all rows from that segment.
 
-## <a id="reading_explain_plan"></a>How to Read Explain Plans
+<a id="reading_explain_plan"></a>
+
+## How to Read Explain Plans
 
 An explain plan is a report detailing the steps the WarehousePG optimizer has determined it will follow to run a query. The plan is a tree of nodes, read from bottom to top, with each node passing its result to the node directly above. Each node represents a step in the plan, and one line for each node identifies the operation performed in that step—for example, a scan, join, aggregation, or sort operation. The node also identifies the method used to perform the operation. The method for a scan operation, for example, may be a sequential scan or an index scan. A join operation may perform a hash join or nested loop join.
 
@@ -52,11 +58,11 @@ gpadmin=# EXPLAIN SELECT gp_segment_id, count(*)
 (14 rows)
 ```
 
-This plan has eight nodes – Seq Scan, Sort, GroupAggregate, Result, Redistribute Motion, Sort, GroupAggregate, and finally Gather Motion. Each node contains three cost estimates: cost \(in sequential page reads\), the number of rows, and the width of the rows.
+This plan has eight nodes – Seq Scan, Sort, GroupAggregate, Result, Redistribute Motion, Sort, GroupAggregate, and finally Gather Motion. Each node contains three cost estimates: cost (in sequential page reads), the number of rows, and the width of the rows.
 
 The cost is a two-part estimate. A cost of 1.0 is equal to one sequential disk page read. The first part of the estimate is the start-up cost, which is the cost of getting the first row. The second estimate is the total cost, the cost of getting all of the rows.
 
-The rows estimate is the number of rows output by the plan node. The number may be lower than the actual number of rows processed or scanned by the plan node, reflecting the estimated selectivity of `WHERE` clause conditions. The total cost assumes that all rows will be retrieved, which may not always be the case \(for example, if you use a `LIMIT` clause\).
+The rows estimate is the number of rows output by the plan node. The number may be lower than the actual number of rows processed or scanned by the plan node, reflecting the estimated selectivity of `WHERE` clause conditions. The total cost assumes that all rows will be retrieved, which may not always be the case (for example, if you use a `LIMIT` clause).
 
 The width estimate is the total width, in bytes, of all the columns output by the plan node.
 
@@ -66,13 +72,13 @@ Scan operators scan through rows in a table to find a set of rows. There are dif
 
 -   Seq Scan on tables — scans all rows in the table.
 -   Index Scan — traverses an index to fetch the rows from the table.
--   Bitmap Heap Scan — gathers pointers to rows in a table from an index and sorts by location on disk. \(The operator is called a Bitmap Heap Scan, even for append-only tables.\)
+-   Bitmap Heap Scan — gathers pointers to rows in a table from an index and sorts by location on disk. (The operator is called a Bitmap Heap Scan, even for append-only tables.)
 -   Dynamic Seq Scan — chooses partitions to scan using a partition selection function.
 
 Join operators include the following:
 
--   Hash Join – builds a hash table from the smaller table with the join column\(s\) as hash key. Then scans the larger table, calculating the hash key for the join column\(s\) and probing the hash table to find the rows with the same hash key. Hash joins are typically the fastest joins in WarehousePG. The Hash Cond in the explain plan identifies the columns that are joined.
--   Nested Loop – iterates through rows in the larger dataset, scanning the rows in the smaller dataset on each iteration. The Nested Loop join requires the broadcast of one of the tables so that all rows in one table can be compared to all rows in the other table. It performs well for small tables or tables that are limited by using an index. It is also used for Cartesian joins and range joins. There are performance implications when using a Nested Loop join with large tables. For plan nodes that contain a Nested Loop join operator, validate the SQL and ensure that the results are what is intended. Set the `enable_nestloop` server configuration parameter to OFF \(default\) to favor Hash Join.
+-   Hash Join – builds a hash table from the smaller table with the join column(s) as hash key. Then scans the larger table, calculating the hash key for the join column(s) and probing the hash table to find the rows with the same hash key. Hash joins are typically the fastest joins in WarehousePG. The Hash Cond in the explain plan identifies the columns that are joined.
+-   Nested Loop – iterates through rows in the larger dataset, scanning the rows in the smaller dataset on each iteration. The Nested Loop join requires the broadcast of one of the tables so that all rows in one table can be compared to all rows in the other table. It performs well for small tables or tables that are limited by using an index. It is also used for Cartesian joins and range joins. There are performance implications when using a Nested Loop join with large tables. For plan nodes that contain a Nested Loop join operator, validate the SQL and ensure that the results are what is intended. Set the `enable_nestloop` server configuration parameter to OFF (default) to favor Hash Join.
 -   Merge Join – sorts both datasets and merges them together. A merge join is fast for pre-ordered data, but is very rare in the real world. To favor Merge Joins over Hash Joins, set the `enable_mergejoin` system configuration parameter to ON.
 
 Some query plan nodes specify motion operations. Motion operations move rows between segments when required to process the query. The node identifies the method used to perform the motion operation. Motion operators include the following:
@@ -92,13 +98,15 @@ Other operators that occur in query plans include the following:
 -   Filter – selects rows using criteria from a `WHERE` clause.
 -   Limit – limits the number of rows returned.
 
-## <a id="optimization_hints"></a>Optimizing WarehousePG Queries
+<a id="optimization_hints"></a>
+
+## Optimizing WarehousePG Queries
 
 This topic describes WarehousePG features and programming practices that can be used to enhance system performance in some situations.
 
 To analyze query plans, first identify the plan nodes where the estimated cost to perform the operation is very high. Determine if the estimated number of rows and cost seems reasonable relative to the number of rows for the operation performed.
 
-If using partitioning, validate that partition elimination is achieved. To achieve partition elimination the query predicate \(`WHERE` clause\) must be the same as the partitioning criteria. Also, the `WHERE` clause must not contain an explicit value and cannot contain a subquery.
+If using partitioning, validate that partition elimination is achieved. To achieve partition elimination the query predicate (`WHERE` clause) must be the same as the partitioning criteria. Also, the `WHERE` clause must not contain an explicit value and cannot contain a subquery.
 
 Review the execution order of the query plan tree. Review the estimated number of rows. You want the execution order to build on the smaller tables or hash join result and probe with larger tables. Optimally, the largest table is used for the final join or probe to reduce the number of rows being passed up the tree to the topmost plan nodes. If the analysis reveals that the order of execution builds and/or probes is not optimal ensure that database statistics are up to date. Running `ANALYZE` will likely address this and produce an optimal query plan.
 
@@ -108,7 +116,9 @@ Identify plan nodes where a Sort or Aggregate operation is performed. Hidden ins
 
 When an explain plan shows a broadcast motion with a large number of rows, you should attempt to eliminate the broadcast motion. One way to do this is to use the `gp_segments_for_planner` server configuration parameter to increase the cost estimate of the motion so that alternatives are favored. The `gp_segments_for_planner` variable tells the query planner how many primary segments to use in its calculations. The default value is zero, which tells the planner to use the actual number of primary segments in estimates. Increasing the number of primary segments increases the cost of the motion, thereby favoring a redistribute motion over a broadcast motion. For example, setting `gp_segments_for_planner = 100000` tells the planner that there are 100,000 segments. Conversely, to influence the optimizer to broadcast a table and not redistribute it, set `gp_segments_for_planner` to a low number, for example 2.
 
-### <a id="grouping"></a>WarehousePG Grouping Extensions
+<a id="grouping"></a>
+
+### WarehousePG Grouping Extensions
 
 WarehousePG aggregation extensions to the `GROUP BY` clause can perform some common calculations in the database more efficiently than in application or procedure code:
 
@@ -116,19 +126,20 @@ WarehousePG aggregation extensions to the `GROUP BY` clause can perform some com
 -   `GROUP BY CUBE(*col1*, *col2*, *col3*)`
 -   `GROUP BY GROUPING SETS((*col1*, *col2*), (*col1*, *col3*))`
 
-A `ROLLUP` grouping creates aggregate subtotals that roll up from the most detailed level to a grand total, following a list of grouping columns \(or expressions\). `ROLLUP` takes an ordered list of grouping columns, calculates the standard aggregate values specified in the `GROUP BY` clause, then creates progressively higher-level subtotals, moving from right to left through the list. Finally, it creates a grand total.
+A `ROLLUP` grouping creates aggregate subtotals that roll up from the most detailed level to a grand total, following a list of grouping columns (or expressions). `ROLLUP` takes an ordered list of grouping columns, calculates the standard aggregate values specified in the `GROUP BY` clause, then creates progressively higher-level subtotals, moving from right to left through the list. Finally, it creates a grand total.
 
-A `CUBE` grouping creates subtotals for all of the possible combinations of the given list of grouping columns \(or expressions\). In multidimensional analysis terms, `CUBE` generates all the subtotals that could be calculated for a data cube with the specified dimensions.
+A `CUBE` grouping creates subtotals for all of the possible combinations of the given list of grouping columns (or expressions). In multidimensional analysis terms, `CUBE` generates all the subtotals that could be calculated for a data cube with the specified dimensions.
 
 You can selectively specify the set of groups that you want to create using a `GROUPING SETS` expression. This allows precise specification across multiple dimensions without computing a whole `ROLLUP` or `CUBE`.
 
 Refer to the *WarehousePG Reference Guide* for details of these clauses.
 
-### <a id="windowfunc"></a>Window Functions
+<a id="windowfunc"></a>
+
+### Window Functions
 
 Window functions apply an aggregation or ranking function over partitions of the result set—for example, `sum(population) over (partition by city)`. Window functions are powerful and, because they do all of the work in the database, they have performance advantages over front-end tools that produce similar results by retrieving detail rows from the database and reprocessing them.
 
 -   The `row_number()` window function produces row numbers for the rows in a partition, for example, `row_number() over (order by id)`.
 -   When a query plan indicates that a table is scanned in more than one operation, you may be able to use window functions to reduce the number of scans.
 -   It is often possible to eliminate self joins by using window functions.
-

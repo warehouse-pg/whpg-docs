@@ -1,24 +1,36 @@
-# DROP USER 
+---
+title: DROP USER
+
+---
 
 Removes a database role.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 DROP USER [IF EXISTS] <name> [, ...]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`DROP USER` is an alias for [DROP ROLE](DROP_ROLE.html).
+## Description
 
-## <a id="section5"></a>Compatibility 
+`DROP USER` is an alias for [DROP ROLE](DROP_ROLE.md).
+
+<a id="section5"></a>
+
+## Compatibility
 
 The `DROP USER` statement is a WarehousePG extension. The SQL standard leaves the definition of users to the implementation.
 
-## <a id="section6"></a>See Also 
+<a id="section6"></a>
 
-[DROP ROLE](DROP_ROLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[DROP ROLE](DROP_ROLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

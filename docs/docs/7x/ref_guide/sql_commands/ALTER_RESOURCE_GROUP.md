@@ -1,10 +1,17 @@
-# ALTER RESOURCE GROUP 
+---
+title: ALTER RESOURCE GROUP
+
+---
 
 Changes the limits of a resource group.
 
-## <a id="synopsis"></a>Synopsis 
+<a id="synopsis"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER RESOURCE GROUP <name> SET <group_attribute> <value>
 ```
 
@@ -40,7 +47,9 @@ Where `<io_limit_option_vlaue>` is:
 <integer> | max
 ```
 
-## <a id="description"></a>Description 
+<a id="description"></a>
+
+## Description
 
 `ALTER RESOURCE GROUP` changes the limits of a resource group. Only a superuser can alter a resource group.
 
@@ -54,13 +63,15 @@ When you increase the memory quota of a resource group that you create for exter
 
 You can alter one limit type in a single `ALTER RESOURCE GROUP` call.
 
-## <a id="parameters"></a>Parameters 
+<a id="parameters"></a>
+
+## Parameters
 
 name
 The name of the resource group to alter.
 
 CONCURRENCY integer
-The maximum number of concurrent transactions, including active and idle transactions, that are permitted for this resource group. The `CONCURRENCY` value must be an integer in the range \[0 .. `max_connections`\]. The default `CONCURRENCY` value for resource groups defined for roles is 20.
+The maximum number of concurrent transactions, including active and idle transactions, that are permitted for this resource group. The `CONCURRENCY` value must be an integer in the range \[0 .. `max_connections`]. The default `CONCURRENCY` value for resource groups defined for roles is 20.
 
 You must set `CONCURRENCY` to `0` for resource groups that you create for external components.
 
@@ -70,9 +81,9 @@ CPU_MAX_PERCENT integer
 The percentage of the maximum available CPU resources that the resource group can use. The value range is `1-100`. 
 
 CPU_WEIGHT integer
-The scheduling priority of the current group. The value range is `1-500`, the default is `100. 
+The scheduling priority of the current group. The value range is `1-500`, the default is \`100. 
 
-CPUSET <coordinator_cores>;<segment_cores>
+CPUSET &lt;coordinator_cores>;&lt;segment_cores>
 
 `CPUSET` identifies the CPU cores to reserve for this resource group on the coordinator host and on segment hosts. The CPU cores that you specify must be available in the system and cannot overlap with any CPU cores that you specify for other resource groups.
 
@@ -82,7 +93,7 @@ Specify cores as a comma-separated list of single core numbers or core number in
 
 > **Note** You can configure `CPUSET` for a resource group only after you have enabled resource group-based resource management for your WarehousePG cluster.
 
-IO_LIMIT='<tablespace_io_limit_spec> [; ...]'
+IO_LIMIT='&lt;tablespace_io_limit_spec> [; ...]'
 Optional. The maximum read/write sequential disk I/O throughput, and the maximum read/write I/O operations per second for the queries assigned to a specific resource group. 
 
 Where `<tablespace_io_limit_spec>` is:
@@ -107,13 +118,14 @@ Where `<io_limit_option_vlaue>` is:
 ```
 
 When you use this parameter, you may speficy:
-- The tablespace name or the tablespace object ID (OID) you set the limits for. Use `*` to set limits for all tablespaces.
-- The values for `rbps` and `wbps` to limit the maximum read and write sequential disk I/O throughput in the resource group, in MB/S. The default value is `max`, which means there is no limit.
-- The values for `riops` and `wiops` to limit the maximum read and write I/O operations per second in the resource group. The default value is `max`, which means there is no limit.
+
+-   The tablespace name or the tablespace object ID (OID) you set the limits for. Use `*` to set limits for all tablespaces.
+-   The values for `rbps` and `wbps` to limit the maximum read and write sequential disk I/O throughput in the resource group, in MB/S. The default value is `max`, which means there is no limit.
+-   The values for `riops` and `wiops` to limit the maximum read and write I/O operations per second in the resource group. The default value is `max`, which means there is no limit.
 
 If the parameter `IO_LIMIT` is not set, the default value for `rbps`, `wpbs`, `riops`, and `wiops`s is set to `max`, which means that there are no disk I/O limits. In this scenario, the `gp_toolkit.gp_resgroup_config` system view displays its value as `-1`.
 
-> **Note** The parameter `IO_LIMIT` is only available when you use Linux Control Groups v2. See [Configuring and Using Resource Groups](../../admin_guide/workload_mgmt_resgroups.html#topic71717999) for more information.
+> **Note** The parameter `IO_LIMIT` is only available when you use Linux Control Groups v2. See [Configuring and Using Resource Groups](../../admin_guide/performance/wlmgmt/workload_mgmt_resgroups.md#topic71717999) for more information.
 
 MEMORY_QUOTA integer
 The maximum available memory, in MB, to reserve for this resource group. This value determines the total amount of memory that all worker processes within a resource group can consume on a segment host during query execution. 
@@ -131,13 +143,17 @@ This means that low-cost queries will execute more quickly, as they are not subj
 
 The value range is `0-500`. The default value is `0`, which means that the cost is not used to bypass the query. 
 
-## <a id="notes"></a>Notes 
+<a id="notes"></a>
 
-Use [CREATE ROLE](CREATE_ROLE.html) or [ALTER ROLE](ALTER_ROLE.html) to assign a specific resource group to a role \(user\).
+## Notes
+
+Use [CREATE ROLE](CREATE_ROLE.md) or [ALTER ROLE](ALTER_ROLE.md) to assign a specific resource group to a role (user).
 
 You cannot submit an `ALTER RESOURCE GROUP` command in an explicit transaction or sub-transaction.
 
-## <a id="examples"></a>Examples 
+<a id="examples"></a>
+
+## Examples
 
 Change the active transaction limit for a resource group:
 
@@ -169,13 +185,16 @@ Set disk I/O limits for tablespaces `tablespace1` and a tablespace with oid 1663
 ALTER RESOURCE GROUP admin_group SET IO_LIMIT 'tablespace1:wbps=2000,wiops=2000;1663:rbps=2024,riops=2024';
 ```
 
-## <a id="compatibility"></a>Compatibility 
+<a id="compatibility"></a>
+
+## Compatibility
 
 The `ALTER RESOURCE GROUP` statement is a WarehousePG extension. This command does not exist in standard PostgreSQL.
 
-## <a id="see_also"></a>See Also 
+<a id="see_also"></a>
 
-[CREATE RESOURCE GROUP](CREATE_RESOURCE_GROUP.html), [DROP RESOURCE GROUP](DROP_RESOURCE_GROUP.html), [CREATE ROLE](CREATE_ROLE.html), [ALTER ROLE](ALTER_ROLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE RESOURCE GROUP](CREATE_RESOURCE_GROUP.md), [DROP RESOURCE GROUP](DROP_RESOURCE_GROUP.md), [CREATE ROLE](CREATE_ROLE.md), [ALTER ROLE](ALTER_ROLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

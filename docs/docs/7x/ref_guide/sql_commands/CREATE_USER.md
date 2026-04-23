@@ -1,10 +1,17 @@
-# CREATE USER 
+---
+title: CREATE USER
+
+---
 
 Defines a new database role.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CREATE USER <name> [[WITH] <option> [ ... ]]
 
 where option can be:
@@ -35,17 +42,22 @@ where option can be:
     | [ DENY BETWEEN <deny_point> AND <deny_point>]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
 
-`CREATE USER` is an alias for [CREATE ROLE](CREATE_ROLE.html). The only difference is that when the command `CREATE USER` is invoked, `LOGIN` is assumed by default, whereas `NOLOGIN` is assumed when the command invoked is `CREATE ROLE`.
+## Description
 
-## <a id="section4"></a>Compatibility 
+`CREATE USER` is an alias for [CREATE ROLE](CREATE_ROLE.md). The only difference is that when the command `CREATE USER` is invoked, `LOGIN` is assumed by default, whereas `NOLOGIN` is assumed when the command invoked is `CREATE ROLE`.
+
+<a id="section4"></a>
+
+## Compatibility
 
 The `CREATE USER` statement is a WarehousePG extension. The SQL standard leaves the definition of users to the implementation.
 
-## <a id="section5"></a>See Also 
+<a id="section5"></a>
 
-[CREATE ROLE](CREATE_ROLE.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE ROLE](CREATE_ROLE.md)
 
+**Parent topic:** [SQL Commands](index.md)

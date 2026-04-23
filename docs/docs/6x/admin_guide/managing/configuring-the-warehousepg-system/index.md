@@ -1,0 +1,16 @@
+---
+title: Configuring WarehousePG
+
+---
+
+Server configuration parameters affect the behavior of WarehousePG.They are part of the PostgreSQL "Grand Unified Configuration" system, so they are sometimes called "GUCs." Most of the WarehousePG server configuration parameters are the same as the PostgreSQL configuration parameters, but some are WarehousePG-specific.
+
+-   **[About WarehousePG Coordinator and Local Parameters](about-warehousepg-coordinator-and-local-parameters.md)**  
+
+-   **[Setting Configuration Parameters](setting-configuration-parameters/index.md)**  
+
+-   **[Viewing Server Configuration Parameter Settings](viewing-server-configuration-parameter-settings.md)**  
+
+-   **[Configuration Parameter Categories](configuration-parameter-categories.md)**  
+
+**Parent topic:** [Managing a WarehousePG cluster](../index.md)

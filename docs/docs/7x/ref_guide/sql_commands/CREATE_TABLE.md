@@ -1,12 +1,19 @@
-# CREATE TABLE 
+---
+title: CREATE TABLE
+
+---
 
 Defines a new table.
 
 > **Note** WarehousePG accepts, but does not enforce, referential integrity syntax (foreign key constraints).
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CREATE [ [GLOBAL | LOCAL] {TEMPORARY | TEMP} | UNLOGGED ] TABLE [IF NOT EXISTS] <table_name> ( 
   [ { <column_name> <data_type> [ COLLATE <collation> ] [ ENCODING ( <storage_directive> [, ...] ) ] [<column_constraint> [ ... ] ]
     | <table_constraint>
@@ -21,7 +28,8 @@ CREATE [ [GLOBAL | LOCAL] {TEMPORARY | TEMP} | UNLOGGED ] TABLE [IF NOT EXISTS] 
 [ TABLESPACE <tablespace_name> ]
 [ DISTRIBUTED BY ( <column> [<opclass>] [, ... ] ) 
     | DISTRIBUTED RANDOMLY
-    | DISTRIBUTED REPLICATED ]
+    | DISTRIBUTED REPLICATED
+    | DISTRIBUTED COORDINATOR ONLY  ]
 
 CREATE [ [GLOBAL | LOCAL] {TEMPORARY | TEMP} | UNLOGGED ] TABLE [IF NOT EXISTS] <table_name>
   OF <type_name> [ (
@@ -36,11 +44,11 @@ CREATE [ [GLOBAL | LOCAL] {TEMPORARY | TEMP} | UNLOGGED ] TABLE [IF NOT EXISTS] 
 [ TABLESPACE <tablespace_name> ]
 [ DISTRIBUTED BY ( <column> [<opclass>] [, ... ] ) 
     | DISTRIBUTED RANDOMLY
-    | DISTRIBUTED REPLICATED ]
+    | DISTRIBUTED REPLICATED
+    | DISTRIBUTED COORDINATOR ONLY  ]
 
 CREATE [ [GLOBAL | LOCAL] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXISTS ] <table_name>
   PARTITION OF <parent_table> [ (
-  { <column_name [ WITH OPTIONS ] [ <column_constraint> [ ... ] ]
     | <table_constraint> }
     [, ... ]
 ) ] { FOR VALUES <partition_bound_spec> | DEFAULT }
@@ -102,7 +110,7 @@ and <exclude_element> in an EXCLUDE constraint is:
 
   { <column_name> | ( <expression> ) } [ <opclass> ] [ ASC | DESC ] [ NULLS { FIRST | LAST } ]
 ```
- 
+
 Classic partitioning syntax elements include:
 
 ```
@@ -119,7 +127,8 @@ CREATE [ [GLOBAL | LOCAL] {TEMPORARY | TEMP} | UNLOGGED ] TABLE [IF NOT EXISTS] 
 [ TABLESPACE <tablespace_name> ]
 [ DISTRIBUTED BY ( <column> [<opclass>] [, ... ] )
     | DISTRIBUTED RANDOMLY
-    | DISTRIBUTED REPLICATED ]
+    | DISTRIBUTED REPLICATED
+    | DISTRIBUTED COORDINATOR ONLY ]
 
 { --partitioned table using SUBPARTITION TEMPLATE
 [ PARTITION BY { RANGE | LIST } (<column>) 
@@ -189,7 +198,9 @@ and <subpartition_element> is:
 [ TABLESPACE <tablespace> ]
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `CREATE TABLE` creates a new, initially empty table in the current database. The user who issues the command owns the table.
 
@@ -209,12 +220,17 @@ When creating a table, you specify an additional clause to declare the Warehouse
 
 If you supply the `DISTRIBUTED REPLICATED` clause, WarehousePG distributes all rows of the table to all segments in the WarehousePG cluster. You can use this option in cases where user-defined functions must run on the segments, and the functions require access to all rows of the table. Replicated functions can also be used to improve query performance by preventing broadcast motions for the table. The `DISTRIBUTED REPLICATED` clause cannot be used with the `PARTITION` clauses or the `INHERITS` clause. A replicated table also cannot be inherited by another table. The hidden system columns (`ctid`, `cmin`, `cmax`, `xmin`, `xmax`, and `gp_segment_id`) cannot be referenced in user queries on replicated tables because they have no single, unambiguous value. WarehousePG returns a `column does not exist` error for the query.
 
+`CREATE TABLE` supports coordinator-only distribution via the clause `DISTRIBUTED COORDINATOR ONLY`. However, coordinator-only distribution can't be used with inheritance or partitioning: tables using `INHERITS`,` PARTITION BY`, or `PARTITION OF` can't be defined as coordinator-only.
+
+Coordinator-only distribution is intended for specialized use cases and isn't recommended for general workloads. It exists primarily to support some extensions or system components that need to consult their own metadata tables at a very early stage of query processing, before distributed execution can safely occur.
+
 The `PARTITION BY` and `PARTITION OF` clauses allow you to divide the table into multiple sub-tables (or parts) that, taken together, make up the parent table and share its schema.
 
-> **Note** WarehousePG supports both *classic* and *modern* partitioning syntaxes. Refer to [Choosing the Partitioning Syntax](../../admin_guide/ddl/ddl-partition.html#choose) for more information, including guidance on selecting the appropriate syntax for a partitioned table.
+> **Note** WarehousePG supports both *classic* and *modern* partitioning syntaxes. Refer to [Choosing the Partitioning Syntax](../../admin_guide/ddl/ddl-partition/index.md#choose) for more information, including guidance on selecting the appropriate syntax for a partitioned table.
 
+<a id="section4"></a>
 
-## <a id="section4"></a>Parameters 
+## Parameters
 
 GLOBAL \| LOCAL
 These keywords are present for SQL standard compatibility, but have no effect in WarehousePG and are deprecated.
@@ -230,35 +246,37 @@ If specified, the table is created as an unlogged table. Data written to unlogge
 IF NOT EXISTS
 Do not throw an error if a relation with the same name already exists. WarehousePG issues a notice in this case. Note that there is no guarantee that the existing relation is anything like the one that would have been created.
 
-table\_name
+table_name
 The name (optionally schema-qualified) of the table to be created.
 
-OF type\_name
+OF type_name
 Creates a *typed table*, which takes its structure from the specified composite type (name optionally schema-qualified). A typed table is tied to its type; for example, the table will be dropped if the type is dropped with `DROP TYPE ... CASCADE`.
 
 When a typed table is created, the data types of the columns are determined by the underlying composite type and are not specified by the `CREATE TABLE` command. But the `CREATE TABLE` command can add defaults and constraints to the table and can specify storage parameters.
 
-column\_name
+column_name
 The name of a column to be created in the new table.
 
-data\_type
-The data type of the column. This may include array specifiers. For more information on the data types supported by WarehousePG, refer to the [Data Types](../data_types.html) documentation.
+data_type
+The data type of the column. This may include array specifiers. For more information on the data types supported by WarehousePG, refer to the [Data Types](../data_types/index.md) documentation.
 
 For table columns that contain textual data, Specify the data type `VARCHAR` or `TEXT`. Specifying the data type `CHAR` is not recommended. In WarehousePG, the data types `VARCHAR` or `TEXT` handle padding added to the data (space characters added after the last non-space character) as significant characters, the data type `CHAR` does not. See [Notes](#section5).
 
 COLLATE collation
 The `COLLATE` clause assigns a collation to the column (which must be of a collatable data type). If not specified, the column data type's default collation is used.
 
-    > **Note** The WarehousePG query optimizer (GPORCA) supports collation only when all columns in the query use the same collation. If columns in the query use different collations, then WarehousePG uses the Postgres-based planner.
+```
+> **Note** The WarehousePG query optimizer (GPORCA) supports collation only when all columns in the query use the same collation. If columns in the query use different collations, then WarehousePG uses the Postgres-based planner.
+```
 
-ENCODING ( storage\_directive [, ...] )
-For a column, the optional `ENCODING` clause specifies the type of compression and block size for the column data. Valid column storage\_directives are `compresstype`, `compresslevel`, and `blocksize`.
+ENCODING ( storage_directive [, ...] )
+For a column, the optional `ENCODING` clause specifies the type of compression and block size for the column data. Valid column storage_directives are `compresstype`, `compresslevel`, and `blocksize`.
 
 This clause is valid only for append-optimized, column-oriented tables.
 
 Column compression settings are inherited from the table level to the partition level to the sub-partition level. The lowest-level settings have priority.
 
-For more information about using column compression, refer to [Adding Column-Level Compression](../../admin_guide/ddl/ddl-storage.html#topic43).
+For more information about using column compression, refer to [Adding Column-Level Compression](../../admin_guide/ddl/ddl-storage.md#topic43).
 
 blocksize
 Set to the size, in bytes, for each block in a table. The `blocksize` must be between 8192 and 2097152 bytes, and be a multiple of 8192. The default is 32768.
@@ -271,7 +289,7 @@ Set to `ZLIB` (the default), `ZSTD`, or `RLE_TYPE`, to specify the type of compr
 The value `RLE_TYPE`, which is supported only for append-optimized, column-oriented tables, enables the run-length encoding (RLE) compression algorithm. RLE compresses data better than the Zstd or zlib compression algorithms when the same data value occurs in many consecutive rows.
 For columns of type `BIGINT`, `INTEGER`, `DATE`, `TIME`, or `TIMESTAMP`, delta compression is also applied if the `compresstype` option is set to `RLE_TYPE` compression. The delta compression algorithm is based on the delta between column values in consecutive rows and is designed to improve compression when data is loaded in sorted order or the compression is applied to column data that is in sorted order.
 
-INHERITS \( parent\_table \[, …\]\)
+INHERITS ( parent_table \[, …])
 The optional `INHERITS` clause specifies a list of tables from which the new table automatically inherits all columns. Parent tables can be plain tables or foreign tables.
 
 Use of `INHERITS` creates a persistent relationship between the new child table and its parent table(s). Schema modifications to the parent(s) normally propagate to children as well, and by default the data of the child table is included in scans of the parent(s).
@@ -284,7 +302,7 @@ Column `STORAGE` settings are also copied from parent tables.
 
 If a column in the parent table is an identity column, that property is not inherited. You can declare a column in the child table an identity column if desired.
 
-PARTITION BY { RANGE | LIST | HASH } ( { column\_name | ( expression ) } [ opclass ] [, ...] )
+PARTITION BY { RANGE | LIST | HASH } ( { column_name | ( expression ) } [ opclass ][, ...] )
 The optional `PARTITION BY` clause of the *modern partitioning syntax* specifies a strategy of partitioning the table. The table thus created is referred to as a partitioned table. The parenthesized list of columns or expressions forms the partition key for the table. When using range or hash partitioning, the partition key can include multiple columns or expressions (up to 32), but for list partitioning, the partition key must consist of a single column or expression.
 
 Range and list partitioning require a btree operator class, while hash partitioning requires a hash operator class. If no operator class is specified explicitly, the default operator class of the appropriate type will be used; if no default operator class exists, WarehousePG raises an error. When hash partitioning is used, the operator class used must implement support function 2 (see [Index Method Support Routines](https://www.postgresql.org/docs/12/xindex.html#XINDEX-SUPPORT) in the PostgreSQL documentation for details).
@@ -295,14 +313,14 @@ A partitioned table is divided into sub-tables (called partitions), which are ty
 
 Partitioned tables do not support `EXCLUDE` constraints; however, you can define these constraints on individual partitions.
 
-Refer to [Partitioning Large Tables](../../admin_guide/ddl/ddl-partition.html) for further discussion on table partitioning.
+Refer to [Partitioning Large Tables](../../admin_guide/ddl/ddl-partition/index.md) for further discussion on table partitioning.
 
-PARTITION OF parent\_table { FOR VALUES partition\_bound\_spec | DEFAULT }
+PARTITION OF parent_table { FOR VALUES partition_bound_spec | DEFAULT }
 The `PARTITION OF` clause of the *modern partitioning syntax* creates the table as a *partition* of the specified parent table. You can create the table either as a partition for specific values using `FOR VALUES` or as a default partition using `DEFAULT`. Any indexes and constraints that exist in the parent table are cloned on the new partition.
 
-The partition\_bound\_spec must correspond to the partitioning method and partition key of the parent table, and must not overlap with any existing partition of that parent. The form with `IN` is used for list partitioning, the form with `FROM` and `TO` is used for range partitioning, and the form with `WITH` is used for hash partitioning.
+The partition_bound_spec must correspond to the partitioning method and partition key of the parent table, and must not overlap with any existing partition of that parent. The form with `IN` is used for list partitioning, the form with `FROM` and `TO` is used for range partitioning, and the form with `WITH` is used for hash partitioning.
 
-partition\_bound\_expr is any variable-free expression (subqueries, window functions, aggregate functions, and set-returning functions are not allowed). Its data type must match the data type of the corresponding partition key column. The expression is evaluated once at table creation time, so it can even contain volatile expressions such as `CURRENT_TIMESTAMP`.
+partition_bound_expr is any variable-free expression (subqueries, window functions, aggregate functions, and set-returning functions are not allowed). Its data type must match the data type of the corresponding partition key column. The expression is evaluated once at table creation time, so it can even contain volatile expressions such as `CURRENT_TIMESTAMP`.
 
 When creating a list partition, you can specify `NULL` to signify that the partition allows the partition key column to be null. However, there cannot be more than one such list partition for a given parent table. `NULL` cannot be specified for range partitions.
 
@@ -328,7 +346,7 @@ WarehousePG automatically routes rows inserted into a partitioned table to the c
 
 Operations such as `TRUNCATE` which normally affect a table and all of its inheritance children will cascade to all partitions, but may also be performed on an individual partition. Note that dropping a partition with `DROP TABLE` requires taking an `ACCESS EXCLUSIVE` lock on the parent table.
 
-LIKE source\_table \[like\_option `...`\]
+LIKE source_table \[like_option `...`]
 The `LIKE` clause specifies a table from which the new table automatically copies all column names, their data types, not-null constraints, and distribution policy.
 
 > **Note** Storage properties and the partition structure are *not* copied to the new table.
@@ -337,7 +355,7 @@ Unlike `INHERITS`, the new table and original table are completely decoupled aft
 
 Also unlike `INHERITS`, columns and constraints copied by `LIKE` are not merged with similarly named columns and constraints. If the same name is specified explicitly or in another `LIKE` clause, WarehousePG signals an error.
 
-The optional like\_option clauses specify which additional properties of the original table to copy. Specifying `INCLUDING` copies the property, specifying `EXCLUDING` omits the property. `EXCLUDING` is the default. If multiple specifications are made for the same kind of object, the last one is used. The available options are:
+The optional like_option clauses specify which additional properties of the original table to copy. Specifying `INCLUDING` copies the property, specifying `EXCLUDING` omits the property. `EXCLUDING` is the default. If multiple specifications are made for the same kind of object, the last one is used. The available options are:
 
 INCLUDING AM
 The access method of the original table will be copied.
@@ -379,10 +397,10 @@ INCLUDING ALL
 
 You can also use the `LIKE` clause to copy column definitions from views, foreign tables, or composite types. WarehousePG ignores inapplicable options (for example, `INCLUDING INDEXES` from a view).
 
-CONSTRAINT constraint\_name
+CONSTRAINT constraint_name
 An optional name for a column or table constraint. If the constraint is violated, the constraint name is present in error messages, so constraint names like `column must be positive` can be used to communicate helpful constraint information to client applications. (Use double-quotes to specify constraint names that contain spaces.) If a constraint name is not specified, the system generates a name.
 
-> **Note** The specified constraint\_name is used for the constraint, but a system-generated unique name is used for the index name. In some prior releases, the provided name was used for both the constraint name and the index name.
+> **Note** The specified constraint_name is used for the constraint, but a system-generated unique name is used for the index name. In some prior releases, the provided name was used for both the constraint name and the index name.
 
 NOT NULL
 The column is not allowed to contain null values.
@@ -392,7 +410,7 @@ The column is allowed to contain null values. This is the default.
 
 This clause is only provided for compatibility with non-standard SQL databases. Its use is discouraged in new applications.
 
-CHECK \(expression\) \[ NO INHERIT \]
+CHECK (expression) \[ NO INHERIT ]
 The `CHECK` clause specifies an expression producing a Boolean result which new or updated rows must satisfy for an insert or update operation to succeed. Expressions evaluating to `TRUE` or `UNKNOWN` succeed. Should any row of an insert or update operation produce a `FALSE` result, WarehousePG raises an error exception, and the insert or update does not alter the database. A check constraint specified as a column constraint should reference that column's value only, while an expression appearing in a table constraint can reference multiple columns.
 
 Currently, `CHECK` expressions cannot contain subqueries nor refer to variables other than columns of the current row. You can reference the system column `tableoid`, but not any other system column.
@@ -401,7 +419,7 @@ A constraint marked with `NO INHERIT` will not propagate to child tables.
 
 When a table has multiple `CHECK` constraints, they will be tested for each row in alphabetical order by name, after checking `NOT NULL` constraints. (Previous WarehousePG versions did not honor any particular firing order for `CHECK` constraints.)
 
-DEFAULT default\_expr
+DEFAULT default_expr
 The `DEFAULT` clause assigns a default data value for the column whose column definition it appears within. The value is any variable-free expression (in particular, cross-references to other columns in the current table are not allowed). Subqueries are not allowed either. The data type of the default expression must match the data type of the column. The default expression will be used in any insert operation that does not specify a value for the column. If there is no default for a column, then the default is null.
 
 GENERATED ALWAYS AS ( generation_expr ) STORED
@@ -411,11 +429,11 @@ The generation expression can refer to other columns in the table, but not other
 
 GENERATED { ALWAYS | BY DEFAULT } AS IDENTITY [ ( sequence_options ) ]
 This clause creates the column as an identity column. WarehousePG attaches an implicit sequence to it, and automatically assigns a value from the sequence to the column in new rows. Such a column is implicitly `NOT NULL`.
-The clauses `ALWAYS` and `BY DEFAULT` determine how the sequence value is given precedence over a user-specified value in an `INSERT` statement. If `ALWAYS` is specified, a user-specified value is only accepted if the `INSERT` statement specifies `OVERRIDING SYSTEM VALUE`. If `BY DEFAULT` is specified, then the user-specified value takes precedence. See [INSERT](INSERT.html) for details. (In the `COPY` command, ueser-specified values are always used regardless of this setting.)
-You can use the optional sequence_options clause to override the options of the sequence. See [CREATE SEQUENCE](CREATE_SEQUENCE.html) for details.
+The clauses `ALWAYS` and `BY DEFAULT` determine how the sequence value is given precedence over a user-specified value in an `INSERT` statement. If `ALWAYS` is specified, a user-specified value is only accepted if the `INSERT` statement specifies `OVERRIDING SYSTEM VALUE`. If `BY DEFAULT` is specified, then the user-specified value takes precedence. See [INSERT](INSERT.md) for details. (In the `COPY` command, ueser-specified values are always used regardless of this setting.)
+You can use the optional sequence_options clause to override the options of the sequence. See [CREATE SEQUENCE](CREATE_SEQUENCE.md) for details.
 
-UNIQUE \( column\_constraint \)
-UNIQUE \( column\_name \[, ... \] \) \[ INCLUDE \( column\_name \[, ...\]\) \] \( table\_constraint \)
+UNIQUE ( column_constraint )
+UNIQUE ( column_name \[, ... ] ) \[ INCLUDE ( column_name \[, ...]) ] ( table_constraint )
 The `UNIQUE` constraint specifies that a group of one or more columns of a table may contain only unique values. The behavior of a unique table constraint is the same as that of a unique column constraint, with the additional capability to span multiple columns. The constraint therefore enforces that any two rows must differ in at least one of these columns.
 
 For the purpose of a unique constraint, null values are not considered equal. The column(s) that are unique must contain all the columns of the WarehousePG distribution key. In addition, the `<key>` must contain all the columns in the partition key if the table is partitioned. Note that a `<key>` constraint in a partitioned table is not the same as a simple `UNIQUE INDEX`.
@@ -428,11 +446,11 @@ Adding a unique constraint automatically creates a unique btree index on the col
 
 The optional `INCLUDE` clause adds to that index one or more columns that are simply "payload": uniqueness is not enforced on them, and the index cannot be searched on the basis of those columns. However they can be retrieved by an index-only scan. Note that although the constraint is not enforced on included columns, it still depends on them. Consequently, some operations on such columns (for example, `DROP COLUMN`) can cause cascaded constraint and index deletion.
 
-PRIMARY KEY \( column constraint \)
-PRIMARY KEY \( column\_name \[, ... \] \) \[ INCLUDE \( column\_name \[, ...\]\) \] \( table constraint \)
+PRIMARY KEY ( column constraint )
+PRIMARY KEY ( column_name \[, ... ] ) \[ INCLUDE ( column_name \[, ...]) ] ( table constraint )
 The `PRIMARY KEY` constraint specifies that a column or columns of a table may contain only unique (non-duplicate), non-null values. You can specify only one primary key for a table, whether as a column constraint or a table constraint.
 
-The primary key constraint should name a set of columns that is different from the set of columns named by any unique constraint defined for the same table. \(Otherwise, the unique constraint is redundant and will be discarded.\)
+The primary key constraint should name a set of columns that is different from the set of columns named by any unique constraint defined for the same table. (Otherwise, the unique constraint is redundant and will be discarded.)
 
 `PRIMARY KEY` enforces the same data constraints as a combination of `UNIQUE` and `NOT NULL`, but identifying a set of columns as the primary key also provides metadata about the design of the schema, since a primary key implies that other tables can rely on this set of columns as a unique identifier for rows.
 
@@ -442,43 +460,41 @@ Adding a `PRIMARY KEY` constraint will automatically create a unique btree index
 
 The optional `INCLUDE` clause adds to that index one or more columns that are simply "payload": uniqueness is not enforced on them, and the index cannot be searched on the basis of those columns. However they can be retrieved by an index-only scan. Note that although the constraint is not enforced on included columns, it still depends on them. Consequently, some operations on such columns (for example, `DROP COLUMN`) can cause cascaded constraint and index deletion.
 
-EXCLUDE [ USING index\_method ] ( exclude\_element WITH operator [, ... ] ) index\_parameters [ WHERE ( predicate ) ]
+EXCLUDE [ USING index\_method ] \( exclude_element WITH operator [, ... ] ) index_parameters [ WHERE ( predicate ) ]
 The `EXCLUDE` clause defines an exclusion constraint, which guarantees that if any two rows are compared on the specified column(s) or expression(s) using the specified operator(s), not all of these comparisons will return `TRUE`. If all of the specified operators test for equality, this is equivalent to a `UNIQUE` constraint, although an ordinary unique constraint will be faster. However, exclusion constraints can specify constraints that are more general than simple equality. For example, you can specify a constraint that no two rows in the table contain overlapping circles by using the `&&` operator.
 
 WarehousePG does not support specifying an exclusion constraint on a randomly-distributed table.
 
-Exclusion constraints are implemented using an index, so each specified operator must be associated with an appropriate operator class for the index access method index\_method. The operators are required to be commutative. Each exclude\_element can optionally specify an operator class and/or ordering options; these are described fully under [CREATE INDEX](CREATE_INDEX.html).
+Exclusion constraints are implemented using an index, so each specified operator must be associated with an appropriate operator class for the index access method index_method. The operators are required to be commutative. Each exclude_element can optionally specify an operator class and/or ordering options; these are described fully under [CREATE INDEX](CREATE_INDEX.md).
 
 The access method must support `amgettuple`; at present this means GIN cannot be used. Although it's allowed, there is little point in using B-tree or hash indexes with an exclusion constraint, because this does nothing that an ordinary unique constraint doesn't do better. So in practice the access method will always be GiST or SP-GiST.
 
 The predicate allows you to specify an exclusion constraint on a subset of the table; internally this creates a partial index. Note that parentheses are required around the predicate.
 
-REFERENCES reftable \[ \( refcolumn \) \]
-  \[ MATCH matchtype \] \[ON DELETE key\_action\] \[ON UPDATE key\_action\] \(column constraint\)
-FOREIGN KEY \(column\_name \[, ...\]\) REFERENCES reftable [ ( refcolumn [, ... ] ) ]
-  \[ MATCH matchtype \] \[ ON DELETE referential_action \] \[ ON UPDATE referential_action \] \(table constraint\)
+REFERENCES reftable \[ ( refcolumn ) ]
+  \[ MATCH matchtype ] \[ON DELETE key_action] \[ON UPDATE key_action] (column constraint)
+FOREIGN KEY (column_name \[, ...]) REFERENCES reftable \[ ( refcolumn [, ... ] ) ]
+  \[ MATCH matchtype ] \[ ON DELETE referential_action ] \[ ON UPDATE referential_action ] (table constraint)
 The `REFERENCES` and `FOREIGN KEY` clauses specify referential integrity constraints (foreign key constraints). WarehousePG accepts referential integrity constraints but does not enforce them.
 
 DEFERRABLE
 NOT DEFERRABLE
-The `[NOT] DEFERRABLE` clause controls whether the constraint can be deferred. A constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction (using the [`SET CONSTRAINTS`](SET_CONSTRAINTS.html) command). `NOT DEFERRABLE` is the default. Currently, only `UNIQUE`, `PRIMARY KEY`, and `EXCLUDE` constraints accept this clause. `NOT NULL` and `CHECK` constraints are not deferrable. `REFERENCES` (foreign key) constraints accept this clause but are not enforced. Note that deferrable constraints cannot be used as conflict arbitrators in an `INSERT` statement that includes an `ON CONFLICT DO UPDATE` clause.
+The `[NOT] DEFERRABLE` clause controls whether the constraint can be deferred. A constraint that is not deferrable will be checked immediately after every command. Checking of constraints that are deferrable can be postponed until the end of the transaction (using the [`SET CONSTRAINTS`](SET_CONSTRAINTS.md) command). `NOT DEFERRABLE` is the default. Currently, only `UNIQUE`, `PRIMARY KEY`, and `EXCLUDE` constraints accept this clause. `NOT NULL` and `CHECK` constraints are not deferrable. `REFERENCES` (foreign key) constraints accept this clause but are not enforced. Note that deferrable constraints cannot be used as conflict arbitrators in an `INSERT` statement that includes an `ON CONFLICT DO UPDATE` clause.
 
 Note that deferrable constraints cannot be used as conflict arbitrators in an `INSERT` statement that includes an `ON CONFLICT DO UPDATE` clause.
 
 INITIALLY IMMEDIATE
 INITIALLY DEFERRED
-If a constraint is deferrable, this clause specifies the default time to check the constraint. If the constraint is `INITIALLY IMMEDIATE`, it is checked after each statement. This is the default. If the constraint is `INITIALLY DEFERRED`, it is checked only at the end of the transaction. You can alter the constraint check time with the [SET CONSTRAINTS](SET_CONSTRAINTS.html) command.
+If a constraint is deferrable, this clause specifies the default time to check the constraint. If the constraint is `INITIALLY IMMEDIATE`, it is checked after each statement. This is the default. If the constraint is `INITIALLY DEFERRED`, it is checked only at the end of the transaction. You can alter the constraint check time with the [SET CONSTRAINTS](SET_CONSTRAINTS.md) command.
 
-USING access\_method
-The optional `USING` clause specifies the table access method to use to store the contents for the new table you are creating; the method must be an access method of type `TABLE`. Set to `heap` to access the table as a heap-storage table, `ao_row` to access the table as an append-optimized table with row-oriented storage (AO), or `ao_column` to access the table as an append-optimized table with column-oriented storage (AO/CO). The default access method is determined by the value of the [default\_table\_access\_method](../config_params/guc-list.html#default_table_access_method) server configuration parameter.
+USING access_method
+The optional `USING` clause specifies the table access method to use to store the contents for the new table you are creating; the method must be an access method of type `TABLE`. Set to `heap` to access the table as a heap-storage table, `ao_row` to access the table as an append-optimized table with row-oriented storage (AO), or `ao_column` to access the table as an append-optimized table with column-oriented storage (AO/CO). The default access method is determined by the value of the [default_table_access_method](../config_params/guc-list.md#default_table_access_method) server configuration parameter.
 
-
-
-::: tip Note
-Although you can specify the table's access method using <code>WITH (appendoptimized=true|false, orientation=row|column)</code> it is recomended to use <code>USING <access_method></code> instead.
+:::tip Note
+Although you can specify the table's access method using <code>WITH (appendoptimized=true|false, orientation=row|column)</code> it is recomended to use <code>USING &lt;access_method></code> instead.
 :::
-  
-WITH ( storage\_parameter=value )
+
+WITH ( storage_parameter=value )
 The `WITH` clause specifies optional storage parameters for a table or index; see [Storage Parameters](#storage_parameters) below for details. For backward-compatibility the `WITH` clause for a table can also include `OIDS=FALSE` to specify that rows of the new table should not contain OIDs (object identifiers), `OIDS=TRUE`. is no longer supported.
 
 ON COMMIT
@@ -486,28 +502,32 @@ You can control the behavior of temporary tables at the end of a transaction blo
 
 **PRESERVE ROWS** - No special action is taken at the ends of transactions for temporary tables. This is the default behavior.
 
-**DELETE ROWS** - All rows in the temporary table will be deleted at the end of each transaction block. Essentially, WarehousePG performs an automatic [TRUNCATE](TRUNCATE.html) at each commit. When used on a partitioned table, this operation is not cascaded to its partitions.
+**DELETE ROWS** - All rows in the temporary table will be deleted at the end of each transaction block. Essentially, WarehousePG performs an automatic [TRUNCATE](TRUNCATE.md) at each commit. When used on a partitioned table, this operation is not cascaded to its partitions.
 
 **DROP** - The temporary table will be dropped at the end of the current transaction block. When used on a partitioned table, this action drops its partitions and when used on tables with inheritance children, it drops the dependent children.
 
 TABLESPACE tablespace
-The name of the tablespace in which the new table is to be created. If not specified, the database's  [default\_tablespace](../config_params/guc-list.html#default_tablespace) is consulted, or [temp\_tablespaces](../config_params/guc-list.html) if the table is temporary. For partitioned tables, since no storage is required for the table itself, the tablespace specified overrides `default_tablespace` as the default tablespace to use for any newly created partitions when no other tablespace is explicitly specified.
+The name of the tablespace in which the new table is to be created. If not specified, the database's  [default_tablespace](../config_params/guc-list.md#default_tablespace) is consulted, or [temp_tablespaces](../config_params/guc-list.md) if the table is temporary. For partitioned tables, since no storage is required for the table itself, the tablespace specified overrides `default_tablespace` as the default tablespace to use for any newly created partitions when no other tablespace is explicitly specified.
 
 USING INDEX TABLESPACE tablespace
-This clause allows selection of the tablespace in which the index associated with a `UNIQUE`, `PRIMARY KEY`, or `EXCLUDE` constraint will be created. If not specified, the database's  [default\_tablespace](../config_params/guc-list.html#default_tablespace) is used, or [temp\_tablespaces](../config_params/guc-list.html) if the table is temporary.
+This clause allows selection of the tablespace in which the index associated with a `UNIQUE`, `PRIMARY KEY`, or `EXCLUDE` constraint will be created. If not specified, the database's  [default_tablespace](../config_params/guc-list.md#default_tablespace) is used, or [temp_tablespaces](../config_params/guc-list.md) if the table is temporary.
 
-DISTRIBUTED BY \( column \[opclass\] \[, ... \] \)
+DISTRIBUTED BY ( column \[opclass] \[, ... ] )
 DISTRIBUTED RANDOMLY
 DISTRIBUTED REPLICATED
+DISTRIBUTED COORDINATOR ONLY
+
 Used to declare the WarehousePG distribution policy for the table. `DISTRIBUTED BY` uses hash distribution with one or more columns declared as the distribution key. For the most even data distribution, the distribution key should be the primary key of the table or a unique column (or set of columns). If that is not possible, then you may choose `DISTRIBUTED RANDOMLY`, which will send the data randomly to the segment instances. Additionally, an operator class, `opclass`, can be specified, to use a non-default hash function.
 
-The WarehousePG server configuration parameter [gp\_create\_table\_random\_default\_distribution](../config_params/guc-list.html#gp_create_table_random_default_distribution) controls the default table distribution policy if the DISTRIBUTED BY clause is not specified when you create a table. WarehousePG follows these rules to create a table if a distribution policy is not specified.
+The `DISTRIBUTED COORDINATOR ONLY` clause specifies that the data is located only on the coordinator node. This policy is primarily used for small lookup tables or system components that need early access to metadata during query planning.
 
-If the value of the parameter is `off` \(the default\), WarehousePG chooses the table distribution key based on the command:
+The WarehousePG server configuration parameter [gp_create_table_random_default_distribution](../config_params/guc-list.md#gp_create_table_random_default_distribution) controls the default table distribution policy if the DISTRIBUTED BY clause is not specified when you create a table. WarehousePG follows these rules to create a table if a distribution policy is not specified.
+
+If the value of the parameter is `off` (the default), WarehousePG chooses the table distribution key based on the command:
 
 -   If a `LIKE` or `INHERITS` clause is specified, then WarehousePG copies the distribution key from the source or parent table.
 -   If `PRIMARY KEY`, `UNIQUE`, or `EXCLUDE` constraints are specified, then WarehousePG chooses the largest subset of all the key columns as the distribution key.
--   If no constraints nor a `LIKE` or `INHERITS` clause is specified, then WarehousePG chooses the first suitable column as the distribution key. \(Columns with geometric or user-defined data types are not eligible as WarehousePG distribution key columns.\)
+-   If no constraints nor a `LIKE` or `INHERITS` clause is specified, then WarehousePG chooses the first suitable column as the distribution key. (Columns with geometric or user-defined data types are not eligible as WarehousePG distribution key columns.)
 
 If the value of the parameter is set to `on`, WarehousePG follows these rules:
 
@@ -516,17 +536,19 @@ If the value of the parameter is set to `on`, WarehousePG follows these rules:
 
 The `DISTRIBUTED REPLICATED` clause replicates the entire table to all WarehousePG segment instances. It can be used when it is necessary to run user-defined functions on segments when the functions require access to all rows in the table, or to improve query performance by preventing broadcast motions.
 
-### <a id="param_classic "></a>Classic Partitioning Syntax Parameters 
+<a id="param_classic "></a>
+
+### Classic Partitioning Syntax Parameters
 
 Descriptions of additional parameters that are specific to the *classic partitioning syntax* follow.
 
 > **Note** modern partitioning syntax is the preferred recomendation
 
-CREATE TABLE table\_name ... PARTITION BY
+CREATE TABLE table_name ... PARTITION BY
 
-When creating a partitioned table using the *classic syntax*, WarehousePG creates the root partitioned table with the specified table name. WarehousePG also creates a hierarchy of tables, child tables, that are the sub-partitions based on the partitioning options that you specify. The [pg_partitioned_table](../system_catalogs/pg_partitioned_table.html) system catalog contains information about the sub-partition tables.
+When creating a partitioned table using the *classic syntax*, WarehousePG creates the root partitioned table with the specified table name. WarehousePG also creates a hierarchy of tables, child tables, that are the sub-partitions based on the partitioning options that you specify. The [pg_partitioned_table](../system_catalogs/system_catalogs_definitions/pg_partitioned_table.md) system catalog contains information about the sub-partition tables.
 
-classic\_partition\_spec
+classic_partition_spec
 Declares the individual partitions to create. Each partition can be defined individually or, for range partitions, you can use the `EVERY` clause (with a `START` and optional `END` clause) to define an increment pattern to use to create the individual partitions.
 
 DEFAULT PARTITION name
@@ -559,13 +581,15 @@ Declares one or more columns by which to sub-partition the first-level partition
 SUBPARTITION TEMPLATE
 Instead of declaring each sub-partition definition individually for each partition, you can optionally declare a sub-partition template to be used to create the sub-partitions (lower level child tables). This sub-partition specification would then apply to all parent partitions.
 
-### <a id="storage_parameters"></a>Storage Parameters
+<a id="storage_parameters"></a>
 
-The `WITH` clause can specify storage parameters for tables, and for indexes associated with a `UNIQUE`, `PRIMARY KEY`, or `EXCLUDE` constraint. Storage parameters for indexes are documented on the [CREATE INDEX](CREATE_INDEX.html.md) reference page. The storage parameters currently available for tables are listed below. For many of these parameters, as shown, there is an additional parameter with the same name prefixed with `toast.`, which controls the behavior of the table's secondary TOAST table, if any. If a table parameter value is set and the equivalent `toast.` parameter is not, the TOAST table will use the table's parameter value. Specifying these parameters for partitioned tables is not supported, but you may specify them for individual leaf partitions.
+### Storage Parameters
+
+The `WITH` clause can specify storage parameters for tables, and for indexes associated with a `UNIQUE`, `PRIMARY KEY`, or `EXCLUDE` constraint. Storage parameters for indexes are documented on the [CREATE INDEX](CREATE_INDEX.md) reference page. The storage parameters currently available for tables are listed below. For many of these parameters, as shown, there is an additional parameter with the same name prefixed with `toast.`, which controls the behavior of the table's secondary TOAST table, if any. If a table parameter value is set and the equivalent `toast.` parameter is not, the TOAST table will use the table's parameter value. Specifying these parameters for partitioned tables is not supported, but you may specify them for individual leaf partitions.
 
 Note that you can also set storage parameters for a particular partition or sub-partition by declaring the `WITH` clause in the *classic syntax* partition specification. The lowest-level partition's settings have priority. 
 
-You can specify the defaults for some of the table storage options with the server configuration parameter [gp\_default\_storage\_options](../config_params/guc-list.html#gp_default_storage_options). For information about setting default storage options, see [Notes](#section5).
+You can specify the defaults for some of the table storage options with the server configuration parameter [gp_default_storage_options](../config_params/guc-list.md#gp_default_storage_options). For information about setting default storage options, see [Notes](#section5).
 
 > **Note** Because WarehousePG does not permit autovacuuming user tables, it accepts, but does not apply, certain per-table parameter settings as noted below.
 
@@ -595,7 +619,7 @@ The value `RLE_TYPE`, which is supported only for append-optimized, column-orien
 
 For columns of type `BIGINT`, `INTEGER`, `DATE`, `TIME`, or `TIMESTAMP`, delta compression is also applied if the `compresstype` option is set to `RLE_TYPE` compression. The delta compression algorithm is based on the delta between column values in consecutive rows and is designed to improve compression when data is loaded in sorted order or the compression is applied to column data that is in sorted order.
 
-For information about using table compression, see [Choosing the Table Storage Model](../../admin_guide/ddl/ddl-storage.html#topic1) in the *WarehousePG Administrator Guide*.
+For information about using table compression, see [Choosing the Table Storage Model](../../admin_guide/ddl/ddl-storage.md) in the *WarehousePG Administrator Guide*.
 
 fillfactor
 The fillfactor for a table is a percentage between 10 and 100. 100 (complete packing) is the default. When a smaller fillfactor is specified, `INSERT` operations pack table pages only to the indicated percentage; the remaining space on each page is reserved for updating rows on that page. This gives `UPDATE` a chance to place the updated copy of a row on the same page as the original, which is more efficient than placing it on a different page. For a table whose entries are never updated, complete packing is the best choice, but in heavily updated tables smaller fillfactors are appropriate. This parameter cannot be set for TOAST tables.
@@ -614,7 +638,7 @@ parallel_workers (integer)
 Sets the number of workers that should be used to assist a parallel scan of this table. If not set, WarehousePG determines a value based on the relation size. The actual number of workers chosen by the planner or by utility statements that use parallel scans may be less, for example due to the setting of `max_worker_processes`.
 
 autovacuum_enabled, toast.autovacuum_enabled (boolean)
-Enables or disables the autovacuum daemon for a particular table. If `true`, the autovacuum daemon will perform automatic `VACUUM` and/or `ANALYZE` operations on this table following the rules discussed in [The Autovacuum Daemon](https://www.postgresql.org/docs/12/routine-vacuuming.html#AUTOVACUUM) in the PostgreSQL documentation. If `false`, WarehousePG does not autovacuum the table, except to prevent transaction ID wraparound. Note that the autovacuum daemon does not run at all (except to prevent transaction ID wraparound) if the [autovacuum](../config_params/guc-list.html#autovacuum) parameter is `false`; setting individual tables' storage parameters does not override that. So there is seldom much point in explicitly setting this storage parameter to `true`, only to `false`.
+Enables or disables the autovacuum daemon for a particular table. If `true`, the autovacuum daemon will perform automatic `VACUUM` and/or `ANALYZE` operations on this table following the rules discussed in [The Autovacuum Daemon](https://www.postgresql.org/docs/12/routine-vacuuming.html#AUTOVACUUM) in the PostgreSQL documentation. If `false`, WarehousePG does not autovacuum the table, except to prevent transaction ID wraparound. Note that the autovacuum daemon does not run at all (except to prevent transaction ID wraparound) if the [autovacuum](../config_params/guc-list.md#autovacuum) parameter is `false`; setting individual tables' storage parameters does not override that. So there is seldom much point in explicitly setting this storage parameter to `true`, only to `false`.
 
 vacuum_index_cleanup, toast.vacuum_index_cleanup (boolean)
 Enables or disables index cleanup when `VACUUM` is run on this table. The default value is `true`. Disabling index cleanup can speed up `VACUUM` very significantly, but may also lead to severely bloated indexes if table modifications are frequent. The `INDEX_CLEANUP` parameter of `VACUUM`, if specified, overrides the value of this option.
@@ -624,11 +648,13 @@ vacuum_truncate, toast.vacuum_truncate (boolean)
 Enables or disables vacuum to attempt to truncate any empty pages at the end of this table. The default value is `true`. If `true`, `VACUUM` and autovacuum truncate the empty pages, and the disk space for the truncated pages is returned to the operating system. Note that the truncation requires an `ACCESS EXCLUSIVE` lock on the table. The `TRUNCATE` parameter of `VACUUM`, if specified, overrides the value of this option.
 
 autovacuum_vacuum_threshold, toast.autovacuum_vacuum_threshold (integer)
-Per-table value for the [autovacuum_vacuum_threshold](../config_params/guc-list.html#autovacuum_vacuum_threshold) server configuration parameter.
+Per-table value for the [autovacuum_vacuum_threshold](../config_params/guc-list.md#autovacuum_vacuum_threshold) server configuration parameter.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_vacuum_scale_factor, toast.autovacuum_vacuum_scale_factor (floating point)
-Per-table value for the [autovacuum_vacuum_scale_factor](../config_params/guc-list.html#autovacuum_vacuum_scale_factor) server configuration parameter.
+Per-table value for the [autovacuum_vacuum_scale_factor](../config_params/guc-list.md#autovacuum_vacuum_scale_factor) server configuration parameter.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_analyze_threshold (integer)
@@ -639,43 +665,54 @@ Per-table value for the `autovacuum_analyze_scale_factor` server configuration p
 
 autovacuum_vacuum_cost_delay, toast.autovacuum_vacuum_cost_delay (floating point)
 Per-table value for the `autovacuum_vacuum_cost_delay` server configuration parameter.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_vacuum_cost_limit, toast.autovacuum_vacuum_cost_limit (integer)
 Per-table value for the `autovacuum_vacuum_cost_limit` server configuration parameter.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_freeze_min_age, toast.autovacuum_freeze_min_age (integer)
-Per-table value for the [vacuum_freeze_min_age](../config_params/guc-list.html#vacuum_freeze_min_age) parameter. Note that autovacuum will ignore per-table `autovacuum_freeze_min_age` parameters that are larger than half of the system-wide `autovacuum_freeze_max_age` setting.
+Per-table value for the [vacuum_freeze_min_age](../config_params/guc-list.md#vacuum_freeze_min_age) parameter. Note that autovacuum will ignore per-table `autovacuum_freeze_min_age` parameters that are larger than half of the system-wide `autovacuum_freeze_max_age` setting.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_freeze_max_age, toast.autovacuum_freeze_max_age (integer)
-Per-table value for the [autovacuum_freeze_max_age](../config_params/guc-list.html#autovacuum_freeze_max_age) server configuration parameter. Note that autovacuum will ignore per-table `autovacuum_freeze_max_age` parameters that are larger than the system-wide setting (it can only be set smaller).
+Per-table value for the [autovacuum_freeze_max_age](../config_params/guc-list.md#autovacuum_freeze_max_age) server configuration parameter. Note that autovacuum will ignore per-table `autovacuum_freeze_max_age` parameters that are larger than the system-wide setting (it can only be set smaller).
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_freeze_table_age, toast.autovacuum_freeze_table_age (integer)
 Per-table value for the `vacuum_freeze_table_age` server configuration parameter.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_multixact_freeze_min_age, toast.autovacuum_multixact_freeze_min_age (integer)
 Per-table value for the `vacuum_multixact_freeze_min_age` server configuration parameter. Note that autovacuum will ignore per-table `autovacuum_multixact_freeze_min_age` parameters that are larger than half of the system-wide `autovacuum_multixact_freeze_max_age` setting.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_multixact_freeze_max_age, toast.autovacuum_multixact_freeze_max_age (integer)
 Per-table value for the `autovacuum_multixact_freeze_max_age` server configuration parameter. Note that autovacuum will ignore per-table `autovacuum_multixact_freeze_max_age` parameters that are larger than the system-wide setting (it can only be set smaller).
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 autovacuum_multixact_freeze_table_age, toast.autovacuum_multixact_freeze_table_age (integer)
 Per-table value for the `vacuum_multixact_freeze_table_age` server configuration parameter.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
 log_autovacuum_min_duration, toast.log_autovacuum_min_duration (integer)
 Per-table value for the `log_autovacuum_min_duration` server configuration parameter.
+
 > **Note** WarehousePG accepts, but does not apply, values for these storage parameters.
 
-## <a id="section5"></a>Notes 
+<a id="section5"></a>
 
-WarehousePG automatically creates an index for each unique constraint and primary key constraint to enforce uniqueness, so it is not necessary to create an index explicitly for primary key columns. (See [CREATE INDEX](CREATE_INDEX.html) for more information.)
+## Notes
+
+WarehousePG automatically creates an index for each unique constraint and primary key constraint to enforce uniqueness, so it is not necessary to create an index explicitly for primary key columns. (See [CREATE INDEX](CREATE_INDEX.md) for more information.)
 
 Unique constraints and primary keys are not inherited.
 
@@ -703,7 +740,9 @@ For append-optimized tables, `UPDATE` and `DELETE` are not allowed in a repeatab
 
 GPORCA does not support list partitions with multi-column (composite) partition keys.
 
-## <a id="section6"></a>Examples
+<a id="section6"></a>
+
+## Examples
 
 Create a table named `rank` in the schema named `baby` and distribute the data using the columns `rank` and `year`:
 
@@ -712,7 +751,7 @@ CREATE TABLE baby.rank (id int, rank int, year smallint, count int )
 DISTRIBUTED BY (rank, year);
 ```
 
-Create tables named `films` and `distributors` (the primary key will be used as the WarehousePG distribution key by default\):
+Create tables named `films` and `distributors` (the primary key will be used as the WarehousePG distribution key by default):
 
 ```
 CREATE TABLE films (
@@ -857,7 +896,7 @@ CREATE TABLE distributors (
 WITH (fillfactor=70);
 ```
 
-Create table `cinemas in tablespace `diskvol1`:
+Create table `cinemas in tablespace `diskvol1\`:
 
 ```
 CREATE TABLE cinemas (
@@ -878,7 +917,9 @@ CREATE TABLE employees OF employee_type (
 );
 ```
 
-### <a id="examples_modern"></a>Modern Partitioning Syntax Examples
+<a id="examples_modern"></a>
+
+### Modern Partitioning Syntax Examples
 
 Create a range partitioned table:
 
@@ -990,7 +1031,9 @@ CREATE TABLE cities_partdef
     PARTITION OF cities DEFAULT;
 ```
 
-### <a id="examples_classic"></a>Classic Partitioning Syntax Examples
+<a id="examples_classic"></a>
+
+### Classic Partitioning Syntax Examples
 
 Create a simple, single level partitioned table:
 
@@ -1070,12 +1113,15 @@ PARTITION BY RANGE (year)
   DEFAULT PARTITION outlying_years);
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
+## Compatibility
 
 `CREATE TABLE` command conforms to the SQL standard, with the following exceptions:
 
-### <a id="compat_temp"></a>Temporary Tables
+<a id="compat_temp"></a>
+
+### Temporary Tables
 
 In the SQL standard, temporary tables are defined just once and automatically exist (starting with empty contents) in every session that needs them. WarehousePG instead requires each session to issue its own `CREATE TEMPORARY TABLE` command for each temporary table to be used. This allows different sessions to use the same temporary table name for different purposes, whereas the standard's approach constrains all instances of a given temporary table name to have the same table structure.
 
@@ -1083,11 +1129,15 @@ The standard's distinction between global and local temporary tables is not in W
 
 If the `ON COMMIT` clause is omitted, the SQL standard specifies that the default behavior as `ON COMMIT DELETE ROWS`. However, the default behavior in WarehousePG is `ON COMMIT PRESERVE ROWS`. The `ON COMMIT DROP` option does not exist in the SQL standard.
 
-### <a id="compat_ndu"></a>Non-Deferred Uniqueness Constraints
+<a id="compat_ndu"></a>
+
+### Non-Deferred Uniqueness Constraints
 
 When a `UNIQUE` or `PRIMARY KEY` constraint is not deferrable, Greeplum Database checks for uniqueness immediately whenever a row is inserted or modified. The SQL standard states that uniqueness should be enforced only at the end of the statement; this makes a difference when, for example, a single command updates multiple key values. To obtain standard-compliant behavior, declare the constraint as `DEFERRABLE` but not deferred (for example, `INITIALLY IMMEDIATE`). Note that this can be significantly slower than immediate uniqueness checking.
 
-### <a id="compat_col_constraint"></a>Column Check Constraints
+<a id="compat_col_constraint"></a>
+
+### Column Check Constraints
 
 **Column Check Constraints** — The SQL standard states that `CHECK` column constraints may only refer to the column they apply to; only `CHECK` table constraints may refer to multiple columns. WarehousePG does not enforce this restriction; it treats column and table check constraints alike.
 
@@ -1095,61 +1145,84 @@ When a `UNIQUE` or `PRIMARY KEY` constraint is not deferrable, Greeplum Database
 
 **NULL Constraint** — The `NULL` constraint is a WarehousePG extension to the SQL standard that is included for compatibility with some other database systems (and for symmetry with the `NOT NULL` constraint). Since it is the default for any column, its presence is not required.
 
-### <a id="compat_constraint_naming"></a>Constraint Naming
+<a id="compat_constraint_naming"></a>
+
+### Constraint Naming
 
 The SQL standard states that table and domain constraints must have names that are unique across the schema containing the table or domain. WarehousePG is laxer: it only requires constraint names to be unique across the constraints attached to a particular table or domain. However, this extra freedom does not exist for index-based constraints (`UNIQUE`, `PRIMARY KEY`, and `EXCLUDE` constraints), because the associated index is named the same as the constraint, and index names must be unique across all relations within the same schema.
 
 WarehousePG does not currently record names for `NOT NULL` constraints at all, so they are not subject to the uniqueness restriction.
 
-### <a id="compat_inherit"></a>Inheritance
+<a id="compat_inherit"></a>
+
+### Inheritance
 
 Multiple inheritance via the `INHERITS` clause is a WarehousePG language extension. SQL:1999 and later define single inheritance using a different syntax and different semantics. SQL:1999-style inheritance is not yet supported by WarehousePG.
 
-### <a id="compat_0col"></a>Zero-Column Tables
+<a id="compat_0col"></a>
+
+### Zero-Column Tables
 
 WarehousePG allows a table of no columns to be created (for example, `CREATE TABLE foo();`). This is an extension from the SQL standard, which does not allow zero-column tables. Because zero-column tables are not in themselves very useful, disallowing them creates odd special cases for `ALTER TABLE DROP COLUMN`, so WarehousePG ignores this spec restriction.
 
-### <a id="compat_multid"></a>Multiple Identity Columns
+<a id="compat_multid"></a>
+
+### Multiple Identity Columns
 
 WarehousePG allows a table to have more than one identity column. The standard specifies that a table can have at most one identity column. WarehousePG relaxes this restriction to provide more flexibility for schema changes or migrations. Note that the `INSERT` command supports only one override clause that applies to the entire statement, so having multiple identity columns with different behaviors is not well supported.
 
-### <a id="compat_gencol"></a>Generated Columns
+<a id="compat_gencol"></a>
+
+### Generated Columns
 
 The option `STORED` is not standard but is also used by other SQL implementations. The SQL standard does not specify the storage of generated columns.
 
-### <a id="compat_like"></a>LIKE Clause
+<a id="compat_like"></a>
+
+### LIKE Clause
 
 While a `LIKE` clause exists in the SQL standard, many of the options that WarehousePG accepts for it are not in the standard, and some of the standard's options are not implemented by WarehousePG.
 
-### <a id="compat_with"></a>WITH Clause
+<a id="compat_with"></a>
+
+### WITH Clause
 
 The `WITH` clause is a WarehousePG extension; storage parameters are in the standard.
 
+<a id="compat_tblsp"></a>
 
-### <a id="compat_tblsp"></a>Tablespaces
+### Tablespaces
 
 The WarehousePG concept of tablespaces is not part of the SQL standard. The clauses `TABLESPACE` and `USING INDEX TABLESPACE` are extensions.
 
-### <a id="compat_typed"></a>Typed Tables
+<a id="compat_typed"></a>
+
+### Typed Tables
 
 Typed tables implement a subset of the SQL standard. According to the standard, a typed table has columns corresponding to the underlying composite type as well as one other column that is the "self-referencing column". WarehousePG does not support self-referencing columns explicitly.
 
-### <a id="section7c"></a>PARTITION BY Clause
+<a id="section7c"></a>
+
+### PARTITION BY Clause
 
 Table partitioning via the `PARTITION BY` clause is a WarehousePG extension.
 
-### <a id="section7c"></a>PARTITION OF Clause
+<a id="section7c"></a>
+
+### PARTITION OF Clause
 
 Table partitioning via the `PARTITION OF` clause is a WarehousePG extension.
 
-### <a id="compat_distrib"></a>Data Distribution
+<a id="compat_distrib"></a>
+
+### Data Distribution
 
 The WarehousePG concept of a parallel or distributed database is not part of the SQL standard. The `DISTRIBUTED` clauses are extensions.
 
+<a id="section8"></a>
 
-## <a id="section8"></a>See Also 
+## See Also
 
-[ALTER TABLE](ALTER_TABLE.html), [DROP TABLE](DROP_TABLE.html), [CREATE EXTERNAL TABLE](CREATE_EXTERNAL_TABLE.html), [CREATE TABLE AS](CREATE_TABLE_AS.html), [CREATE TABLESPACE](CREATE_TABLESPACE.html), [CREATE TYPE](CREATE_TYPE.html)
+[ALTER TABLE](ALTER_TABLE.md), [DROP TABLE](DROP_TABLE.md), [CREATE EXTERNAL TABLE](CREATE_EXTERNAL_TABLE.md), [CREATE TABLE AS](CREATE_TABLE_AS.md), [CREATE TABLESPACE](CREATE_TABLESPACE.md), [CREATE TYPE](CREATE_TYPE.md)
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
-
+**Parent topic:** [SQL Commands](index.md)

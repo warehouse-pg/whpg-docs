@@ -1,40 +1,55 @@
-# ALTER TEXT SEARCH PARSER 
+---
+title: ALTER TEXT SEARCH PARSER
+navTitle: Description
 
-## <a id="Description"></a>Description 
+---
+
+<a id="description"></a>
 
 Changes the definition of a text search parser.
 
-## <a id="Synopsis"></a>Synopsis 
+<a id="synopsis"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER TEXT SEARCH PARSER <name> RENAME TO <new_name>
 ALTER TEXT SEARCH PARSER <name> SET SCHEMA <new_schema>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER TEXT SEARCH PARSER` changes the definition of a text search parser. Currently, the only supported functionality is to change the parser's name.
 
 You must be a superuser to use `ALTER TEXT SEARCH PARSER`.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
-The name \(optionally schema-qualified\) of an existing text search parser.
+The name (optionally schema-qualified) of an existing text search parser.
 
-new\_name
+new_name
 The new name of the text search parser.
 
-new\_schema
+new_schema
 The new schema for the text search parser.
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
+
+## Compatibility
 
 There is no `ALTER TEXT SEARCH PARSER` statement in the SQL standard.
 
-## <a id="section8"></a>See Also 
+<a id="section8"></a>
 
-[CREATE TEXT SEARCH PARSER](CREATE_TEXT_SEARCH_PARSER.html), [DROP TEXT SEARCH PARSER](DROP_TEXT_SEARCH_PARSER.html)
+## See Also
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+[CREATE TEXT SEARCH PARSER](CREATE_TEXT_SEARCH_PARSER.md), [DROP TEXT SEARCH PARSER](DROP_TEXT_SEARCH_PARSER.md)
 
+**Parent topic:** [SQL Commands](index.md)

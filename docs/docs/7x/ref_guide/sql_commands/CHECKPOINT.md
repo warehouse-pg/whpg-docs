@@ -1,14 +1,23 @@
-# CHECKPOINT 
+---
+title: CHECKPOINT
+
+---
 
 Forces a write-ahead log checkpoint.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 CHECKPOINT
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 A checkpoint is a point in the write-ahead log sequence at which all data files have been updated to reflect the information in the log. All data files will be flushed to disk.
 
@@ -18,9 +27,10 @@ If run during recovery, the `CHECKPOINT` command will force a restartpoint rathe
 
 Only superusers may call `CHECKPOINT`.
 
-## <a id="section4"></a>Compatibility 
+<a id="section4"></a>
+
+## Compatibility
 
 The `CHECKPOINT` command is a WarehousePG extension.
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
-
+**Parent topic:** [SQL Commands](index.md)

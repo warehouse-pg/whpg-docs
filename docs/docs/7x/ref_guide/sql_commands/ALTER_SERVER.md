@@ -1,10 +1,17 @@
-# ALTER SERVER 
+---
+title: ALTER SERVER
+
+---
 
 Changes the definition of a foreign server.
 
-## <a id="section2"></a>Synopsis 
+<a id="section2"></a>
 
-``` {#sql_command_synopsis}
+## Synopsis
+
+<div id="sql_command_synopsis"></div>
+
+```
 ALTER SERVER <name> [ VERSION '<new_version>' ]
     [ OPTIONS ( [ ADD | SET | DROP ] <option> ['<value>'] [, ... ] ) ]
 
@@ -13,7 +20,9 @@ ALTER SERVER <name> OWNER TO { <new_owner> | CURRENT_USER | SESSION_USER }
 ALTER SERVER <name> RENAME TO <new_name>
 ```
 
-## <a id="section3"></a>Description 
+<a id="section3"></a>
+
+## Description
 
 `ALTER SERVER` changes the definition of a foreign server. The first form of the command changes the version string or the generic options of the server. WarehousePG requires at least one clause. The second and third forms of the command change the owner or the name of the server.
 
@@ -25,25 +34,29 @@ To alter the server, you must be the owner of the server. To alter the owner you
 
 Superusers automatically satisfy all of these criteria.
 
-## <a id="section4"></a>Parameters 
+<a id="section4"></a>
+
+## Parameters
 
 name
 The name of an existing server.
 
-new\_version
+new_version
 The new server version.
 
-OPTIONS \( \[ ADD \| SET \| DROP \] option \['value'\] \[, ... \] \)
+OPTIONS ( \[ ADD \| SET \| DROP ] option \['value'] \[, ... ] )
 Change the server's options. `ADD`, `SET`, and `DROP` specify the action to perform. Option names must be unique. WarehousePG validates names and values using the server's foreign-data wrapper library.
 Use `ADD` to define an option that is not currently set. Use `SET` to change the value of an option that you previously defined. If you do not explicitly specify an action, the default operation is `ADD`.
 
-new\_owner
+new_owner
 Specifies the new owner of the foreign server.
 
-new\_name
+new_name
 Specifies the new name of the foreign server.
 
-## <a id="section6"></a>Examples 
+<a id="section6"></a>
+
+## Examples
 
 Change the definition of a server named `foo` by adding connection options:
 
@@ -57,13 +70,16 @@ Change the option named `host` for a server named `foo`, and set the server vers
 ALTER SERVER foo VERSION '9.1' OPTIONS (SET host 'baz');
 ```
 
-## <a id="section7"></a>Compatibility 
+<a id="section7"></a>
 
-`ALTER SERVER` conforms to ISO/IEC 9075-9 \(SQL/MED\). The `OWNER TO` and `RENAME` forms are WarehousePG extensions.
+## Compatibility
 
-## <a id="section8"></a>See Also 
+`ALTER SERVER` conforms to ISO/IEC 9075-9 (SQL/MED). The `OWNER TO` and `RENAME` forms are WarehousePG extensions.
 
-[CREATE SERVER](CREATE_SERVER.html), [DROP SERVER](DROP_SERVER.html)
+<a id="section8"></a>
 
-**Parent topic:** [SQL Commands](../sql_commands/sql_ref.html)
+## See Also
 
+[CREATE SERVER](CREATE_SERVER.md), [DROP SERVER](DROP_SERVER.md)
+
+**Parent topic:** [SQL Commands](index.md)
