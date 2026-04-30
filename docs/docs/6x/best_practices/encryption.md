@@ -82,11 +82,11 @@ Pgcrypto has various levels of encryption ranging from basic to advanced built-i
 | PGP Symmetric-Key       | yes      | yes          |
 | PGP Public Key          | yes      | yes          |
 
-[^1]&#x3A; SHA2 algorithms were added to OpenSSL in version 0.9.8. For older versions, pgcrypto will use built-in code
+[^1]: SHA2 algorithms were added to OpenSSL in version 0.9.8. For older versions, pgcrypto will use built-in code
 
-[^2]&#x3A; Any digest algorithm OpenSSL supports is automatically picked up. This is not possible with ciphers, which need to be supported explicitly.
+[^2]: Any digest algorithm OpenSSL supports is automatically picked up. This is not possible with ciphers, which need to be supported explicitly.
 
-[^3]&#x3A; AES is included in OpenSSL since version 0.9.7. For older versions, pgcrypto will use built-in code.
+[^3]: AES is included in OpenSSL since version 0.9.7. For older versions, pgcrypto will use built-in code.
 
 <a id="creating_pgp_keys"></a>
 
@@ -183,11 +183,7 @@ This section assumes you are installing WarehousePG on a Linux machine with the 
     ssb   2048R/4FD2EFBB 2015-01-13
     ```
 
-````
-```
-
 2027CC30 is the public key and will be used to *encrypt* data in the database. 4FD2EFBB is the private (secret) key and will be used to *decrypt* data.
-````
 
 4.  Export the keys using the following commands:
 
@@ -362,11 +358,7 @@ This section shows how to encrypt data inserted into a column using the PGP keys
     (2 rows)
     ```
 
-````
-```
-
 If you created a key with passphrase, you may have to enter it here. However for the purpose of this example, the passphrase is blank.
-````
 
 <a id="section_kjt_3kr_bs"></a>
 

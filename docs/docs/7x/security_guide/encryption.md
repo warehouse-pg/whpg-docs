@@ -478,8 +478,8 @@ Consider the following questions when planning for key management:
 
 The Open Web Application Security Project (OWASP) provides a very comprehensive [guide to securing encryption keys](https://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet).
 
-[^1]&#x3A; SHA2 algorithms were added to OpenSSL in version 0.9.8. For older versions, pgcrypto will use built-in code.
+[^1]: SHA2 algorithms were added to OpenSSL in version 0.9.8. For older versions, pgcrypto will use built-in code.
 
-[^2]&#x3A; Any digest algorithm OpenSSL supports is automatically picked up. This is not possible with ciphers, which need to be supported explicitly.
+[^2]: Any digest algorithm OpenSSL supports is automatically picked up. This is not possible with ciphers, which need to be supported explicitly.
 
-[^3]&#x3A; AES is included in OpenSSL since version 0.9.7. For older versions, pgcrypto will use built-in code.
+[^3]: AES is included in OpenSSL since version 0.9.7. For older versions, pgcrypto will use built-in code.
