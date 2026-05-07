@@ -134,7 +134,7 @@ SELECT whpg_stat_statements_reset(userid, dbid, queryid);
 | `p_dbid`    | `Oid`    | Reset entries for a specific database (use `0` for all databases). |
 | `p_queryid` | `bigint` | Reset a specific query signature (use `0` for all queries).        |
 
-:::Note
+::: info Note
 This function requires superuser privileges.
 :::
 

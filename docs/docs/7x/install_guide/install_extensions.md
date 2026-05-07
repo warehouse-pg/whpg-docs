@@ -41,7 +41,6 @@ You can register the following modules in this manner:
 <li class="li"><a class="xref" href="../ref_guide/modules/pageinspect.md">pageinspect</a></li>
 <li class="li"><a class="xref" href="../ref_guide/modules/pg_trgm.md">pg_trgm</a></li>
 <li class="li"><a class="xref" href="../ref_guide/modules/pgcrypto.md">pgcrypto</a></li>
-<li class="li"><a class="xref" href="../ref_guide/modules/pgvector/index.md">pgvector</a></li>
 <li class="li"><a class="xref" href="../ref_guide/modules/postgres_fdw.md">postgres_fdw</a></li>
 <li class="li"><a class="xref" href="../ref_guide/modules/postgresql-hll.md">postgresql-hll</a></li>
 <li class="li"><a class="xref" href="../ref_guide/modules/sslinfo.md">sslinfo</a></li>
