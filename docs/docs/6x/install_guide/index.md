@@ -42,6 +42,8 @@ Information about installing, configuring, and upgrading WarehousePG software an
     The WarehousePG distribution includes several PostgreSQL- and WarehousePG-sourced `contrib` modules that you have the option to install.
 -   **[Configuring Timezone and Localization Settings](localization.md)**  
     Describes the available timezone and localization features of WarehousePG.
+-   **[Performing a minor upgrade](minor_upgrade.md)**  
+    Explains how to upgrade to a newer version of WarehousePG 6.x.
 -   **[Upgrading to WarehousePG 6](upgrading.md)**  
     This topic identifies the upgrade paths for upgrading a WarehousePG 6.x release to a newer 6.x release. 
 -   **[Migrating WarehousePG from Enterprise Linux 7 to 8 or 9](migrate-linux.md)**
