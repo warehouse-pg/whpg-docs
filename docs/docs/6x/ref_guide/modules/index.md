@@ -29,7 +29,8 @@ navigation:
   - tablefunc
   - timestamp9
   - uuid-ossp
-
+redirects:
+  - adv_passwd_check
 ---
 
 <a id="topic_khf_ltc_vbb"></a>
@@ -40,7 +41,6 @@ This section describes additional modules available in the WarehousePG installat
 
 The following WarehousePG and PostgreSQL `contrib` modules are installed; refer to the linked module documentation for usage instructions.
 
--   [advanced_password_check](adv_passwd_check.md) Provides password quality checking and policy definition for WarehousePG.
 -   [auto_explain](auto-explain.md) Provides a means for logging execution plans of slow statements automatically.
 -   [btree_gin](btree_gin.md) - Provides sample generalized inverted index (GIN) operator classes that implement B-tree equivalent behavior for certain data types.
 -   [citext](citext.md) - Provides a case-insensitive, multibyte-aware text data type.
