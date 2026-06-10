@@ -3,7 +3,7 @@ title: Performing a minor upgrade
 
 ---
 
-Perform a minor version upgrade to 7.4. Because minor versions are binary-compatible, this process replaces the software binaries without requiring a full data migration.
+Perform a minor version upgrade. Because minor versions are binary-compatible, this process replaces the software binaries without requiring a full data migration.
 
 An upgrade involves stopping the WHPG cluster, updating the software binaries across all nodes, and restarting the services.
 
@@ -130,6 +130,16 @@ Perform a final cleanup of the running database instance.
 ## Replacing binaries and restarting WHPG
 
 Perform the following steps as the `gpadmin` user. When upgrading, the package manager will automatically remove old files in `/usr/local/greenplum-db-<version>` and install new files to `/usr/edb/whpg7`.
+
+::: warning Upgrading to 7.5.0 on air-gapped clusters
+WarehousePG 7.5.0 requires Python 3.11 for PL/Python. On clusters without internet access, you must install `python3.11` and `python3.11-devel` on all nodes before upgrading:
+
+```bash
+sudo rpm -ivh python3.11-<version>.rpm python3.11-devel-<version>.rpm
+```
+
+Verify the packages are available in your local repository before starting the upgrade. Without Python 3.11, the upgrade will fail. On internet-connected clusters, the package manager installs this dependency automatically.
+:::
 
 1.  On the coordinator, back up old WHPG binaries:
 
