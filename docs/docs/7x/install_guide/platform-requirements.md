@@ -155,14 +155,12 @@ These WarehousePG extensions are installed with WarehousePG
 
 The following table lists minimum recommended specifications for hardware servers intended to support WarehousePG on Linux systems in a production environment. All host servers in your WarehousePG cluster must have the same hardware and software configuration. WarehousePG also provides hardware build guides for its certified hardware platforms. Work with a WarehousePG clusters Engineer to review your anticipated environment to ensure an appropriate hardware configuration for WarehousePG.
 
-
-| Requirement | Minimum |
-| --- | --- |
-| CPU | Any x86_64 compatible CPU |
-| Memory | 16 GB RAM per server |
-| Disk Space | 150MB per host for WarehousePG installation<br>Approximately 300MB per segment instance for metadata<br>Cap disk capacity at 70% full to accommodate temporary files and prevent performance degradation |
-| Network | 10 Gigabit Ethernet within the array<br>NIC bonding is recommended when multiple interfaces are present<br>WarehousePG can use either IPv4 or IPv6 protocols. |
-
+| Requirement | Specification |
+|---|---|
+| Minimum CPU | Any x86_64 compatible CPU |
+| Minimum Memory | 16 GB RAM per server |
+| Disk Space Requirements | <ul><li>150MB per host for WarehousePG installation</li><li>Approximately 300MB per segment instance for metadata</li><li>Cap disk capacity at 70% full to accommodate temporary files and prevent performance degradation</li></ul> |
+| Network Requirements | <ul><li>10 Gigabit Ethernet within the array</li><li>NIC bonding is recommended when multiple interfaces are present</li><li>WarehousePG can use either IPV4 or IPV6 protocols.</li></ul> |
 
 ### Hyperthreading
 
