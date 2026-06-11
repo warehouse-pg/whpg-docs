@@ -8,7 +8,7 @@ The WarehousePG documentation describes the latest version of WarehousePG 7.
 
 | Version                             | Release date     |
 | ----------------------------------- | ---------------- |
-| [7.5.0-WHPG](#warehousepg-750-whpg) | TBD              |
+| [7.5.0-WHPG](#warehousepg-750-whpg) | 8 June 2026      |
 | [7.4.0-WHPG](#warehousepg-740-whpg) | 7 April 2026     |
 | [7.3.1-WHPG](#warehousepg-731-whpg) | 30 January 2026  |
 | [7.3.0-WHPG](#warehousepg-730-whpg) | 14 November 2025 |
@@ -17,7 +17,7 @@ The WarehousePG documentation describes the latest version of WarehousePG 7.
 
 ## WarehousePG 7.5.0-WHPG
 
-Released: TBD
+Released: 8 June 2026
 
 WarehousePG 7.5.0-WHPG includes the following new features, enhancements, bug fixes, and other changes:
 
