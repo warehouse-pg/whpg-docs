@@ -24,7 +24,7 @@ CPU_MAX_PERCENT=<integer> | CPUSET=<coordinator_cores>;<segment_cores>
 [ MEMORY_QUOTA=<integer> ]
 [ MIN_COST=<integer> ]
 [ IO_LIMIT=' <tablespace_io_limit_spec> [; ...] ' ]
-[ name <new_name> ]
+[ NAME <new_name> ]
 ```
 
 Where `<tablespace_io_limit_spec>` is:
@@ -149,7 +149,7 @@ You can alter one limit type in a single `ALTER RESOURCE GROUP` call.
 
     The value range is `0-500`. The default value is `0`, which means that the cost is not used to bypass the query.
 
--   `name` *new_name*
+-   `NAME` *new_name*
 
     The new name for the resource group. The name must be unique among all resource groups. You can't rename the default resource groups `admin_group`, `default_group`, and `system_group`, and you can't use `none` as a new name.
 
@@ -198,7 +198,7 @@ ALTER RESOURCE GROUP admin_group SET IO_LIMIT 'tablespace1:wbps=2000,wiops=2000;
 Rename a resource group:
 
 ```
-ALTER RESOURCE GROUP rgroup1 SET name rgroup1_renamed;
+ALTER RESOURCE GROUP rgroup1 SET NAME rgroup1_renamed;
 ```
 
 <a id="compatibility"></a>

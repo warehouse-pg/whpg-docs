@@ -446,7 +446,7 @@ ALTER RESOURCE GROUP sales SET IO_LIMIT 'tablespace1:wbps=2000,wiops=2000;tables
 You can rename a resource group using the `name` option:
 
 ```
-ALTER RESOURCE GROUP rgroup1 SET name rgroup1_renamed;
+ALTER RESOURCE GROUP rgroup1 SET NAME rgroup1_renamed;
 ```
 
 You can't rename the default resource groups `admin_group`, `default_group`, and `system_group`, and you can't use `none` as a new name.

@@ -21,19 +21,30 @@ Released: TBD
 
 WarehousePG 7.5.0-WHPG includes the following new features, enhancements, bug fixes, and other changes:
 
+### Upgrade considerations
+
+**Python 3.11 requirement for PL/Python**
+
+WarehousePG 7.5.0 upgrades PL/Python from Python 3.9 to Python 3.11. The PL/Python interpreter now links against `/usr/bin/python3.11` and requires the following packages on every node in the cluster:
+
+-   `python3.11`
+-   `python3.11-psycopg2`
+-   `python3.11-pyyaml`
+
+On internet-connected clusters, the package manager installs these dependencies automatically when upgrading. On air-gapped clusters, install them manually on all nodes before upgrading. See [Performing a minor upgrade](../install_guide/minor_upgrade.md) for details.
+
 ### New features
 
--   Added support for renaming resource groups with the new [`ALTER RESOURCE GROUP <name> SET name <new_name>`](../ref_guide/sql_commands/ALTER_RESOURCE_GROUP.md) syntax.
+-   Added support for renaming resource groups with the new [`ALTER RESOURCE GROUP <name> SET NAME <new_name>`](../ref_guide/sql_commands/ALTER_RESOURCE_GROUP.md) syntax.
 
 ### Enhancements
 
--   Updated the JIT compiler to support LLVM 19, 20, and 21, resolving build failures on systems where the installed LLVM version differs from the version expected at build time.
+-   Bundled the LLVM 21 library (`libLLVM.so`) with the WarehousePG package. LLVM and Clang no longer need to be installed separately on cluster nodes for JIT compilation.
 -   Improved performance of AO/AOCS table sampling by using an adaptive tuples-per-block estimation algorithm.
 -   Optimized the `gp_toolkit.gp_resgroup_config` view for improved query performance.
 
 ### Bug fixes
 
--   Fixed a segmentation fault in the PL/Python `check_cgroup_io_max` function caused by missing `ctypes` function signatures.
 -   Fixed `gpconfig` to correctly respect the `gp_resource_group_cgroup_parent` configuration parameter when verifying the `cgroup` root.
 -   Fixed a buffer over-read in `TranslateDXLDatumGenericToScalar()` that could cause instability in the ORCA optimizer.
 -   Fixed incorrect distinct qualified aggregate (DQA) type classification under `HAVING` clauses that could produce incorrect query results.
