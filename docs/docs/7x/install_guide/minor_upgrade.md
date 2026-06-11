@@ -131,14 +131,20 @@ Perform a final cleanup of the running database instance.
 
 Perform the following steps as the `gpadmin` user. When upgrading, the package manager will automatically remove old files in `/usr/local/greenplum-db-<version>` and install new files to `/usr/edb/whpg7`.
 
-::: warning Upgrading to 7.5.0 on air-gapped clusters
-WarehousePG 7.5.0 requires Python 3.11 for PL/Python. On clusters without internet access, you must install `python3.11` and `python3.11-devel` on all nodes before upgrading:
+::: warning Upgrading to 7.5.0: Python 3.11 requirement
+WarehousePG 7.5.0 upgrades PL/Python to Python 3.11. The PL/Python interpreter now links against `/usr/bin/python3.11` and requires the following packages on every node:
+
+-   `python3.11`
+-   `python3.11-psycopg2`
+-   `python3.11-pyyaml`
+
+On internet-connected clusters, the package manager installs these dependencies automatically. On air-gapped clusters, install them manually on all nodes before upgrading:
 
 ```bash
-sudo rpm -ivh python3.11-<version>.rpm python3.11-devel-<version>.rpm
+sudo rpm -ivh python3.11-<version>.rpm python3.11-psycopg2-<version>.rpm python3.11-pyyaml-<version>.rpm
 ```
 
-Verify the packages are available in your local repository before starting the upgrade. Without Python 3.11, the upgrade will fail. On internet-connected clusters, the package manager installs this dependency automatically.
+Verify the packages are available in your local repository before starting the upgrade. Without Python 3.11, the upgrade will fail.
 :::
 
 1.  On the coordinator, back up old WHPG binaries:
