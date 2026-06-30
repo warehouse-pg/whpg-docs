@@ -26,7 +26,7 @@ WarehousePG 6.27.5-WHPG includes the following bug fixes and other changes:
 ### Security
 
 -   Hardened multiple modules against integer overflow vulnerabilities for [CVE-2026-6473](https://github.com/advisories/GHSA-8rqw-w7xq-566r), including ltree, `ts_headline`, intarray, the regex engine, `unicode_normalize`, `formatting.c`, `array_agg`, and the hstore PL/Perl and PL/Python extensions.
--   Fixed a format-string vulnerability in `timeofday()` for [CVE-2026-6474](https://github.com/advisories/GHSA-qhm2-px33-58v8) where a crafted time zone setting could abuse the `pg_strftime()` `%Z` format specifier to cause crashes or disclose server memory.
+-   Fixed a format-string vulnerability in `timeofday()` for [CVE-2026-6474](https://github.com/advisories/GHSA-qhm2-px33-58v8) where a crafted time zone setting could abuse the `pg_strftime()` `%Z` format specifier to cause crashes or corrupt server memory.
 -   Fixed a path traversal vulnerability in `pg_rewind` for [CVE-2026-6475](https://github.com/advisories/GHSA-7h2q-899j-9636) where paths received from a rogue endpoint could overwrite files outside the target directory.
 -   Fixed a buffer overrun in the frontend large object interface (`libpq`) for [CVE-2026-6477](https://github.com/advisories/GHSA-jm5f-gpfq-q9h3) where `PQfn()` could write beyond the end of the result buffer when the server returned more data than requested.
 -   Added timing-safe comparisons for secret material in all authentication paths for [CVE-2026-6478](https://github.com/advisories/GHSA-r6v6-v5r9-3ggh), covering SCRAM, MD5, RADIUS, and plain authentication methods.
