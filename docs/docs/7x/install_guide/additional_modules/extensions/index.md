@@ -1,0 +1,13 @@
+---
+title: Installing Extensions
+description: Installation guides for open source extensions that require a separate package install.
+
+---
+
+Extensions require a separate package install before you can enable them with `CREATE EXTENSION`. Depending on the extension, you may need to install the package on all hosts or only on the coordinator. See the individual extension's [reference page](../../../ref_guide/modules/extensions/index.md) for details.
+
+Once you've installed the package, activate the extension in each target database:
+
+```bash
+psql -d <database_name> -c 'CREATE EXTENSION <extension_name>;'
+```

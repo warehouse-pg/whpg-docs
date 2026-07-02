@@ -1,0 +1,37 @@
+---
+title: Installing Additional Modules
+description: Installation guides for WarehousePG extensions, procedural languages, and external components that require a separate package install.
+navigation:
+  - extensions
+  - procedural_languages
+  - external_components
+
+---
+
+WarehousePG ships with bundled modules that require no extra install, and supports separately provided modules that require a package install on each host before enabling.
+
+## Bundled modules
+
+Bundled modules are included in the WarehousePG distribution. Activate them in each database where you want them available:
+
+```bash
+psql -d <database_name> -c 'CREATE EXTENSION <extension_name>;'
+```
+
+To remove a bundled extension from a database:
+
+```bash
+psql -d <database_name> -c 'DROP EXTENSION <extension_name>;'
+```
+
+Some bundled modules use `shared_preload_libraries` instead of `CREATE EXTENSION`. See the [bundled modules reference](../../ref_guide/modules/bundled/index.md) for details on each module.
+
+## Separately provided modules
+
+Separately provided modules require downloading and installing a package on every host in your cluster first. See the category pages below for links to installation instructions:
+
+-   **[Extensions](extensions/index.md)** — machine learning, geospatial, and statistical extensions.
+-   **[Procedural languages](procedural_languages/index.md)** — additional languages for writing database functions.
+-   **[External components](external_components/index.md)** — tools that integrate with WarehousePG but aren't database extensions.
+
+For a complete list of available modules in each category, see [Additional Supplied Modules](../../ref_guide/modules/index.md).

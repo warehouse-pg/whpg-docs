@@ -23,6 +23,6 @@ Lossiness causes performance degradation due to unnecessary fetches of table rec
 
 Note that GIN index build time can often be improved by increasing [maintenance_work_mem](../../../ref_guide/config_params/guc-list.md), while GiST index build time is not sensitive to that parameter.
 
-Partitioning of big collections and the proper use of GiST and GIN indexes allows the implementation of very fast searches with online update. Partitioning can be done at the database level using table inheritance, or by distributing documents over servers and collecting search results using [dblink](../../../ref_guide/modules/dblink.md). The latter is possible because ranking functions use only local information.
+Partitioning of big collections and the proper use of GiST and GIN indexes allows the implementation of very fast searches with online update. Partitioning can be done at the database level using table inheritance, or by distributing documents over servers and collecting search results using [dblink](../../../ref_guide/modules/bundled/dblink.md). The latter is possible because ranking functions use only local information.
 
 **Parent topic:** [Using Full Text Search](index.md)
