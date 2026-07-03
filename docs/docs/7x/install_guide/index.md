@@ -41,7 +41,7 @@ Information about installing, configuring, and upgrading WarehousePG software an
 -   **[Initializing WarehousePG](init_whpg.md)**  
     Describes how to initialize a WarehousePG database system.
 -   **[Installing Optional Extensions](data_sci_pkgs/index.md)**  
-    Information about installing optional WarehousePG extensions and packages, such as the Procedural Language extensions and the Python and R Data Science Packages.
+    Information about installing optional WarehousePG extensions and packages, such as the Procedural Language extensions.
 -   **[Installing Extensions](install_extensions.md)**  
     The WarehousePG distribution includes several PostgreSQL- and WarehousePG-sourced `contrib` modules that you have the option to install.
 -   **[Configuring Timezone and Localization Settings](localization.md)**  
