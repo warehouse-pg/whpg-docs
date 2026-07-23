@@ -579,7 +579,7 @@ This table describes the functions that create `json` data type values. (Current
 
 > **Note** `array_to_json` and `row_to_json` have the same behavior as `to_json` except for offering a pretty-printing option. The behavior described for `to_json` likewise applies to each individual value converted by the other JSON creation functions.
 
-> **Note** The [hstore module](../../ref_guide/modules/hstore.md) contains functions that cast from `hstore` to `json`, so that `hstore` values converted via the JSON creation functions will be represented as JSON objects, not as primitive string values.
+> **Note** The [hstore module](../../ref_guide/modules/bundled/hstore.md) contains functions that cast from `hstore` to `json`, so that `hstore` values converted via the JSON creation functions will be represented as JSON objects, not as primitive string values.
 
 <a id="topic_rvp_lk3_sfb"></a>
 
