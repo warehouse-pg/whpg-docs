@@ -1,11 +1,9 @@
 ---
 title: Procedural Languages
 navigation:
-  - pl_java
   - pl_perl
   - pq_sql
   - pl_python
-  - pl_r
 
 ---
 
@@ -15,8 +13,8 @@ The available WarehousePG procedural languages are typically packaged as extensi
 
 The WarehousePG distribution supports the following procedural languages; refer to the linked language documentation for installation and usage instructions:
 
--   [PL/Java](pl_java.md)
 -   [PL/Perl](pl_perl.md)
 -   [PL/pgSQL](pl_sql.md)
 -   [PL/Python](pl_python.md)
--   [PL/R](pl_r.md)
+
+PL/Java and PL/R are also supported but require a separate package install. 
