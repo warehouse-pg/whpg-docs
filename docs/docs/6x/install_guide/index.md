@@ -9,14 +9,16 @@ navigation:
   - create_data_dirs
   - validate
   - init_whpg
+  - additional_modules
   - data_sci_pkgs
-  - install_extensions
   - localization
   - enable_iptables
   - installation_utilities
   - env_var
 redirects:
   - install_guide
+  - install_extensions
+  - install_modules
 
 ---
 
@@ -36,10 +38,8 @@ Information about installing, configuring, and upgrading WarehousePG software an
     Validate your hardware and network performance.
 -   **[Initializing WarehousePG](init_whpg.md)**  
     Describes how to initialize a WarehousePG database system.
--   **[Installing Optional Extensions (WarehousePG)](data_sci_pkgs/index.md)**  
-    Information about installing optional WarehousePG extensions and packages, such as the Procedural Language extensions.
--   **[Installing Extensions](install_modules.md)**  
-    The WarehousePG distribution includes several PostgreSQL- and WarehousePG-sourced `contrib` modules that you have the option to install.
+-   **[Installing Additional Modules](additional_modules/index.md)**  
+    Installation guides for extensions, procedural languages, and external components that require a separate package install, as well as instructions for enabling bundled modules.
 -   **[Configuring Timezone and Localization Settings](localization.md)**  
     Describes the available timezone and localization features of WarehousePG.
 -   **[Performing a minor upgrade](minor_upgrade.md)**  

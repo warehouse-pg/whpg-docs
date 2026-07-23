@@ -1,5 +1,5 @@
 ---
-title: Procedural Languages
+title: Procedural languages
 description: Procedural language extensions for WarehousePG that require a separate package install on each host.
 
 ---
