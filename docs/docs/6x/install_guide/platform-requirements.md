@@ -179,7 +179,7 @@ This table lists the versions of the WarehousePG Extensions that are compatible 
 </table>
 </div>
 
-For information about the Oracle Compatibility Functions, see [Oracle Compatibility Functions](../ref_guide/modules/orafce_ref.md).
+For information about the Oracle Compatibility Functions, see [Oracle Compatibility Functions](../ref_guide/modules/bundled/orafce_ref.md).
 
 These WarehousePG extensions are installed with WarehousePG
 
