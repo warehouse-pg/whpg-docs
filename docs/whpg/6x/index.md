@@ -16,18 +16,18 @@ WarehousePG is based on **PostgreSQL open-source technology**. It is essentially
 
 ## Documentation
 
-[Release Notes](/docs/6x/release_notes/index.md)
+[Release Notes](/whpg/6x/release_notes/index.md)
 
-[Install Guide](/docs/6x/install_guide/index.md)
+[Install Guide](/whpg/6x/install_guide/index.md)
 
-[Admin Guide](/docs/6x/admin_guide/index.md)
+[Admin Guide](/whpg/6x/admin_guide/index.md)
 
-[Best Practices](/docs/6x/best_practices/index.md)
+[Best Practices](/whpg/6x/best_practices/index.md)
 
-[Utility Guide](/docs/6x/ref_guide/utility_guide/index.md)         
+[Utility Guide](/whpg/6x/ref_guide/utility_guide/index.md)         
 
-[Analytics Guide](/docs/6x/admin_guide/analytics/index.md)      
+[Analytics Guide](/whpg/6x/admin_guide/analytics/index.md)      
 
-[Reference Guide](/docs/6x/ref_guide/index.md)        
+[Reference Guide](/whpg/6x/ref_guide/index.md)        
 
-[Security Guide](/docs/6x/security-guide/index.md)        
+[Security Guide](/whpg/6x/security-guide/index.md)        
