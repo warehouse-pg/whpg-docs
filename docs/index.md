@@ -17,7 +17,7 @@ hero:
 
     - theme: brand
       text: Docs
-      link: /docs/7x/
+      link: /whpg/7x/
 
     - theme: brand
       text: GitHub
