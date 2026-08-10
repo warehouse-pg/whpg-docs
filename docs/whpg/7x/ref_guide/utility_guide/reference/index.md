@@ -10,7 +10,6 @@ navigation:
   - gpactivatestandby
   - gpaddmirrors
   - gpbackup_manager
-  - gpbackup
   - gpcheckcat
   - gpcheckperf
   - gpconfig
@@ -26,7 +25,6 @@ navigation:
   - gpmovemirrors
   - gprecoverseg
   - gpreload
-  - gprestore
   - gpssh
   - gpssh-exkeys
   - gpstart
@@ -49,7 +47,9 @@ WarehousePG uses the standard PostgreSQL client and server programs and provides
 
 Several utilities are installed when you install the WarehousePG server. These utilities reside in `$GPHOME/bin`. 
 
-Other utilities such as clients and backup/restore may be found at [Warehouse PG Github Repo](https://github.com/warehouse-pg)
+For the `gpbackup` and `gprestore` utilities, see [WarehousePG Backup and Restore](../../../../../whpg-backup/index.md).
+
+Other utilities such as clients may be found at [Warehouse PG Github Repo](https://github.com/warehouse-pg)
 
 WarehousePG provides the following utility programs. Superscripts identify those utilities that require separate downloads, as well as those utilities that are also installed with the Client and Loader Tools Packages. (See the Note following the table.) All utilities are installed when you install the WarehousePG server, unless specifically identified by a superscript.
 
@@ -61,7 +61,6 @@ WarehousePG provides the following utility programs. Superscripts identify those
 -   [dropuser](dropuser.md)<sup>1</sup>
 -   [gpactivatestandby](gpactivatestandby.md)
 -   [gpaddmirrors](gpaddmirrors.md)
--   [gpbackup](gpbackup.md)<sup>2</sup>
 -   [gpcheckcat](gpcheckcat.md)
 -   [gpcheckperf](gpcheckperf.md)
 -   [gpconfig](gpconfig.md)
@@ -75,7 +74,6 @@ WarehousePG provides the following utility programs. Superscripts identify those
 -   [gpmovemirrors](gpmovemirrors.md)
 -   [gprecoverseg](gprecoverseg.md)
 -   [gpreload](gpreload.md)
--   [gprestore](gprestore.md)<sup>2</sup>
 -   [gpssh](gpssh.md)
 -   [gpssh-exkeys](gpssh-exkeys.md)
 -   [gpstart](gpstart.md)
@@ -96,8 +94,6 @@ WarehousePG provides the following utility programs. Superscripts identify those
 > **Note** 
 
 > <sup>1</sup> The utility program is also installed with the **WarehousePG Client and Loader Tools Package**
-
-> <sup>2</sup> The utility program can be obtained from the **WarehousePG Backup and Restore**
 
 Additional utilities may be found at [Warehouse PG Github Org Repo](https://github.com/warehouse-pg)
 
