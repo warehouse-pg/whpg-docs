@@ -14,6 +14,7 @@ navigation:
   - load
   - performance
   - parallel_retrieve_cursor
+  - backup_restore
 redirects:
   - admin_guide
   - managing_data

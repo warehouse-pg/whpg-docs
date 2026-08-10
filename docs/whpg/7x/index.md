@@ -35,4 +35,4 @@ WarehousePG is based on **PostgreSQL open-source technology**. It is essentially
 
 [Security Guide](/docs/7x/security_guide/index.md)        
 
-[Backup & Restore Guide](/docs/7x/admin_guide/backup_restore/index.md)
+[Backup & Restore Guide](/whpg-backup/index.md)

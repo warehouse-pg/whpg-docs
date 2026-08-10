@@ -11,9 +11,7 @@ WarehousePG supports parallel and non-parallel methods for backing up and restor
 
 ## Parallel Backup with gpbackup and gprestore
 
-`gpbackup` and `gprestore` are the recommended WarehousePG backup and restore utilities. `gpbackup` utilizes `ACCESS SHARE` locks at the individual table level, instead of `EXCLUSIVE` locks on the `pg_class` catalog table. This enables you to run DML statements during the backup, such as `CREATE`, `ALTER`, `DROP`, and `TRUNCATE` operations, as long as those operations do not target the current backup set. Backup files created with `gpbackup` are designed to provide future capabilities for restoring individual database objects along with their dependencies, such as functions and required user-defined datatypes.
-
-`gpbackup`, `gprestore`, and related utilities are provided as a separate download.
+`gpbackup` and `gprestore` are the recommended WarehousePG backup and restore utilities, provided as a separate download. For documentation, see [WarehousePG Backup and Restore](../../../../whpg-backup/index.md).
 
 <a id="nparback"></a>
 
