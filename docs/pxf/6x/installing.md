@@ -8,23 +8,20 @@ Build `whpg-pxf` from source, then distribute the build to every host in your Wa
 
 ## Prerequisites
 
-- **Build host:** GCC, `make`, `unzip`, a cURL development package (`libcurl-devel` on RHEL; use a version from source instead if you're on an older OS whose package only provides cURL 7.19), and:
-    - Building PXF 7.x (WHPG 7): [Go](https://go.dev/doc/install) 1.21 or later, and JDK 8 specifically, since the server build uses Lombok, which requires JDK 8.
-    - Building PXF 6.x (WHPG 6): [Go](https://go.dev/doc/install) 1.9 or later, and JDK 8 or 11.
-
-    Building directly on the WarehousePG coordinator avoids a cross-compile step, since it's already running the same OS as your segment hosts.
+- **Build host:** GCC, `make`, `unzip`, a cURL development package (`libcurl-devel` on RHEL; use a version from source instead if you're on an older OS whose package only provides cURL 7.19), [Go](https://go.dev/doc/install) 1.9 or later, and JDK 8 or 11. Building directly on the WarehousePG coordinator avoids a cross-compile step, since it's already running the same OS as your segment hosts.
 - **Every host in the cluster:** JDK 8 or 11 to run. The PXF service is a Java process that runs on every host, not only the one you build on.
-- WarehousePG installed on every host in the cluster, running on RHEL 7 (WHPG 6.x only), 8, or 9.
+- WarehousePG installed on every host in the cluster, running on RHEL 7, 8, or 9.
 
 ## Building from source
 
-Build PXF on the coordinator. Build the version of PXF that matches your WHPG major version, `6` or `7`.
+Build PXF on the coordinator, from the `release-6.x` branch, which matches WHPG 6.x.
 
-1. Clone the repository and change into it:
+1. Clone the repository and check out the `release-6.x` branch:
 
     ```bash
     git clone https://github.com/warehouse-pg/whpg-pxf.git
     cd whpg-pxf
+    git checkout release-6.x
     ```
 
 1. Set `JAVA_HOME`, and source your WarehousePG environment so the build can find it:
@@ -87,4 +84,4 @@ Build PXF on the coordinator. Build the version of PXF that matches your WHPG ma
 
 ## Next steps
 
-See [Configuring and starting PXF](configuring.md) to set up and start the PXF service across your cluster. If you plan to query through `pxf_fdw` instead of `pxf://` external tables, see [Using the foreign data wrapper](foreign-data-wrapper.md) for its own package requirements.
+See [Configuring and starting PXF](configuring.md) to set up and start the PXF service across your cluster.

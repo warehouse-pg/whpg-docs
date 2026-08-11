@@ -4,18 +4,9 @@ navTitle: Compatibility
 description: Supported WarehousePG versions, platforms, and PXF versions for the WarehousePG Platform Extension Framework (PXF).
 ---
 
-PXF supports both WHPG 6.x and WHPG 7.x. Build the version of PXF that matches your WHPG major version, since a WHPG upgrade also requires rebuilding and reinstalling PXF for the new version. See [Installing PXF](../installing.md).
-
 ### Platform compatibility
 
-| WHPG version | Supported operating systems |
-|---|---|
-| WHPG 6.x | RHEL 7, RHEL 8, or RHEL 9 |
-| WHPG 7.x | RHEL 8 or RHEL 9 |
-
-::: info Note
-[PXF foreign data wrapper](../foreign-data-wrapper.md) is only available for WHPG 7.x.
-:::
+RHEL 7, RHEL 8, or RHEL 9.
 
 ### System requirements
 
@@ -25,18 +16,15 @@ PXF supports both WHPG 6.x and WHPG 7.x. Build the version of PXF that matches y
 
 PXF bundles a client library for each connector. These versions determine which external system versions PXF can reach.
 
-| Connector | WHPG version | Compatible version |
-|---|---|---|
-| HDFS | 6.x | Hadoop 2.10.x |
-| HDFS | 7.x | Hadoop 3.3.x |
-| Hive | 6.x and 7.x | Hive 2.3.x metastore |
-| HBase | 6.x | HBase 1.3.x |
-| HBase | 7.x | HBase 2.6.x, coordinated with ZooKeeper 3.8.x |
-| Amazon S3 and other S3-compatible object stores, including MinIO | 6.x and 7.x | S3 API, through the AWS SDK for Java 1.12.x |
-| Azure Blob Storage and Azure Data Lake Storage Gen2 | 6.x | Bundled with PXF's Hadoop 2.10.x client |
-| Azure Blob Storage and Azure Data Lake Storage Gen2 | 7.x | Bundled with PXF's Hadoop 3.3.x client |
-| Google Cloud Storage | 6.x and 7.x | GCS connector 1.9.x |
-| SQL databases, through JDBC | 6.x and 7.x | Any JDBC 4.x-compliant driver you provide. PXF bundles the PostgreSQL driver, currently 42.7.x, by default. |
+| Connector | Compatible version |
+|---|---|
+| HDFS | Hadoop 2.10.x |
+| Hive | Hive 2.3.x metastore |
+| HBase | HBase 1.3.x |
+| Amazon S3 and other S3-compatible object stores, including MinIO | S3 API, through the AWS SDK for Java 1.12.x |
+| Azure Blob Storage and Azure Data Lake Storage Gen2 | Bundled with PXF's Hadoop 2.10.x client |
+| Google Cloud Storage | GCS connector 1.9.x |
+| SQL databases, through JDBC | Any JDBC 4.x-compliant driver you provide. PXF bundles the PostgreSQL driver, currently 42.7.x, by default. |
 
 ### Operations by connector
 
