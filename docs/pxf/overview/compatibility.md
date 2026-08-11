@@ -1,0 +1,86 @@
+---
+title: PXF for WarehousePG compatibility
+navTitle: Compatibility
+description: Supported WarehousePG versions, platforms, and PXF versions for the WarehousePG Platform Extension Framework (PXF).
+---
+
+PXF supports both WHPG 6.x and WHPG 7.x. Build the version of PXF that matches your WHPG major version, since a WHPG upgrade also requires rebuilding and reinstalling PXF for the new version. See [Installing PXF](../installing.md).
+
+### Platform compatibility
+
+| WHPG version | Supported operating systems |
+|---|---|
+| WHPG 6.x | RHEL 7, RHEL 8, or RHEL 9 |
+| WHPG 7.x | RHEL 8 or RHEL 9 |
+
+::: info Note
+[PXF foreign data wrapper](../foreign-data-wrapper.md) is only available for WHPG 7.x.
+:::
+
+### System requirements
+
+- Java 8 or Java 11 on every host in the cluster.
+
+### External system compatibility
+
+PXF bundles a client library for each connector. These versions determine which external system versions PXF can reach.
+
+| Connector | WHPG version | Compatible version |
+|---|---|---|
+| HDFS | 6.x | Hadoop 2.10.x |
+| HDFS | 7.x | Hadoop 3.3.x |
+| Hive | 6.x and 7.x | Hive 2.3.x metastore |
+| HBase | 6.x | HBase 1.3.x |
+| HBase | 7.x | HBase 2.6.x, coordinated with ZooKeeper 3.8.x |
+| Amazon S3 and other S3-compatible object stores, including MinIO | 6.x and 7.x | S3 API, through the AWS SDK for Java 1.12.x |
+| Azure Blob Storage and Azure Data Lake Storage Gen2 | 6.x | Bundled with PXF's Hadoop 2.10.x client |
+| Azure Blob Storage and Azure Data Lake Storage Gen2 | 7.x | Bundled with PXF's Hadoop 3.3.x client |
+| Google Cloud Storage | 6.x and 7.x | GCS connector 1.9.x |
+| SQL databases, through JDBC | 6.x and 7.x | Any JDBC 4.x-compliant driver you provide. PXF bundles the PostgreSQL driver, currently 42.7.x, by default. |
+
+### Operations by connector
+
+| Connector | Read | Write | Supported formats |
+|---|---|---|---|
+| HDFS | Yes | Yes | Delimited text, CSV, fixed-width, Parquet, ORC, Avro, JSON, SequenceFile, and Avro in a SequenceFile |
+| Object stores (S3, Azure, Google Cloud Storage) | Yes | Yes | Same formats as HDFS |
+| Network file system | Yes | Yes | Delimited text, CSV, fixed-width, Parquet, ORC, Avro, and JSON |
+| Hive | Yes | No | Whatever format the Hive table itself uses, delimited text, SequenceFile, RCFile, ORC, Parquet, or Avro |
+| HBase | Yes | No | Not applicable, HBase's own column-family model |
+| SQL databases, through JDBC | Yes | Yes | Not applicable, the external database's native column types |
+
+### Filter pushdown support
+
+| Profile | Comparisons (`<`, `>`, `<=`, `>=`, `=`, `<>`) | `LIKE` | `IS [NOT] NULL` | `IN` | `AND` / `OR` | `NOT` |
+|---|---|---|---|---|---|---|
+| `jdbc` | Yes | Yes⁴ | Yes | No | Yes | Yes |
+| `*:parquet` | Yes¹ | No | Yes¹ | Yes¹ | Yes¹ | Yes¹ |
+| `*:orc`, except `hive:orc` | Yes¹ ³ | No | Yes¹ ³ | Yes¹ ³ | Yes¹ ³ | Yes¹ ³ |
+| `s3:parquet` and `s3:text` with S3 Select | Yes | No | Yes | Yes | Yes | Yes |
+| `hbase` | Yes | No | Yes | No | Yes | No |
+| `hive:text`, `hive` on a text-format table | Yes² | No | No | No | Yes² | No |
+| `hive:rc`, `hive` on an RCFile table | Yes² | No | Yes | Yes | Yes² | Yes |
+| `hive:orc`, `hive` on an ORC table | Yes² | No | Yes | Yes | Yes² | Yes |
+| `hive` on a Parquet table | Yes² | No | No | Yes | Yes² | Yes |
+| `hive:orc` with `VECTORIZE=true` | Yes² | No | No | No | Yes² | No |
+
+- ¹ PXF applies the predicate itself instead of the remote system. Doing so doesn't reduce the data transferred over the network, but it does reduce how much of that data PXF holds in memory at once while processing the result.
+- ² PXF supports partition pruning based on partition keys.
+- ³ PXF bases filtering on file-level, stripe-level, and row-level ORC statistics.
+- ⁴ The `jdbc` profile supports `LIKE` only for `TEXT` columns.
+
+PXF doesn't support filter pushdown for any other profile, including `*:avro`, `*:AvroSequenceFile`, `*:SequenceFile`, `*:json`, `*:text`, `*:csv`, `*:fixedwidth`, and `*:text:multi`.
+
+Supported data types for pushdown include `INT2`, `INT4`, `INT8`, `CHAR`, `TEXT`, `VARCHAR`, `FLOAT`, `BOOL`, and `NUMERIC`, except with `hive` on a Parquet table. `DATE` and `TIMESTAMP` push down only with the JDBC connector, `hive:rc`, `hive:orc`, and `hive` on an RCFile or ORC table.
+
+### Column projection support
+
+| Data source | Profiles |
+|---|---|
+| SQL database, through JDBC | `jdbc` |
+| Hive | `hive` on a text, Parquet, RCFile, or ORC table, `hive:rc`, `hive:orc` |
+| HDFS | `hdfs:orc`, `hdfs:parquet` |
+| Network file system | `file:orc`, `file:parquet` |
+| Object stores (S3, Azure, Google Cloud Storage) | `s3:orc`, `s3:parquet`, `wasbs:orc`, `wasbs:parquet`, `abfss:orc`, `abfss:parquet`, `gs:orc`, `gs:parquet` |
+
+PXF may still turn projection off for a specific query if it can't serialize the query's filter, for example when a `WHERE` clause resolves to a `boolean` column rather than a comparison.

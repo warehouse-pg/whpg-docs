@@ -34,7 +34,8 @@ export default defineConfig(
         items: [
           { text: '7.x', link: '/docs/7x' },
           { text: '6.x', link: '/docs/6x' },
-          { text: 'Backup & restore', link: '/whpg-backup/' }
+          { text: 'Backup & restore', link: '/whpg-backup/' },
+          { text: 'PXF', link: '/pxf/' }
         ]
       },
       { text: 'GitHub', link: 'https://github.com/warehouse-pg/warehouse-pg' },
@@ -100,6 +101,50 @@ export default defineConfig(
           { text: "Using the S3 storage plugin", link: "/whpg-backup/s3-plugin" },
           { text: "Reference",
             link: "/whpg-backup/reference/" }
+        ],
+      },
+      {
+        text: "PXF",
+        link: "/pxf/",
+        collapsed: false,
+        items: [
+          { text: "Release notes", link: "/pxf/release_notes/" },
+          { text: "Overview", link: "/pxf/overview/" },
+          { text: "Installing", link: "/pxf/installing" },
+          { text: "Configuring and starting", link: "/pxf/configuring" },
+          { text: "Administering", link: "/pxf/administering" },
+          {
+            text: "Connecting to external data",
+            link: "/pxf/connecting/",
+            collapsed: true,
+            items: [
+              {
+                text: "Object stores",
+                link: "/pxf/connecting/object-stores/",
+                collapsed: true,
+                items: [
+                  { text: "S3-compatible stores", link: "/pxf/connecting/object-stores/s3" },
+                  { text: "Azure", link: "/pxf/connecting/object-stores/azure" },
+                  { text: "Google Cloud Storage", link: "/pxf/connecting/object-stores/gcs" },
+                ],
+              },
+              {
+                text: "Hadoop",
+                link: "/pxf/connecting/hadoop/",
+                collapsed: true,
+                items: [
+                  { text: "HDFS", link: "/pxf/connecting/hadoop/hdfs" },
+                  { text: "Hive", link: "/pxf/connecting/hadoop/hive" },
+                  { text: "HBase", link: "/pxf/connecting/hadoop/hbase" },
+                  { text: "Authenticating with Kerberos", link: "/pxf/connecting/hadoop/kerberos" },
+                ],
+              },
+              { text: "SQL databases over JDBC", link: "/pxf/connecting/jdbc" },
+              { text: "Network file system", link: "/pxf/connecting/network-file-system" },
+            ],
+          },
+          { text: "Using the foreign data wrapper", link: "/pxf/foreign-data-wrapper" },
+          { text: "Reference", link: "/pxf/reference/" }
         ],
       }
     ]
