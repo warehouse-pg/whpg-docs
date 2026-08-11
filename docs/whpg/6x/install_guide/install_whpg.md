@@ -45,9 +45,9 @@ See [Example Ansible Playbook](ansible-example.md) for an example script that sh
 
 Follow these instructions to install WarehousePG from a pre-built binary.
 
-> **Important** You require sudo or root user access to install from a pre-built RPM or DEB file.
+> **Important** You require sudo or root user access to install from a pre-built RPM file.
 
-1.  Download and copy the WarehousePG package to the `gpadmin` user's home directory on the coordinator, standby coordinator, and every segment host machine. The distribution file name has the format `greenplum-db-<version>-<platform>.rpm` for RHEL, CentOS, and Oracle Linux systems, or `greenplum-db-<version>-<platform>.deb` for Ubuntu systems, where `<platform>` is similar to `rhel7-x86_64` (Red Hat 7 64-bit).
+1.  Download and copy the WarehousePG package to the `gpadmin` user's home directory on the coordinator, standby coordinator, and every segment host machine. The distribution file name has the format `greenplum-db-<version>-<platform>.rpm` for RHEL, CentOS, and Oracle Linux systems, where `<platform>` is similar to `rhel7-x86_64` (Red Hat 7 64-bit).
 
     > **Note** For Oracle Linux installations, download and install the `rhel7-x86_64`distribution files.
 
@@ -58,13 +58,8 @@ Follow these instructions to install WarehousePG from a pre-built binary.
         ```
         $ sudo yum install ./greenplum-db-<version>-<platform>.rpm
         ```
-    -   For Ubuntu systems, run the `apt` command:
 
-        ```
-        $ sudo apt install ./greenplum-db-<version>-<platform>.deb
-        ```
-
-    The `yum` or `apt` command automatically installs software dependencies, copies the WarehousePG software files into a version-specific directory under `/usr/local`, `/usr/local/greenplum-db-<version>`, and creates the symbolic link `/usr/local/greenplum-db` to the installation directory.
+    The `yum` command automatically installs software dependencies, copies the WarehousePG software files into a version-specific directory under `/usr/local`, `/usr/local/greenplum-db-<version>`, and creates the symbolic link `/usr/local/greenplum-db` to the installation directory.
 
 3.  Change the owner and group of the installed files to `gpadmin`:
 
@@ -83,7 +78,7 @@ Follow these instructions to install WarehousePG to a specific directory.
 
 > **Important** You require sudo or root user access to install from a pre-built RPM file.
 
-1.  Download and copy the WarehousePG package to the `gpadmin` user's home directory on the coordinator, standby coordinator, and every segment host machine. The distribution file name has the format `greenplum-db-<version>-<platform>.rpm` for RHEL and CentOS systems, or `greenplum-db-<version>-<platform>.deb` for Ubuntu systems, where `<platform>` is similar to `rhel7-x86_64` (Red Hat 7 64-bit).
+1.  Download and copy the WarehousePG package to the `gpadmin` user's home directory on the coordinator, standby coordinator, and every segment host machine. The distribution file name has the format `greenplum-db-<version>-<platform>.rpm` for RHEL and CentOS systems, where `<platform>` is similar to `rhel7-x86_64` (Red Hat 7 64-bit).
 
 2.  Manually install the WarehousePG dependencies to each host system:
 

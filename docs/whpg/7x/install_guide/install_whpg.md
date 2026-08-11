@@ -45,7 +45,7 @@ Before you begin installing WarehousePG, be sure you have completed the steps in
 
 Follow these instructions to install WarehousePG from a pre-built binary.
 
-> **Important** You require sudo or root user access to install from a pre-built RPM or DEB file.
+> **Important** You require sudo or root user access to install from a pre-built RPM file.
 
 1.  Download and copy the WarehousePG package to the `gpadmin` user's home directory on the coordinator, standby coordinator, and every segment host machine. The distribution file name has the format `greenplum-db-<version>-<platform>.rpm` for RHEL, Oracle Linux, or Rocky Linux systems.
 
