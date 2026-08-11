@@ -1,5 +1,7 @@
 ---
 title: Using the S3 storage plugin
+navTitle: Using the S3 storage plugin
+description: Configure gpbackup and gprestore to write WarehousePG backups directly to Amazon S3 or an S3-compatible storage server.
 
 ---
 

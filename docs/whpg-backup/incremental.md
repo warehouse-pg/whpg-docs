@@ -1,5 +1,7 @@
 ---
 title: Creating incremental backups of append-optimized tables
+navTitle: Creating incremental backups
+description: Create and restore incremental backups of append-optimized tables with gpbackup and gprestore.
 
 ---
 

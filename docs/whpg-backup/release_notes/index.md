@@ -1,5 +1,7 @@
 ---
 title: WarehousePG Backup and Restore release notes
+navTitle: Release notes
+description: Release notes provide information on what's new in each release of WarehousePG Backup and Restore.
 
 ---
 

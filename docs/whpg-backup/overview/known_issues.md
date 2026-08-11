@@ -1,5 +1,7 @@
 ---
 title: Known issues
+navTitle: Known issues
+description: Learn about known issues and limitations in WarehousePG Backup and Restore.
 
 ---
 

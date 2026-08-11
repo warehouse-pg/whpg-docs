@@ -1,5 +1,7 @@
 ---
 title: Installing WarehousePG Backup and Restore
+navTitle: Installing
+description: Learn how to install the gpbackup and gprestore utilities on your WarehousePG cluster.
 
 ---
 
