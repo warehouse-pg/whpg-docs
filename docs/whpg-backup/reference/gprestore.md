@@ -1,5 +1,6 @@
 ---
 title: gprestore
+description: Command reference for the gprestore utility, including all options and examples.
 
 ---
 

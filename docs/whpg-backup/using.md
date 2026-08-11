@@ -1,5 +1,7 @@
 ---
 title: Backing up and restoring your tables
+navTitle: Backing up and restoring
+description: Back up and restore WarehousePG tables with gpbackup and gprestore, including full backups, filtering, email notifications, and incremental backups.
 
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: gpbackup
+description: Command reference for the gpbackup utility, including all options and examples.
 
 ---
 

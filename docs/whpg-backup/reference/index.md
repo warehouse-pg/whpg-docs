@@ -1,5 +1,7 @@
 ---
 title: WarehousePG Backup and Restore reference
+navTitle: Reference
+description: The complete reference to gpbackup and gprestore commands.
 
 ---
 

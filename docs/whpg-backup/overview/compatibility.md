@@ -1,5 +1,7 @@
 ---
 title: Compatibility for WarehousePG Backup and Restore
+navTitle: Compatibility
+description: Compatible WarehousePG versions and supported platforms for gpbackup and gprestore.
 
 ---
 

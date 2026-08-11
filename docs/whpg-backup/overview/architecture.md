@@ -1,5 +1,7 @@
 ---
 title: Architecture of WarehousePG Backup and Restore
+navTitle: Architecture
+description: Learn how gpbackup and gprestore back up and restore metadata and table data across the coordinator and segment hosts.
 
 ---
 

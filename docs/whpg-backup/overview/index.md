@@ -1,5 +1,7 @@
 ---
 title: Overview of WarehousePG Backup and Restore
+navTitle: Overview
+description: Learn about the architecture, compatibility, and known issues for WarehousePG Backup and Restore.
 
 ---
 

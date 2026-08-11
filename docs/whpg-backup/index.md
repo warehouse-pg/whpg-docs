@@ -1,5 +1,7 @@
 ---
 title: WarehousePG Backup and Restore
+navTitle: WarehousePG Backup and Restore
+description: Back up and restore WarehousePG tables in parallel with whpg-backup.
 
 ---
 
