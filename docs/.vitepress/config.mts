@@ -35,7 +35,7 @@ export default defineConfig(
           { text: '7.x', link: '/docs/7x' },
           { text: '6.x', link: '/docs/6x' },
           { text: 'Backup & restore', link: '/whpg-backup/' },
-          { text: 'PXF', link: '/pxf/' }
+          { text: 'PXF 6.x', link: '/pxf/6x/' }
         ]
       },
       { text: 'GitHub', link: 'https://github.com/warehouse-pg/warehouse-pg' },
@@ -104,47 +104,46 @@ export default defineConfig(
         ],
       },
       {
-        text: "PXF",
-        link: "/pxf/",
+        text: "PXF 6.x",
+        link: "/pxf/6x/",
         collapsed: false,
         items: [
-          { text: "Release notes", link: "/pxf/release_notes/" },
-          { text: "Overview", link: "/pxf/overview/" },
-          { text: "Installing", link: "/pxf/installing" },
-          { text: "Configuring and starting", link: "/pxf/configuring" },
-          { text: "Administering", link: "/pxf/administering" },
+          { text: "Release notes", link: "/pxf/6x/release_notes/" },
+          { text: "Overview", link: "/pxf/6x/overview/" },
+          { text: "Installing", link: "/pxf/6x/installing" },
+          { text: "Configuring and starting", link: "/pxf/6x/configuring" },
+          { text: "Administering", link: "/pxf/6x/administering" },
           {
             text: "Connecting to external data",
-            link: "/pxf/connecting/",
+            link: "/pxf/6x/connecting/",
             collapsed: true,
             items: [
               {
                 text: "Object stores",
-                link: "/pxf/connecting/object-stores/",
+                link: "/pxf/6x/connecting/object-stores/",
                 collapsed: true,
                 items: [
-                  { text: "S3-compatible stores", link: "/pxf/connecting/object-stores/s3" },
-                  { text: "Azure", link: "/pxf/connecting/object-stores/azure" },
-                  { text: "Google Cloud Storage", link: "/pxf/connecting/object-stores/gcs" },
+                  { text: "S3-compatible stores", link: "/pxf/6x/connecting/object-stores/s3" },
+                  { text: "Azure", link: "/pxf/6x/connecting/object-stores/azure" },
+                  { text: "Google Cloud Storage", link: "/pxf/6x/connecting/object-stores/gcs" },
                 ],
               },
               {
                 text: "Hadoop",
-                link: "/pxf/connecting/hadoop/",
+                link: "/pxf/6x/connecting/hadoop/",
                 collapsed: true,
                 items: [
-                  { text: "HDFS", link: "/pxf/connecting/hadoop/hdfs" },
-                  { text: "Hive", link: "/pxf/connecting/hadoop/hive" },
-                  { text: "HBase", link: "/pxf/connecting/hadoop/hbase" },
-                  { text: "Authenticating with Kerberos", link: "/pxf/connecting/hadoop/kerberos" },
+                  { text: "HDFS", link: "/pxf/6x/connecting/hadoop/hdfs" },
+                  { text: "Hive", link: "/pxf/6x/connecting/hadoop/hive" },
+                  { text: "HBase", link: "/pxf/6x/connecting/hadoop/hbase" },
+                  { text: "Authenticating with Kerberos", link: "/pxf/6x/connecting/hadoop/kerberos" },
                 ],
               },
-              { text: "SQL databases over JDBC", link: "/pxf/connecting/jdbc" },
-              { text: "Network file system", link: "/pxf/connecting/network-file-system" },
+              { text: "SQL databases over JDBC", link: "/pxf/6x/connecting/jdbc" },
+              { text: "Network file system", link: "/pxf/6x/connecting/network-file-system" },
             ],
           },
-          { text: "Using the foreign data wrapper", link: "/pxf/foreign-data-wrapper" },
-          { text: "Reference", link: "/pxf/reference/" }
+          { text: "Reference", link: "/pxf/6x/reference/" }
         ],
       }
     ]
