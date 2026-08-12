@@ -9,7 +9,7 @@ You can configure support for data compression with these features and utilities
 
 -   Append-optimized tables support compressing table data. See [CREATE TABLE](../../ref_guide/sql_commands/CREATE_TABLE.md).
 -   User-defined data types can be defined to compress data. See [CREATE TYPE](../../ref_guide/sql_commands/CREATE_TYPE.md).
--   The external table protocols [gpfdist](../external/external-tables/gpfdist-protocol.md) ([gpfdists](../external/external-tables/gpfdists-protocol.md)), [s3](../external/external-tables/s3-protocol.md), and [pxf](../external/pxf-overview.md) support compression when accessing external data. For information about external tables, see [CREATE EXTERNAL TABLE](../../ref_guide/sql_commands/CREATE_EXTERNAL_TABLE.md).
+-   The external table protocols [gpfdist](../external/external-tables/gpfdist-protocol.md) ([gpfdists](../external/external-tables/gpfdists-protocol.md)), [s3](../external/external-tables/s3-protocol.md), and [pxf](/pxf/6x/index.md) support compression when accessing external data. For information about external tables, see [CREATE EXTERNAL TABLE](../../ref_guide/sql_commands/CREATE_EXTERNAL_TABLE.md).
 -   Workfiles (temporary spill files that are created when running a query that requires more memory than it is allocated) can be compressed. See the server configuration parameter [gp_workfile_compression](../../ref_guide/config_params/guc-list.md).
 -   The WarehousePG utilities `gpbackup`, `gprestore`, `gpload`, `gplogfilter`  support compression.
 

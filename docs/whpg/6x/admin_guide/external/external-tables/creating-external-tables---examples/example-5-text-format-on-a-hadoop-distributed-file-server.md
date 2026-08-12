@@ -13,6 +13,6 @@ Creates a readable external table, *ext_expenses,* using the `pxf` protocol. The
 
 ```
 
-Refer to [Accessing External Data with PXF](../../pxf-overview.md) for information about using the WarehousePG Platform Extension Framework (PXF) to access data on a Hadoop Distributed File System.
+Refer to [HDFS](/pxf/6x/connecting/hadoop/hdfs.md) for information about using the WarehousePG Platform Extension Framework (PXF) to access data on a Hadoop Distributed File System.
 
 **Parent topic:** [Examples for Creating External Tables](index.md)

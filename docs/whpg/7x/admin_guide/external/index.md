@@ -3,7 +3,6 @@ title: Working with External Data
 navigation:
   - foreign
   - external-tables
-  - pxf-overview
   - using-gpfdist
 redirects:
   - working-with-file-based-ext-tables
@@ -48,4 +47,4 @@ Web-based external tables provide access to data served by an HTTP server or an 
 
 ## About Accessing External Data with pxf
 
-Data managed by your organization may already reside in external sources such as Hadoop, object stores, and other SQL databases. The WarehousePG Platform Extension Framework (PXF) provides access to this external data via built-in connectors that map an external data source to a WarehousePG table definition. Refer to [Accessing External Data with PXF](pxf-overview.md) for more information about using PXF.
+Data managed by your organization may already reside in external sources such as Hadoop, object stores, and other SQL databases. The WarehousePG Platform Extension Framework (PXF) provides access to this external data via built-in connectors that map an external data source to a WarehousePG table definition. Refer to [PXF for WarehousePG](/pxf/6x/index.md) for more information about using PXF.
