@@ -184,7 +184,7 @@ See [Working with External Data](../../admin_guide/external/index.md) for detail
 
 -   LOCATION ('protocol://\[host\[:port]]/path/file' \[, ...])
 
-    If you use the `pxf` protocol to access an external data source, refer to [pxf:// Protocol](../../admin_guide/external/external-tables/pxf-protocol.md) for information about the `pxf` protocol.
+    If you use the `pxf` protocol to access an external data source, refer to [PXF for WarehousePG](/pxf/6x/index.md) for information about the `pxf` protocol.
 
     If you use the `s3` protocol to read or write to S3, refer to [s3:// Protocol](../../admin_guide/external/external-tables/s3-protocol.md) for additional information about the `s3` protocol `LOCATION` clause syntax.
 
@@ -240,13 +240,13 @@ See [Working with External Data](../../admin_guide/external/index.md) for detail
 
     When the `FORMAT` clause identfies delimited text (`TEXT`) or comma separated values (`CSV`) format, formatting options are similar to those available with the PostgreSQL [COPY](COPY.md) command. If the data in the file does not use the default column delimiter, escape character, null string and so on, you must specify the additional formatting options so that the data in the external file is read correctly by WarehousePG. For information about using a custom format, see "Loading and Unloading Data" in the *WarehousePG Administrator Guide*.
 
-    If you use the `pxf` protocol to access an external data source, refer to [Accessing External Data with PXF](../../admin_guide/external/pxf-overview.md) for information about using PXF.
+    If you use the `pxf` protocol to access an external data source, refer to [PXF for WarehousePG](/pxf/6x/index.md) for information about using PXF.
 
 -   FORMAT 'CUSTOM' (formatter=formatter_specification)
 
     Specifies a custom data format. The formatter_specification specifies the function to use to format the data, followed by comma-separated parameters to the formatter function. The length of the formatter specification, the string including `Formatter=`, can be up to approximately 50K bytes.
 
-    If you use the `pxf` protocol to access an external data source, refer to [Accessing External Data with PXF](../../admin_guide/external/pxf-overview.md) for information about using PXF.
+    If you use the `pxf` protocol to access an external data source, refer to [PXF for WarehousePG](/pxf/6x/index.md) for information about using PXF.
 
     For general information about using a custom format, see "Loading and Unloading Data" in the *WarehousePG Administrator Guide*.
 
