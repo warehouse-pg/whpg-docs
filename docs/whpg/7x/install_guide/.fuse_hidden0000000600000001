@@ -13,10 +13,10 @@ Perform the following tasks in order:
 2.  [Installing build dependencies](#installing-build-dependencies)
 3.  [Building and installing WarehousePG](#building-and-installing-warehousepg)
 4.  [Setting environment variables](#setting-environment-variables)
-5.  [Enabling passwordless SSH](#enabling-passwordless-ssh)
-6.  [Installing WarehousePG on additional hosts](#installing-warehousepg-on-additional-hosts)
-7.  [Verifying your installation](#verifying-your-installation)
-8.  [Next steps](#next-steps)
+5.  [Installing WarehousePG on additional hosts](#installing-warehousepg-on-additional-hosts)
+6.  [Enabling passwordless SSH](#topic_xmb_gb5_vhb)
+7.  [Confirming your installation](#topic10)
+8.  [Next steps](#topic_cwj_hzb_vhb)
 
 If you want to try WarehousePG on a single host before setting up a full cluster, see [Trying WarehousePG with the demo cluster](#trying-warehousepg-with-the-demo-cluster).
 
@@ -61,6 +61,8 @@ sudo yum install -y apr-devel bison bzip2-devel cmake3 flex gcc gcc-c++ \
 The [README.RHEL-Rocky.bash](https://github.com/warehouse-pg/warehouse-pg/blob/main/README.RHEL-Rocky.bash) script in the repository installs the same packages and also applies the kernel, SELinux, and firewall settings described in [Configure Operating System](config_os.md). Review the script before you run it, since it changes system-wide settings.
 ::::
 
+<a id="building-and-installing-warehousepg"></a>
+
 ## Building and installing WarehousePG
 
 Build WarehousePG with `configure` and `make`, then install it to a target directory.
@@ -71,7 +73,7 @@ Build WarehousePG with `configure` and `make`, then install it to a target direc
     ./configure --with-perl --with-python --with-libxml --with-gssapi --prefix=/usr/local/whpg
     ```
 
-    Use a different `--prefix` value to install to another location. All example procedures in the WarehousePG documentation assume that WarehousePG is installed at `/usr/local/whpg`. If you install to a different directory, substitute that directory for `/usr/local/whpg` in the documentation examples.
+    Use a different `--prefix` value to install to another location. All example procedures in the WarehousePG documentation assume that WarehousePG is installed at `/usr/local/whpg`. If you install to a different directory, replace that directory for `/usr/local/whpg` in the documentation examples.
 
 2.  Compile and install the software. The `-j8` option runs the build with eight parallel jobs. Adjust the number to match the CPU cores available on your build host.
 
@@ -97,9 +99,11 @@ make clean
 If you rebuild in place for a cluster that's already initialized, restart it with `gpstart -a` as the `gpadmin` user instead of running `gpinitsystem` again.
 ::::
 
+<a id="setting-environment-variables"></a>
+
 ## Setting environment variables
 
-Source the `greenplum_path.sh` file that the installation creates in the installation directory. This file sets the environment variables that WarehousePG needs.
+The installation creates a `greenplum_path.sh` file in the installation directory with the environment variables that WarehousePG needs.
 
 ```
 source /usr/local/whpg/greenplum_path.sh
@@ -107,9 +111,33 @@ source /usr/local/whpg/greenplum_path.sh
 
 Add this `source` command to the `gpadmin` user's `.bashrc` or other shell startup file on the coordinator and standby coordinator hosts, so the WarehousePG path and environment variables are set whenever you log in as `gpadmin`. See [Setting WarehousePG Environment Variables](init_whpg.md#topic8) for the full procedure, including the `COORDINATOR_DATA_DIRECTORY` variable you set after you initialize the cluster.
 
+<a id="installing-warehousepg-on-additional-hosts"></a>
+
+## Installing WarehousePG on additional hosts
+
+A WarehousePG cluster needs the same software installed at the same path on the coordinator, standby coordinator, and every segment host.
+
+Either repeat the build on each host, or build WarehousePG once and copy the installed directory to your other hosts.
+
+1.  Enable passwordless SSH from the build host to every other host in the cluster. See [Enabling passwordless SSH](#topic_xmb_gb5_vhb).
+2.  Copy the installation directory to each host, preserving permissions. For example:
+
+    ```
+    rsync -av /usr/local/whpg/ sdw1:/usr/local/whpg/
+    rsync -av /usr/local/whpg/ sdw2:/usr/local/whpg/
+    ```
+
+3.  On each host, change the owner and group of the copied files to `gpadmin`.
+
+    ```
+    sudo chown -R gpadmin:gpadmin /usr/local/whpg
+    ```
+
+<a id="topic_xmb_gb5_vhb"></a>
+
 ## Enabling passwordless SSH
 
-The `gpadmin` user on each WarehousePG host must be able to SSH between any two hosts in the cluster without entering a password or passphrase. This requirement is known as passwordless SSH, and you set it up in two stages. First, enable passwordless SSH from the coordinator host to every other host in the cluster (1-*n* passwordless SSH). Then use the WarehousePG `gpssh-exkeys` command-line utility to extend passwordless SSH from every host to every other host (*n*-*n* passwordless SSH).
+The `gpadmin` user on each WarehousePG host must be able to SSH from any host in the cluster to any other host in the cluster without entering a password or passphrase (called "passwordless SSH"). If you enable passwordless SSH from the coordinator host to every other host in the cluster ("1-*n* passwordless SSH"), you can use the WarehousePG `gpssh-exkeys` command-line utility to enable passwordless SSH from every host to every other host ("*n*-*n* passwordless SSH").
 
 1.  Log in to the coordinator host as the `gpadmin` user.
 2.  Source the `path` file in the WarehousePG installation directory.
@@ -128,13 +156,13 @@ The `gpadmin` user on each WarehousePG host must be able to SSH between any two 
     . . .
     ```
 
-    This step enables 1-*n* passwordless SSH. You're prompted to enter the `gpadmin` user's password for each host. If you have the `sshpass` command on your system, use a command like the following to avoid the prompt.
+    This enables 1-*n* passwordless SSH. You're prompted to enter the `gpadmin` user's password for each host. If you have the `sshpass` command on your system, use a command like the following to avoid the prompt.
 
     ```
     SSHPASS=<password> sshpass -e ssh-copy-id scdw
     ```
 
-4.  In the `gpadmin` home directory, create a file named `hostfile_exkeys` that lists the machine-configured host names and interface addresses for every host in your WarehousePG cluster, including the coordinator, standby coordinator, and segment hosts. Make sure there are no blank lines or extra spaces. Check the `/etc/hosts` file on your systems for the correct host names to use for your environment. For example, if you have a coordinator, standby coordinator, and three segment hosts with two unbonded network interfaces per host, your file would look something like this:
+4.  In the `gpadmin` home directory, create a file named `hostfile_exkeys` that has the machine-configured host names and host addresses (interface names) for each host in your WarehousePG cluster (coordinator, standby coordinator, and segment hosts). Make sure there are no blank lines or extra spaces. Check the `/etc/hosts` file on your systems for the correct host names to use for your environment. For example, if you have a coordinator, standby coordinator, and three segment hosts with two unbonded network interfaces per host, your file would look something like this:
 
     ```
     cdw
@@ -160,28 +188,11 @@ The `gpadmin` user on each WarehousePG host must be able to SSH between any two 
     gpssh-exkeys -f hostfile_exkeys
     ```
 
-## Installing WarehousePG on additional hosts
+<a id="topic10"></a>
 
-A WarehousePG cluster needs the same software installed at the same path on the coordinator, standby coordinator, and every segment host.
+## Confirming your installation
 
-Either repeat the build on each host, or build WarehousePG once and copy the installed directory to your other hosts, now that passwordless SSH is in place.
-
-1.  Copy the installation directory to each host, preserving permissions. For example:
-
-    ```
-    rsync -av /usr/local/whpg/ sdw1:/usr/local/whpg/
-    rsync -av /usr/local/whpg/ sdw2:/usr/local/whpg/
-    ```
-
-2.  On each host, change the owner and group of the copied files to `gpadmin`.
-
-    ```
-    sudo chown -R gpadmin:gpadmin /usr/local/whpg
-    ```
-
-## Verifying your installation
-
-To make sure the WarehousePG software is installed and configured correctly, run the following verification steps from your WarehousePG coordinator host, and fix any problems you find.
+To make sure the WarehousePG software is installed and configured correctly, run the following confirmation steps from your WarehousePG coordinator host. Fix any problems before continuing to the next task.
 
 1.  Log in to the coordinator host as `gpadmin`.
 
@@ -195,13 +206,15 @@ To make sure the WarehousePG software is installed and configured correctly, run
     gpssh -f hostfile_exkeys -e 'ls -l /usr/local/whpg'
     ```
 
-    The command logs in to all hosts without a password prompt, and every host shows the same contents in its installation directory, owned by the `gpadmin` user. This output confirms that WarehousePG is installed correctly on every host.
+    If the installation succeeded, you can log in to all hosts without a password prompt. All hosts show the same contents in their installation directories, owned by the `gpadmin` user.
 
-    If you're prompted for a password, redo the SSH key exchange:
+    If you're prompted for a password, run the following command to redo the SSH key exchange.
 
     ```
     gpssh-exkeys -f hostfile_exkeys
     ```
+
+<a id="topic_zdf_1f5_vhb"></a>
 
 ## Understanding your WarehousePG installation
 
@@ -216,6 +229,8 @@ The installation directory contains the following files and subdirectories.
 -   **lib** — WarehousePG and Postgres library files.
 -   **sbin** — Supporting and internal scripts and programs.
 -   **share** — Shared files for WarehousePG.
+
+<a id="trying-warehousepg-with-the-demo-cluster"></a>
 
 ## Trying WarehousePG with the demo cluster
 
@@ -240,6 +255,8 @@ make distclean
 ```
 
 For a production deployment, follow [Setting environment variables](#setting-environment-variables) onward, and initialize a full cluster as described in [Initializing WarehousePG](init_whpg.md).
+
+<a id="topic_cwj_hzb_vhb"></a>
 
 ## Next steps
 
