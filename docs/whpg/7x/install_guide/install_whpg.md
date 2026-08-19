@@ -118,7 +118,7 @@ The `gpadmin` user on each WarehousePG host must be able to SSH between any two 
     source /usr/local/whpg/greenplum_path.sh
     ```
 
-3.  Use the `ssh-copy-id` command to add the `gpadmin` user's public key to the `authorized_hosts` SSH file on every other host in the cluster.
+3.  Use the `ssh-copy-id` command to add the `gpadmin` user's public key to the `authorized_keys` SSH file on every other host in the cluster.
 
     ```
     ssh-copy-id scdw
