@@ -61,6 +61,14 @@ sudo yum install -y apr-devel bison bzip2-devel cmake3 flex gcc gcc-c++ \
 The [README.RHEL-Rocky.bash](https://github.com/warehouse-pg/warehouse-pg/blob/main/README.RHEL-Rocky.bash) script in the repository installs the same packages and also applies the kernel, SELinux, and firewall settings described in [Configure Operating System](config_os.md). Review the script before you run it, since it changes system-wide settings.
 ::::
 
+:::: info Note
+If a `yum` or `dnf` command is interrupted, for example with `Ctrl+C`, it can leave a stale lock file at `/var/lib/rpm/.rpm.lock`. Subsequent `yum` or `dnf` commands then hang indefinitely waiting for the lock to clear. If this happens, remove the stale lock file and retry:
+
+```
+sudo rm -f /var/lib/rpm/.rpm.lock
+```
+::::
+
 ## Building and installing WarehousePG
 
 Build WarehousePG with `configure` and `make`, then install it to a target directory.
@@ -134,6 +142,24 @@ The `gpadmin` user on each WarehousePG host must be able to SSH between any two 
     SSHPASS=<password> sshpass -e ssh-copy-id scdw
     ```
 
+    Skip the `scdw` commands if your cluster doesn't have a standby coordinator host.
+
+    ::: info Note
+    On cloud hosts such as Amazon EC2 instances, password authentication is often deactivated by default, so `ssh-copy-id` fails with an error such as `ERROR: No identities found` or `Permission denied (publickey)`. In that case, copy the coordinator's public key to each host's `authorized_keys` file manually instead. On the coordinator, display the public key.
+
+    ```
+    cat /home/gpadmin/.ssh/id_rsa.pub
+    ```
+
+    Then, on each other host, append that key and set the correct ownership and permissions. Run these commands as a user with `sudo` access, such as the default cloud image user.
+
+    ```
+    echo "<coordinator-public-key>" | sudo tee -a /home/gpadmin/.ssh/authorized_keys
+    sudo chmod 600 /home/gpadmin/.ssh/authorized_keys
+    sudo chown -R gpadmin:gpadmin /home/gpadmin/.ssh
+    ```
+    :::
+
 4.  In the `gpadmin` home directory, create a file named `hostfile_exkeys` that lists the machine-configured host names and interface addresses for every host in your WarehousePG cluster, including the coordinator, standby coordinator, and segment hosts. Make sure there are no blank lines or extra spaces. Check the `/etc/hosts` file on your systems for the correct host names to use for your environment. For example, if you have a coordinator, standby coordinator, and three segment hosts with two unbonded network interfaces per host, your file would look something like this:
 
     ```
@@ -155,6 +181,16 @@ The `gpadmin` user on each WarehousePG host must be able to SSH between any two 
     ```
 
 5.  Run the `gpssh-exkeys` utility with your `hostfile_exkeys` file to enable *n*-*n* passwordless SSH for the `gpadmin` user.
+
+    `gpssh-exkeys` fails with an error such as `No ECDSA host key is known for <host> and you have requested strict checking` if the `gpadmin` user hasn't previously connected to a host and accepted its SSH host key fingerprint. Before you run `gpssh-exkeys`, SSH from the coordinator to every host in `hostfile_exkeys` at least once, and enter `yes` at each fingerprint prompt.
+
+    ```
+    ssh gpadmin@sdw1
+    ssh gpadmin@sdw2
+    . . .
+    ```
+
+    Then run `gpssh-exkeys`.
 
     ```
     gpssh-exkeys -f hostfile_exkeys
