@@ -56,16 +56,24 @@ Follow these instructions to install WarehousePG from a pre-built binary.
     -   For RHEL/CentOS systems, run the `yum` command:
 
         ```
-        $ sudo yum install ./greenplum-db-<version>-<platform>.rpm
+        sudo yum install ./greenplum-db-<version>-<platform>.rpm
         ```
 
     The `yum` command automatically installs software dependencies, copies the WarehousePG software files into a version-specific directory under `/usr/local`, `/usr/local/greenplum-db-<version>`, and creates the symbolic link `/usr/local/greenplum-db` to the installation directory.
 
+    ::: info Note
+    If a `yum` command is interrupted, for example with `Ctrl+C`, it can leave a stale lock file at `/var/lib/rpm/.rpm.lock`. Subsequent `yum` commands then hang indefinitely waiting for the lock to clear. If this happens, remove the stale lock file and retry:
+
+    ```
+    sudo rm -f /var/lib/rpm/.rpm.lock
+    ```
+    :::
+
 3.  Change the owner and group of the installed files to `gpadmin`:
 
     ```
-    $ sudo chown -R gpadmin:gpadmin /usr/local/greenplum*
-    $ sudo chgrp -R gpadmin /usr/local/greenplum*
+    sudo chown -R gpadmin:gpadmin /usr/local/greenplum*
+    sudo chgrp -R gpadmin /usr/local/greenplum*
     ```
 
 <a id="topic_dj4_ssr_cmb"></a>
@@ -83,14 +91,14 @@ Follow these instructions to install WarehousePG to a specific directory.
 2.  Manually install the WarehousePG dependencies to each host system:
 
     ```
-    $ sudo yum install apr apr-util bash bzip2 curl krb5 libcurl libevent \
+    sudo yum install apr apr-util bash bzip2 curl krb5 libcurl libevent \
     libxml2 libyaml zlib openldap openssh openssl openssl-libs perl readline rsync R sed tar zip
     ```
 
 3.  Use `rpm` with the `--prefix` option to install the WarehousePG package to your chosen installation directory on each host machine:
 
     ```
-    $ sudo rpm --install ./greenplum-db-<version>-<platform>.rpm --prefix=<directory>
+    sudo rpm --install ./greenplum-db-<version>-<platform>.rpm --prefix=<directory>
     ```
 
     The `rpm` command copies the WarehousePG software files into a version-specific directory under your chosen `<directory>`, `<directory>/greenplum-db-<version>`, and creates the symbolic link `<directory>/greenplum-db` to the versioned directory.
@@ -98,7 +106,7 @@ Follow these instructions to install WarehousePG to a specific directory.
 4.  Change the owner and group of the installed files to `gpadmin`:
 
     ```
-    $ sudo chown -R gpadmin:gpadmin <directory>/greenplum*
+    sudo chown -R gpadmin:gpadmin <directory>/greenplum*
     ```
 
 > **Note** All example procedures in the WarehousePG documentation assume that you installed to the default directory, which is `/usr/local`. If you install to a non-default directory, substitute that directory for `/usr/local`.
@@ -116,7 +124,7 @@ The `gpadmin` user on each WarehousePG host must be able to SSH from any host in
 2.  Source the `path` file in the WarehousePG installation directory.
 
     ```
-    $ source /usr/local/greenplum-db-<version>/greenplum_path.sh
+    source /usr/local/greenplum-db-<version>/greenplum_path.sh
     ```
 
     > **Note** Add the above `source` command to the `gpadmin` user's `.bashrc` or other shell startup file so that the WarehousePG path and environment variables are set whenever you log in as `gpadmin`.
@@ -124,18 +132,36 @@ The `gpadmin` user on each WarehousePG host must be able to SSH from any host in
 3.  Use the `ssh-copy-id` command to add the `gpadmin` user's public key to the `authorized_hosts` SSH file on every other host in the cluster.
 
     ```
-    $ ssh-copy-id smdw
-    $ ssh-copy-id sdw1
-    $ ssh-copy-id sdw2
-    $ ssh-copy-id sdw3
+    ssh-copy-id smdw
+    ssh-copy-id sdw1
+    ssh-copy-id sdw2
+    ssh-copy-id sdw3
     . . .
     ```
 
     This enables 1-*n* passwordless SSH. You will be prompted to enter the `gpadmin` user's password for each host. If you have the `sshpass` command on your system, you can use a command like the following to avoid the prompt.
 
     ```
-    $ SSHPASS=<password> sshpass -e ssh-copy-id smdw
+    SSHPASS=<password> sshpass -e ssh-copy-id smdw
     ```
+
+    Skip the `smdw` commands if your cluster doesn't have a standby coordinator host.
+
+    ::: info Note
+    On cloud hosts such as Amazon EC2 instances, password authentication is often deactivated by default, so `ssh-copy-id` fails with an error such as `ERROR: No identities found` or `Permission denied (publickey)`. In that case, copy the coordinator's public key to each host's `authorized_keys` file manually instead. On the coordinator, display the public key.
+
+    ```
+    cat /home/gpadmin/.ssh/id_rsa.pub
+    ```
+
+    Then, on each other host, append that key and set the correct ownership and permissions. Run these commands as a user with `sudo` access, such as the default cloud image user.
+
+    ```
+    echo "<coordinator-public-key>" | sudo tee -a /home/gpadmin/.ssh/authorized_keys
+    sudo chmod 600 /home/gpadmin/.ssh/authorized_keys
+    sudo chown -R gpadmin:gpadmin /home/gpadmin/.ssh
+    ```
+    :::
 
 4.  In the `gpadmin` home directory, create a file named `hostfile_exkeys` that has the machine configured host names and host addresses (interface names) for each host in your WarehousePG cluster (coordinator, standby coordinator, and segment hosts). Make sure there are no blank lines or extra spaces. Check the `/etc/hosts` file on your systems for the correct host names to use for your environment. For example, if you have a coordinator, standby coordinator, and three segment hosts with two unbonded network interfaces per host, your file would look something like this:
 
@@ -159,8 +185,18 @@ The `gpadmin` user on each WarehousePG host must be able to SSH from any host in
 
 5.  Run the `gpssh-exkeys` utility with your `hostfile_exkeys` file to enable *n*-*n* passwordless SSH for the `gpadmin` user.
 
+    `gpssh-exkeys` fails with an error such as `No ECDSA host key is known for <host> and you have requested strict checking` if the `gpadmin` user hasn't previously connected to a host and accepted its SSH host key fingerprint. Before you run `gpssh-exkeys`, SSH from the coordinator to every host in `hostfile_exkeys` at least once, and enter `yes` at each fingerprint prompt.
+
     ```
-    $ gpssh-exkeys -f hostfile_exkeys
+    ssh gpadmin@sdw1
+    ssh gpadmin@sdw2
+    . . .
+    ```
+
+    Then run `gpssh-exkeys`.
+
+    ```
+    gpssh-exkeys -f hostfile_exkeys
     ```
 
 <a id="topic10"></a>
@@ -172,13 +208,13 @@ To make sure the WarehousePG software was installed and configured correctly, ru
 1.  Log in to the coordinator host as `gpadmin`:
 
     ```
-    $ su - gpadmin
+    su - gpadmin
     ```
 
 2.  Use the `gpssh` utility to see if you can log in to all hosts without a password prompt, and to confirm that the WarehousePG software was installed on all hosts. Use the `hostfile_exkeys` file you used to set up passwordless SSH. For example:
 
     ```
-    $ gpssh -f hostfile_exkeys -e 'ls -l /usr/local/greenplum-db-<version>'
+    gpssh -f hostfile_exkeys -e 'ls -l /usr/local/greenplum-db-<version>'
     ```
 
     If the installation was successful, you should be able to log in to all hosts without a password prompt. All hosts should show that they have the same contents in their installation directories, and that the directories are owned by the `gpadmin` user.
@@ -186,7 +222,7 @@ To make sure the WarehousePG software was installed and configured correctly, ru
     If you are prompted for a password, run the following command to redo the ssh key exchange:
 
     ```
-    $ gpssh-exkeys -f hostfile_exkeys
+    gpssh-exkeys -f hostfile_exkeys
     ```
 
 <a id="topic_zdf_1f5_vhb"></a>

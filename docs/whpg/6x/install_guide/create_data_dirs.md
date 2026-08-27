@@ -19,16 +19,16 @@ A data storage area is required on the WarehousePG coordinator and standby coord
 
 The data directory location on the coordinator is different than those on the segments. The coordinator does not store any user data, only the system catalog tables and system metadata are stored on the coordinator instance, therefore you do not need to designate as much storage space as on the segments.
 
-1.  Create or choose a directory that will serve as your coordinator data storage area. This directory should have sufficient disk space for your data and be owned by the `gpadmin` user and group. For example, run the following commands as `root`:
+1.  Create or choose a directory that will serve as your coordinator data storage area. This directory should have sufficient disk space for your data and be owned by the `gpadmin` user and group. For example, run the following command using `sudo`:
 
     ```
-    # mkdir -p /data/master
+    sudo mkdir -p /data/master
     ```
 
-2.  Change ownership of this directory to the `gpadmin` user. For example:
+2.  Change ownership of this directory, and any parent directories you created, to the `gpadmin` user. For example:
 
     ```
-    # chown gpadmin:gpadmin /data/master
+    sudo chown -R gpadmin:gpadmin /data
     ```
 
 3.  Using [gpssh](../ref_guide/utility_guide/reference/gpssh.md), create the coordinator data directory location on your standby coordinator as well. For example:
@@ -49,11 +49,16 @@ Data storage areas are required on the WarehousePG segment hosts for primary seg
 
 ### To create the data directory locations on all segment hosts
 
-1.  On the coordinator host, log in as `root`:
+1.  On the coordinator host, switch to the `gpadmin` user and source the `greenplum_path.sh` file.
 
     ```
-    # su
+    sudo -iu gpadmin
+    source /usr/edb/whpg6/greenplum_path.sh
     ```
+
+    ::: info Note
+    Logging in as `root` with `su` fails on hosts where root login is deactivated, such as Amazon EC2 instances. The `gpssh` commands in this topic use `sudo` on the remote hosts instead, so you can run them as `gpadmin`, provided `gpadmin` has `sudo` privilege as described in [Creating the WarehousePG Administrative User](config_os.md#topic23).
+    :::
 
 2.  Create a file called `hostfile_gpssh_segonly`. This file should have only one machine configured host name for each segment host. For example, if you have three segment hosts:
 
@@ -66,13 +71,16 @@ Data storage areas are required on the WarehousePG segment hosts for primary seg
 3.  Using [gpssh](../ref_guide/utility_guide/reference/gpssh.md), create the primary and mirror data directory locations on all segment hosts at once using the `hostfile_gpssh_segonly` file you just created. For example:
 
     ```
-    # source /usr/edb/whpg6/greenplum_path.sh 
-    # gpssh -f hostfile_gpssh_segonly -e 'mkdir -p /data1/primary'
-    # gpssh -f hostfile_gpssh_segonly -e 'mkdir -p /data2/primary'
-    # gpssh -f hostfile_gpssh_segonly -e 'mkdir -p /data1/mirror'
-    # gpssh -f hostfile_gpssh_segonly -e 'mkdir -p /data2/mirror'
-    # gpssh -f hostfile_gpssh_segonly -e 'chown -R gpadmin /data*/*'
+    gpssh -f hostfile_gpssh_segonly -e 'sudo mkdir -p /data1/primary'
+    gpssh -f hostfile_gpssh_segonly -e 'sudo mkdir -p /data2/primary'
+    gpssh -f hostfile_gpssh_segonly -e 'sudo mkdir -p /data1/mirror'
+    gpssh -f hostfile_gpssh_segonly -e 'sudo mkdir -p /data2/mirror'
+    gpssh -f hostfile_gpssh_segonly -e 'sudo chown -R gpadmin:gpadmin /data1 /data2'
     ```
+
+    ::: warning Caution
+    Use `chown -R gpadmin:gpadmin /data1 /data2` rather than a wildcard pattern such as `/data*/*`. A wildcard pattern like `/data*/*` only matches the primary and mirror subdirectories, not the `/data1` and `/data2` directories themselves, which then stay owned by `root` and cause `gpinitsystem` to fail when it tries to write to them as `gpadmin`.
+    :::
 
 <a id="topic_cwj_hzb_vhb"></a>
 

@@ -248,6 +248,10 @@ The disk settings for cloud deployments are the same as on-premise with a few mo
 
 ### Amazon Web Services (AWS)
 
+#### Networking and Security Groups
+
+Deploy all coordinator, standby coordinator, and segment instances in the same virtual private cloud (VPC), and use each instance's private IP address, not its public IP address, for inter-node communication and connectivity tests. A security group that only allows inbound SSH from a jump host isn't enough for the WarehousePG interconnect traffic between instances. Add a dedicated security group with a self-referencing inbound rule that allows all traffic from other instances in the same group, and apply it to every coordinator, standby coordinator, and segment instance.
+
 <a id="aws-vm-type"></a>
 
 #### Virtual Machine Type

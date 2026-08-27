@@ -49,6 +49,10 @@ If you choose to deactivate SELinux:
     SELINUX=disabled
     ```
 
+    ::: info Note
+    `sestatus` reports the SELinux state that the running kernel loaded at boot, not the contents of `/etc/selinux/config`. After you edit the config file, `sestatus` continues to report the previous state until you reboot. The config file change is correct and takes effect on the next boot.
+    :::
+
 3.  If the System Security Services Daemon (SSSD) is installed on your systems, edit the SSSD configuration file and set the `selinux_provider` parameter to `none` to prevent SELinux-related SSH authentication denials that could occur even with SELinux deactivated. As root, edit `/etc/sssd/sssd.conf` and add this parameter:
 
     ```
@@ -108,6 +112,10 @@ To deactivate `iptables`:
     # systemctl deactivate firewalld.service
     ```
 
+    ::: info Note
+    On some machine images, `firewalld` isn't installed, and these commands return `Failed to stop firewalld.service: Unit firewalld.service not loaded`. This error is harmless. If `firewalld` isn't installed, it's already effectively deactivated, and no further action is needed.
+    :::
+
 If you decide to enable `iptables` with WarehousePG for security purposes, see [Enabling iptables (Optional)](enable_iptables.md) for important considerations and example configurations.
 
 See the documentation for the firewall or your operating system for additional information.
@@ -152,6 +160,10 @@ Edit the `/etc/hosts` file and make sure that it includes the host names and all
 The `sysctl.conf` parameters listed in this topic are for performance, optimization, and consistency in a wide variety of environments. Change these settings according to your specific situation and setup.
 
 Set the parameters in the `/etc/sysctl.conf` file and reload with `sysctl -p`:
+
+:::: warning Caution
+The `kernel.shmall` and `kernel.shmmax` values in this example are calculated for a specific host with 1583 GB of memory. Don't copy these two values as-is to a host with a different amount of memory. Calculate the values for your own host as described in [Shared Memory Pages](#shared-memory-pages) below, and substitute your calculated values in the file.
+::::
 
 ```
 
@@ -206,8 +218,8 @@ kernel.shmmax = ( _PHYS_PAGES / 2) * PAGE_SIZE
 To calculate the values for `kernel.shmall` and `kernel.shmmax`, run the following commands using the `getconf` command, which returns the value of an operating system variable.
 
 ```
-$ echo $(expr $(getconf _PHYS_PAGES) / 2) 
-$ echo $(expr $(getconf _PHYS_PAGES) / 2 \* $(getconf PAGE_SIZE))
+echo $(expr $(getconf _PHYS_PAGES) / 2) 
+echo $(expr $(getconf _PHYS_PAGES) / 2 \* $(getconf PAGE_SIZE))
 ```
 
 As best practice, we recommend you set the following values in the `/etc/sysctl.conf` file using calculated values. For example, a host system has 1583 GB of memory installed and returns these values: \_PHYS_PAGES = 395903676 and PAGE_SIZE = 4096. These would be the `kernel.shmall` and `kernel.shmmax` values:
@@ -521,7 +533,7 @@ After adding the parameter, reboot the system.
 This cat command checks the state of THP. The output indicates that THP is deactivated.
 
 ```
-$ cat /sys/kernel/mm/*transparent_hugepage/enabled
+cat /sys/kernel/mm/*transparent_hugepage/enabled
 always [never]
 ```
 
@@ -713,8 +725,8 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
 2.  Switch to the `gpadmin` user and generate an SSH key pair for the `gpadmin` user.
 
     ```
-    $ su gpadmin
-    $ ssh-keygen -t rsa -b 4096
+    su gpadmin
+    ssh-keygen -t rsa -b 4096
     Generating public/private rsa key pair.
     Enter file in which to save the key (/home/gpadmin/.ssh/id_rsa):
     Created directory '/home/gpadmin/.ssh'.
