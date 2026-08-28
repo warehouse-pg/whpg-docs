@@ -95,7 +95,7 @@ Once the group role exists, you can add and remove members (user roles) using th
 
 ```
 
-For managing object privileges, you would then grant the appropriate permissions to the group-level role only (see [Table 2](#iq139925)). The member user roles then inherit the object privileges of the group role. For example:
+For managing object privileges, you would then grant the appropriate permissions to the group-level role only (see [Object Privileges](#object-privileges)). The member user roles then inherit the object privileges of the group role. For example:
 
 ```
 =# GRANT ALL ON TABLE mytable TO admin;
@@ -117,7 +117,7 @@ The role attributes `LOGIN`, `SUPERUSER`, `CREATEDB`, `CREATEROLE`, `CREATEEXTTA
 
 When an object (table, view, sequence, database, function, language, schema, or tablespace) is created, it is assigned an owner. The owner is normally the role that ran the creation statement. For most kinds of objects, the initial state is that only the owner (or a superuser) can do anything with the object. To allow other roles to use it, privileges must be granted. WarehousePG supports the following privileges for each object type:
 
-**Object Privileges**
+### Object Privileges
 
 | Object Type | Privileges |
 | --- | --- |
