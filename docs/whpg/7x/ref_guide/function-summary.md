@@ -187,409 +187,32 @@ This table shows the functions that are available for processing `json` and `jso
 
 Many of these processing functions and operators convert Unicode escapes in JSON strings to the appropriate single character. This is a not an issue if the input data type is `jsonb`, because the conversion was already done. However, for `json` data type input, this might result in an error being thrown as described in [About JSON Data](../admin_guide/query/json-data.md#topic_upc_tcs_fz).
 
-<div><table cellpadding="4" cellspacing="0" summary="" id="jsonproc__table_wfc_y3w_mb" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap"><span class="table--title-label">Table 8. </span>JSON Processing Functions</span></caption><colgroup><col style="width:20.224719101123597%" /><col style="width:18.726591760299627%" /><col style="width:18.913857677902623%" /><col style="width:23.220973782771537%" /><col style="width:18.913857677902623%" /></colgroup><thead class="thead" style="text-align:left;">
-<tr class="row">
-<th id="func">Function</th>
-<th id="ret">Return Type</th>
-<th id="desc">Description</th>
-<th id="ex">Example</th>
-<th id="exres">Example Result</th>
-</tr>
-</thead>
-<tbody class="tbody">
-<tr class="row">
-<td headers="func">
-<code class="ph codeph">json_array_length(json)</code>
-<p class="p">
-<code class="ph codeph">jsonb_array_length(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">int</code>
-</td>
-<td headers="desc">Returns the number of elements in the outermost JSON array.</td>
-<td headers="ex"><code class="ph codeph">json_array_length('[1,2,3,&#123;"f1":1,"f2":[5,6]},4]')</code>
-</td>
-<td headers="exres">
-<code class="ph codeph">5</code>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_each(json)</code>
-<p class="p"><code class="ph codeph">jsonb_each(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">setof key text, value json</code>
-<p class="p"><code class="ph codeph">setof key text, value jsonb</code>
-</p>
-</td>
-<td headers="desc">Expands the outermost JSON object into a set of key/value pairs.</td>
-<td headers="ex"><code class="ph codeph">select * from json_each('&#123;"a":"foo", "b":"bar"}')</code>
-</td>
-<td headers="exres">
-<pre class="pre"> key | value
------+-------
- a   | "foo"
- b   | "bar"
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_each_text(json)</code>
-<p class="p"><code class="ph codeph">jsonb_each_text(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">setof key text, value text</code>
-</td>
-<td headers="desc">Expands the outermost JSON object into a set of key/value pairs. The returned
-                  values will be of type <code class="ph codeph">text</code>.</td>
-<td headers="ex"><code class="ph codeph">select * from json_each_text('&#123;"a":"foo", "b":"bar"}')</code>
-</td>
-<td headers="exres">
-<pre class="pre"> key | value
------+-------
- a   | foo
- b   | bar
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_extract_path(from_json json, VARIADIC path_elems
-                    text[])</code>
-<p class="p"><code class="ph codeph">jsonb_extract_path(from_json jsonb, VARIADIC path_elems
-                      text[])</code>
-</p>
-</td>
-<td headers="ret">
-<p class="p"><code class="ph codeph">json</code>
-</p>
-<p class="p"><code class="ph codeph">jsonb</code>
-</p>
-</td>
-<td headers="desc">Returns the JSON value pointed to by <code class="ph codeph">path_elems</code> (equivalent
-                  to <code class="ph codeph">#></code> operator).</td>
-<td headers="ex"><code class="ph codeph">json_extract_path('&#123;"f2":&#123;"f3":1},"f4":&#123;"f5":99,"f6":"foo"}','f4')</code>
-</td>
-<td headers="exres">
-<code class="ph codeph">&#123;"f5":99,"f6":"foo"}</code>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_extract_path_text(from_json json, VARIADIC path_elems
-                    text[])</code>
-<p class="p"><code class="ph codeph">jsonb_extract_path_text(from_json jsonb, VARIADIC path_elems
-                      text[])</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">text</code>
-</td>
-<td headers="desc">Returns the JSON value pointed to by <code class="ph codeph">path_elems</code> as text
-                  (equivalent to <code class="ph codeph">#>></code> operator).</td>
-<td headers="ex"><code class="ph codeph">json_extract_path_text('&#123;"f2":&#123;"f3":1},"f4":&#123;"f5":99,"f6":"foo"}','f4',
-                    'f6')</code>
-</td>
-<td headers="exres">
-<code class="ph codeph">foo</code>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_object_keys(json)</code>
-<p class="p"><code class="ph codeph">jsonb_object_keys(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">setof text</code>
-</td>
-<td headers="desc">Returns set of keys in the outermost JSON object.</td>
-<td headers="ex"><code class="ph codeph">json_object_keys('&#123;"f1":"abc","f2":&#123;"f3":"a", "f4":"b"}')</code>
-</td>
-<td headers="exres">
-<pre class="pre"> json_object_keys
-------------------
- f1
- f2
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_populate_record(base anyelement, from_json
-                      json)</code><p class="p"><code class="ph codeph">jsonb_populate_record(base anyelement, from_json
-                      jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">anyelement</code>
-</td>
-<td headers="desc">Expands the object in <code class="ph codeph">from_json</code> to a row whose columns match
-                  the record type defined by <code>base</code>. See the <a class="xref" href="#notes-on-json-processing-functions-examples">Note 1</a>.</td>
-<td headers="ex"><code class="ph codeph">select * from json_populate_record(null::myrowtype, '&#123;"a": 1, 
-                    "b": ["2", "a b"], "c": &#123;"d": 4, "e": "a b c"}')</code>
-</td>
-<td headers="exres">
-<pre class="pre"> a |   b       |      c
----+-----------+-------------
- 1 | &#123;2,"a b"} | (4,"a b c")
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_populate_recordset(base anyelement, from_json json)</code>
-<p class="p"><code class="ph codeph">jsonb_populate_recordset(base anyelement, from_json jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">setof anyelement</code>
-</td>
-<td headers="desc">Expands the outermost array of objects in <code class="ph codeph">from_json</code> to a set
-                  of rows whose columns match the record type defined by <code>base</code>. See the <a class="xref" href="#notes-on-json-processing-functions-examples">Note 1</a>.</td>
-<td headers="ex"><code class="ph codeph">select * from json_populate_recordset(null::myrowtype,
-                    '[&#123;"a":1,"b":2},&#123;"a":3,"b":4}]')</code>
-</td>
-<td headers="exres">
-<pre class="pre"> a | b
----+---
- 1 | 2
- 3 | 4
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_array_elements(json)</code>
-<p class="p"><code class="ph codeph">jsonb_array_elements(jsonb</code>)</p>
-</td>
-<td headers="ret">
-<p class="p"><code class="ph codeph">setof json</code>
-</p>
-<p class="p"><code class="ph codeph">setof jsonb</code>
-</p>
-</td>
-<td headers="desc">Expands a JSON array to a set of JSON values.</td>
-<td headers="ex"><code class="ph codeph">select * from json_array_elements('[1,true, [2,false]]')</code>
-</td>
-<td headers="exres">
-<pre class="pre">   value
------------
- 1
- true
- [2,false]
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_array_elements_text(json)</code>
-<p class="p"><code class="ph codeph">jsonb_array_elements_text(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">setof text</code>
-</td>
-<td headers="desc">Expands a JSON array to a set of <code class="ph codeph">text</code> values.</td>
-<td headers="ex"><code class="ph codeph">select * from json_array_elements_text('["foo", "bar"]')</code>
-</td>
-<td headers="exres">
-<pre class="pre">   value
------------
- foo
- bar
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_typeof(json)</code><p class="p"><code class="ph codeph">jsonb_typeof(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">text</code>
-</td>
-<td headers="desc">Returns the type of the outermost JSON value as a text string. Possible types
-                  are <code class="ph codeph">object</code>, <code class="ph codeph">array</code>, <code class="ph codeph">string</code>,
-<code class="ph codeph">number</code>, <code class="ph codeph">boolean</code>, and <code class="ph codeph">null</code>.
-                  </td>
-<td headers="ex"><code class="ph codeph">json_typeof('-123.4')</code>
-</td>
-<td headers="exres">
-<code class="ph codeph">number</code>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_to_record(json)</code><p class="p"><code class="ph codeph">jsonb_to_record(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">record</code>
-</td>
-<td headers="desc">Builds an arbitrary record from a JSON object. See the <a class="xref" href="#notes-on-json-processing-functions-examples">Note 1</a>. <p class="p">As with all
-                    functions returning record, the caller must explicitly define the structure of
-                    the record with an <code class="ph codeph">AS</code> clause.</p>
-</td>
-<td headers="ex"><code class="ph codeph">select * from json_to_record('&#123;"a":1,"b":[1,2,3],
-                    "c":[1,2,3],"e":"bar","r": &#123;"a": 123, "b": "a b c"}')
-                    as x(a int, b text, c int[], d text, r myrowtype)</code>
-</td>
-<td headers="exres">
-<pre class="pre"> a |    b    |    c    | d |       r
----+---------+---------+---+---------------
- 1 | [1,2,3] | &#123;1,2,3} |   | (123,"a b c")
-</pre>
-</td>
-</tr>
-<tr class="row">
-<td headers="func"><code class="ph codeph">json_to_recordset(json)</code>
-<p class="p"><code class="ph codeph">jsonb_to_recordset(jsonb)</code>
-</p>
-</td>
-<td headers="ret"><code class="ph codeph">setof record</code>
-</td>
-<td headers="desc">Builds an arbitrary set of records from a JSON array of objects See the <a class="xref" href="#notes-on-json-processing-functions-examples">Note 1</a>. <p class="p">As with all
-                    functions returning record, the caller must explicitly define the structure of
-                    the record with an <code class="ph codeph">AS</code> clause.</p>
-</td>
-<td headers="ex"><code class="ph codeph">select * from
-                    json_to_recordset('[&#123;"a":1,"b":"foo"},&#123;"a":"2","c":"bar"}]') as x(a int, b
-                    text);</code>
-</td>
-<td headers="exres">
-<pre class="pre"> a |  b
----+-----
- 1 | foo
- 2 |
-</pre>
-</td>
-</tr>
-<tr class="row">
-              <td>
-                <p><code class="literal">json_strip_nulls(from_json json)</code></p>
-                <p><code class="literal">jsonb_strip_nulls(from_json jsonb)</code></p>
-              </td>
-              <td>
-                <p><code class="type">json</code></p>
-                <p><code class="type">jsonb</code></p>
-              </td>
-              <td>Returns <em class="replaceable"><code>from_json</code></em> with all object fields that have null values omitted. Other null values are untouched.</td>
-              <td><code class="literal">json_strip_nulls('[&#123;"f1":1,"f2":null},2,null,3]')</code></td>
-              <td><code class="literal">[&#123;"f1":1},2,null,3]</code></td>
-            </tr>
-            <tr>
-              <td>
-                <p><code class="literal">jsonb_set(target jsonb, path text[], new_value jsonb [<span class="optional">, create_missing boolean</span>])</code></p>
-              </td>
-              <td>
-                <p><code class="type">jsonb</code></p>
-              </td>
-              <td>Returns <em class="replaceable"><code>target</code></em> with the section designated by <em class="replaceable"><code>path</code></em> replaced by <em class="replaceable"><code>new_value</code></em>, or with <em class="replaceable"><code>new_value</code></em> added if <em class="replaceable"><code>create_missing</code></em> is true (default is <code class="literal">true</code>) and the item designated by <em class="replaceable"><code>path</code></em> does not exist. As with the path oriented operators, negative integers that appear in <em class="replaceable"><code>path</code></em> count from the end of JSON arrays.</td>
-              <td>
-                <p><code class="literal">jsonb_set('[&#123;"f1":1,"f2":null},2,null,3]', '&#123;0,f1}','[2,3,4]', false)</code></p>
-                <p><code class="literal">jsonb_set('[&#123;"f1":1,"f2":null},2]', '&#123;0,f3}','[2,3,4]')</code></p>
-              </td>
-              <td>
-                <p><code class="literal">[&#123;"f1":[2,3,4],"f2":null},2,null,3]</code></p>
-                <p><code class="literal">[&#123;"f1": 1, "f2": null, "f3": [2, 3, 4]}, 2]</code></p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td>
-                <p><code class="literal">jsonb_insert(target jsonb, path text[], new_value jsonb [<span class="optional">, insert_after boolean</span>])</code></p>
-              </td>
-              <td>
-                <p><code class="type">jsonb</code></p>
-              </td>
-              <td>Returns <em class="replaceable"><code>target</code></em> with <em class="replaceable"><code>new_value</code></em> inserted. If <em class="replaceable"><code>target</code></em> section designated by <em class="replaceable"><code>path</code></em> is in a JSONB array, <em class="replaceable"><code>new_value</code></em> will be inserted before target or after if <em class="replaceable"><code>insert_after</code></em> is true (default is <code class="literal">false</code>). If <em class="replaceable"><code>target</code></em> section designated by <em class="replaceable"><code>path</code></em> is in JSONB object, <em class="replaceable"><code>new_value</code></em> will be inserted only if <em class="replaceable"><code>target</code></em> does not exist. As with the path oriented operators, negative integers that appear in <em class="replaceable"><code>path</code></em> count from the end of JSON arrays.</td>
-              <td>
-                <p><code class="literal">jsonb_insert('&#123;"a": [0,1,2]}', '&#123;a, 1}', '"new_value"')</code></p>
-                <p><code class="literal">jsonb_insert('&#123;"a": [0,1,2]}', '&#123;a, 1}', '"new_value"', true)</code></p>
-              </td>
-              <td>
-                <p><code class="literal">&#123;"a": [0, "new_value", 1, 2]}</code></p>
-                <p><code class="literal">&#123;"a": [0, 1, "new_value", 2]}</code></p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td>
-                <p><code class="literal">jsonb_pretty(from_json jsonb)</code></p>
-              </td>
-              <td>
-                <p><code class="type">text</code></p>
-              </td>
-              <td>Returns <em class="replaceable"><code>from_json</code></em> as indented JSON text.</td>
-              <td><code class="literal">jsonb_pretty('[&#123;"f1":1,"f2":null},2,null,3]')</code></td>
-              <td>
-                <pre class="programlisting">[
-    &#123;
-        "f1": 1,
-        "f2": null
-    },
-    2,
-    null,
-    3
-]
-</pre>
-              </td>
-            </tr>
-            <tr class="row">
-              <td>
-                <p><code class="literal">jsonb_path_exists(target jsonb, path jsonpath [<span class="optional">, vars jsonb [<span class="optional">, silent bool</span>]</span>])</code></p>
-              </td>
-              <td><code class="type">boolean</code></td>
-              <td>Checks whether JSON path returns any item for the specified JSON value.</td>
-              <td>
-                <p><code class="literal">jsonb_path_exists('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &#x26;&#x26; @ &#x3C;= $max)', '&#123;"min":2,"max":4}')</code></p>
-              </td>
-              <td>
-                <p><code class="literal">true</code></p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td>
-                <p><code class="literal">jsonb_path_match(target jsonb, path jsonpath [<span class="optional">, vars jsonb [<span class="optional">, silent bool</span>]</span>])</code></p>
-              </td>
-              <td><code class="type">boolean</code></td>
-              <td>Returns the result of JSON path predicate check for the specified JSON value. Only the first item of the result is taken into account. If the result is not Boolean, then <code class="literal">null</code> is returned.</td>
-              <td>
-                <p><code class="literal">jsonb_path_match('&#123;"a":[1,2,3,4,5]}', 'exists($.a[*] ? (@ >= $min &#x26;&#x26; @ &#x3C;= $max))', '&#123;"min":2,"max":4}')</code></p>
-              </td>
-              <td>
-                <p><code class="literal">true</code></p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td>
-                <p><code class="literal">jsonb_path_query(target jsonb, path jsonpath [<span class="optional">, vars jsonb [<span class="optional">, silent bool</span>]</span>])</code></p>
-              </td>
-              <td><code class="type">setof jsonb</code></td>
-              <td>Gets all JSON items returned by JSON path for the specified JSON value.</td>
-              <td>
-                <p><code class="literal">select * from jsonb_path_query('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &#x26;&#x26; @ &#x3C;= $max)', '&#123;"min":2,"max":4}');</code></p>
-              </td>
-              <td>
-                <pre class="programlisting"> jsonb_path_query
-------------------
- 2
- 3
- 4
-</pre>
-              </td>
-            </tr>
-            <tr class="row">
-              <td>
-                <p><code class="literal">jsonb_path_query_array(target jsonb, path jsonpath [<span class="optional">, vars jsonb [<span class="optional">, silent bool</span>]</span>])</code></p>
-              </td>
-              <td><code class="type">jsonb</code></td>
-              <td>Gets all JSON items returned by JSON path for the specified JSON value and wraps result into an array.</td>
-              <td>
-                <p><code class="literal">jsonb_path_query_array('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &#x26;&#x26; @ &#x3C;= $max)', '&#123;"min":2,"max":4}')</code></p>
-              </td>
-              <td>
-                <p><code class="literal">[2, 3, 4]</code></p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td>
-                <p><code class="literal">jsonb_path_query_first(target jsonb, path jsonpath [<span class="optional">, vars jsonb [<span class="optional">, silent bool</span>]</span>])</code></p>
-              </td>
-              <td><code class="type">jsonb</code></td>
-              <td>Gets the first JSON item returned by JSON path for the specified JSON value. Returns <code class="literal">NULL</code> on no results.</td>
-              <td>
-                <p><code class="literal">jsonb_path_query_first('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &#x26;&#x26; @ &#x3C;= $max)', '&#123;"min":2,"max":4}')</code></p>
-              </td>
-              <td>
-                <p><code class="literal">2</code></p>
-              </td>
-            </tr></tbody>
-</table>
-</div>
+**JSON Processing Functions**
+
+| Function | Return Type | Description | Example | Example Result |
+| --- | --- | --- | --- | --- |
+| `json_array_length(json)`<br><br>`jsonb_array_length(jsonb)` | `int` | Returns the number of elements in the outermost JSON array. | `json_array_length('[1,2,3,&#123;"f1":1,"f2":[5,6]},4]')` | `5` |
+| `json_each(json)`<br><br>`jsonb_each(jsonb)` | `setof key text, value json`<br><br>`setof key text, value jsonb` | Expands the outermost JSON object into a set of key/value pairs. | `select * from json_each('&#123;"a":"foo", "b":"bar"}')` | `key \| value`<br>`-----+-------`<br>`a   \| "foo"`<br>`b   \| "bar"` |
+| `json_each_text(json)`<br><br>`jsonb_each_text(jsonb)` | `setof key text, value text` | Expands the outermost JSON object into a set of key/value pairs. The returned values will be of type `text`. | `select * from json_each_text('&#123;"a":"foo", "b":"bar"}')` | `key \| value`<br>`-----+-------`<br>`a   \| foo`<br>`b   \| bar` |
+| `json_extract_path(from_json json, VARIADIC path_elems text[])`<br><br>`jsonb_extract_path(from_json jsonb, VARIADIC path_elems text[])` | `json`<br><br>`jsonb` | Returns the JSON value pointed to by `path_elems` (equivalent to `#>` operator). | `json_extract_path('&#123;"f2":&#123;"f3":1},"f4":&#123;"f5":99,"f6":"foo"}','f4')` | `&#123;"f5":99,"f6":"foo"}` |
+| `json_extract_path_text(from_json json, VARIADIC path_elems text[])`<br><br>`jsonb_extract_path_text(from_json jsonb, VARIADIC path_elems text[])` | `text` | Returns the JSON value pointed to by `path_elems` as text (equivalent to `#>>` operator). | `json_extract_path_text('&#123;"f2":&#123;"f3":1},"f4":&#123;"f5":99,"f6":"foo"}','f4', 'f6')` | `foo` |
+| `json_object_keys(json)`<br><br>`jsonb_object_keys(jsonb)` | `setof text` | Returns set of keys in the outermost JSON object. | `json_object_keys('&#123;"f1":"abc","f2":&#123;"f3":"a", "f4":"b"}')` | `json_object_keys`<br>`------------------`<br>`f1`<br>`f2` |
+| `json_populate_record(base anyelement, from_json json)`<br><br>`jsonb_populate_record(base anyelement, from_json jsonb)` | `anyelement` | Expands the object in `from_json` to a row whose columns match the record type defined by `base`. See the [Note 1](#notes-on-json-processing-functions-examples). | `select * from json_populate_record(null::myrowtype, '&#123;"a": 1, "b": ["2", "a b"], "c": &#123;"d": 4, "e": "a b c"}}')` | `a \|   b       \|      c`<br>`---+-----------+-------------`<br>`1 \| &#123;2,"a b"} \| (4,"a b c")` |
+| `json_populate_recordset(base anyelement, from_json json)`<br><br>`jsonb_populate_recordset(base anyelement, from_json jsonb)` | `setof anyelement` | Expands the outermost array of objects in `from_json` to a set of rows whose columns match the record type defined by `base`. See the [Note 1](#notes-on-json-processing-functions-examples). | `select * from json_populate_recordset(null::myrowtype, '[&#123;"a":1,"b":2},&#123;"a":3,"b":4}]')` | `a \| b`<br>`---+---`<br>`1 \| 2`<br>`3 \| 4` |
+| `json_array_elements(json)`<br><br>`jsonb_array_elements(jsonb)` | `setof json`<br><br>`setof jsonb` | Expands a JSON array to a set of JSON values. | `select * from json_array_elements('[1,true, [2,false]]')` | `value`<br>`-----------`<br>`1`<br>`true`<br>`[2,false]` |
+| `json_array_elements_text(json)`<br><br>`jsonb_array_elements_text(jsonb)` | `setof text` | Expands a JSON array to a set of `text` values. | `select * from json_array_elements_text('["foo", "bar"]')` | `value`<br>`-----------`<br>`foo`<br>`bar` |
+| `json_typeof(json)`<br><br>`jsonb_typeof(jsonb)` | `text` | Returns the type of the outermost JSON value as a text string. Possible types are `object`, `array`, `string`, `number`, `boolean`, and `null`. | `json_typeof('-123.4')` | `number` |
+| `json_to_record(json)`<br><br>`jsonb_to_record(jsonb)` | `record` | Builds an arbitrary record from a JSON object. See the [Note 1](#notes-on-json-processing-functions-examples).<br><br>As with all functions returning record, the caller must explicitly define the structure of the record with an `AS` clause. | `select * from json_to_record('&#123;"a":1,"b":[1,2,3], "c":[1,2,3],"e":"bar","r": &#123;"a": 123, "b": "a b c"}') as x(a int, b text, c int[], d text, r myrowtype)` | `a \|    b    \|    c    \| d \|       r`<br>`---+---------+---------+---+---------------`<br>`1 \| [1,2,3] \| &#123;1,2,3} \|   \| (123,"a b c")` |
+| `json_to_recordset(json)`<br><br>`jsonb_to_recordset(jsonb)` | `setof record` | Builds an arbitrary set of records from a JSON array of objects See the [Note 1](#notes-on-json-processing-functions-examples).<br><br>As with all functions returning record, the caller must explicitly define the structure of the record with an `AS` clause. | `select * from json_to_recordset('[&#123;"a":1,"b":"foo"},&#123;"a":"2","c":"bar"}]') as x(a int, b text);` | `a \|  b`<br>`---+-----`<br>`1 \| foo`<br>`2 \|` |
+| `json_strip_nulls(from_json json)`<br><br>`jsonb_strip_nulls(from_json jsonb)` | `json`<br><br>`jsonb` | Returns *`from_json`* with all object fields that have null values omitted. Other null values are untouched. | `json_strip_nulls('[&#123;"f1":1,"f2":null},2,null,3]')` | `[&#123;"f1":1},2,null,3]` |
+| `jsonb_set(target jsonb, path text[], new_value jsonb [, create_missing boolean])` | `jsonb` | Returns *`target`* with the section designated by *`path`* replaced by *`new_value`*, or with *`new_value`* added if *`create_missing`* is true (default is `true`) and the item designated by *`path`* does not exist. As with the path oriented operators, negative integers that appear in *`path`* count from the end of JSON arrays. | `jsonb_set('[&#123;"f1":1,"f2":null},2,null,3]', '&#123;0,f1}','[2,3,4]', false)`<br><br>`jsonb_set('[&#123;"f1":1,"f2":null},2]', '&#123;0,f3}','[2,3,4]')` | `[&#123;"f1":[2,3,4],"f2":null},2,null,3]`<br><br>`[&#123;"f1": 1, "f2": null, "f3": [2, 3, 4]}, 2]` |
+| `jsonb_insert(target jsonb, path text[], new_value jsonb [, insert_after boolean])` | `jsonb` | Returns *`target`* with *`new_value`* inserted. If *`target`* section designated by *`path`* is in a JSONB array, *`new_value`* will be inserted before target or after if *`insert_after`* is true (default is `false`). If *`target`* section designated by *`path`* is in JSONB object, *`new_value`* will be inserted only if *`target`* does not exist. As with the path oriented operators, negative integers that appear in *`path`* count from the end of JSON arrays. | `jsonb_insert('&#123;"a": [0,1,2]}', '&#123;a, 1}', '"new_value"')`<br><br>`jsonb_insert('&#123;"a": [0,1,2]}', '&#123;a, 1}', '"new_value"', true)` | `&#123;"a": [0, "new_value", 1, 2]}`<br><br>`&#123;"a": [0, 1, "new_value", 2]}` |
+| `jsonb_pretty(from_json jsonb)` | `text` | Returns *`from_json`* as indented JSON text. | `jsonb_pretty('[&#123;"f1":1,"f2":null},2,null,3]')` | `[`<br>`    &#123;`<br>`        "f1": 1,`<br>`        "f2": null`<br>`    },`<br>`    2,`<br>`    null,`<br>`    3`<br>`]` |
+| `jsonb_path_exists(target jsonb, path jsonpath [, vars jsonb [, silent bool]])` | `boolean` | Checks whether JSON path returns any item for the specified JSON value. | `jsonb_path_exists('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &amp;&amp; @ &lt;= $max)', '&#123;"min":2,"max":4}')` | `true` |
+| `jsonb_path_match(target jsonb, path jsonpath [, vars jsonb [, silent bool]])` | `boolean` | Returns the result of JSON path predicate check for the specified JSON value. Only the first item of the result is taken into account. If the result is not Boolean, then `null` is returned. | `jsonb_path_match('&#123;"a":[1,2,3,4,5]}', 'exists($.a[*] ? (@ >= $min &amp;&amp; @ &lt;= $max))', '&#123;"min":2,"max":4}')` | `true` |
+| `jsonb_path_query(target jsonb, path jsonpath [, vars jsonb [, silent bool]])` | `setof jsonb` | Gets all JSON items returned by JSON path for the specified JSON value. | `select * from jsonb_path_query('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &amp;&amp; @ &lt;= $max)', '&#123;"min":2,"max":4}');` | `jsonb_path_query`<br>`------------------`<br>`2`<br>`3`<br>`4` |
+| `jsonb_path_query_array(target jsonb, path jsonpath [, vars jsonb [, silent bool]])` | `jsonb` | Gets all JSON items returned by JSON path for the specified JSON value and wraps result into an array. | `jsonb_path_query_array('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &amp;&amp; @ &lt;= $max)', '&#123;"min":2,"max":4}')` | `[2, 3, 4]` |
+| `jsonb_path_query_first(target jsonb, path jsonpath [, vars jsonb [, silent bool]])` | `jsonb` | Gets the first JSON item returned by JSON path for the specified JSON value. Returns `NULL` on no results. | `jsonb_path_query_first('&#123;"a":[1,2,3,4,5]}', '$.a[*] ? (@ >= $min &amp;&amp; @ &lt;= $max)', '&#123;"min":2,"max":4}')` | `2` |
 
 ##### Notes on JSON processing functions examples
 
@@ -801,273 +424,49 @@ $.* ? (@ like_regex "^\\d+$")
 
 The following table describes the operators and methods available in `jsonpath`:
 
-<div>
-<table class="table" summary="jsonpath Operators and Methods" border="1">
-            <colgroup>
-              <col />
-              <col />
-              <col />
-              <col />
-              <col />
-            </colgroup>
-            <thead>
-              <tr class="row">
-                <th>Operator/Method</th>
-                <th>Description</th>
-                <th>Example JSON</th>
-                <th>Example Query</th>
-                <th>Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="row">
-                <td><code class="literal">+</code> (unary)</td>
-                <td>Plus operator that iterates over the SQL/JSON sequence</td>
-                <td><code class="literal">&#123;"x": [2.85, -14.7, -9.4]}</code></td>
-                <td><code class="literal">+ $.x.floor()</code></td>
-                <td><code class="literal">2, -15, -10</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">-</code> (unary)</td>
-                <td>Minus operator that iterates over the SQL/JSON sequence</td>
-                <td><code class="literal">&#123;"x": [2.85, -14.7, -9.4]}</code></td>
-                <td><code class="literal">- $.x.floor()</code></td>
-                <td><code class="literal">-2, 15, 10</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">+</code> (binary)</td>
-                <td>Addition</td>
-                <td><code class="literal">[2]</code></td>
-                <td><code class="literal">2 + $[0]</code></td>
-                <td><code class="literal">4</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">-</code> (binary)</td>
-                <td>Subtraction</td>
-                <td><code class="literal">[2]</code></td>
-                <td><code class="literal">4 - $[0]</code></td>
-                <td><code class="literal">2</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">*</code></td>
-                <td>Multiplication</td>
-                <td><code class="literal">[4]</code></td>
-                <td><code class="literal">2 * $[0]</code></td>
-                <td><code class="literal">8</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">/</code></td>
-                <td>Division</td>
-                <td><code class="literal">[8]</code></td>
-                <td><code class="literal">$[0] / 2</code></td>
-                <td><code class="literal">4</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">%</code></td>
-                <td>Modulus</td>
-                <td><code class="literal">[32]</code></td>
-                <td><code class="literal">$[0] % 10</code></td>
-                <td><code class="literal">2</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">type()</code></td>
-                <td>Type of the SQL/JSON item</td>
-                <td><code class="literal">[1, "2", &#123;}]</code></td>
-                <td><code class="literal">$[*].type()</code></td>
-                <td><code class="literal">"number", "string", "object"</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">size()</code></td>
-                <td>Size of the SQL/JSON item</td>
-                <td><code class="literal">&#123;"m": [11, 15]}</code></td>
-                <td><code class="literal">$.m.size()</code></td>
-                <td><code class="literal">2</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">double()</code></td>
-                <td>Approximate floating-point number converted from an SQL/JSON number or a string</td>
-                <td><code class="literal">&#123;"len": "1.9"}</code></td>
-                <td><code class="literal">$.len.double() * 2</code></td>
-                <td><code class="literal">3.8</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">ceiling()</code></td>
-                <td>Nearest integer greater than or equal to the SQL/JSON number</td>
-                <td><code class="literal">&#123;"h": 1.3}</code></td>
-                <td><code class="literal">$.h.ceiling()</code></td>
-                <td><code class="literal">2</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">floor()</code></td>
-                <td>Nearest integer less than or equal to the SQL/JSON number</td>
-                <td><code class="literal">&#123;"h": 1.3}</code></td>
-                <td><code class="literal">$.h.floor()</code></td>
-                <td><code class="literal">1</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">abs()</code></td>
-                <td>Absolute value of the SQL/JSON number</td>
-                <td><code class="literal">&#123;"z": -0.3}</code></td>
-                <td><code class="literal">$.z.abs()</code></td>
-                <td><code class="literal">0.3</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">keyvalue()</code></td>
-                <td>Sequence of object's key-value pairs represented as array of items containing three fields (<code class="literal">"key"</code>, <code class="literal">"value"</code>, and <code class="literal">"id"</code>). <code class="literal">"id"</code> is a unique identifier of the object key-value pair belongs to.</td>
-                <td><code class="literal">&#123;"x": "20", "y": 32}</code></td>
-                <td><code class="literal">$.keyvalue()</code></td>
-                <td><code class="literal">&#123;"key": "x", "value": "20", "id": 0}, &#123;"key": "y", "value": 32, "id": 0}</code></td>
-              </tr>
-            </tbody>
-          </table>
-</div><a id="topic_jsonpath_filtexp"></a>
+| Operator/Method | Description | Example JSON | Example Query | Result |
+| --- | --- | --- | --- | --- |
+| `+` (unary) | Plus operator that iterates over the SQL/JSON sequence | `&#123;"x": [2.85, -14.7, -9.4]}` | `+ $.x.floor()` | `2, -15, -10` |
+| `-` (unary) | Minus operator that iterates over the SQL/JSON sequence | `&#123;"x": [2.85, -14.7, -9.4]}` | `- $.x.floor()` | `-2, 15, 10` |
+| `+` (binary) | Addition | `[2]` | `2 + $[0]` | `4` |
+| `-` (binary) | Subtraction | `[2]` | `4 - $[0]` | `2` |
+| `*` | Multiplication | `[4]` | `2 * $[0]` | `8` |
+| `/` | Division | `[8]` | `$[0] / 2` | `4` |
+| `%` | Modulus | `[32]` | `$[0] % 10` | `2` |
+| `type()` | Type of the SQL/JSON item | `[1, "2", &#123;}]` | `$[*].type()` | `"number", "string", "object"` |
+| `size()` | Size of the SQL/JSON item | `&#123;"m": [11, 15]}` | `$.m.size()` | `2` |
+| `double()` | Approximate floating-point number converted from an SQL/JSON number or a string | `&#123;"len": "1.9"}` | `$.len.double() * 2` | `3.8` |
+| `ceiling()` | Nearest integer greater than or equal to the SQL/JSON number | `&#123;"h": 1.3}` | `$.h.ceiling()` | `2` |
+| `floor()` | Nearest integer less than or equal to the SQL/JSON number | `&#123;"h": 1.3}` | `$.h.floor()` | `1` |
+| `abs()` | Absolute value of the SQL/JSON number | `&#123;"z": -0.3}` | `$.z.abs()` | `0.3` |
+| `keyvalue()` | Sequence of object's key-value pairs represented as array of items containing three fields (`"key"`, `"value"`, and `"id"`). `"id"` is a unique identifier of the object key-value pair belongs to. | `&#123;"x": "20", "y": 32}` | `$.keyvalue()` | `&#123;"key": "x", "value": "20", "id": 0}, &#123;"key": "y", "value": 32, "id": 0}` |
+
+<a id="topic_jsonpath_filtexp"></a>
 
 #### SQL/JSON Filter Expression Elements
 
 The following table describes the available filter expressions elements for `jsonpath`:
 
-<div class="table-contents">
-          <table class="table" summary="jsonpath Filter Expression Elements" border="1">
-            <colgroup>
-              <col />
-              <col />
-              <col />
-              <col />
-              <col />
-            </colgroup>
-            <thead>
-              <tr class="row">
-                <th>Value/Predicate</th>
-                <th>Description</th>
-                <th>Example JSON</th>
-                <th>Example Query</th>
-                <th>Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="row">
-                <td><code class="literal">==</code></td>
-                <td>Equality operator</td>
-                <td><code class="literal">[1, 2, 1, 3]</code></td>
-                <td><code class="literal">$[*] ? (@ == 1)</code></td>
-                <td><code class="literal">1, 1</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">!=</code></td>
-                <td>Non-equality operator</td>
-                <td><code class="literal">[1, 2, 1, 3]</code></td>
-                <td><code class="literal">$[*] ? (@ != 1)</code></td>
-                <td><code class="literal">2, 3</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">&#x3C;></code></td>
-                <td>Non-equality operator (same as <code class="literal">!=</code>)</td>
-                <td><code class="literal">[1, 2, 1, 3]</code></td>
-                <td><code class="literal">$[*] ? (@ &#x3C;> 1)</code></td>
-                <td><code class="literal">2, 3</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">&#x3C;</code></td>
-                <td>Less-than operator</td>
-                <td><code class="literal">[1, 2, 3]</code></td>
-                <td><code class="literal">$[*] ? (@ &#x3C; 2)</code></td>
-                <td><code class="literal">1</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">&#x3C;=</code></td>
-                <td>Less-than-or-equal-to operator</td>
-                <td><code class="literal">[1, 2, 3]</code></td>
-                <td><code class="literal">$[*] ? (@ &#x3C;= 2)</code></td>
-                <td><code class="literal">1, 2</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">></code></td>
-                <td>Greater-than operator</td>
-                <td><code class="literal">[1, 2, 3]</code></td>
-                <td><code class="literal">$[*] ? (@ > 2)</code></td>
-                <td><code class="literal">3</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">>=</code></td>
-                <td>Greater-than-or-equal-to operator</td>
-                <td><code class="literal">[1, 2, 3]</code></td>
-                <td><code class="literal">$[*] ? (@ >= 2)</code></td>
-                <td><code class="literal">2, 3</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">true</code></td>
-                <td>Value used to perform comparison with JSON <code class="literal">true</code> literal</td>
-                <td><code class="literal">[&#123;"name": "John", "parent": false}, &#123;"name": "Chris", "parent": true}]</code></td>
-                <td><code class="literal">$[*] ? (@.parent == true)</code></td>
-                <td><code class="literal">&#123;"name": "Chris", "parent": true}</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">false</code></td>
-                <td>Value used to perform comparison with JSON <code class="literal">false</code> literal</td>
-                <td><code class="literal">[&#123;"name": "John", "parent": false}, &#123;"name": "Chris", "parent": true}]</code></td>
-                <td><code class="literal">$[*] ? (@.parent == false)</code></td>
-                <td><code class="literal">&#123;"name": "John", "parent": false}</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">null</code></td>
-                <td>Value used to perform comparison with JSON <code class="literal">null</code> value</td>
-                <td><code class="literal">[&#123;"name": "Mary", "job": null}, &#123;"name": "Michael", "job": "driver"}]</code></td>
-                <td><code class="literal">$[*] ? (@.job == null) .name</code></td>
-                <td><code class="literal">"Mary"</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">&#x26;&#x26;</code></td>
-                <td>Boolean AND</td>
-                <td><code class="literal">[1, 3, 7]</code></td>
-                <td><code class="literal">$[*] ? (@ > 1 &#x26;&#x26; @ &#x3C; 5)</code></td>
-                <td><code class="literal">3</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">||</code></td>
-                <td>Boolean OR</td>
-                <td><code class="literal">[1, 3, 7]</code></td>
-                <td><code class="literal">$[*] ? (@ &#x3C; 1 || @ > 5)</code></td>
-                <td><code class="literal">7</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">!</code></td>
-                <td>Boolean NOT</td>
-                <td><code class="literal">[1, 3, 7]</code></td>
-                <td><code class="literal">$[*] ? (!(@ &#x3C; 5))</code></td>
-                <td><code class="literal">7</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">like_regex</code></td>
-                <td>Tests whether the first operand matches the regular expression given by the second operand, optionally with modifications described by a string of <code class="literal">flag</code> characters.</td>
-                <td><code class="literal">["abc", "abd", "aBdC", "abdacb", "babc"]</code></td>
-                <td><code class="literal">$[*] ? (@ like_regex "^ab.*c" flag "i")</code></td>
-                <td><code class="literal">"abc", "aBdC", "abdacb"</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">starts with</code></td>
-                <td>Tests whether the second operand is an initial substring of the first operand</td>
-                <td><code class="literal">["John Smith", "Mary Stone", "Bob Johnson"]</code></td>
-                <td><code class="literal">$[*] ? (@ starts with "John")</code></td>
-                <td><code class="literal">"John Smith"</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">exists</code></td>
-                <td>Tests whether a path expression matches at least one SQL/JSON item</td>
-                <td><code class="literal">&#123;"x": [1, 2], "y": [2, 4]}</code></td>
-                <td><code class="literal">strict $.* ? (exists (@ ? (@[*] > 2)))</code></td>
-                <td><code class="literal">2, 4</code></td>
-              </tr>
-              <tr class="row">
-                <td><code class="literal">is unknown</code></td>
-                <td>Tests whether a Boolean condition is <code class="literal">unknown</code></td>
-                <td><code class="literal">[-1, 2, 7, "infinity"]</code></td>
-                <td><code class="literal">$[*] ? ((@ > 0) is unknown)</code></td>
-                <td><code class="literal">"infinity"</code></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        
+| Value/Predicate | Description | Example JSON | Example Query | Result |
+| --- | --- | --- | --- | --- |
+| `==` | Equality operator | `[1, 2, 1, 3]` | `$[*] ? (@ == 1)` | `1, 1` |
+| `!=` | Non-equality operator | `[1, 2, 1, 3]` | `$[*] ? (@ != 1)` | `2, 3` |
+| `&lt;>` | Non-equality operator (same as `!=`) | `[1, 2, 1, 3]` | `$[*] ? (@ &lt;> 1)` | `2, 3` |
+| `&lt;` | Less-than operator | `[1, 2, 3]` | `$[*] ? (@ &lt; 2)` | `1` |
+| `&lt;=` | Less-than-or-equal-to operator | `[1, 2, 3]` | `$[*] ? (@ &lt;= 2)` | `1, 2` |
+| `>` | Greater-than operator | `[1, 2, 3]` | `$[*] ? (@ > 2)` | `3` |
+| `>=` | Greater-than-or-equal-to operator | `[1, 2, 3]` | `$[*] ? (@ >= 2)` | `2, 3` |
+| `true` | Value used to perform comparison with JSON `true` literal | `[&#123;"name": "John", "parent": false}, &#123;"name": "Chris", "parent": true}]` | `$[*] ? (@.parent == true)` | `&#123;"name": "Chris", "parent": true}` |
+| `false` | Value used to perform comparison with JSON `false` literal | `[&#123;"name": "John", "parent": false}, &#123;"name": "Chris", "parent": true}]` | `$[*] ? (@.parent == false)` | `&#123;"name": "John", "parent": false}` |
+| `null` | Value used to perform comparison with JSON `null` value | `[&#123;"name": "Mary", "job": null}, &#123;"name": "Michael", "job": "driver"}]` | `$[*] ? (@.job == null) .name` | `"Mary"` |
+| `&amp;&amp;` | Boolean AND | `[1, 3, 7]` | `$[*] ? (@ > 1 &amp;&amp; @ &lt; 5)` | `3` |
+| `\|\|` | Boolean OR | `[1, 3, 7]` | `$[*] ? (@ &lt; 1 \|\| @ > 5)` | `7` |
+| `!` | Boolean NOT | `[1, 3, 7]` | `$[*] ? (!(@ &lt; 5))` | `7` |
+| `like_regex` | Tests whether the first operand matches the regular expression given by the second operand, optionally with modifications described by a string of `flag` characters. | `["abc", "abd", "aBdC", "abdacb", "babc"]` | `$[*] ? (@ like_regex "^ab.*c" flag "i")` | `"abc", "aBdC", "abdacb"` |
+| `starts with` | Tests whether the second operand is an initial substring of the first operand | `["John Smith", "Mary Stone", "Bob Johnson"]` | `$[*] ? (@ starts with "John")` | `"John Smith"` |
+| `exists` | Tests whether a path expression matches at least one SQL/JSON item | `&#123;"x": [1, 2], "y": [2, 4]}` | `strict $.* ? (exists (@ ? (@[*] > 2)))` | `2, 4` |
+| `is unknown` | Tests whether a Boolean condition is `unknown` | `[-1, 2, 7, "infinity"]` | `$[*] ? ((@ > 0) is unknown)` | `"infinity"` |
+
 <a id="topic30"></a>
 
 ## Window Functions
@@ -1095,169 +494,20 @@ The following built-in advanced analytic functions are WarehousePG extensions of
 
 > **Note** The WarehousePG MADlib Extension for Analytics provides additional advanced functions to perform statistical analysis and machine learning with WarehousePG data. See [MADlib Extension for Analytics](../admin_guide/analytics/madlib.md).
 
-<div><table cellpadding="4" cellspacing="0" summary="" id="topic31__in2073121" class="table" frame="border" border="1" rules="all"><caption><span class="tablecap"><span class="table--title-label">Table 10. </span>Advanced Aggregate Functions</span></caption><colgroup><col style="width:20.845288240441164%" /><col style="width:12.005779052967869%" /><col style="width:41.10249679506745%" /><col style="width:26.046435911523513%" /></colgroup><thead class="thead" style="text-align:left;">
-<tr class="row">
-<th id="d233567e3144">Function</th>
-<th id="d233567e3147">Return Type</th>
-<th id="d233567e3150">Full Syntax</th>
-<th id="d233567e3153">Description</th>
-</tr>
-</thead>
-<tbody class="tbody">
-<tr class="row">
-<td headers="d233567e3144">
-<code class="ph codeph">gp_array_agg (<em class="ph i">anyarray</em>)</code>
-</td>
-<td headers="d233567e3147">
-same as the argument data type
-</td>
-<td headers="d233567e3150">
-<code class="ph codeph">gp_array_agg (<em class="ph i">anyarray</em>)</code>
-<p class="p">
-<em class="ph i">Example:</em>
-</p>
-<pre class="pre codeblock"><code>CREATE TABLE intarr_tbl (a int, arr int[]);
-INSERT INTO intarr_tbl SELECT i, array[i, i] FROM generate_series(1, 5)i;
-INSERT INTO intarr_tbl SELECT 6, '&#123;6, NULL}'::int[];
-INSERT INTO intarr_tbl SELECT 8, '&#123;NULL, 7}'::int[];
-SELECT gp_array_agg(arr ORDER BY arr) FROM intarr_tbl; </code></pre>
-</td>
-<td headers="d233567e3153">A parallel version of <code>array_agg(anyarray)</code>. Concatenates input arrays to create an array of one higher dimension. The inputs must all have the same dimensions, and they cannot be empty or null.</td>
-</tr>
-<tr class="row">
-<td headers="d233567e3144">
-<code class="ph codeph">gp_array_agg (<em class="ph i">anynonarray</em>)</code>
-</td>
-<td headers="d233567e3147">
-array of the argument type
-</td>
-<td headers="d233567e3150">
-<code class="ph codeph">gp_array_agg (<em class="ph i">anynonarray</em>)</code>
-<p class="p">
-<em class="ph i">Example:</em>
-</p>
-<pre class="pre codeblock"><code>CREATE TABLE table1(a int4, b int4);
-INSERT INTO table1 VALUES (4,5), (2,1), (1,3), (3,null), (3,7);
-SELECT gp_array_agg(a ORDER BY b NULLS FIRST) FROM table1; </code></pre>
-</td>
-<td headers="d233567e3153">An parallel version of <code>array_agg(anynonarray)</code>. Creates an array by concatenating input values, including nulls.</td>
-</tr>
-<tr class="row">
-<td headers="d233567e3144">
-<code class="ph codeph">MEDIAN (<em class="ph i">expr</em>)</code>
-</td>
-<td headers="d233567e3147">
-<code class="ph codeph">timestamp, timestamptz, interval, float</code>
-</td>
-<td headers="d233567e3150">
-<code class="ph codeph">MEDIAN (<em class="ph i">expression</em>)</code>
-<p class="p">
-<em class="ph i">Example:</em>
-</p>
-<pre class="pre codeblock"><code>SELECT department_id, MEDIAN(salary) 
-FROM employees 
-GROUP BY department_id; </code></pre>
-</td>
-<td headers="d233567e3153">Can take a two-dimensional array as input. Treats such arrays as
-                matrices.</td>
-</tr>
-<tr class="row">
-<td headers="d233567e3144">
-<code class="ph codeph">PERCENTILE_CONT (<em class="ph i">expr</em>) WITHIN GROUP (ORDER BY <em class="ph i">expr</em>
-                  [DESC/ASC])</code>
-</td>
-<td headers="d233567e3147">
-<code class="ph codeph">timestamp, timestamptz, interval, float</code>
-</td>
-<td headers="d233567e3150">
-<code class="ph codeph">PERCENTILE_CONT(<em class="ph i">percentage</em>) WITHIN GROUP (ORDER BY
-<em class="ph i">expression</em>)</code>
-<p class="p">
-<em class="ph i">Example:</em>
-</p>
-<pre class="pre codeblock"><code>SELECT department_id,
-PERCENTILE_CONT (0.5) WITHIN GROUP (ORDER BY salary DESC)
-"Median_cont"; 
-FROM employees GROUP BY department_id;</code></pre>
-</td>
-<td headers="d233567e3153">Performs an inverse distribution function that assumes a
-                continuous distribution model. It takes a percentile value and a sort specification
-                and returns the same datatype as the numeric datatype of the argument. This returned
-                value is a computed result after performing linear interpolation. Null are ignored
-                in this calculation.</td>
-</tr>
-<tr class="row">
-<td headers="d233567e3144"><code class="ph codeph">PERCENTILE_DISC (<em class="ph i">expr</em>) WITHIN GROUP (ORDER BY
-<em class="ph i">expr</em> [DESC/ASC])</code></td>
-<td headers="d233567e3147">
-<code class="ph codeph">timestamp, timestamptz, interval, float</code>
-</td>
-<td headers="d233567e3150">
-<code class="ph codeph">PERCENTILE_DISC(<em class="ph i">percentage</em>) WITHIN GROUP (ORDER BY
-<em class="ph i">expression</em>)</code>
-<p class="p">
-<em class="ph i">Example:</em>
-</p>
-<pre class="pre codeblock"><code>SELECT department_id, 
-PERCENTILE_DISC (0.5) WITHIN GROUP (ORDER BY salary DESC)
-"Median_desc"; 
-FROM employees GROUP BY department_id;</code></pre>
-</td>
-<td headers="d233567e3153">Performs an inverse distribution function that assumes a
-                discrete distribution model. It takes a percentile value and a sort specification.
-                This returned value is an element from the set. Null are ignored in this
-                calculation.</td>
-</tr>
-<tr class="row">
-<td headers="d233567e3144">
-<code class="ph codeph">sum(array[])</code>
-</td>
-<td headers="d233567e3147">
-<code class="ph codeph">smallint[]int[], bigint[], float[]</code>
-</td>
-<td headers="d233567e3150">
-<code class="ph codeph">sum(array[[1,2],[3,4]])</code>
-<p class="p">
-<em class="ph i">Example:</em>
-</p>
-<pre class="pre codeblock"><code>CREATE TABLE mymatrix (myvalue int[]);
-INSERT INTO mymatrix VALUES (array[[1,2],[3,4]]);
-INSERT INTO mymatrix VALUES (array[[0,1],[1,0]]);
-SELECT sum(myvalue) FROM mymatrix;
- sum 
----------------
- &#123;1,3},&#123;4,4}</code></pre>
-</td>
-<td headers="d233567e3153">Performs matrix summation. Can take as input a two-dimensional
-                array that is treated as a matrix.</td>
-</tr>
-<tr class="row">
-<td headers="d233567e3144">
-<code class="ph codeph">pivot_sum (label[], label, expr)</code>
-</td>
-<td headers="d233567e3147">
-<code class="ph codeph">int[], bigint[], float[]</code>
-</td>
-<td headers="d233567e3150">
-<code class="ph codeph">pivot_sum( array['A1','A2'], attr, value)</code>
-</td>
-<td headers="d233567e3153">A pivot aggregation using sum to resolve duplicate
-                entries.</td>
-</tr>
-<tr class="row">
-<td class="entry row-nocellborder" headers="d233567e3144">
-<code class="ph codeph">unnest (array[])</code>
-</td>
-<td class="entry row-nocellborder" headers="d233567e3147">set of <code class="ph codeph">anyelement</code></td>
-<td class="entry row-nocellborder" headers="d233567e3150">
-<code class="ph codeph">unnest( array['one', 'row', 'per', 'item'])</code>
-</td>
-<td class="entry cellrowborder" headers="d233567e3153">Transforms a one dimensional array into rows. Returns a set of
-<code class="ph codeph">anyelement</code>, a polymorphic <a class="xref" href="https://www.postgresql.org/docs/12/datatype-pseudo.html" target="_blank"><span class="ph">pseudotype in PostgreSQL</span></a>.</td>
-</tr>
-</tbody>
-</table>
-</div><a id="topic_vpj_ss1_lfb"></a>
+**Advanced Aggregate Functions**
+
+| Function | Return Type | Full Syntax | Description |
+| --- | --- | --- | --- |
+| `gp_array_agg (`*anyarray*`)` | same as the argument data type | `gp_array_agg (`*anyarray*`)`<br><br>*Example:*<br><br>`CREATE TABLE intarr_tbl (a int, arr int[]);`<br>`INSERT INTO intarr_tbl SELECT i, array[i, i] FROM generate_series(1, 5)i;`<br>`INSERT INTO intarr_tbl SELECT 6, '&#123;6, NULL}'::int[];`<br>`INSERT INTO intarr_tbl SELECT 8, '&#123;NULL, 7}'::int[];`<br>`SELECT gp_array_agg(arr ORDER BY arr) FROM intarr_tbl;` | A parallel version of `array_agg(anyarray)`. Concatenates input arrays to create an array of one higher dimension. The inputs must all have the same dimensions, and they cannot be empty or null. |
+| `gp_array_agg (`*anynonarray*`)` | array of the argument type | `gp_array_agg (`*anynonarray*`)`<br><br>*Example:*<br><br>`CREATE TABLE table1(a int4, b int4);`<br>`INSERT INTO table1 VALUES (4,5), (2,1), (1,3), (3,null), (3,7);`<br>`SELECT gp_array_agg(a ORDER BY b NULLS FIRST) FROM table1;` | An parallel version of `array_agg(anynonarray)`. Creates an array by concatenating input values, including nulls. |
+| `MEDIAN (`*expr*`)` | `timestamp, timestamptz, interval, float` | `MEDIAN (`*expression*`)`<br><br>*Example:*<br><br>`SELECT department_id, MEDIAN(salary) `<br>`FROM employees `<br>`GROUP BY department_id;` | Can take a two-dimensional array as input. Treats such arrays as matrices. |
+| `PERCENTILE_CONT (`*expr*`) WITHIN GROUP (ORDER BY `*expr*` [DESC/ASC])` | `timestamp, timestamptz, interval, float` | `PERCENTILE_CONT(`*percentage*`) WITHIN GROUP (ORDER BY `*expression*`)`<br><br>*Example:*<br><br>`SELECT department_id,`<br>`PERCENTILE_CONT (0.5) WITHIN GROUP (ORDER BY salary DESC)`<br>`"Median_cont"; `<br>`FROM employees GROUP BY department_id;` | Performs an inverse distribution function that assumes a continuous distribution model. It takes a percentile value and a sort specification and returns the same datatype as the numeric datatype of the argument. This returned value is a computed result after performing linear interpolation. Null are ignored in this calculation. |
+| `PERCENTILE_DISC (`*expr*`) WITHIN GROUP (ORDER BY `*expr*` [DESC/ASC])` | `timestamp, timestamptz, interval, float` | `PERCENTILE_DISC(`*percentage*`) WITHIN GROUP (ORDER BY `*expression*`)`<br><br>*Example:*<br><br>`SELECT department_id, `<br>`PERCENTILE_DISC (0.5) WITHIN GROUP (ORDER BY salary DESC)`<br>`"Median_desc"; `<br>`FROM employees GROUP BY department_id;` | Performs an inverse distribution function that assumes a discrete distribution model. It takes a percentile value and a sort specification. This returned value is an element from the set. Null are ignored in this calculation. |
+| `sum(array[])` | `smallint[]int[], bigint[], float[]` | `sum(array[[1,2],[3,4]])`<br><br>*Example:*<br><br>`CREATE TABLE mymatrix (myvalue int[]);`<br>`INSERT INTO mymatrix VALUES (array[[1,2],[3,4]]);`<br>`INSERT INTO mymatrix VALUES (array[[0,1],[1,0]]);`<br>`SELECT sum(myvalue) FROM mymatrix;`<br>`sum `<br>`---------------`<br>`&#123;1,3},&#123;4,4}` | Performs matrix summation. Can take as input a two-dimensional array that is treated as a matrix. |
+| `pivot_sum (label[], label, expr)` | `int[], bigint[], float[]` | `pivot_sum( array['A1','A2'], attr, value)` | A pivot aggregation using sum to resolve duplicate entries. |
+| `unnest (array[])` | set of `anyelement` | `unnest( array['one', 'row', 'per', 'item'])` | Transforms a one dimensional array into rows. Returns a set of `anyelement`, a polymorphic [pseudotype in PostgreSQL](https://www.postgresql.org/docs/12/datatype-pseudo.html). |
+
+<a id="topic_vpj_ss1_lfb"></a>
 
 ## Text Search Functions and Operators
 
