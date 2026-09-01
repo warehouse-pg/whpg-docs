@@ -226,7 +226,7 @@ MIRROR_PORT_BASE = 7000
 
 For information about the `gpinitsystem` cluster configuration file, see [Initializing WarehousePG](init_whpg.md).
 
-For Azure deployments with WarehousePG avoid using port 65330; add the following line to sysctl.conf:
+For Azure deployments with WarehousePG avoid using port 65330, add the following line to sysctl.conf:
 
 ```
 net.ipv4.ip_local_reserved_ports=65330 
