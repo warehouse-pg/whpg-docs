@@ -100,7 +100,7 @@ Your WarehousePG configuration file tells the [gpinitsystem](../ref_guide/utilit
 
     Set all of the required parameters according to your environment. See [gpinitsystem](../ref_guide/utility_guide/reference/gpinitsystem.md) for more information. A WarehousePG cluster must contain a coordinator instance and at *least two* segment instances (even if setting up a single node system).
 
-    The `gpinitsystem_config` file is heavily commented. At minimum, you need to set these parameters for a standard installation. All other parameters in the file can be left at their default values.
+    The `gpinitsystem_config` file is heavily commented. These are the parameters marked **Required** in the [gpinitsystem](../ref_guide/utility_guide/reference/gpinitsystem.md) reference. All other parameters in the file, including the mirror parameters covered in step 3 below, are optional and can be left at their default values.
 
     | Parameter | Description | Example value |
     |---|---|---|
@@ -110,8 +110,8 @@ Your WarehousePG configuration file tells the [gpinitsystem](../ref_guide/utilit
     | `COORDINATOR_HOSTNAME` | Hostname of the coordinator host | `cdw` |
     | `COORDINATOR_DIRECTORY` | Coordinator data directory | `/data/coordinator` |
     | `COORDINATOR_PORT` | Coordinator port | `5432` |
-    | `MIRROR_PORT_BASE` | Base port for mirror segments | `7000` |
-    | `MIRROR_DATA_DIRECTORY` | Mirror segment data directories | `(/data1/mirror /data2/mirror)` |
+    | `TRUSTED_SHELL` | Shell `gpinitsystem` uses to run commands on remote hosts | `ssh` |
+    | `ENCODING` | Character set encoding | `UNICODE` |
 
     The `DATA_DIRECTORY` parameter is what determines how many segments per host will be created. If your segment hosts have multiple network interfaces, and you used their interface address names in your host file, the number of segments will be evenly spread over the number of available interfaces.
 
@@ -126,7 +126,7 @@ Your WarehousePG configuration file tells the [gpinitsystem](../ref_guide/utilit
     COORDINATOR_HOSTNAME=cdw 
     COORDINATOR_DIRECTORY=/data/coordinator 
     COORDINATOR_PORT=5432 
-    TRUSTED SHELL=ssh
+    TRUSTED_SHELL=ssh
     CHECK_POINT_SEGMENTS=8
     ENCODING=UNICODE
     ```
@@ -199,13 +199,13 @@ These steps assume you are logged in as the `gpadmin` user and have sourced the 
 
 If the utility encounters any errors while setting up an instance, the entire process will fail, and could possibly leave you with a partially created system. Refer to the error messages and logs to determine the cause of the failure and where in the process the failure occurred. Log files are created in `~/gpAdminLogs`.
 
-The top-level log entries, such as `Failed to start segment instance database` or `Errors generated from parallel processes`, only report that a failure occurred, not the underlying cause. The actual cause is usually a PostgreSQL-level message further down in the same log file. To find it, search the `gpinitsystem` log for the host and initialization run you want to check.
+The top-level log entries, such as `Failed to start segment instance database` or `Errors generated from parallel processes`, only report that a failure occurred, not the underlying cause. The actual cause is usually further down in the same log file. To find it, search the `gpinitsystem` log for the host and initialization run you want to check. The log file is appended to on every run for the day, so check the timestamps on the matched lines to make sure you're looking at the run that just failed.
 
 ```
-grep -E 'FATAL|ERROR|error' ~/gpAdminLogs/gpinitsystem_<date>.log | grep -v 'gpinitsystem\|gpcreateseg' | tail -20
+grep -E 'FATAL|ERROR|error' ~/gpAdminLogs/gpinitsystem_<date>.log | tail -20
 ```
 
-If the result includes `could not map anonymous shared memory: Cannot allocate memory`, the host likely doesn't have enough memory for the configured `max_connections`, which defaults to 750. This shortage is common on smaller hosts. Add a lower value, such as `MAX_CONNECTIONS=150`, to your `gpinitsystem_config` file and retry.
+If the result includes `could not map anonymous shared memory: Cannot allocate memory`, the host likely doesn't have enough memory for the configured `max_connections` (default: 250 on the coordinator and 750 on segments, which is always 3x the coordinator value). This shortage is common on smaller hosts. Set a lower value, such as `COORDINATOR_MAX_CONNECT=50`, in your `gpinitsystem_config` file (or pass `-m 50` to `gpinitsystem`) and retry.
 
 Depending on when the error occurred in the process, you may need to clean up and then try the `gpinitsystem` utility again. For example, if some segment instances were created and some failed, you may need to stop `postgres` processes and remove any utility-created data directories from your data storage area(s). A backout script is created to help with this cleanup if necessary. Don't rerun `gpinitsystem` before you clean up. Retrying without running the backout script first fails immediately with an error such as `Coordinator host data directory already exists`.
 

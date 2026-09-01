@@ -50,7 +50,7 @@ If you choose to deactivate SELinux:
     ```
 
     ::: info Note
-    `sestatus` reports the SELinux state that the running kernel loaded at boot, not the contents of `/etc/selinux/config`. After you edit the config file, `sestatus` continues to report the previous state until you reboot. The config file change is correct and takes effect on the next boot.
+    After editing the config file, rerun `sestatus` and confirm `Mode from config file: disabled`. That field reads `/etc/selinux/config` directly and reflects your edit immediately. `SELinux status:` and `Current mode:` show the state the running kernel loaded at boot, and continue to show the previous state until you reboot.
     :::
 
 3.  If the System Security Services Daemon (SSSD) is installed on your systems, edit the SSSD configuration file and set the `selinux_provider` parameter to `none` to prevent SELinux-related SSH authentication denials that could occur even with SELinux deactivated. As root, edit `/etc/sssd/sssd.conf` and add this parameter:
@@ -109,11 +109,11 @@ To deactivate `iptables`:
 
     ```
     # systemctl stop firewalld.service
-    # systemctl deactivate firewalld.service
+    # systemctl disable firewalld.service
     ```
 
     ::: info Note
-    On some machine images, `firewalld` isn't installed, and these commands return `Failed to stop firewalld.service: Unit firewalld.service not loaded`. This error is harmless. If `firewalld` isn't installed, it's already effectively deactivated, and no further action is needed.
+    On some machine images, `firewalld` isn't installed. In that case, `systemctl stop firewalld.service` returns `Failed to stop firewalld.service: Unit firewalld.service not loaded`, and `systemctl disable firewalld.service` fails with its own `unit not found` message. Both errors are harmless. If `firewalld` isn't installed, it's already effectively deactivated, and no further action is needed.
     :::
 
 If you decide to enable `iptables` with WarehousePG for security purposes, see [Enabling iptables (Optional)](enable_iptables.md) for important considerations and example configurations.
@@ -162,7 +162,7 @@ The `sysctl.conf` parameters listed in this topic are for performance, optimizat
 Set the parameters in the `/etc/sysctl.conf` file and reload with `sysctl -p`:
 
 :::: warning Caution
-The `kernel.shmall` and `kernel.shmmax` values in this example are calculated for a specific host with 1583 GB of memory. Don't copy these two values as-is to a host with a different amount of memory. Calculate the values for your own host as described in [Shared Memory Pages](#shared-memory-pages) below, and substitute your calculated values in the file.
+The `kernel.shmall`, `kernel.shmmax`, and `vm.overcommit_ratio` values in this example are calculated for a specific host with 1583 GB of memory. Don't copy these values as-is to a host with a different amount of memory. A `vm.overcommit_ratio` that's too high for the host's actual memory can produce the same `could not map anonymous shared memory` failure covered in [Troubleshooting Initialization Problems](init_whpg.md#topic7). Calculate `kernel.shmall` and `kernel.shmmax` for your own host as described in [Shared Memory Pages](#shared-memory-pages) below, and `vm.overcommit_ratio` as described in [Segment Host Memory](#segment-host-memory) below, then substitute your calculated values in the file.
 ::::
 
 ```
@@ -534,6 +534,7 @@ This cat command checks the state of THP. The output indicates that THP is deact
 
 ```
 cat /sys/kernel/mm/*transparent_hugepage/enabled
+__OUTPUT__
 always [never]
 ```
 
@@ -698,9 +699,9 @@ The `gpadmin` user must have permission to access the services and directories r
 
 The `gpadmin` user on each WarehousePG host must have an SSH key pair installed and be able to SSH from any host in the cluster to any other host in the cluster without entering a password or passphrase (called "passwordless SSH"). If you enable passwordless SSH from the coordinator host to every other host in the cluster ("1-*n* passwordless SSH"), you can use the WarehousePG `gpssh-exkeys` command-line utility later to enable passwordless SSH from every host to every other host ("*n*-*n* passwordless SSH").
 
-You can optionally give the `gpadmin` user sudo privilege, so that you can easily administer all hosts in the WarehousePG cluster as `gpadmin` using the `sudo`, `ssh/scp`, and `gpssh/gpscp` commands.
+Give the `gpadmin` user sudo privilege, so that you can administer all hosts in the WarehousePG cluster as `gpadmin` using the `sudo`, `ssh/scp`, and `gpssh/gpscp` commands. Several procedures in this guide run `sudo` commands on remote hosts through `gpssh`, which provides no terminal for a password prompt, so the grant must let `gpadmin` run `sudo` without a password (`NOPASSWD`), as shown in step 3 below.
 
-The following steps show how to set up the `gpadmin` user on a host, set a password, create an SSH key pair, and (optionally) enable sudo capability. These steps must be performed as root on every WarehousePG cluster host. (For a large WarehousePG cluster you will want to automate these steps using your system provisioning tools.)
+The following steps show how to set up the `gpadmin` user on a host, set a password, create an SSH key pair, and enable passwordless sudo capability. These steps must be performed as root on every WarehousePG cluster host. (For a large WarehousePG cluster you will want to automate these steps using your system provisioning tools.)
 
 > **Note** See [Example Ansible Playbook](ansible-example.md) for an example that shows how to automate the tasks of creating the `gpadmin` user and installing the WarehousePG software on all hosts in the cluster.
 
@@ -714,6 +715,7 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
     # groupadd gpadmin
     # useradd gpadmin -r -m -g gpadmin
     # passwd gpadmin
+    __OUTPUT__
     New password: <changeme>
     Retype new password: <changeme>
     ```
@@ -727,6 +729,7 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
     ```
     su gpadmin
     ssh-keygen -t rsa -b 4096
+    __OUTPUT__
     Generating public/private rsa key pair.
     Enter file in which to save the key (/home/gpadmin/.ssh/id_rsa):
     Created directory '/home/gpadmin/.ssh'.
