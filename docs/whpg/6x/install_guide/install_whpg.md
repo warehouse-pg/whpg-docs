@@ -62,18 +62,20 @@ Follow these instructions to install WarehousePG from a pre-built binary.
     The `yum` command automatically installs software dependencies, copies the WarehousePG software files into a version-specific directory under `/usr/local`, `/usr/local/greenplum-db-<version>`, and creates the symbolic link `/usr/local/greenplum-db` to the installation directory.
 
     ::: info Note
-    If a `yum` command is interrupted, for example with `Ctrl+C`, it can leave a stale lock file at `/var/lib/rpm/.rpm.lock`. Subsequent `yum` commands then hang indefinitely waiting for the lock to clear. If this happens, remove the stale lock file and retry:
+    If a subsequent `yum` command hangs waiting for the RPM lock, another process is still holding it, for example an interrupted `yum` whose transaction hasn't finished, or a background updater such as `packagekitd`. Identify it, then let it finish or stop it. The lock releases as soon as the process exits.
 
     ```
-    sudo rm -f /var/lib/rpm/.rpm.lock
+    sudo fuser -v /var/lib/rpm/.rpm.lock
+    sudo kill <pid>
     ```
+
+    Don't delete `/var/lib/rpm/.rpm.lock`. Removing it while a process still holds it can corrupt the RPM database.
     :::
 
 3.  Change the owner and group of the installed files to `gpadmin`:
 
     ```
     sudo chown -R gpadmin:gpadmin /usr/local/greenplum*
-    sudo chgrp -R gpadmin /usr/local/greenplum*
     ```
 
 <a id="topic_dj4_ssr_cmb"></a>
@@ -129,7 +131,7 @@ The `gpadmin` user on each WarehousePG host must be able to SSH from any host in
 
     > **Note** Add the above `source` command to the `gpadmin` user's `.bashrc` or other shell startup file so that the WarehousePG path and environment variables are set whenever you log in as `gpadmin`.
 
-3.  Use the `ssh-copy-id` command to add the `gpadmin` user's public key to the `authorized_hosts` SSH file on every other host in the cluster.
+3.  Use the `ssh-copy-id` command to add the `gpadmin` user's public key to the `authorized_keys` SSH file on every other host in the cluster.
 
     ```
     ssh-copy-id smdw
@@ -148,15 +150,24 @@ The `gpadmin` user on each WarehousePG host must be able to SSH from any host in
     Skip the `smdw` commands if your cluster doesn't have a standby coordinator host.
 
     ::: info Note
-    On cloud hosts such as Amazon EC2 instances, password authentication is often deactivated by default, so `ssh-copy-id` fails with an error such as `ERROR: No identities found` or `Permission denied (publickey)`. In that case, copy the coordinator's public key to each host's `authorized_keys` file manually instead. On the coordinator, display the public key.
+    `ssh-copy-id` can fail with two different errors that need different fixes.
+
+    `ERROR: No identities found` means the `gpadmin` user has no local SSH key pair, for example because it was provisioned by a script, such as the [Example Ansible Playbook](ansible-example.md), that doesn't generate one. Generate a key pair as `gpadmin` on the coordinator, then retry `ssh-copy-id`.
+
+    ```
+    ssh-keygen -t rsa -b 4096
+    ```
+
+    `Permission denied (publickey)` means a key pair exists, but the target host rejects password authentication, which cloud hosts such as Amazon EC2 instances often deactivate by default. In that case, copy the coordinator's public key to each host's `authorized_keys` file manually instead. On the coordinator, display the public key.
 
     ```
     cat /home/gpadmin/.ssh/id_rsa.pub
     ```
 
-    Then, on each other host, append that key and set the correct ownership and permissions. Run these commands as a user with `sudo` access, such as the default cloud image user.
+    Then, on each other host, create the `.ssh` directory if it doesn't already exist, append that key, and set the correct ownership and permissions. Run these commands as a user with `sudo` access, such as the default cloud image user.
 
     ```
+    sudo install -d -m 700 -o gpadmin -g gpadmin /home/gpadmin/.ssh
     echo "<coordinator-public-key>" | sudo tee -a /home/gpadmin/.ssh/authorized_keys
     sudo chmod 600 /home/gpadmin/.ssh/authorized_keys
     sudo chown -R gpadmin:gpadmin /home/gpadmin/.ssh
@@ -185,12 +196,10 @@ The `gpadmin` user on each WarehousePG host must be able to SSH from any host in
 
 5.  Run the `gpssh-exkeys` utility with your `hostfile_exkeys` file to enable *n*-*n* passwordless SSH for the `gpadmin` user.
 
-    `gpssh-exkeys` fails with an error such as `No ECDSA host key is known for <host> and you have requested strict checking` if the `gpadmin` user hasn't previously connected to a host and accepted its SSH host key fingerprint. Before you run `gpssh-exkeys`, SSH from the coordinator to every host in `hostfile_exkeys` at least once, and enter `yes` at each fingerprint prompt.
+    `gpssh-exkeys` can fail with an error such as `No ECDSA host key is known for <host> and you have requested strict checking` if your SSH client's strict host key checking rejects a host it doesn't yet recognize. To avoid this, populate `known_hosts` for every host in `hostfile_exkeys` first.
 
     ```
-    ssh gpadmin@sdw1
-    ssh gpadmin@sdw2
-    . . .
+    ssh-keyscan -f hostfile_exkeys >> ~/.ssh/known_hosts
     ```
 
     Then run `gpssh-exkeys`.

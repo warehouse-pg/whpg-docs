@@ -28,15 +28,15 @@ The data directory location on the coordinator is different than those on the se
 2.  Change ownership of this directory, and any parent directories you created, to the `gpadmin` user. For example:
 
     ```
-    sudo chown -R gpadmin:gpadmin /data
+    sudo chown gpadmin:gpadmin /data
+    sudo chown -R gpadmin:gpadmin /data/coordinator
     ```
 
-3.  Using [gpssh](../ref_guide/utility_guide/reference/gpssh.md), create the coordinator data directory location on your standby coordinator as well. For example:
+3.  As the `gpadmin` user, use [gpssh](../ref_guide/utility_guide/reference/gpssh.md) to create the coordinator data directory location on your standby coordinator as well. For example:
 
     ```
-    # source /usr/edb/whpg7/greenplum_path.sh 
-    # gpssh -h scdw -e 'mkdir -p /data/coordinator'
-    # gpssh -h scdw -e 'chown gpadmin:gpadmin /data/coordinator'
+    gpssh -h scdw -e 'sudo mkdir -p /data/coordinator'
+    gpssh -h scdw -e 'sudo chown -R gpadmin:gpadmin /data/coordinator'
     ```
 
 <a id="topic_plx_zps_vhb"></a>
@@ -53,7 +53,7 @@ Data storage areas are required on the WarehousePG segment hosts for primary seg
 
     ```
     sudo -iu gpadmin
-    source /usr/edb/whpg7/greenplum_path.sh
+    source /usr/local/whpg/greenplum_path.sh
     ```
 
     ::: info Note
@@ -79,7 +79,7 @@ Data storage areas are required on the WarehousePG segment hosts for primary seg
     ```
 
     ::: warning Caution
-    Use `chown -R gpadmin:gpadmin /data1 /data2` rather than a wildcard pattern such as `/data*/*`. A wildcard pattern like `/data*/*` only matches the primary and mirror subdirectories, not the `/data1` and `/data2` directories themselves, which then stay owned by `root` and cause `gpinitsystem` to fail when it tries to write to them as `gpadmin`.
+    Use `chown -R gpadmin:gpadmin /data1 /data2` rather than `chown -R gpadmin /data*/*`. The latter sets only the owner, not the group, so the primary and mirror directories stay in the `root` group. Setting both the owner and group to `gpadmin` avoids permission problems later.
     :::
 
 <a id="topic_cwj_hzb_vhb"></a>
