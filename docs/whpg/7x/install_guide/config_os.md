@@ -137,12 +137,8 @@ The `sysctl.conf` parameters listed in this topic are for performance, optimizat
 
 Set the parameters in the `/etc/sysctl.conf` file and reload with `sysctl -p`:
 
-:::: warning Important
-The `kernel.shmall`, `kernel.shmmax`, and `vm.overcommit_ratio` values shown here are calculated for one specific host with 1583 GB of memory. Don't copy them as-is to a host with a different amount of memory.
-
-Calculate `kernel.shmall` and `kernel.shmmax` for your host as described in [Shared Memory Pages](#shared-memory-pages) below. Calculate `vm.overcommit_ratio` as described in [Segment Host Memory](#segment-host-memory) below.
-
-A `vm.overcommit_ratio` that's too high for the host can cause the `could not map anonymous shared memory` failure described in [Troubleshooting Initialization Problems](init_whpg.md#topic7).
+:::: warning Caution
+The `kernel.shmall`, `kernel.shmmax`, and `vm.overcommit_ratio` values in this example are calculated for a specific host with 1583 GB of memory. Don't copy these values as-is to a host with a different amount of memory. A `vm.overcommit_ratio` that's too high for the host's actual memory can produce the same `could not map anonymous shared memory` failure covered in [Troubleshooting Initialization Problems](init_whpg.md#topic7). Calculate `kernel.shmall` and `kernel.shmmax` for your own host as described in [Shared Memory Pages](#shared-memory-pages) below, and `vm.overcommit_ratio` as described in [Segment Host Memory](#segment-host-memory) below, then substitute your calculated values in the file.
 ::::
 
 ```

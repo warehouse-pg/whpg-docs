@@ -127,7 +127,6 @@ Your WarehousePG configuration file tells the [gpinitsystem](../ref_guide/utilit
     COORDINATOR_DIRECTORY=/data/coordinator 
     COORDINATOR_PORT=5432 
     TRUSTED_SHELL=ssh
-    CHECK_POINT_SEGMENTS=8
     ENCODING=UNICODE
     ```
 
