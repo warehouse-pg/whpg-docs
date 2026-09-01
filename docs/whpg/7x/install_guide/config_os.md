@@ -104,7 +104,7 @@ WarehousePG requires that certain Linux operating system (OS) parameters be set 
 
 In general, the following categories of system parameters need to be altered:
 
--   **Shared Memory** - A WarehousePG instance will not work unless the shared memory segment for your kernel is properly sized. Most default OS installations have the shared memory values set too low for WarehousePG. On Linux systems, you must also deactivate the OOM (out of memory) killer. For information about WarehousePG shared memory requirements, see the WarehousePG server configuration parameter [shared_buffers](../ref_guide/config_params/guc-list.md) in the *WarehousePG Reference Guide*.
+-   **Shared Memory** - A WarehousePG instance will not work unless the shared memory segment for your kernel is properly sized. Most default OS installations have the shared memory values set too low for WarehousePG. On Linux systems, you must also deactivate the OOM (out of memory) killer. For information about WarehousePG shared memory requirements, see the WarehousePG server configuration parameter [shared_buffers](../ref_guide/config_params/guc-list.md#shared_buffers) in the *WarehousePG Reference Guide*.
 -   **Network** - On high-volume WarehousePG clusters, certain network-related tuning parameters must be set to optimize network connections made by the WarehousePG interconnect.
 -   **User Limits** - User limits control the resources available to processes started by a user's shell. WarehousePG requires a higher limit on the allowed number of file descriptors that a single process can have open. The default settings may cause some WarehousePG queries to fail because they will run out of file descriptors needed to process the query.
 
@@ -450,22 +450,15 @@ WarehousePG utilizes 3 distinct MTU settings:
 
 These settings are connected, in that they should always be either the same, or close to the same, value, or otherwise in the order of WarehousePG &lt; OS &lt; switch for MTU size.
 
+If the interconnect network supports jumbo frames, set the MTU to 9000 and keep `gp_max_packet_size` at its default of 8192. If the network doesn't support jumbo frames and the MTU is 1500, reduce `gp_max_packet_size` to 1472 to avoid fragmented packets.
+
 9000 is a common supported setting for switches, and is the recommended OS and rack switch MTU setting for your WarehousePG hosts.
 
 <a id="huge_pages"></a>
 
 ### Transparent Huge Pages (THP)
 
-Deactivate Transparent Huge Pages (THP) as it degrades WarehousePG performance. RHEL 6.0 or higher enables THP by default. One way to deactivate THP on RHEL 6.x is by adding the parameter `transparent_hugepage=never` to the kernel command in the file `/boot/grub/grub.conf`, the GRUB boot loader configuration file. This is an example kernel command from a `grub.conf` file. The command is on multiple lines for readability:
-
-```
-kernel /vmlinuz-2.6.18-274.3.1.el5 ro root=LABEL=/
-           elevator=deadline crashkernel=128M@16M  quiet console=tty1
-           console=ttyS1,115200 panic=30 transparent_hugepage=never 
-           initrd /initrd-2.6.18-274.3.1.el5.img
-```
-
-On systems that use `grub2`, use the system utility `grubby`. This command adds the parameter when run as root.
+Deactivate Transparent Huge Pages (THP) as it degrades WarehousePG performance. On systems that use `grub2`, use the system utility `grubby`. This command adds the parameter when run as root.
 
 ```
 # grubby --update-kernel=ALL --args="transparent_hugepage=never"
@@ -526,10 +519,10 @@ Max Startups 10:30:200
 MaxSessions 200
 ```
 
-Restart the SSH daemon after you update `MaxStartups` and `MaxSessions`. For example, on a CentOS 6 system, run the following command as the `root` user:
+Restart the SSH daemon after you update `MaxStartups` and `MaxSessions`. For example, run the following command as the `root` user:
 
 ```
-# service sshd restart
+# systemctl restart sshd
 ```
 
 For detailed information about SSH configuration options, refer to the SSH documentation for your Linux distribution.
@@ -647,7 +640,7 @@ The `gpadmin` user must have permission to access the services and directories r
 
 The `gpadmin` user on each WarehousePG host must have an SSH key pair installed and be able to SSH from any host in the cluster to any other host in the cluster without entering a password or passphrase (called "passwordless SSH"). If you enable passwordless SSH from the coordinator host to every other host in the cluster ("1-*n* passwordless SSH"), you can use the WarehousePG `gpssh-exkeys` command-line utility later to enable passwordless SSH from every host to every other host ("*n*-*n* passwordless SSH").
 
-Give the `gpadmin` user sudo privilege, so that you can administer all hosts in the WarehousePG cluster as `gpadmin` using the `sudo`, `ssh/rsync`, and `gpssh/gpsync` commands. Several procedures in this guide run `sudo` commands on remote hosts through `gpssh`, which provides no terminal for a password prompt, so the grant must let `gpadmin` run `sudo` without a password (`NOPASSWD`), as shown in step 3 below.
+You can optionally give the `gpadmin` user sudo privilege, so that you can administer all hosts in the WarehousePG cluster as `gpadmin` using the `sudo`, `ssh/rsync`, and `gpssh/gpsync` commands.
 
 The following steps show how to set up the `gpadmin` user on a host, set a password, create an SSH key pair, and enable passwordless sudo capability. These steps must be performed as root on every WarehousePG cluster host. (For a large WarehousePG cluster you will want to automate these steps using your system provisioning tools.)
 
@@ -668,7 +661,7 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
 
     > **Note** You must have root permission to create the `gpadmin` group and user.
 
-    > **Note** Make sure the `gpadmin` user has the same user id (uid) and group id (gid) numbers on each host to prevent problems with scripts or services that use them for identity or permissions. For example, backing up WarehousePGs to some networked filesy stems or storage appliances could fail if the `gpadmin` user has different uid or gid numbers on different segment hosts. When you create the `gpadmin` group and user, you can use the `groupadd -g` option to specify a gid number and the `useradd -u` option to specify the uid number. Use the command `id gpadmin` to see the uid and gid for the `gpadmin` user on the current host.
+    > **Note** Make sure the `gpadmin` user has the same user id (uid) and group id (gid) numbers on each host to prevent problems with scripts or services that use them for identity or permissions. For example, backing up WarehousePGs to some networked filesystems or storage appliances could fail if the `gpadmin` user has different uid or gid numbers on different segment hosts. When you create the `gpadmin` group and user, you can use the `groupadd -g` option to specify a gid number and the `useradd -u` option to specify the uid number. Use the command `id gpadmin` to see the uid and gid for the `gpadmin` user on the current host.
 
 2.  Switch to the `gpadmin` user and generate an SSH key pair for the `gpadmin` user.
 
@@ -687,6 +680,10 @@ The following steps show how to set up the `gpadmin` user on a host, set a passw
     At the passphrase prompts, press Enter so that SSH connections will not require entry of a passphrase.
 
 3.  Grant sudo access to the `gpadmin` user.
+
+    ::: info Note
+    This step is optional, but it's helpful, and it simplifies some procedures elsewhere in this guide, such as [Creating the Data Storage Areas](create_data_dirs.md), that run `sudo` commands on remote hosts through `gpssh`. If `gpadmin` doesn't have sudo access, you can't use `gpssh` or `gpsync` to run those commands. Because `gpssh` provides no terminal for a password prompt, the grant must let `gpadmin` run `sudo` without a password (`NOPASSWD`), as shown below, for those procedures to work.
+    :::
 
     On Red Hat or CentOS, run `visudo` and uncomment the `%wheel` group entry.
 
