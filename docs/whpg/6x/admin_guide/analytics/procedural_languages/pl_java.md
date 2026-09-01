@@ -118,16 +118,6 @@ The commands that you use to install Java depend on the host system operating sy
 
     For OpenJDK 8 the version is `1.8.0`, for OpenJDK 11 the version is `11`.
 
--   RHEL 6/CentOS 6
-
-    -   Java 8 - This `yum` command installs OpenJDK 8.
-
-        ```
-        $ sudo yum install java-1.8.0-openjdk-devel
-        ```
-
-    -   Java 11 - Download the OpenJDK 11 tar file from [http://jdk.java.net/archive/](http://jdk.java.net/archive/) and install and configure the operating system to use Java 11.
-
         1.  This example `tar` command installs the OpenJDK 11 in `/usr/lib/jvm`.
 
             ```
