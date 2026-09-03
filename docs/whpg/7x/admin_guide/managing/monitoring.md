@@ -70,72 +70,17 @@ It is not necessary to implement all of these suggestions in every cluster; use 
 
 ## Database Maintenance
 
-<table class="table frame-all" id="topic_dld_23h_rp__table_vxx_f3h_rp"><caption><span class="table--title-label">Table 5. </span><span class="title">Database Maintenance Activities</span></caption><colgroup><col /><col /><col /></colgroup><thead class="thead">
-<tr class="row">
-<th class="entry" id="topic_dld_23h_rp__table_vxx_f3h_rp__entry__1">Activity</th>
-<th class="entry" id="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">Procedure</th>
-<th class="entry" id="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">Corrective Actions</th>
-</tr>
-</thead><tbody class="tbody">
-<tr class="row">
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__1">Reclaim space occupied by deleted rows in the  heap
-                                        tables so that the space they occupy can be
-                                            reused.<p class="p">Recommended frequency: daily</p><p class="p">Severity:
-                                            CRITICAL</p></td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">Vacuum user
-                                        tables:<pre class="pre codeblock"><code>VACUUM &#x3C;table>;</code></pre></td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">Vacuum updated tables regularly to prevent bloating.
-</td>
-</tr>
-<tr class="row">
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__1">Update table statistics. <p class="p">Recommended frequency: after
-                                            loading data and before executing
-                                            queries</p><p class="p">Severity: CRITICAL</p></td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">Analyze user tables. You can use the
-<code class="ph codeph">analyzedb</code> management
-                                        utility:<pre class="pre codeblock"><code>analyzedb -d &#x3C;database> -a</code></pre></td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">Analyze updated tables regularly so that the optimizer
-                                        can produce efficient query execution plans.</td>
-</tr>
-<tr class="row">
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__1">Backup the database data.<p class="p">Recommended frequency: daily,
-                                            or as required by your backup plan</p><p class="p">Severity:
-                                            CRITICAL</p></td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">
-<span class="ph">Run the <code class="ph codeph">gpbackup</code>
-                                            utility to create a backup of the coordinator and segment
-                                            databases in parallel.</span>
-</td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">Best practice is to have a current backup ready in case
-                                        the database must be restored. </td>
-</tr>
-<tr class="row">
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__1">Vacuum, reindex, and analyze system catalogs to maintain
-                                        an efficient catalog.<p class="p">Recommended frequency: weekly, or
-                                            more often if database objects are created and dropped
-                                            frequently</p></td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__2">
-<ol class="ol" id="topic_dld_23h_rp__ol_frs_nlh_rp">
-<li class="li"><code class="ph codeph">VACUUM</code> the system tables in each
-                                                database.</li>
-<li class="li">Run <code class="ph codeph">REINDEX SYSTEM</code> in each
-                                                database, or use the <code class="ph codeph">reindexdb</code>
-                                                command-line utility with the <code class="ph codeph">-s</code>
-                                                option:
-<pre class="pre codeblock"><code>reindexdb -s &#x3C;database></code></pre></li>
-<li class="li"><code class="ph codeph">ANALYZE</code> each of the system
-                                                tables:<pre class="pre codeblock"><code>analyzedb -s pg_catalog -d &#x3C;database></code></pre></li>
-</ol>
-</td>
-<td class="entry" headers="topic_dld_23h_rp__table_vxx_f3h_rp__entry__3">The optimizer retrieves information from the system
-                                        tables to create query plans. If system tables and indexes
-                                        are allowed to become bloated over time, scanning the system
-                                        tables increases query execution time. It is important to
-                                        run <code class="ph codeph">ANALYZE</code> after reindexing, because
-<code class="ph codeph">REINDEX</code> leaves indexes with no
-                                        statistics. </td>
-</tr>
-</tbody></table><a id="topic_idx_smh_rp"></a>
+
+**Database Maintenance Activities**
+
+| Activity | Procedure | Corrective Actions |
+| --- | --- | --- |
+| Reclaim space occupied by deleted rows in the heap tables so that the space they occupy can be reused.<br/><br/>Recommended frequency: daily<br/><br/>Severity: CRITICAL | Vacuum user tables:<br/><br/>`VACUUM <table>;` | Vacuum updated tables regularly to prevent bloating. |
+| Update table statistics.<br/><br/>Recommended frequency: after loading data and before executing queries<br/><br/>Severity: CRITICAL | Analyze user tables. You can use the `analyzedb` management utility:<br/><br/>`analyzedb -d <database> -a` | Analyze updated tables regularly so that the optimizer can produce efficient query execution plans. |
+| Backup the database data.<br/><br/>Recommended frequency: daily, or as required by your backup plan<br/><br/>Severity: CRITICAL | Run the `gpbackup` utility to create a backup of the coordinator and segment databases in parallel. | Best practice is to have a current backup ready in case the database must be restored. |
+| Vacuum, reindex, and analyze system catalogs to maintain an efficient catalog.<br/><br/>Recommended frequency: weekly, or more often if database objects are created and dropped frequently | 1\. `VACUUM` the system tables in each database.<br/>2\. Run `REINDEX SYSTEM` in each database, or use the `reindexdb` command-line utility with the `-s` option:<br/>`reindexdb -s <database>`<br/>3\. `ANALYZE` each of the system tables:<br/>`analyzedb -s pg_catalog -d <database>` | The optimizer retrieves information from the system tables to create query plans. If system tables and indexes are allowed to become bloated over time, scanning the system tables increases query execution time. It is important to run `ANALYZE` after reindexing, because `REINDEX` leaves indexes with no statistics. |
+
+<a id="topic_idx_smh_rp"></a>
 
 ## Patching and Upgrading
 
