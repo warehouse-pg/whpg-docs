@@ -402,19 +402,93 @@ The standard comparison operators in the following table are available only for 
 
 ### JSON Creation Functions
 
-This table describes the functions that create `json` data type values. (Currently, there are no equivalent functions for `jsonb`, but you can cast the result of one of these functions to `jsonb`.)
+The following describes the functions that create `json` data type values. (Currently, there are no equivalent functions for `jsonb`, but you can cast the result of one of these functions to `jsonb`.)
 
-**JSON Creation Functions**
+#### to_json(anyelement)
 
-| Function | Description | Example | Example Result |
-| --- | --- | --- | --- |
-| `to_json(anyelement)` | Returns the value as a JSON object. Arrays and composites are processed recursively and are converted to arrays and objects. If the input contains a cast from the type to `json`, the cast function is used to perform the conversion; otherwise, a JSON scalar value is produced. For any scalar type other than a number, a Boolean, or a null value, the text representation will be used, properly quoted and escaped so that it is a valid JSON string. | `to_json('Fred said "Hi."'::text)` | `"Fred said \"Hi.\""` |
-| `array_to_json(anyarray [, pretty_bool])` | Returns the array as a JSON array. A multidimensional array becomes a JSON array of arrays.<br/><br/>Line feeds will be added between dimension-1 elements if `pretty_bool` is true. | `array_to_json('{​{1,5},{99,100}}'::int[])` | `[[1,5],[99,100]]` |
-| `row_to_json(record [, pretty_bool])` | Returns the row as a JSON object.<br/><br/>Line feeds will be added between level-1 elements if `pretty_bool` is true. | `row_to_json(row(1,'foo'))` | `{"f1":1,"f2":"foo"}` |
-| `json_build_array(VARIADIC "any"`) | Builds a possibly-heterogeneously-typed JSON array out of a `VARIADIC` argument list. | `json_build_array(1,2,'3',4,5)` | `[1, 2, "3", 4, 5]` |
-| `json_build_object(VARIADIC "any")` | Builds a JSON object out of a `VARIADIC` argument list. The argument list is taken in order and converted to a set of key/value pairs. | `json_build_object('foo',1,'bar',2)` | `{"foo": 1, "bar": 2}` |
-| `json_object(text[])` | Builds a JSON object out of a text array. The array must be either a one or a two dimensional array.<br/><br/>The one dimensional array must have an even number of elements. The elements are taken as key/value pairs.<br/><br/>For a two dimensional array, each inner array must have exactly two elements, which are taken as a key/value pair. | `json_object('{a, 1, b, "def", c, 3.5}')`<br/><br/>`json_object('{​{a, 1},{b, "def"},{c, 3.5}}')` | `{"a": "1", "b": "def", "c": "3.5"}` |
-| `json_object(keys text[], values text[])` | Builds a JSON object out of a text array. This form of `json_object` takes keys and values pairwise from two separate arrays. In all other respects it is identical to the one-argument form. | `json_object('{a, b}', '{1,2}')` | `{"a": "1", "b": "2"}` |
+Returns the value as a JSON object. Arrays and composites are processed recursively and are converted to arrays and objects. If the input contains a cast from the type to `json`, the cast function is used to perform the conversion; otherwise, a JSON scalar value is produced. For any scalar type other than a number, a Boolean, or a null value, the text representation will be used, properly quoted and escaped so that it is a valid JSON string.
+
+Example:
+
+```
+to_json('Fred said "Hi."'::text)
+"Fred said \"Hi.\""
+```
+
+#### array_to_json(anyarray [, pretty_bool])
+
+Returns the array as a JSON array. A multidimensional array becomes a JSON array of arrays.
+
+Line feeds will be added between dimension-1 elements if `pretty_bool` is true.
+
+Example:
+
+```
+array_to_json('{​{1,5},{99,100}}'::int[])
+[[1,5],[99,100]]
+```
+
+#### row_to_json(record [, pretty_bool])
+
+Returns the row as a JSON object.
+
+Line feeds will be added between level-1 elements if `pretty_bool` is true.
+
+Example:
+
+```
+row_to_json(row(1,'foo'))
+{"f1":1,"f2":"foo"}
+```
+
+#### json_build_array(VARIADIC "any")
+
+Builds a possibly-heterogeneously-typed JSON array out of a `VARIADIC` argument list.
+
+Example:
+
+```
+json_build_array(1,2,'3',4,5)
+[1, 2, "3", 4, 5]
+```
+
+#### json_build_object(VARIADIC "any")
+
+Builds a JSON object out of a `VARIADIC` argument list. The argument list is taken in order and converted to a set of key/value pairs.
+
+Example:
+
+```
+json_build_object('foo',1,'bar',2)
+{"foo": 1, "bar": 2}
+```
+
+#### json_object(text[])
+
+Builds a JSON object out of a text array. The array must be either a one or a two dimensional array.
+
+The one dimensional array must have an even number of elements. The elements are taken as key/value pairs.
+
+For a two dimensional array, each inner array must have exactly two elements, which are taken as a key/value pair.
+
+Example:
+
+```
+json_object('{a, 1, b, "def", c, 3.5}')
+json_object('{​{a, 1},{b, "def"},{c, 3.5}}')
+{"a": "1", "b": "def", "c": "3.5"}
+```
+
+#### json_object(keys text[], values text[])
+
+Builds a JSON object out of a text array. This form of `json_object` takes keys and values pairwise from two separate arrays. In all other respects it is identical to the one-argument form.
+
+Example:
+
+```
+json_object('{a, b}', '{1,2}')
+{"a": "1", "b": "2"}
+```
 
 > **Note** `array_to_json` and `row_to_json` have the same behavior as `to_json` except for offering a pretty-printing option. The behavior described for `to_json` likewise applies to each individual value converted by the other JSON creation functions.
 
@@ -424,12 +498,23 @@ This table describes the functions that create `json` data type values. (Current
 
 ### JSON Aggregate Functions
 
-This table shows the functions aggregate records to an array of JSON objects and pairs of values to a JSON object
+The following functions aggregate records to an array of JSON objects and pairs of values to a JSON object.
 
-| Function                       | Argument Types   | Return Type | Description                                    |
-| ------------------------------ | ---------------- | ----------- | ---------------------------------------------- |
-| `json_agg(record)`             | `record`         | `json`      | Aggregates records as a JSON array of objects. |
-| `json_object_agg(name, value)` | `("any", "any")` | `json`      | Aggregates name/value pairs as a JSON object.  |
+#### json_agg(record)
+
+Argument type: `record`
+
+Return type: `json`
+
+Aggregates records as a JSON array of objects.
+
+#### json_object_agg(name, value)
+
+Argument types: `("any", "any")`
+
+Return type: `json`
+
+Aggregates name/value pairs as a JSON object.
 
 <a id="topic_z5d_snw_2z"></a>
 
