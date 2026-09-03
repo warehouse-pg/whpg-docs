@@ -569,7 +569,7 @@ GRANT SELECT ON sales TO guest;
 
 > **Note** The `LIKE` clause does not copy over partition structures when creating a new table.
 
-See [Splitting a Partition](ddl-partition/index.md) to learn how to change the storage model of a partitioned table.
+See [Exchanging a Partition](ddl-partition/index.md#exchanging-a-partition) to learn how to change the storage model of a partitioned table.
 
 <a id="topic60"></a>
 
