@@ -34,11 +34,11 @@ This table lists the PostGIS extensions support by WarehousePG PostGIS.
 
 | PostGIS Extension | WarehousePG PostGIS Notes |
 | --- | --- |
-| `postgis`<br><br>PostGIS and PostGIS Raster support | Supported. Both PostGIS and PostGIS Raster are enabled when the WarehousePG `postgis` extension is enabled. |
-| `postgis_tiger_geocoder`<br><br>The US TIGER geocoder | Supported. Installed with WarehousePG PostGIS.<br><br>Requires the `postgis` and `fuzzystrmatch` extensions.<br><br>The US TIGER geocoder converts addresses (like a street address) to geographic coordinates. |
-| `address_standardizer`<br><br>Rule-based address standardizer | Supported. Installed but not enabled with WarehousePG PostGIS.<br><br>Can be used with TIGER geocoder.<br><br>A single line address parser that takes an input address and normalizes it based on a set of rules stored in a table and helper `lex` and `gaz` tables. |
-| `address_standardizer_data_us`<br><br>Sample rules tables for US address data | Supported. Installed but not enabled with WarehousePG PostGIS.<br><br>Can be used with the address standardizer.<br><br>The extension contains `gaz`, `lex`, and `rules` tables for US address data. If you are using other types of tables, see [PostGIS Extension Limitations](#topic_wy2_rkb_3p). |
-| `fuzzystrmatch`<br><br>Fuzzy string matching | Supported. This extension is bundled but not enabled with WarehousePG Database.<br><br>Required for the PostGIS TIGER geocoder. |
+| `postgis`<br/><br/>PostGIS and PostGIS Raster support | Supported. Both PostGIS and PostGIS Raster are enabled when the WarehousePG `postgis` extension is enabled. |
+| `postgis_tiger_geocoder`<br/><br/>The US TIGER geocoder | Supported. Installed with WarehousePG PostGIS.<br/><br/>Requires the `postgis` and `fuzzystrmatch` extensions.<br/><br/>The US TIGER geocoder converts addresses (like a street address) to geographic coordinates. |
+| `address_standardizer`<br/><br/>Rule-based address standardizer | Supported. Installed but not enabled with WarehousePG PostGIS.<br/><br/>Can be used with TIGER geocoder.<br/><br/>A single line address parser that takes an input address and normalizes it based on a set of rules stored in a table and helper `lex` and `gaz` tables. |
+| `address_standardizer_data_us`<br/><br/>Sample rules tables for US address data | Supported. Installed but not enabled with WarehousePG PostGIS.<br/><br/>Can be used with the address standardizer.<br/><br/>The extension contains `gaz`, `lex`, and `rules` tables for US address data. If you are using other types of tables, see [PostGIS Extension Limitations](#topic_wy2_rkb_3p). |
+| `fuzzystrmatch`<br/><br/>Fuzzy string matching | Supported. This extension is bundled but not enabled with WarehousePG Database.<br/><br/>Required for the PostGIS TIGER geocoder. |
 
 > **Note** The PostGIS topology extension `postgis_topology` and the PostGIS 3D and geoprocessing extension `postgis_sfcgal` are not supported by WarehousePG PostGIS and are not included in the WarehousePG PostGIS extension package.
 

@@ -51,7 +51,7 @@ The `minmax` operator classes store the minimum and the maximum values appearing
 | int8_minmax_ops        | bigint                      | `< <= = >= >`                                  |                         |   |    |      |
 | bit_minmax_ops         | bit                         | `< <= = >= >`                                  |                         |   |    |      |
 | varbit_minmax_ops      | bit varying                 | `< <= = >= >`                                  |                         |   |    |      |
-| box_inclusion_ops      | box                         | \`&lt;&lt; &&lt; && &lt;> >> ~= @> &lt;@ &&lt; | &lt;&lt;                |   | >> | &>\` |
+| box_inclusion_ops      | box                         | `<< &< && <> >> ~= @> <@ &<\| <<\| \|>> \|&>`  |                         |   |    |      |
 | bytea_minmax_ops       | bytea                       | `< <= = >= >`                                  |                         |   |    |      |
 | bpchar_minmax_ops      | character                   | `< <= = >= >`                                  |                         |   |    |      |
 | char_minmax_ops        | "char"                      | `< <= = >= >`                                  |                         |   |    |      |
@@ -67,7 +67,7 @@ The `minmax` operator classes store the minimum and the maximum values appearing
 | numeric_minmax_ops     | numeric                     | `< <= = >= >`                                  |                         |   |    |      |
 | pg_lsn_minmax_ops      | pg_lsn                      | `< <= = >= >`                                  |                         |   |    |      |
 | oid_minmax_ops         | oid                         | `< <= = >= >`                                  |                         |   |    |      |
-| range_inclusion_ops    | any range type              | \`&lt;&lt; &&lt; && &lt;> >> @> &lt;@ -        | - = &lt; &lt;= = > >=\` |   |    |      |
+| range_inclusion_ops    | any range type              | `<< &< && <> >> @> <@ -\|- = < <= = > >=`      |                         |   |    |      |
 | float4_minmax_ops      | real                        | `< <= = >= >`                                  |                         |   |    |      |
 | int2_minmax_ops        | smallint                    | `< <= = >= >`                                  |                         |   |    |      |
 | text_minmax_ops        | text                        | `< <= = >= >`                                  |                         |   |    |      |

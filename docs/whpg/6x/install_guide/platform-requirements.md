@@ -146,8 +146,10 @@ The following table lists minimum recommended specifications for hardware server
 |---|---|
 | Minimum CPU | Any x86_64 compatible CPU |
 | Minimum Memory | 16 GB RAM per server |
-| Disk Space Requirements | <ul><li>150MB per host for WarehousePG installation</li><li>Approximately 300MB per segment instance for metadata</li><li>Cap disk capacity at 70% full to accommodate temporary files and prevent performance degradation</li></ul> |
-| Network Requirements | <ul><li>10 Gigabit Ethernet within the array</li><li>NIC bonding is recommended when multiple interfaces are present</li><li>WarehousePG can use either IPV4 or IPV6 protocols.</li></ul> |<a id="topic_pnz_5zd_xs"></a>
+| Disk Space Requirements | - 150MB per host for WarehousePG installation<br/>- Approximately 300MB per segment instance for metadata<br/>- Cap disk capacity at 70% full to accommodate temporary files and prevent performance degradation |
+| Network Requirements | - 10 Gigabit Ethernet within the array<br/>- NIC bonding is recommended when multiple interfaces are present<br/>- WarehousePG can use either IPV4 or IPV6 protocols. |
+
+<a id="topic_pnz_5zd_xs"></a>
 
 ## Storage
 

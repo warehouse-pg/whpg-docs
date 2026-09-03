@@ -123,19 +123,19 @@ When an object (table, view, sequence, database, function, language, schema, or 
 
 | Object Type | Privileges |
 | --- | --- |
-| Tables, External Tables, Views | `SELECT`<br><br>`INSERT`<br><br>`UPDATE`<br><br>`DELETE`<br><br>`REFERENCES`<br><br>`TRIGGER`<br><br>`TRUNCATE`<br><br>`ALL` |
-| Columns | `SELECT`<br><br>`INSERT`<br><br>`UPDATE`<br><br>`REFERENCES`<br><br>`ALL` |
-| Sequences | `USAGE`<br><br>`SELECT`<br><br>`UPDATE`<br><br>`ALL` |
-| Databases | `CREATE`<br><br>`CONNECT`<br><br>`TEMPORARY`<br><br>`TEMP`<br><br>`ALL` |
-| Domains | `USAGE`<br><br>`ALL` |
-| Foreign Data Wrappers | `USAGE`<br><br>`ALL` |
-| Foreign Servers | `USAGE`<br><br>`ALL` |
-| Functions | `EXECUTE`<br><br>`ALL` |
-| Procedural Languages | `USAGE`<br><br>`ALL` |
-| Schemas | `CREATE`<br><br>`USAGE`<br><br>`ALL` |
-| Tablespaces | `CREATE`<br><br>`ALL` |
-| Types | `USAGE`<br><br>`ALL` |
-| Protocols | `SELECT`<br><br>`INSERT`<br><br>`ALL` |
+| Tables, External Tables, Views | `SELECT`<br/><br/>`INSERT`<br/><br/>`UPDATE`<br/><br/>`DELETE`<br/><br/>`REFERENCES`<br/><br/>`TRIGGER`<br/><br/>`TRUNCATE`<br/><br/>`ALL` |
+| Columns | `SELECT`<br/><br/>`INSERT`<br/><br/>`UPDATE`<br/><br/>`REFERENCES`<br/><br/>`ALL` |
+| Sequences | `USAGE`<br/><br/>`SELECT`<br/><br/>`UPDATE`<br/><br/>`ALL` |
+| Databases | `CREATE`<br/><br/>`CONNECT`<br/><br/>`TEMPORARY`<br/><br/>`TEMP`<br/><br/>`ALL` |
+| Domains | `USAGE`<br/><br/>`ALL` |
+| Foreign Data Wrappers | `USAGE`<br/><br/>`ALL` |
+| Foreign Servers | `USAGE`<br/><br/>`ALL` |
+| Functions | `EXECUTE`<br/><br/>`ALL` |
+| Procedural Languages | `USAGE`<br/><br/>`ALL` |
+| Schemas | `CREATE`<br/><br/>`USAGE`<br/><br/>`ALL` |
+| Tablespaces | `CREATE`<br/><br/>`ALL` |
+| Types | `USAGE`<br/><br/>`ALL` |
+| Protocols | `SELECT`<br/><br/>`INSERT`<br/><br/>`ALL` |
 
 > **Note** You must grant privileges for each object individually. For example, granting `ALL` on a database does not grant full access to the objects within that database. It only grants all of the database-level privileges (`CONNECT`, `CREATE`, `TEMPORARY`) to the database itself.
 

@@ -379,10 +379,10 @@ Operators that require the `jsonb` data type as the left operand are described i
 
 | Operator | Right Operand Type | Description | Example |
 | --- | --- | --- | --- |
-| `@>` | `jsonb` | Does the left JSON value contain within it the right value? | `'&#123;"a":1, "b":2}'::jsonb @> '&#123;"b":2}'::jsonb` |
-| `<@` | `jsonb` | Is the left JSON value contained within the right value? | `'&#123;"b":2}'::jsonb <@ '&#123;"a":1, "b":2}'::jsonb` |
-| `?` | `text` | Does the key/element string exist within the JSON value? | `'&#123;"a":1, "b":2}'::jsonb ? 'b'` |
-| `?\|` | `text[]` | Do any of these key/element strings exist? | `'&#123;"a":1, "b":2, "c":3}'::jsonb ?\| array['b', 'c']` |
+| `@>` | `jsonb` | Does the left JSON value contain within it the right value? | `'{"a":1, "b":2}'::jsonb @> '{"b":2}'::jsonb` |
+| `<@` | `jsonb` | Is the left JSON value contained within the right value? | `'{"b":2}'::jsonb <@ '{"a":1, "b":2}'::jsonb` |
+| `?` | `text` | Does the key/element string exist within the JSON value? | `'{"a":1, "b":2}'::jsonb ? 'b'` |
+| `?\|` | `text[]` | Do any of these key/element strings exist? | `'{"a":1, "b":2, "c":3}'::jsonb ?\| array['b', 'c']` |
 | `?&` | `text[]` | Do all of these key/element strings exist? | `'["a", "b"]'::jsonb ?& array['a', 'b']` |
 
 The standard comparison operators in the following table are available only for the `jsonb` data type, not for the `json` data type. They follow the ordering rules for B-tree operations described in [jsonb Indexing](#topic_aqt_1tw_mq).
@@ -409,12 +409,12 @@ This table describes the functions that create `json` data type values. (Current
 | Function | Description | Example | Example Result |
 | --- | --- | --- | --- |
 | `to_json(anyelement)` | Returns the value as a JSON object. Arrays and composites are processed recursively and are converted to arrays and objects. If the input contains a cast from the type to `json`, the cast function is used to perform the conversion; otherwise, a JSON scalar value is produced. For any scalar type other than a number, a Boolean, or a null value, the text representation will be used, properly quoted and escaped so that it is a valid JSON string. | `to_json('Fred said "Hi."'::text)` | `"Fred said \"Hi.\""` |
-| `array_to_json(anyarray [, pretty_bool])` | Returns the array as a JSON array. A multidimensional array becomes a JSON array of arrays.<br><br>Line feeds will be added between dimension-1 elements if `pretty_bool` is true. | `array_to_json('&#123;&#123;1,5},&#123;99,100}}'::int[])` | `[[1,5],[99,100]]` |
-| `row_to_json(record [, pretty_bool])` | Returns the row as a JSON object.<br><br>Line feeds will be added between level-1 elements if `pretty_bool` is true. | `row_to_json(row(1,'foo'))` | `&#123;"f1":1,"f2":"foo"}` |
+| `array_to_json(anyarray [, pretty_bool])` | Returns the array as a JSON array. A multidimensional array becomes a JSON array of arrays.<br/><br/>Line feeds will be added between dimension-1 elements if `pretty_bool` is true. | `array_to_json('{​{1,5},{99,100}}'::int[])` | `[[1,5],[99,100]]` |
+| `row_to_json(record [, pretty_bool])` | Returns the row as a JSON object.<br/><br/>Line feeds will be added between level-1 elements if `pretty_bool` is true. | `row_to_json(row(1,'foo'))` | `{"f1":1,"f2":"foo"}` |
 | `json_build_array(VARIADIC "any"`) | Builds a possibly-heterogeneously-typed JSON array out of a `VARIADIC` argument list. | `json_build_array(1,2,'3',4,5)` | `[1, 2, "3", 4, 5]` |
-| `json_build_object(VARIADIC "any")` | Builds a JSON object out of a `VARIADIC` argument list. The argument list is taken in order and converted to a set of key/value pairs. | `json_build_object('foo',1,'bar',2)` | `&#123;"foo": 1, "bar": 2}` |
-| `json_object(text[])` | Builds a JSON object out of a text array. The array must be either a one or a two dimensional array.<br><br>The one dimensional array must have an even number of elements. The elements are taken as key/value pairs.<br><br>For a two dimensional array, each inner array must have exactly two elements, which are taken as a key/value pair. | `json_object('&#123;a, 1, b, "def", c, 3.5}')`<br><br>`json_object('&#123;&#123;a, 1},&#123;b, "def"},&#123;c, 3.5}}')` | `&#123;"a": "1", "b": "def", "c": "3.5"}` |
-| `json_object(keys text[], values text[])` | Builds a JSON object out of a text array. This form of `json_object` takes keys and values pairwise from two separate arrays. In all other respects it is identical to the one-argument form. | `json_object('&#123;a, b}', '&#123;1,2}')` | `&#123;"a": "1", "b": "2"}` |
+| `json_build_object(VARIADIC "any")` | Builds a JSON object out of a `VARIADIC` argument list. The argument list is taken in order and converted to a set of key/value pairs. | `json_build_object('foo',1,'bar',2)` | `{"foo": 1, "bar": 2}` |
+| `json_object(text[])` | Builds a JSON object out of a text array. The array must be either a one or a two dimensional array.<br/><br/>The one dimensional array must have an even number of elements. The elements are taken as key/value pairs.<br/><br/>For a two dimensional array, each inner array must have exactly two elements, which are taken as a key/value pair. | `json_object('{a, 1, b, "def", c, 3.5}')`<br/><br/>`json_object('{​{a, 1},{b, "def"},{c, 3.5}}')` | `{"a": "1", "b": "def", "c": "3.5"}` |
+| `json_object(keys text[], values text[])` | Builds a JSON object out of a text array. This form of `json_object` takes keys and values pairwise from two separate arrays. In all other respects it is identical to the one-argument form. | `json_object('{a, b}', '{1,2}')` | `{"a": "1", "b": "2"}` |
 
 > **Note** `array_to_json` and `row_to_json` have the same behavior as `to_json` except for offering a pretty-printing option. The behavior described for `to_json` likewise applies to each individual value converted by the other JSON creation functions.
 
@@ -435,27 +435,234 @@ This table shows the functions aggregate records to an array of JSON objects and
 
 ### JSON Processing Functions
 
-This table shows the functions that are available for processing `json` and `jsonb` values.
+This section describes the functions that are available for processing `json` and `jsonb` values.
 
 Many of these processing functions and operators convert Unicode escapes in JSON strings to the appropriate single character. This is a not an issue if the input data type is `jsonb`, because the conversion was already done. However, for `json` data type input, this might result in an error being thrown. See [About JSON Data](#topic_upc_tcs_fz).
 
-**JSON Processing Functions**
+#### json_array_length() / jsonb_array_length()
 
-| Function | Return Type | Description | Example | Example Result |
-| --- | --- | --- | --- | --- |
-| `json_array_length(json)`<br><br>`jsonb_array_length(jsonb)` | `int` | Returns the number of elements in the outermost JSON array. | `json_array_length('[1,2,3,&#123;"f1":1,"f2":[5,6]},4]')` | `5` |
-| `json_each(json)`<br><br>`jsonb_each(jsonb)` | `setof key text, value json`<br><br>`setof key text, value jsonb` | Expands the outermost JSON object into a set of key/value pairs. | `select * from json_each('&#123;"a":"foo", "b":"bar"}')` | ` key \| value<br>-----+-------<br> a   \| "foo"<br> b   \| "bar"` |
-| `json_each_text(json)`<br><br>`jsonb_each_text(jsonb)` | `setof key text, value text` | Expands the outermost JSON object into a set of key/value pairs. The returned values will be of type `text`. | `select * from json_each_text('&#123;"a":"foo", "b":"bar"}')` | ` key \| value<br>-----+-------<br> a   \| foo<br> b   \| bar` |
-| `json_extract_path(from_json json, VARIADIC path_elems text[])`<br><br>`jsonb_extract_path(from_json jsonb, VARIADIC path_elems text[])` | `json`<br><br>`jsonb` | Returns the JSON value pointed to by `path_elems` (equivalent to `#>` operator). | `json_extract_path('&#123;"f2":&#123;"f3":1},"f4":&#123;"f5":99,"f6":"foo"}}','f4')` | `&#123;"f5":99,"f6":"foo"}` |
-| `json_extract_path_text(from_json json, VARIADIC path_elems text[])`<br><br>`jsonb_extract_path_text(from_json jsonb, VARIADIC path_elems text[])` | `text` | Returns the JSON value pointed to by `path_elems` as text. Equivalent to `#>>` operator. | `json_extract_path_text('&#123;"f2":&#123;"f3":1},"f4":&#123;"f5":99,"f6":"foo"}}','f4', 'f6')` | `foo` |
-| `json_object_keys(json)`<br><br>`jsonb_object_keys(jsonb)` | `setof text` | Returns set of keys in the outermost JSON object. | `json_object_keys('&#123;"f1":"abc","f2":&#123;"f3":"a", "f4":"b"}}')` | ` json_object_keys<br>------------------<br> f1<br> f2` |
-| `json_populate_record(base anyelement, from_json json)`<br><br>`jsonb_populate_record(base anyelement, from_json jsonb)` | `anyelement` | Expands the object in `from_json` to a row whose columns match the record type defined by base. See [Note 1](#notes-on-json-examples). | `select * from json_populate_record(null::myrowtype, '&#123;"a":1,"b":2}')` | ` a \| b<br>---+---<br> 1 \| 2` |
-| `json_populate_recordset(base anyelement, from_json json)`<br><br>`jsonb_populate_recordset(base anyelement, from_json jsonb)` | `setof anyelement` | Expands the outermost array of objects in `from_json` to a set of rows whose columns match the record type defined by base. See [Note 1](#notes-on-json-examples). | `select * from json_populate_recordset(null::myrowtype, '[&#123;"a":1,"b":2},&#123;"a":3,"b":4}]')` | ` a \| b<br>---+---<br> 1 \| 2<br> 3 \| 4` |
-| `json_array_elements(json)`<br><br>`jsonb_array_elements(jsonb`) | `setof json`<br><br>`setof jsonb` | Expands a JSON array to a set of JSON values. | `select * from json_array_elements('[1,true, [2,false]]')` | `   value<br>-----------<br> 1<br> true<br> [2,false]` |
-| `json_array_elements_text(json)`<br><br>`jsonb_array_elements_text(jsonb)` | `setof text` | Expands a JSON array to a set of `text` values. | `select * from json_array_elements_text('["foo", "bar"]')` | `   value<br>-----------<br> foo<br> bar` |
-| `json_typeof(json)`<br><br>`jsonb_typeof(jsonb)` | `text` | Returns the type of the outermost JSON value as a text string. Possible types are `object`, `array`, `string`, `number`, `boolean`, and `null`. See [Note 2](#notes-on-json-examples). | `json_typeof('-123.4')` | `number` |
-| `json_to_record(json)`<br><br>`jsonb_to_record(jsonb)` | `record` | Builds an arbitrary record from a JSON object. See [Note 1](#notes-on-json-examples).<br><br>As with all functions returning record, the caller must explicitly define the structure of the record with an `AS` clause. | `select * from json_to_record('&#123;"a":1,"b":[1,2,3],"c":"bar"}') as x(a int, b text, d text)` | ` a \|    b    \| d<br>---+---------+---<br> 1 \| [1,2,3] \|` |
-| `json_to_recordset(json)`<br><br>`jsonb_to_recordset(jsonb)` | `setof record` | Builds an arbitrary set of records from a JSON array of objects See [Note 1](#notes-on-json-examples).<br><br>As with all functions returning record, the caller must explicitly define the structure of the record with an `AS` clause. | `select * from json_to_recordset('[&#123;"a":1,"b":"foo"},&#123;"a":"2","c":"bar"}]') as x(a int, b text);` | ` a \|  b<br>---+-----<br> 1 \| foo<br> 2 \|` |
+Syntax: `json_array_length(json)` / `jsonb_array_length(jsonb)`
+
+Return type: `int`
+
+Returns the number of elements in the outermost JSON array.
+
+Example:
+
+```
+json_array_length('[1,2,3,{"f1":1,"f2":[5,6]},4]')
+5
+```
+
+#### json_each() / jsonb_each()
+
+Syntax: `json_each(json)` / `jsonb_each(jsonb)`
+
+Return type: `setof key text, value json` / `setof key text, value jsonb`
+
+Expands the outermost JSON object into a set of key/value pairs.
+
+Example:
+
+```
+select * from json_each('{"a":"foo", "b":"bar"}')
+ key | value
+-----+-------
+ a   | "foo"
+ b   | "bar"
+```
+
+#### json_each_text() / jsonb_each_text()
+
+Syntax: `json_each_text(json)` / `jsonb_each_text(jsonb)`
+
+Return type: `setof key text, value text`
+
+Expands the outermost JSON object into a set of key/value pairs. The returned values will be of type `text`.
+
+Example:
+
+```
+select * from json_each_text('{"a":"foo", "b":"bar"}')
+ key | value
+-----+-------
+ a   | foo
+ b   | bar
+```
+
+#### json_extract_path() / jsonb_extract_path()
+
+Syntax: `json_extract_path(from_json json, VARIADIC path_elems text[])` / `jsonb_extract_path(from_json jsonb, VARIADIC path_elems text[])`
+
+Return type: `json` / `jsonb`
+
+Returns the JSON value pointed to by `path_elems` (equivalent to `#>` operator).
+
+Example:
+
+```
+json_extract_path('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}','f4')
+{"f5":99,"f6":"foo"}
+```
+
+#### json_extract_path_text() / jsonb_extract_path_text()
+
+Syntax: `json_extract_path_text(from_json json, VARIADIC path_elems text[])` / `jsonb_extract_path_text(from_json jsonb, VARIADIC path_elems text[])`
+
+Return type: `text`
+
+Returns the JSON value pointed to by `path_elems` as text. Equivalent to `#>>` operator.
+
+Example:
+
+```
+json_extract_path_text('{"f2":{"f3":1},"f4":{"f5":99,"f6":"foo"}}','f4', 'f6')
+foo
+```
+
+#### json_object_keys() / jsonb_object_keys()
+
+Syntax: `json_object_keys(json)` / `jsonb_object_keys(jsonb)`
+
+Return type: `setof text`
+
+Returns set of keys in the outermost JSON object.
+
+Example:
+
+```
+json_object_keys('{"f1":"abc","f2":{"f3":"a", "f4":"b"}}')
+ json_object_keys
+------------------
+ f1
+ f2
+```
+
+#### json_populate_record() / jsonb_populate_record()
+
+Syntax: `json_populate_record(base anyelement, from_json json)` / `jsonb_populate_record(base anyelement, from_json jsonb)`
+
+Return type: `anyelement`
+
+Expands the object in `from_json` to a row whose columns match the record type defined by base. See [Note 1](#notes-on-json-examples).
+
+Example:
+
+```
+select * from json_populate_record(null::myrowtype, '{"a":1,"b":2}')
+ a | b
+---+---
+ 1 | 2
+```
+
+#### json_populate_recordset() / jsonb_populate_recordset()
+
+Syntax: `json_populate_recordset(base anyelement, from_json json)` / `jsonb_populate_recordset(base anyelement, from_json jsonb)`
+
+Return type: `setof anyelement`
+
+Expands the outermost array of objects in `from_json` to a set of rows whose columns match the record type defined by base. See [Note 1](#notes-on-json-examples).
+
+Example:
+
+```
+select * from json_populate_recordset(null::myrowtype, '[{"a":1,"b":2},{"a":3,"b":4}]')
+ a | b
+---+---
+ 1 | 2
+ 3 | 4
+```
+
+#### json_array_elements() / jsonb_array_elements()
+
+Syntax: `json_array_elements(json)` / `jsonb_array_elements(jsonb)`
+
+Return type: `setof json` / `setof jsonb`
+
+Expands a JSON array to a set of JSON values.
+
+Example:
+
+```
+select * from json_array_elements('[1,true, [2,false]]')
+   value
+-----------
+ 1
+ true
+ [2,false]
+```
+
+#### json_array_elements_text() / jsonb_array_elements_text()
+
+Syntax: `json_array_elements_text(json)` / `jsonb_array_elements_text(jsonb)`
+
+Return type: `setof text`
+
+Expands a JSON array to a set of `text` values.
+
+Example:
+
+```
+select * from json_array_elements_text('["foo", "bar"]')
+   value
+-----------
+ foo
+ bar
+```
+
+#### json_typeof() / jsonb_typeof()
+
+Syntax: `json_typeof(json)` / `jsonb_typeof(jsonb)`
+
+Return type: `text`
+
+Returns the type of the outermost JSON value as a text string. Possible types are `object`, `array`, `string`, `number`, `boolean`, and `null`. See [Note 2](#notes-on-json-examples).
+
+Example:
+
+```
+json_typeof('-123.4')
+number
+```
+
+#### json_to_record() / jsonb_to_record()
+
+Syntax: `json_to_record(json)` / `jsonb_to_record(jsonb)`
+
+Return type: `record`
+
+Builds an arbitrary record from a JSON object. See [Note 1](#notes-on-json-examples).
+
+As with all functions returning record, the caller must explicitly define the structure of the record with an `AS` clause.
+
+Example:
+
+```
+select * from json_to_record('{"a":1,"b":[1,2,3],"c":"bar"}') as x(a int, b text, d text)
+ a |    b    | d
+---+---------+---
+ 1 | [1,2,3] |
+```
+
+#### json_to_recordset() / jsonb_to_recordset()
+
+Syntax: `json_to_recordset(json)` / `jsonb_to_recordset(jsonb)`
+
+Return type: `setof record`
+
+Builds an arbitrary set of records from a JSON array of objects See [Note 1](#notes-on-json-examples).
+
+As with all functions returning record, the caller must explicitly define the structure of the record with an `AS` clause.
+
+Example:
+
+```
+select * from json_to_recordset('[{"a":1,"b":"foo"},{"a":"2","c":"bar"}]') as x(a int, b text);
+ a |  b
+---+-----
+ 1 | foo
+ 2 |
+```
 
 #### Notes on JSON examples
 
