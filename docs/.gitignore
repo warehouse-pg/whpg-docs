@@ -1,5 +1,4 @@
 .vitepress/cache
 .vitepress/dist
-.vitepress/.temp
 vitepress.code-workspace
 style.md

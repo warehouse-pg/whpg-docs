@@ -349,41 +349,6 @@ SELECT * from gp_toolkit.gp_resgroup_iostats_per_host;
 (5 rows)
 ```
 
-<a id="gp_resgroup_iostats_per_host"></a>
-
-## gp_resgroup_iostats_per_host
-
-The `gp_toolkit.gp_resgroup_iostats_per_host` view allows administrators to see current disk I/O  usage for each resource group on a per-host basis.
-
-Memory amounts are specified in MBs.
-
-> **Note** The `gp_resgroup_iostats_per_host` view is valid only when resource group-based resource management is active.
-
-| column       | type | references                        | description                       |
-| ------------ | ---- | --------------------------------- | --------------------------------- |
-| `rsgname`    | name | pg_resgroup.rsgname               | The name of the resource group.   |
-| `hostname`   | text | gp_segment_configuration.hostname | The hostname of the segment host. |
-| `tablespace` |      |                                   |                                   |
-| `rbps`       |      |                                   |                                   |
-
-\|\`
-
-\|`cpu_usage`|float| |The real-time CPU core usage by the resource group on a host. The value is the sum of the percentages of the CPU cores that are used by the resource group on the host.|
-\|`memory_usage`|float| |The real-time memory usage of the resource group on each WarehousePG segment's host, in MB.|
-
-Sample output for the `gp_resgroup_iostats_per_host` view:
-
-```
-select * from gp_toolkit.gp_resgroup_status_per_host;
- rsgname       | hostname | tablespace | rbps (MB_read/s)
----------------+----------+-----------+--------------
- admin_group   | zero     | pg_default | 80
- default_group | zero     | pg_default | 500
- system_group  | zero     | pg_default | 300
- rg_new_group  | zero     | 
-(4 rows)
-```
-
 <a id="gp_resgroup_status"></a>
 
 ## gp_resgroup_status
