@@ -226,14 +226,14 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `ALTER OPERATOR FAMILY` | YES |  |
 | `ALTER PROTOCOL` | YES |  |
 | `ALTER RESOURCE QUEUE` | YES | WarehousePG resource management feature - not in PostgreSQL. |
-| `ALTER ROLE` | YES | **WarehousePG Clauses:**<br><br>`RESOURCE QUEUE `*queue_name*` \| none` |
+| `ALTER ROLE` | YES | **WarehousePG Clauses:**<br/><br/>`RESOURCE QUEUE `*queue_name*` \| none` |
 | `ALTER SCHEMA` | YES |  |
 | `ALTER SEQUENCE` | YES |  |
 | `ALTER SYSTEM` | **NO** |  |
-| `ALTER TABLE` | YES | **Unsupported Clauses / Options:**<br><br>`CLUSTER ON`<br><br>`ENABLE/DISABLE TRIGGER`<br><br>**WarehousePG Database Clauses:**<br><br>`ADD \| DROP \| RENAME \| SPLIT \| EXCHANGE PARTITION \| SET SUBPARTITION TEMPLATE \| SET WITH ` `(REORGANIZE=true \| false) \| SET DISTRIBUTED BY` |
+| `ALTER TABLE` | YES | **Unsupported Clauses / Options:**<br/><br/>`CLUSTER ON`<br/><br/>`ENABLE/DISABLE TRIGGER`<br/><br/>**WarehousePG Database Clauses:**<br/><br/>`ADD \| DROP \| RENAME \| SPLIT \| EXCHANGE PARTITION \| SET SUBPARTITION TEMPLATE \| SET WITH ` `(REORGANIZE=true \| false) \| SET DISTRIBUTED BY` |
 | `ALTER TABLESPACE` | YES |  |
 | `ALTER TRIGGER` | **NO** |  |
-| `ALTER TYPE` | YES | **WarehousePG Clauses:**<br><br>`SET DEFAULT ENCODING` |
+| `ALTER TYPE` | YES | **WarehousePG Clauses:**<br/><br/>`SET DEFAULT ENCODING` |
 | `ALTER USER` | YES | An alias for [ALTER ROLE](../sql_commands/ALTER_ROLE.md) |
 | `ALTER VIEW` | YES |  |
 | `ANALYZE` | YES |  |
@@ -244,8 +244,8 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `COMMENT` | YES |  |
 | `COMMIT` | YES |  |
 | `COMMIT PREPARED` | **NO** |  |
-| `COPY` | YES | **Modified Clauses:**<br><br>`ESCAPE [ AS ] '`*escape*`' \| 'OFF'`<br><br>**WarehousePG Clauses:**<br><br>`[LOG ERRORS] SEGMENT REJECT LIMIT `*count*` [ROWS\|PERCENT]` |
-| `CREATE AGGREGATE` | YES | **Unsupported Clauses / Options:**<br><br>`[ , SORTOP = `*sort_operator*` ]`<br><br>**WarehousePG Clauses:**<br><br>`[ , COMBINEFUNC = `*combinefunc*` ]`<br><br>**Limitations:**<br><br>The functions used to implement the aggregate must be `IMMUTABLE` functions. |
+| `COPY` | YES | **Modified Clauses:**<br/><br/>`ESCAPE [ AS ] '`*escape*`' \| 'OFF'`<br/><br/>**WarehousePG Clauses:**<br/><br/>`[LOG ERRORS] SEGMENT REJECT LIMIT `*count*` [ROWS\|PERCENT]` |
+| `CREATE AGGREGATE` | YES | **Unsupported Clauses / Options:**<br/><br/>`[ , SORTOP = `*sort_operator*` ]`<br/><br/>**WarehousePG Clauses:**<br/><br/>`[ , COMBINEFUNC = `*combinefunc*` ]`<br/><br/>**Limitations:**<br/><br/>The functions used to implement the aggregate must be `IMMUTABLE` functions. |
 | `CREATE CAST` | YES |  |
 | `CREATE CONSTRAINT TRIGGER` | **NO** |  |
 | `CREATE CONVERSION` | YES |  |
@@ -254,29 +254,29 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `CREATE EVENT TRIGGER` | YES |  |
 | `CREATE EXTENSION` | YES | Loads a new extension into WarehousePG - based on PostgreSQL 9.6. |
 | `CREATE EXTERNAL TABLE` | YES | WarehousePG parallel ETL feature - not in PostgreSQL 9.4. |
-| `CREATE FUNCTION` | YES | **Limitations:**<br><br>Functions defined as `STABLE` or `VOLATILE` can be run in WarehousePG provided that they are run on the coordinator only. `STABLE` and `VOLATILE` functions cannot be used in statements that run at the segment level. |
+| `CREATE FUNCTION` | YES | **Limitations:**<br/><br/>Functions defined as `STABLE` or `VOLATILE` can be run in WarehousePG provided that they are run on the coordinator only. `STABLE` and `VOLATILE` functions cannot be used in statements that run at the segment level. |
 | `CREATE GROUP` | YES | An alias for [CREATE ROLE](../sql_commands/CREATE_ROLE.md) |
-| `CREATE INDEX` | YES | **WarehousePG Clauses:**<br><br>`USING bitmap` (bitmap indexes)<br><br>**Limitations:**<br><br>`UNIQUE` indexes are allowed only if they contain all of (or a superset of) the WarehousePG distribution key columns. On partitioned tables, a unique index is only supported within an individual partition - not across all partitions.<br><br>`CONCURRENTLY` keyword not supported in WarehousePG. |
+| `CREATE INDEX` | YES | **WarehousePG Clauses:**<br/><br/>`USING bitmap` (bitmap indexes)<br/><br/>**Limitations:**<br/><br/>`UNIQUE` indexes are allowed only if they contain all of (or a superset of) the WarehousePG distribution key columns. On partitioned tables, a unique index is only supported within an individual partition - not across all partitions.<br/><br/>`CONCURRENTLY` keyword not supported in WarehousePG. |
 | `CREATE LANGUAGE` | YES |  |
 | `CREATE MATERIALIZED VIEW` | YES | Based on PostgreSQL 9.4. |
-| `CREATE OPERATOR` | YES | **Limitations:**<br><br>The function used to implement the operator must be an `IMMUTABLE` function. |
+| `CREATE OPERATOR` | YES | **Limitations:**<br/><br/>The function used to implement the operator must be an `IMMUTABLE` function. |
 | `CREATE OPERATOR CLASS` | YES |  |
 | `CREATE OPERATOR FAMILY` | YES |  |
 | `CREATE PROTOCOL` | YES |  |
 | `CREATE RESOURCE QUEUE` | YES | WarehousePG resource management feature - not in PostgreSQL 9.4. |
-| `CREATE ROLE` | YES | **WarehousePG Clauses:**<br><br>`RESOURCE QUEUE `*queue_name*` \| none` |
+| `CREATE ROLE` | YES | **WarehousePG Clauses:**<br/><br/>`RESOURCE QUEUE `*queue_name*` \| none` |
 | `CREATE RULE` | YES |  |
 | `CREATE SCHEMA` | YES |  |
-| `CREATE SEQUENCE` | YES | **Limitations:**<br><br>The `lastval()` and `currval()` functions are not supported.<br><br>The `setval()` function is only allowed in queries that do not operate on distributed data. |
-| `CREATE TABLE` | YES | **Unsupported Clauses / Options:**<br><br>`[GLOBAL \| LOCAL]`<br><br>`REFERENCES`<br><br>`FOREIGN KEY`<br><br>`[DEFERRABLE \| NOT DEFERRABLE] `<br><br>**Limited Clauses:**<br><br>`UNIQUE` or `PRIMARY KEY `constraints are only allowed on hash-distributed tables (`DISTRIBUTED BY`), and the constraint columns must be the same as or a superset of the distribution key columns of the table and must include all the distribution key columns of the partitioning key.<br><br>**WarehousePG Clauses:**<br><br>`DISTRIBUTED BY (column, [ ... ] ) \|`<br><br>`DISTRIBUTED RANDOMLY`<br><br>`PARTITION BY type (column [, ...]) ( partition_specification, [...] )`<br><br>`WITH (appendoptimized=true [,compresslevel=value,blocksize=value] )` |
+| `CREATE SEQUENCE` | YES | **Limitations:**<br/><br/>The `lastval()` and `currval()` functions are not supported.<br/><br/>The `setval()` function is only allowed in queries that do not operate on distributed data. |
+| `CREATE TABLE` | YES | **Unsupported Clauses / Options:**<br/><br/>`[GLOBAL \| LOCAL]`<br/><br/>`REFERENCES`<br/><br/>`FOREIGN KEY`<br/><br/>`[DEFERRABLE \| NOT DEFERRABLE] `<br/><br/>**Limited Clauses:**<br/><br/>`UNIQUE` or `PRIMARY KEY `constraints are only allowed on hash-distributed tables (`DISTRIBUTED BY`), and the constraint columns must be the same as or a superset of the distribution key columns of the table and must include all the distribution key columns of the partitioning key.<br/><br/>**WarehousePG Clauses:**<br/><br/>`DISTRIBUTED BY (column, [ ... ] ) \|`<br/><br/>`DISTRIBUTED RANDOMLY`<br/><br/>`PARTITION BY type (column [, ...]) ( partition_specification, [...] )`<br/><br/>`WITH (appendoptimized=true [,compresslevel=value,blocksize=value] )` |
 | `CREATE TABLE AS` | YES | See [CREATE TABLE](../sql_commands/CREATE_TABLE.md) |
-| `CREATE TABLESPACE` | **YES** | **WarehousePG Clauses:**<br><br>Specify host file system locations for specific segment instances.<br><br>`WITH (contentID_1='/path/to/dir1...)` |
+| `CREATE TABLESPACE` | **YES** | **WarehousePG Clauses:**<br/><br/>Specify host file system locations for specific segment instances.<br/><br/>`WITH (contentID_1='/path/to/dir1...)` |
 | `CREATE TRIGGER` | **NO** |  |
-| `CREATE TYPE` | YES | **WarehousePG Clauses:**<br><br>`COMPRESSTYPE \| COMPRESSLEVEL \| BLOCKSIZE`<br><br>**Limitations:**<br><br>The functions used to implement a new base type must be `IMMUTABLE` functions. |
+| `CREATE TYPE` | YES | **WarehousePG Clauses:**<br/><br/>`COMPRESSTYPE \| COMPRESSLEVEL \| BLOCKSIZE`<br/><br/>**Limitations:**<br/><br/>The functions used to implement a new base type must be `IMMUTABLE` functions. |
 | `CREATE USER` | YES | An alias for [CREATE ROLE](../sql_commands/CREATE_ROLE.md) |
 | `CREATE VIEW` | YES |  |
 | `DEALLOCATE` | YES |  |
-| `DECLARE` | YES | **Unsupported Clauses / Options:**<br><br>`SCROLL`<br><br>`FOR UPDATE [ OF column [, ...] ]`<br><br>**Limitations:**<br><br>Cursors cannot be backward-scrolled. Forward scrolling is supported.<br><br>PL/pgSQL does not have support for updatable cursors. |
+| `DECLARE` | YES | **Unsupported Clauses / Options:**<br/><br/>`SCROLL`<br/><br/>`FOR UPDATE [ OF column [, ...] ]`<br/><br/>**Limitations:**<br/><br/>Cursors cannot be backward-scrolled. Forward scrolling is supported.<br/><br/>PL/pgSQL does not have support for updatable cursors. |
 | `DELETE` | YES |  |
 | `DISCARD` | YES | **Limitation:** `DISCARD ALL` is not supported. |
 | `DO` | YES | PostgreSQL 9.0 feature |
@@ -311,7 +311,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `END` | YES |  |
 | `EXECUTE` | YES |  |
 | `EXPLAIN` | YES |  |
-| `FETCH` | YES | **Unsupported Clauses / Options:**<br><br>`LAST`<br><br>`PRIOR`<br><br>`BACKWARD`<br><br>`BACKWARD ALL`<br><br>**Limitations:**<br><br>Cannot fetch rows in a nonsequential fashion; backward scan is not supported. |
+| `FETCH` | YES | **Unsupported Clauses / Options:**<br/><br/>`LAST`<br/><br/>`PRIOR`<br/><br/>`BACKWARD`<br/><br/>`BACKWARD ALL`<br/><br/>**Limitations:**<br/><br/>Cannot fetch rows in a nonsequential fashion; backward scan is not supported. |
 | `GRANT` | YES |  |
 | `INSERT` | YES |  |
 | `LATERAL` Join Type | **NO** |  |
@@ -333,17 +333,17 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `ROLLBACK PREPARED` | **NO** |  |
 | `ROLLBACK TO SAVEPOINT` | YES |  |
 | `SAVEPOINT` | YES |  |
-| `SELECT` | YES | **Limitations:**<br><br>Limited use of `VOLATILE` and `STABLE` functions in `FROM` or `WHERE` clauses<br><br>Text search (`Tsearch2`) is not supported<br><br>**WarehousePG Clauses (OLAP):**<br><br>`[GROUP BY `*grouping_element*` [, ...]]`<br><br>`[WINDOW `*window_name*` AS (`*window_specification*`)]`<br><br>`[FILTER (WHERE `*condition*`)]` applied to an aggregate function in the `SELECT` list |
+| `SELECT` | YES | **Limitations:**<br/><br/>Limited use of `VOLATILE` and `STABLE` functions in `FROM` or `WHERE` clauses<br/><br/>Text search (`Tsearch2`) is not supported<br/><br/>**WarehousePG Clauses (OLAP):**<br/><br/>`[GROUP BY `*grouping_element*` [, ...]]`<br/><br/>`[WINDOW `*window_name*` AS (`*window_specification*`)]`<br/><br/>`[FILTER (WHERE `*condition*`)]` applied to an aggregate function in the `SELECT` list |
 | `SELECT INTO` | YES | See [SELECT](../sql_commands/SELECT.md) |
 | `SET` | YES |  |
 | `SET CONSTRAINTS` | **NO** | In PostgreSQL, this only applies to foreign key constraints, which are currently not enforced in WarehousePG. |
 | `SET ROLE` | YES |  |
 | `SET SESSION AUTHORIZATION` | YES | Deprecated as of PostgreSQL 8.1 - see [SET ROLE](../sql_commands/SET_ROLE.md) |
-| `SET TRANSACTION` | YES | **Limitations:**<br><br>`DEFERRABLE` clause has no effect.<br><br>`SET TRANSACTION SNAPSHOT` command is not supported. |
+| `SET TRANSACTION` | YES | **Limitations:**<br/><br/>`DEFERRABLE` clause has no effect.<br/><br/>`SET TRANSACTION SNAPSHOT` command is not supported. |
 | `SHOW` | YES |  |
 | `START TRANSACTION` | YES |  |
 | `TRUNCATE` | YES |  |
 | `UNLISTEN` | **YES** |  |
-| `UPDATE` | YES | **Limitations:**<br><br>`SET` not allowed for WarehousePG distribution key columns. |
-| `VACUUM` | YES | **Limitations:**<br><br>`VACUUM FULL` is not recommended in WarehousePG. |
+| `UPDATE` | YES | **Limitations:**<br/><br/>`SET` not allowed for WarehousePG distribution key columns. |
+| `VACUUM` | YES | **Limitations:**<br/><br/>`VACUUM FULL` is not recommended in WarehousePG. |
 | `VALUES` | YES |  |

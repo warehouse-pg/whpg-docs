@@ -136,26 +136,26 @@ Scan-related callback functions include:
 
 | Callback Signature | Description |
 | --- | --- |
-| `void`<br>`GetForeignRelSize (PlannerInfo *root,`<br>`                   RelOptInfo *baserel,`<br>`                   Oid foreigntableid)` | Obtain relation size estimates for a foreign table. Called at the beginning of planning for a query on a foreign table. |
-| `void`<br>`GetForeignPaths (PlannerInfo *root,`<br>`                 RelOptInfo *baserel,`<br>`                 Oid foreigntableid)` | Create possible access paths for a scan on a foreign table. Called during query planning.<br><br>**Note:** A WarehousePG Database-compatible FDW must call `create_foreignscan_path()` in its `GetForeignPaths()` callback function. |
-| `ForeignScan *`<br>`GetForeignPlan (PlannerInfo *root,`<br>`                RelOptInfo *baserel,`<br>`                Oid foreigntableid,`<br>`                ForeignPath *best_path,`<br>`                List *tlist,`<br>`                List *scan_clauses)` | Create a `ForeignScan` plan node from the selected foreign access path. Called at the end of query planning. |
-| `void`<br>`BeginForeignScan (ForeignScanState *node,`<br>`                  int eflags)` | Begin running a foreign scan. Called during executor startup. |
-| `TupleTableSlot *`<br>`IterateForeignScan (ForeignScanState *node)` | Fetch one row from the foreign source, returning it in a tuple table slot; return NULL if no more rows are available. |
-| `void`<br>`ReScanForeignScan (ForeignScanState *node)` | Restart the scan from the beginning. |
-| `void`<br>`EndForeignScan (ForeignScanState *node)` | End the scan and release resources. |
+| `void`<br/>`GetForeignRelSize (PlannerInfo *root,`<br/>`                   RelOptInfo *baserel,`<br/>`                   Oid foreigntableid)` | Obtain relation size estimates for a foreign table. Called at the beginning of planning for a query on a foreign table. |
+| `void`<br/>`GetForeignPaths (PlannerInfo *root,`<br/>`                 RelOptInfo *baserel,`<br/>`                 Oid foreigntableid)` | Create possible access paths for a scan on a foreign table. Called during query planning.<br/><br/>**Note:** A WarehousePG Database-compatible FDW must call `create_foreignscan_path()` in its `GetForeignPaths()` callback function. |
+| `ForeignScan *`<br/>`GetForeignPlan (PlannerInfo *root,`<br/>`                RelOptInfo *baserel,`<br/>`                Oid foreigntableid,`<br/>`                ForeignPath *best_path,`<br/>`                List *tlist,`<br/>`                List *scan_clauses)` | Create a `ForeignScan` plan node from the selected foreign access path. Called at the end of query planning. |
+| `void`<br/>`BeginForeignScan (ForeignScanState *node,`<br/>`                  int eflags)` | Begin running a foreign scan. Called during executor startup. |
+| `TupleTableSlot *`<br/>`IterateForeignScan (ForeignScanState *node)` | Fetch one row from the foreign source, returning it in a tuple table slot; return NULL if no more rows are available. |
+| `void`<br/>`ReScanForeignScan (ForeignScanState *node)` | Restart the scan from the beginning. |
+| `void`<br/>`EndForeignScan (ForeignScanState *node)` | End the scan and release resources. |
 
 If a foreign data wrapper supports writable foreign tables, it should provide the update-related callback functions that are required by the capabilities of the FDW. Update-related callback functions include:
 
 | Callback Signature | Description |
 | --- | --- |
-| `void`<br>`AddForeignUpdateTargets (Query *parsetree,`<br>`                         RangeTblEntry *target_rte,`<br>`                         Relation target_relation)` | Add additional information in the foreign table that will be retrieved during an update or delete operation to identify the exact row on which to operate. |
-| `List *`<br>`PlanForeignModify (PlannerInfo *root,`<br>`                   ModifyTable *plan,`<br>`                   Index resultRelation,`<br>`                   int subplan_index)` | Perform additional planning actions required for an insert, update, or delete operation on a foreign table, and return the information generated. |
-| `void`<br>`BeginForeignModify (ModifyTableState *mtstate,`<br>`                    ResultRelInfo *rinfo,`<br>`                    List *fdw_private,`<br>`                    int subplan_index,`<br>`                    int eflags)` | Begin executing a modify operation on a foreign table. Called during executor startup. |
-| `TupleTableSlot *`<br>`ExecForeignInsert (EState *estate,`<br>`                   ResultRelInfo *rinfo,`<br>`                   TupleTableSlot *slot,`<br>`                   TupleTableSlot *planSlot)` | Insert a single tuple into the foreign table. Return a slot containing the data that was actually inserted, or NULL if no row was inserted. |
-| `TupleTableSlot *`<br>`ExecForeignUpdate (EState *estate,`<br>`                   ResultRelInfo *rinfo,`<br>`                   TupleTableSlot *slot,`<br>`                   TupleTableSlot *planSlot)` | Update a single tuple in the foreign table. Return a slot containing the row as it was actually updated, or NULL if no row was updated. |
-| `TupleTableSlot *`<br>`ExecForeignDelete (EState *estate,`<br>`                   ResultRelInfo *rinfo,`<br>`                   TupleTableSlot *slot,`<br>`                   TupleTableSlot *planSlot)` | Delete a single tuple from the foreign table. Return a slot containing the row that was deleted, or NULL if no row was deleted. |
-| `void`<br>`EndForeignModify (EState *estate,`<br>`                  ResultRelInfo *rinfo)` | End the update and release resources. |
-| `int`<br>`IsForeignRelUpdatable (Relation rel)` | Report the update operations supported by the specified foreign table. |
+| `void`<br/>`AddForeignUpdateTargets (Query *parsetree,`<br/>`                         RangeTblEntry *target_rte,`<br/>`                         Relation target_relation)` | Add additional information in the foreign table that will be retrieved during an update or delete operation to identify the exact row on which to operate. |
+| `List *`<br/>`PlanForeignModify (PlannerInfo *root,`<br/>`                   ModifyTable *plan,`<br/>`                   Index resultRelation,`<br/>`                   int subplan_index)` | Perform additional planning actions required for an insert, update, or delete operation on a foreign table, and return the information generated. |
+| `void`<br/>`BeginForeignModify (ModifyTableState *mtstate,`<br/>`                    ResultRelInfo *rinfo,`<br/>`                    List *fdw_private,`<br/>`                    int subplan_index,`<br/>`                    int eflags)` | Begin executing a modify operation on a foreign table. Called during executor startup. |
+| `TupleTableSlot *`<br/>`ExecForeignInsert (EState *estate,`<br/>`                   ResultRelInfo *rinfo,`<br/>`                   TupleTableSlot *slot,`<br/>`                   TupleTableSlot *planSlot)` | Insert a single tuple into the foreign table. Return a slot containing the data that was actually inserted, or NULL if no row was inserted. |
+| `TupleTableSlot *`<br/>`ExecForeignUpdate (EState *estate,`<br/>`                   ResultRelInfo *rinfo,`<br/>`                   TupleTableSlot *slot,`<br/>`                   TupleTableSlot *planSlot)` | Update a single tuple in the foreign table. Return a slot containing the row as it was actually updated, or NULL if no row was updated. |
+| `TupleTableSlot *`<br/>`ExecForeignDelete (EState *estate,`<br/>`                   ResultRelInfo *rinfo,`<br/>`                   TupleTableSlot *slot,`<br/>`                   TupleTableSlot *planSlot)` | Delete a single tuple from the foreign table. Return a slot containing the row that was deleted, or NULL if no row was deleted. |
+| `void`<br/>`EndForeignModify (EState *estate,`<br/>`                  ResultRelInfo *rinfo)` | End the update and release resources. |
+| `int`<br/>`IsForeignRelUpdatable (Relation rel)` | Report the update operations supported by the specified foreign table. |
 
 Refer to [Foreign Data Wrapper Callback Routines](https://www.postgresql.org/docs/12/fdw-callbacks.html) in the PostgreSQL documentation for detailed information about the inputs and outputs of the FDW callback functions.
 
@@ -173,13 +173,13 @@ The FDW API includes the helper functions listed in the table below. Refer to [F
 
 | Helper Signature | Description |
 | --- | --- |
-| `ForeignDataWrapper *`<br>`GetForeignDataWrapper(Oid fdwid);` | Returns the `ForeignDataWrapper` object for the foreign-data wrapper with the given OID. |
-| `ForeignDataWrapper *`<br>`GetForeignDataWrapperByName(const char *name, bool missing_ok);` | Returns the `ForeignDataWrapper` object for the foreign-data wrapper with the given name. |
-| `ForeignServer *`<br>`GetForeignServer(Oid serverid);` | Returns the `ForeignServer` object for the foreign server with the given OID. |
-| `ForeignServer *`<br>`GetForeignServerByName(const char *name, bool missing_ok);` | Returns the `ForeignServer` object for the foreign server with the given name. |
-| `UserMapping *`<br>`GetUserMapping(Oid userid, Oid serverid);` | Returns the `UserMapping` object for the user mapping of the given role on the given server. |
-| `ForeignTable *`<br>`GetForeignTable(Oid relid);` | Returns the `ForeignTable` object for the foreign table with the given OID. |
-| `List *`<br>`GetForeignColumnOptions(Oid relid, AttrNumber attnum);` | Returns the per-column FDW options for the column with the given foreign table OID and attribute number. |
+| `ForeignDataWrapper *`<br/>`GetForeignDataWrapper(Oid fdwid);` | Returns the `ForeignDataWrapper` object for the foreign-data wrapper with the given OID. |
+| `ForeignDataWrapper *`<br/>`GetForeignDataWrapperByName(const char *name, bool missing_ok);` | Returns the `ForeignDataWrapper` object for the foreign-data wrapper with the given name. |
+| `ForeignServer *`<br/>`GetForeignServer(Oid serverid);` | Returns the `ForeignServer` object for the foreign server with the given OID. |
+| `ForeignServer *`<br/>`GetForeignServerByName(const char *name, bool missing_ok);` | Returns the `ForeignServer` object for the foreign server with the given name. |
+| `UserMapping *`<br/>`GetUserMapping(Oid userid, Oid serverid);` | Returns the `UserMapping` object for the user mapping of the given role on the given server. |
+| `ForeignTable *`<br/>`GetForeignTable(Oid relid);` | Returns the `ForeignTable` object for the foreign table with the given OID. |
+| `List *`<br/>`GetForeignColumnOptions(Oid relid, AttrNumber attnum);` | Returns the per-column FDW options for the column with the given foreign table OID and attribute number. |
 
 <a id="topic5"></a>
 
