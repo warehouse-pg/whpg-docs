@@ -72,3 +72,34 @@ export PATH=$PATH:$HOME/go/bin
     gpbackup --version
     gprestore --version
     ```
+
+## Upgrading
+
+To upgrade to a new release, rebuild `gpbackup`, `gprestore`, and `gpbackup_helper` from the release tag you want, then redistribute them to every host the same way as a fresh install.
+
+1. In your existing clone, fetch the latest tags and check out the release you want to upgrade to. Replace `<tag>` with the release tag, for example `1.34.0-WHPG`:
+
+    ```bash
+    git fetch --tags
+    git checkout <tag>
+    ```
+
+1. Rebuild the binaries:
+
+    ```bash
+    make depend
+    make build
+    ```
+
+1. Transfer the rebuilt binaries to every host in the cluster, overwriting the existing ones. Use the same `gpsync` or `gpscp` command as in [Installing on the cluster](#installing-on-the-cluster).
+
+1. Verify the upgrade by checking the version on the coordinator:
+
+    ```bash
+    gpbackup --version
+    gprestore --version
+    ```
+
+::: info Note
+`gpbackup` and `gprestore` are command-line utilities, not a running service, so there's nothing to stop or restart. Avoid upgrading while a backup or restore is in progress.
+:::
