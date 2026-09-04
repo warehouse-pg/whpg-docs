@@ -378,7 +378,7 @@ WarehousePG supports SHA-256 and SCRAM-SHA-256 password hash algorithms as well.
 | password_hash_algorithm Parameter Value | pg_hba.conf Authentication Method | Comments                                                                                          |
 | --------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------- |
 | MD5                                     |  md5                              | The default WarehousePG password hash algorithm.                                                  |
-| SCRAM-SHA-256                           |  scram-sha-256                    | The most secure method, **but is not supported by WarehousePG version 6.20.x and older clients**. |
+| SCRAM-SHA-256                           |  scram-sha-256                    | The most secure method. Requires a client library that supports SCRAM-SHA-256 authentication. |
 | SHA-256                                 |  password                         | Clear text passwords are sent over the network, SSL-secured client connections are recommended.   |
 
 The password hash function runs when the password is set by using any of the following commands:
