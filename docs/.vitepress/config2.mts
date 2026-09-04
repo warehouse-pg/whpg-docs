@@ -148,8 +148,6 @@ export default defineConfig({
               {text: "pg\_dumpall", link: "/docs/7x/utility_guide/ref/pg_dumpall.md"},
               {text: "pg_filedump", link: "/docs/7x/utility_guide/ref/pg_filedump.md"},
               {text: "pg\_restore", link: "/docs/7x/utility_guide/ref/pg_restore.md"},
-              {text: "plcontainer", link: "/docs/7x/utility_guide/ref/plcontainer.md"},
-              {text: "plcontainer Configuration File", link: "/docs/7x/utility_guide/ref/plcontainer-configuration.md"},
               {text: "psql", link: "/docs/7x/utility_guide/ref/psql.md"},
               {text: "reindexdb", link: "/docs/7x/utility_guide/ref/reindexdb.md"},
               {text: "vacuumdb", link: "/docs/7x/utility_guide/ref/vacuumdb.md"}
