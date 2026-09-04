@@ -119,204 +119,23 @@ The role attributes `LOGIN`, `SUPERUSER`, `CREATEDB`, `CREATEROLE`, `CREATEEXTTA
 
 When an object (table, view, sequence, database, function, language, schema, or tablespace) is created, it is assigned an owner. The owner is normally the role that ran the creation statement. For most kinds of objects, the initial state is that only the owner (or a superuser) can do anything with the object. To allow other roles to use it, privileges must be granted. WarehousePG supports the following privileges for each object type:
 
-<table class="table" id="iq139925"><caption><span class="table--title-label">Table 2. </span><span class="title">Object Privileges</span></caption><colgroup><col style="width:66.66666666666666%" /><col style="width:33.33333333333333%" /></colgroup><thead class="thead">
-            <tr class="row">
-              <th class="entry" id="iq139925__entry__1">Object Type</th>
-              <th class="entry" id="iq139925__entry__2">Privileges</th>
-            </tr>
-          </thead><tbody class="tbody">
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Tables, External Tables, Views</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                <code class="ph codeph">SELECT</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">INSERT</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">UPDATE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">DELETE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">REFERENCES</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">TRIGGER</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">TRUNCATE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Columns</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                  <code class="ph codeph">SELECT</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">INSERT</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">UPDATE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">REFERENCES</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-                <td class="entry" headers="topic6__iq139925__entry__1">Sequences</td>
-                <td class="entry" headers="topic6__iq139925__entry__2">
-                  <p class="p">
-                    <code class="ph codeph">USAGE</code>
-                  </p>
-                  <p class="p">
-                    <code class="ph codeph">SELECT</code>
-                  </p>
-                  <p class="p">
-                    <code class="ph codeph">UPDATE</code>
-                  </p>
-                  <p class="p">
-                    <code class="ph codeph">ALL</code>
-                  </p>
-                </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Databases</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                  <code class="ph codeph">CREATE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">CONNECT</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">TEMPORARY</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">TEMP</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Domains</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                <code class="ph codeph">USAGE</code>
-                </p>
-                <p class="p">
-                <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Foreign Data Wrappers</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                  <code class="ph codeph">USAGE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Foreign Servers</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                  <code class="ph codeph">USAGE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Functions</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                <code class="ph codeph">EXECUTE</code>
-                </p>
-                <p class="p">
-                <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Procedural Languages</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                <code class="ph codeph">USAGE</code>
-                </p>
-                <p class="p">
-                <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Schemas</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                <code class="ph codeph">CREATE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">USAGE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Tablespaces</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                  <code class="ph codeph">CREATE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Types</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                  <code class="ph codeph">USAGE</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-            <tr class="row">
-              <td class="entry" headers="topic6__iq139925__entry__1">Protocols</td>
-              <td class="entry" headers="topic6__iq139925__entry__2">
-                <p class="p">
-                  <code class="ph codeph">SELECT</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">INSERT</code>
-                </p>
-                <p class="p">
-                  <code class="ph codeph">ALL</code>
-                </p>
-              </td>
-            </tr>
-          </tbody></table>
+**Object Privileges**
+
+| Object Type | Privileges |
+| --- | --- |
+| Tables, External Tables, Views | `SELECT`<br/><br/>`INSERT`<br/><br/>`UPDATE`<br/><br/>`DELETE`<br/><br/>`REFERENCES`<br/><br/>`TRIGGER`<br/><br/>`TRUNCATE`<br/><br/>`ALL` |
+| Columns | `SELECT`<br/><br/>`INSERT`<br/><br/>`UPDATE`<br/><br/>`REFERENCES`<br/><br/>`ALL` |
+| Sequences | `USAGE`<br/><br/>`SELECT`<br/><br/>`UPDATE`<br/><br/>`ALL` |
+| Databases | `CREATE`<br/><br/>`CONNECT`<br/><br/>`TEMPORARY`<br/><br/>`TEMP`<br/><br/>`ALL` |
+| Domains | `USAGE`<br/><br/>`ALL` |
+| Foreign Data Wrappers | `USAGE`<br/><br/>`ALL` |
+| Foreign Servers | `USAGE`<br/><br/>`ALL` |
+| Functions | `EXECUTE`<br/><br/>`ALL` |
+| Procedural Languages | `USAGE`<br/><br/>`ALL` |
+| Schemas | `CREATE`<br/><br/>`USAGE`<br/><br/>`ALL` |
+| Tablespaces | `CREATE`<br/><br/>`ALL` |
+| Types | `USAGE`<br/><br/>`ALL` |
+| Protocols | `SELECT`<br/><br/>`INSERT`<br/><br/>`ALL` |
 
 > **Note** You must grant privileges for each object individually. For example, granting `ALL` on a database does not grant full access to the objects within that database. It only grants all of the database-level privileges (`CONNECT`, `CREATE`, `TEMPORARY`) to the database itself.
 
