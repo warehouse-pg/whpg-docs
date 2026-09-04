@@ -134,8 +134,6 @@ This table lists the versions of the WarehousePG Extensions that are compatible 
 |-----------|----------------|----------------------|
 | [PL/Java](../admin_guide/analytics/procedural_languages/pl_java.md) | 2.0.7 | Supports Java 8 and 11. |
 | [PL/R](../admin_guide/analytics/procedural_languages/pl_r.md) | 3.1.1 | R 3.3.3 |
-| PL/Container Image for R | 2.1.2 | R 3.6.3 |
-| PL/Container Images for Python | 2.1.2 | Python 2.7.12<br />Python 3.7 |
 | [MADlib Machine Learning](../admin_guide/analytics/madlib.md) | 2.1.0 | Support matrix at [MADlib FAQ](https://cwiki.apache.org/confluence/display/MADLIB/FAQ#FAQ-Q1-2WhatdatabaseplatformsdoesMADlibsupportandwhatistheupgradematrix?). |
 | [PostGIS Spatial and Geographic Objects](../admin_guide/analytics/postGIS.md) | 3.3.2 | |
 
