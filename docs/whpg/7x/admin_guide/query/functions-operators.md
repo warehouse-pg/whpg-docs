@@ -205,6 +205,6 @@ INSERT INTO mymatrix
 SELECT sum(myvalue) FROM mymatrix;
  sum
 -------------
- {1,3},{4,4}
+ {{1,3},{4,4}}
 ```
 
