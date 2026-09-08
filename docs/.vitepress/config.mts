@@ -35,7 +35,8 @@ export default defineConfig(
           { text: '7.x', link: '/docs/7x' },
           { text: '6.x', link: '/docs/6x' },
           { text: 'Backup & restore', link: '/whpg-backup/' },
-          { text: 'PXF 6.x', link: '/pxf/6x/' }
+          { text: 'PXF 6.x', link: '/pxf/6x/' },
+          { text: 'Extensions', link: '/extensions/' }
         ]
       },
       { text: 'GitHub', link: 'https://github.com/warehouse-pg/warehouse-pg' },
@@ -144,6 +145,15 @@ export default defineConfig(
             ],
           },
           { text: "Reference", link: "/pxf/6x/reference/" }
+        ],
+      },
+      {
+        text: "Extensions",
+        link: "/extensions/",
+        collapsed: false,
+        items: [
+          { text: "Bundled", link: "/extensions/bundled/" },
+          { text: "Additional", link: "/extensions/additional/" }
         ],
       }
     ]
