@@ -2,7 +2,13 @@
 title: WarehousePG Backup and Restore release notes
 navTitle: Release notes
 description: Release notes provide information on what's new in each release of WarehousePG Backup and Restore.
-
+navigation:
+- 1.31.0_rel_notes
+- 1.32.0_rel_notes
+- 1.32.1_rel_notes
+- 1.33.0_rel_notes
+- 1.33.1_rel_notes
+- 1.34.0_rel_notes
 ---
 
 The WarehousePG Backup and Restore documentation describes the latest version, including minor releases and patches. The release notes provide information on what was new in each release.
