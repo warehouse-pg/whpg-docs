@@ -424,7 +424,7 @@ Line feeds will be added between dimension-1 elements if `pretty_bool` is true.
 Example:
 
 ```
-array_to_json('{​{1,5},{99,100}}'::int[])
+array_to_json('{{1,5},{99,100}}'::int[])
 [[1,5],[99,100]]
 ```
 
@@ -475,7 +475,7 @@ Example:
 
 ```
 json_object('{a, 1, b, "def", c, 3.5}')
-json_object('{​{a, 1},{b, "def"},{c, 3.5}}')
+json_object('{{a, 1},{b, "def"},{c, 3.5}}')
 {"a": "1", "b": "def", "c": "3.5"}
 ```
 
