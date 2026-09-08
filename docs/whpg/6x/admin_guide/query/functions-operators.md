@@ -188,7 +188,7 @@ INSERT INTO mymatrix
    VALUES (array[[0,1],[1,0]]);
 SELECT sum(myvalue) FROM mymatrix;
  sum
--------------
+---------------
  {{1,3},{4,4}}
 ```
 
