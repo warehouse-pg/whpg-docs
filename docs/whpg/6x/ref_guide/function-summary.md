@@ -714,7 +714,7 @@ Provides access to more than one row of the same table without doing a self join
 
 Return type: `bigint`
 
-Full syntax: `NTILE(*expr*) OVER ( [PARTITION BY *expr*] ORDER BY *expr* )`
+Full syntax: `NTILE(`*expr*`) OVER ( [PARTITION BY `*expr*`] ORDER BY `*expr*` )`
 
 Divides an ordered data set into a number of buckets (as defined by *expr*) and assigns a bucket number to each row.
 
@@ -722,7 +722,7 @@ Divides an ordered data set into a number of buckets (as defined by *expr*) and 
 
 Return type: `double precision`
 
-Full syntax: `PERCENT_RANK () OVER ( [PARTITION BY *expr*] ORDER BY *expr*)`
+Full syntax: `PERCENT_RANK () OVER ( [PARTITION BY `*expr*`] ORDER BY `*expr*`)`
 
 Calculates the rank of a hypothetical row `R` minus 1, divided by 1 less than the number of rows being evaluated (within a window partition).
 
@@ -730,7 +730,7 @@ Calculates the rank of a hypothetical row `R` minus 1, divided by 1 less than th
 
 Return type: `bigint`
 
-Full syntax: `RANK () OVER ( [PARTITION BY *expr*] ORDER BY *expr*)`
+Full syntax: `RANK () OVER ( [PARTITION BY `*expr*`] ORDER BY `*expr*`)`
 
 Calculates the rank of a row in an ordered group of values. Rows with equal values for the ranking criteria receive the same rank. The number of tied rows are added to the rank number to calculate the next rank value. Ranks may not be consecutive numbers in this case.
 
@@ -738,7 +738,7 @@ Calculates the rank of a row in an ordered group of values. Rows with equal valu
 
 Return type: `bigint`
 
-Full syntax: `ROW_NUMBER () OVER ( [PARTITION BY *expr*] ORDER BY *expr*)`
+Full syntax: `ROW_NUMBER () OVER ( [PARTITION BY `*expr*`] ORDER BY `*expr*`)`
 
 Assigns a unique number to each row to which it is applied (either each row in a window partition or each row of the query).
 
@@ -774,7 +774,7 @@ Transforms a one dimensional array into rows. Returns a set of `anyelement`, a p
 
 Return type: `timestamp, timestamptz, interval, float`
 
-Full syntax: `MEDIAN (*expression*)`
+Full syntax: `MEDIAN (`*expression*`)`
 
 Can take a two-dimensional array as input. Treats such arrays as matrices.
 
