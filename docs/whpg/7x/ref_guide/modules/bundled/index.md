@@ -15,6 +15,7 @@ navigation:
   - orafce_ref
   - pageinspect
   - pg_buffercache
+  - pg_hint_plan
   - pg_stat_statements
   - pg_trgm
   - pgcrypto
@@ -48,7 +49,7 @@ These modules ship with WarehousePG. Activate them in each database with `CREATE
 -   [orafce](orafce_ref.md) - Provides Oracle SQL compatibility functions.
 -   [pageinspect](pageinspect.md) - Provides functions for low-level inspection of the contents of database pages. Available to superusers only.
 -   [pg_buffercache](pg_buffercache.md) - Provides access to views for obtaining cluster-wide shared buffer metrics.
--   pg_hint_plan - Allows controlling query execution plans using hints specified in SQL comments.
+-   [pg_hint_plan](pg_hint_plan.md) - Allows controlling query execution plans using hints specified in SQL comments.
 -   [pg_stat_statements](pg_stat_statements.md) - Tracks execution statistics of all SQL statements. Requires `shared_preload_libraries`.
 -   [pg_trgm](pg_trgm.md) - Provides functions and operators for determining the similarity of alphanumeric text based on trigram matching.
 -   [pgcrypto](pgcrypto.md) - Provides cryptographic functions.
