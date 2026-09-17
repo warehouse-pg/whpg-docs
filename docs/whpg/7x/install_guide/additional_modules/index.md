@@ -24,13 +24,13 @@ To remove a bundled extension from a database:
 psql -d <database_name> -c 'DROP EXTENSION <extension_name>;'
 ```
 
-Some bundled modules use `shared_preload_libraries` instead of `CREATE EXTENSION`. See the [bundled modules reference](../../ref_guide/modules/bundled/index.md) for details on each module.
+Some bundled modules use `shared_preload_libraries` instead of `CREATE EXTENSION`. See the [bundled modules reference](/extensions/bundled/index.md) for details on each module.
 
 ## Separately provided modules
 
 Separately provided modules require downloading and installing a package on every host in your cluster first. See the category pages below for links to installation instructions:
 
--   **[Extensions](extensions/index.md)** — machine learning, geospatial, and statistical extensions.
+-   **[Extensions](/extensions/additional/index.md)** — machine learning, geospatial, and statistical extensions.
 -   **[Procedural languages](procedural_languages/index.md)** — additional languages for writing database functions.
 -   **[External components](external_components/index.md)** — tools that integrate with WarehousePG but aren't database extensions.
 
