@@ -116,7 +116,7 @@ This table lists the versions of the WarehousePG Extensions that are compatible 
 | [MADlib Machine Learning](../admin_guide/analytics/madlib.md) | 2.1, 2.0, 1.21, 1.20, 1.19, 1.18, 1.17, 1.16 | Support matrix at [MADlib FAQ](https://cwiki.apache.org/confluence/display/MADLIB/FAQ#FAQ-Q1-2WhatdatabaseplatformsdoesMADlibsupportandwhatistheupgradematrix?). |
 | [PostGIS Spatial and Geographic Objects](../admin_guide/analytics/postGIS.md) | 2.5.4, 2.1.5 | |
 
-For information about the Oracle Compatibility Functions, see [Oracle Compatibility Functions](../ref_guide/modules/bundled/orafce_ref.md).
+For information about the Oracle Compatibility Functions, see [Oracle Compatibility Functions](/extensions/bundled/orafce_ref.md).
 
 These WarehousePG extensions are installed with WarehousePG
 

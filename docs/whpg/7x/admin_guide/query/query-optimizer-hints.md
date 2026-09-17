@@ -3,7 +3,7 @@ title: Using Optimizer Hints
 
 ---
 
-Override a specific choice the planner makes for a query, such as which scan method, join method, or join order to use, with an optimizer hint. WarehousePG reads hints through the [`pg_hint_plan`](../../ref_guide/modules/bundled/pg_hint_plan.md) extension, placed in a SQL comment before the query.
+Override a specific choice the planner makes for a query, such as which scan method, join method, or join order to use, with an optimizer hint. WarehousePG reads hints through the [`pg_hint_plan`](/extensions/bundled/pg_hint_plan.md) extension, placed in a SQL comment before the query.
 
 Reach for a hint when the cost-based planner settles on a needlessly expensive plan, for example because table statistics are missing or stale. A hint corrects the plan for that one query, without changing a configuration parameter for the whole system.
 
@@ -11,7 +11,7 @@ Reach for a hint when the cost-based planner settles on a needlessly expensive p
 Scan method, join method, join order, and row-estimate hints all influence the plan whether ORCA or the Postgres-based planner runs the query. You don't need to disable ORCA for these hints to take effect.
 :::
 
-See [About ORCA](query-piv-optimizer/index.md) for the two optimizers WarehousePG can use, and [Determining the Query Optimizer that is Used](query-piv-optimizer/query-piv-opt-fallback.md) if you need to confirm which one generated a plan. See [pg_hint_plan](../../ref_guide/modules/bundled/pg_hint_plan.md) for how to load the extension and the configuration parameters that control it.
+See [About ORCA](query-piv-optimizer/index.md) for the two optimizers WarehousePG can use, and [Determining the Query Optimizer that is Used](query-piv-optimizer/query-piv-opt-fallback.md) if you need to confirm which one generated a plan. See [pg_hint_plan](/extensions/bundled/pg_hint_plan.md) for how to load the extension and the configuration parameters that control it.
 
 ## Finding what to hint
 
@@ -29,7 +29,7 @@ Attach a hint to a query as a comment in the query text, or, when you can't edit
 
 ### Loading the extension
 
-Load `pg_hint_plan` before writing a hint. See [Loading the extension](../../ref_guide/modules/bundled/pg_hint_plan.md#loading-the-extension) for how to load it in a session, or configure it to load automatically for a database or user.
+Load `pg_hint_plan` before writing a hint. See [Loading the extension](/extensions/bundled/pg_hint_plan.md#loading-the-extension) for how to load it in a session, or configure it to load automatically for a database or user.
 
 ### Writing a hint comment
 
