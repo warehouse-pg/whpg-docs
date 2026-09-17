@@ -1,6 +1,5 @@
 ---
 title: ALTER TEXT SEARCH PARSER
-navTitle: Description
 
 ---
 

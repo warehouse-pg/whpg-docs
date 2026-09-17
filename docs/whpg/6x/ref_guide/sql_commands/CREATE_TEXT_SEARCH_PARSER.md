@@ -1,6 +1,5 @@
 ---
 title: CREATE TEXT SEARCH PARSER
-navTitle: Description
 
 ---
 

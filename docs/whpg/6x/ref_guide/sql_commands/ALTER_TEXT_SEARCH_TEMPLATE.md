@@ -1,6 +1,5 @@
 ---
 title: ALTER TEXT SEARCH TEMPLATE
-navTitle: Description
 
 ---
 

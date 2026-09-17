@@ -1,6 +1,5 @@
 ---
 title: CREATE TEXT SEARCH TEMPLATE
-navTitle: Description
 
 ---
 
