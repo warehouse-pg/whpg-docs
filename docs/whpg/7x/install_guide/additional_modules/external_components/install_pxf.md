@@ -1,6 +1,8 @@
 ---
 title: WarehousePG Platform Extension Framework (PXF)
-
+description: Installation instructions for the WarehousePG Platform Extension Framework (PXF).
+redirects:
+  - ../../data_sci_pkgs/install_pxf
 ---
 
 *Optional.* If you do not plan to use PXF, no action is necessary.

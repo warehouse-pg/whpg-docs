@@ -1,5 +1,6 @@
 ---
 title: pgcrypto
+description: WarehousePG is installed with an optional module of encryption/decryption functions called pgcrypto. The pgcrypto functions allow database administrators to store certain columns of data in encrypted form. This adds an e.
 
 ---
 

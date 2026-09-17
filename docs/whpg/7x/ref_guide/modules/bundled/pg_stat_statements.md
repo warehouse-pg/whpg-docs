@@ -1,6 +1,8 @@
 ---
 title: pg_stat_statements
-
+description: pgstatstatements is a core PostgreSQL module that provides a means to track planning and execution statistics of all SQL statements executed by the server.
+redirects:
+  - ../pg_stat_statements
 ---
 
 [`pg_stat_statements`](https://www.postgresql.org/docs/12/pgstatstatements.html) is a core PostgreSQL module that provides a means to track planning and execution statistics of all SQL statements executed by the server.

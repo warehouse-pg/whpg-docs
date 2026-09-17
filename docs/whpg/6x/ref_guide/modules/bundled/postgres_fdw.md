@@ -1,5 +1,6 @@
 ---
 title: postgres_fdw
+description: The postgresfdw module is a foreign data wrapper (FDW) that you can use to access data stored in a remote PostgreSQL or WarehousePG.
 
 ---
 

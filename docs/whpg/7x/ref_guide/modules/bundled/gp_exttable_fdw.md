@@ -1,6 +1,8 @@
 ---
 title: gp_exttable_fdw
-
+description: The gpexttablefdw module is a built-in foreign-data wrapper that converts an external table to a foreign table.
+redirects:
+  - ../gp_exttable_fdw
 ---
 
 The `gp_exttable_fdw` module is a built-in foreign-data wrapper that converts an external table to a foreign table.

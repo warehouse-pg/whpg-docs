@@ -1,5 +1,6 @@
 ---
 title: uuid-ossp
+description: The uuid-ossp module provides functions to generate universally unique identifiers (UUIDs) using one of several standard algorithms. The module also includes functions to produce certain special UUID constants.
 
 ---
 

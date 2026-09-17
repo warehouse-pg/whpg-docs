@@ -1,6 +1,8 @@
 ---
 title: pg_trgm
-
+description: The pgtrgm module provides functions and operators for determining the similarity of alphanumeric text based on trigram matching. The module also provides index operator classes that support fast searching for similar st.
+redirects:
+  - ../pg_trgm
 ---
 
 The `pg_trgm` module provides functions and operators for determining the similarity of alphanumeric text based on trigram matching. The module also provides index operator classes that support fast searching for similar strings.

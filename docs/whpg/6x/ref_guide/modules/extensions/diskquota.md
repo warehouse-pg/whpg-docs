@@ -1,6 +1,8 @@
 ---
 title: diskquota
-
+description: The diskquota module allows WarehousePG administrators to limit the amount of disk space used by schemas, roles, or tablespaces in a database.
+redirects:
+  - ../diskquota
 ---
 
 <a id="topic_gzw_2wz_13b"></a>

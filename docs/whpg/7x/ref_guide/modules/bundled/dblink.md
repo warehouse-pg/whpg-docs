@@ -1,6 +1,8 @@
 ---
 title: dblink
-
+description: The dblink module supports connections to other WarehousePG databases from within a database session. These databases can reside in the same WarehousePG cluster, or in a remote system.
+redirects:
+  - ../dblink
 ---
 
 The `dblink` module supports connections to other WarehousePG databases from within a database session. These databases can reside in the same WarehousePG cluster, or in a remote system.

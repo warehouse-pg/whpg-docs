@@ -1,5 +1,6 @@
 ---
 title: gp_subtransaction_overflow
+description: The gpsubtransactionoverflow module implements a WarehousePG view and user-defined function for querying for backends experiencing.
 
 ---
 

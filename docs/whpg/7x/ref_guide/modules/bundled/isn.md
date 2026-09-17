@@ -1,6 +1,8 @@
 ---
 title: isn
-
+description: The isn module provides support for the international product numbering standards EAN13, UPC, ISBN (books), ISMN (music), and ISSN (serials).
+redirects:
+  - ../isn
 ---
 
 The `isn` module provides support for the international product numbering standards EAN13, UPC, ISBN (books), ISMN (music), and ISSN (serials). 

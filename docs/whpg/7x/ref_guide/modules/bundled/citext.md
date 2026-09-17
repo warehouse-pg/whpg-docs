@@ -1,6 +1,8 @@
 ---
 title: citext
-
+description: The citext module provides a case-insensitive character string data type, citext. Essentially, it internally calls the lower() function when comparing values. Otherwise, it behaves almost exactly like the text data type.
+redirects:
+  - ../citext
 ---
 
 The citext module provides a case-insensitive character string data type, `citext`. Essentially, it internally calls the `lower()` function when comparing values. Otherwise, it behaves almost exactly like the `text` data type.

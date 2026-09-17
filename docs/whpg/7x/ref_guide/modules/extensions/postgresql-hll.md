@@ -1,6 +1,8 @@
 ---
 title: postgresql-hll
-
+description: The postgresql-hll module provides native HyperLogLog data types and relation functions, operators, and aggregates.
+redirects:
+  - ../postgresql-hll
 ---
 
 The `postgresql-hll` module provides native HyperLogLog data types and relation functions, operators, and aggregates.

@@ -1,5 +1,6 @@
 ---
 title: auto_explain
+description: The autoexplain module provides a means for logging execution plans of slow statements automatically, without having to run EXPLAIN by hand.
 
 ---
 

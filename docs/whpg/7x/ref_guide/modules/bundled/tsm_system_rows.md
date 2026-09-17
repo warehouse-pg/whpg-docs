@@ -1,6 +1,8 @@
 ---
 title: tsm_system_rows
-
+description: The tsmsystemrows module implements the SYSTEMROWS table sampling method. This method is used in the TABLESAMPLE clause of a SELECT command.
+redirects:
+  - ../tsm_system_rows
 ---
 
 The `tsm_system_rows` module implements the `SYSTEM_ROWS` table sampling method. This method is used in the `TABLESAMPLE` clause of a `SELECT` command.

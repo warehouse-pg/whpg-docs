@@ -1,5 +1,6 @@
 ---
 title: gp_percentile_agg
+description: The gppercentileagg module introduces improved WarehousePG Query Optimizer (GPORCA) performance for ordered-set aggregate functions including percentilecont(), percentiledisc(), and median(). These improvements particula.
 
 ---
 

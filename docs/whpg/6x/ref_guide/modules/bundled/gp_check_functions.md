@@ -1,5 +1,6 @@
 ---
 title: gp_check_functions
+description: The gpcheckfunctions module implements views that identify missing and orphaned relation files. The module also exposes a user-defined function that you can use to move orphaned files.
 
 ---
 

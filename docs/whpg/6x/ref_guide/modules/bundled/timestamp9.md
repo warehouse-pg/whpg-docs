@@ -1,5 +1,6 @@
 ---
 title: timestamp9
+description: The timestamp9 module provides an efficient, nanosecond-precision timestamp data type and related functions and operators.
 
 ---
 

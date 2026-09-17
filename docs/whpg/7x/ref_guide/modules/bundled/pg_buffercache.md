@@ -1,6 +1,8 @@
 ---
 title: pg_buffercache
-
+description: The pgbuffercache module provides five views for obtaining cluster-wide shared buffer metrics:.
+redirects:
+  - ../pg_buffercache
 ---
 
 The `pg_buffercache` module provides five views for obtaining cluster-wide shared buffer metrics:

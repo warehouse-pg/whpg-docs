@@ -1,5 +1,6 @@
 ---
 title: sslinfo
+description: The sslinfo module provides information about the SSL certificate that the current client provided when connecting to WarehousePG. Most functions in this module return NULL if the current connection does not use SSL.
 
 ---
 

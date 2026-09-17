@@ -1,6 +1,8 @@
 ---
 title: tsm_system_time
-
+description: The tsmsystemtime module implements the SYSTEMTIME table sampling method. This method is used in the TABLESAMPLE clause of a SELECT command.
+redirects:
+  - ../tsm_system_time
 ---
 
 The `tsm_system_time` module implements the `SYSTEM_TIME` table sampling method. This method is used in the `TABLESAMPLE` clause of a `SELECT` command.

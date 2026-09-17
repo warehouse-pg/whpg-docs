@@ -1,5 +1,6 @@
 ---
 title: gp_parallel_retrieve_cursor
+description: The gpparallelretrievecursor module is an enhanced cursor implementation that you can use to create a special kind of cursor on the WarehousePG coordinator node, and retrieve query results, on demand and in parallel, dir.
 
 ---
 

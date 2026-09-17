@@ -1,5 +1,6 @@
 ---
 title: pg_cron
+description: The pgcron module is a cron-based job scheduler that runs inside the database.
 
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: pageinspect
+description: The pageinspect module provides functions for low level inspection of the contents of database pages. pageinspect is available only to WarehousePG superusers.
 
 ---
 

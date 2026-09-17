@@ -1,6 +1,8 @@
 ---
 title: orafce
-
+description: The orafce module provides Oracle Compatibility SQL functions in WarehousePG. These functions target PostgreSQL but can also be used in WarehousePG.
+redirects:
+  - ../orafce_ref
 ---
 
 The `orafce` module provides Oracle Compatibility SQL functions in WarehousePG. These functions target PostgreSQL but can also be used in WarehousePG.

@@ -1,5 +1,6 @@
 ---
 title: ip4r
+description: The ip4r module provides IPv4 and IPv6 data types, IPv4 and IPv6 range index data types, and related functions and operators.
 
 ---
 

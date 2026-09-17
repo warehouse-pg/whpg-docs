@@ -1,5 +1,6 @@
 ---
 title: tablefunc
+description: The tablefunc module provides various functions that return tables (that is, multiple rows).
 
 ---
 

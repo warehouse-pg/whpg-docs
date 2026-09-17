@@ -1,5 +1,6 @@
 ---
 title: gp_array_agg
+description: The gparrayagg module introduces a parallel arrayagg() aggregate function that you can use in WarehousePG.
 
 ---
 

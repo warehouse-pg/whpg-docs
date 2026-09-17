@@ -1,5 +1,6 @@
 ---
 title: gp_pitr
+description: The gppitr module supports implementing Point-in-Time Recovery for WarehousePG 6. In service of this it creates a new view -- gpstatarchiver -- as well as two user-defined functions that are called internally.
 
 ---
 

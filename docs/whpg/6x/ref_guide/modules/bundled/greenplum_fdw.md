@@ -1,5 +1,6 @@
 ---
 title: greenplum_fdw
+description: The greenplumfdw module is a foreign-data wrapper (FDW) that you can use to run queries between one or more WarehousePG version 6.20+ and 7 clusters.
 
 ---
 

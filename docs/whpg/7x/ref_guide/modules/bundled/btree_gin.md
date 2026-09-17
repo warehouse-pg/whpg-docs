@@ -1,6 +1,8 @@
 ---
 title: btree_gin
-
+description: The btreegin module provides sample generalized inverted index (GIN) operator classes that implement B-tree equivalent behavior for certain data types.
+redirects:
+  - ../btree_gin
 ---
 
 The `btree_gin` module provides sample generalized inverted index (GIN) operator classes that implement B-tree equivalent behavior for certain data types.

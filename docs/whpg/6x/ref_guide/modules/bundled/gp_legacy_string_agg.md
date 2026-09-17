@@ -1,5 +1,6 @@
 ---
 title: gp_legacy_string_agg
+description: The gplegacystringagg module re-introduces the single-argument stringagg() function that was present in WarehousePG 5.
 
 ---
 

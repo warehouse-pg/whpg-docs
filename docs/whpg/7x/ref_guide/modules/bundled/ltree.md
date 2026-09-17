@@ -1,6 +1,8 @@
 ---
 title: ltree
-
+description: The ltree module implements a data type named ltree that you can use to represent labels of data stored in a hierarchical tree-like structure. The module also provides extensive facilities for searching through label trees.
+redirects:
+  - ../ltree
 ---
 
 The `ltree` module implements a data type named `ltree` that you can use to represent labels of data stored in a hierarchical tree-like structure. The module also provides extensive facilities for searching through label trees.

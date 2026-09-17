@@ -1,5 +1,6 @@
 ---
 title: gp_sparse_vector
+description: The gpsparsevector module implements a WarehousePG data type and associated functions that use compressed storage of zeros to make vector computations on floating point numbers faster.
 
 ---
 

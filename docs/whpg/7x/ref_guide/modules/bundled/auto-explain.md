@@ -1,6 +1,8 @@
 ---
 title: auto_explain
-
+description: The autoexplain module provides a means for logging execution plans of slow statements automatically, without having to run EXPLAIN by hand.
+redirects:
+  - ../auto-explain
 ---
 
 The `auto_explain` module provides a means for logging execution plans of slow statements automatically, without having to run `EXPLAIN` by hand.
