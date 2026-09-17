@@ -1,6 +1,5 @@
 ---
 title: DROP TEXT SEARCH PARSER
-navTitle: Description
 
 ---
 

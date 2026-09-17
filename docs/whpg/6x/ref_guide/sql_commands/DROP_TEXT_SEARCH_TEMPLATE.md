@@ -1,6 +1,5 @@
 ---
 title: DROP TEXT SEARCH TEMPLATE
-navTitle: Description
 
 ---
 
