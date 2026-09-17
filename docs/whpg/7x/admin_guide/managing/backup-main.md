@@ -11,7 +11,7 @@ WarehousePG supports parallel and non-parallel methods for backing up and restor
 
 ## Parallel Backup with gpbackup and gprestore
 
-`gpbackup` and `gprestore` are the recommended WarehousePG backup and restore utilities, provided as a separate download. For documentation, see [WarehousePG Backup and Restore](../../../../whpg-backup/index.md).
+`gpbackup` and `gprestore` are the recommended WarehousePG backup and restore utilities, provided as a separate download. For documentation, see [WarehousePG Backup and Restore](/whpg-backup/index.md).
 
 <a id="nparback"></a>
 

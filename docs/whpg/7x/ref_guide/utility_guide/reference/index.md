@@ -47,7 +47,7 @@ WarehousePG uses the standard PostgreSQL client and server programs and provides
 
 Several utilities are installed when you install the WarehousePG server. These utilities reside in `$GPHOME/bin`. 
 
-For the `gpbackup` and `gprestore` utilities, see [WarehousePG Backup and Restore](../../../../../whpg-backup/index.md).
+For the `gpbackup` and `gprestore` utilities, see [WarehousePG Backup and Restore](/whpg-backup/index.md).
 
 Other utilities such as clients may be found at [Warehouse PG Github Repo](https://github.com/warehouse-pg)
 

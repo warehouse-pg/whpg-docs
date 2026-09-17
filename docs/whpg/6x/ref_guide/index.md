@@ -17,7 +17,6 @@ navigation:
   - removed-objects
 redirects:
   - ref_guide
-
 ---
 
 <a id="topic_tx5_3nf_kp"></a>
