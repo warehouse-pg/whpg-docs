@@ -41,8 +41,6 @@ You can define constraints on columns and tables to restrict the data in your ta
 
 -   `UNIQUE` and `PRIMARY KEY` constraints must be compatible with their tableʼs distribution key and partitioning key, if any.
 
-    > **Note** `UNIQUE` and `PRIMARY KEY` constraints are not allowed on append-optimized tables because the `UNIQUE` indexes that are created by the constraints are not allowed on append-optimized tables.
-
 -   `FOREIGN KEY` constraints are allowed, but not enforced.
 
 -   Constraints that you define on partitioned tables apply to the partitioned table as a whole. You cannot define constraints on the individual parts of the table.
@@ -89,6 +87,37 @@ Unique constraints ensure that the data contained in a column or a group of colu
 
 ```
 
+Unique constraints and unique indexes are also supported on append-optimized (AO and AOCO) tables. For example, create an append-optimized table and add a unique index to it:
+
+```
+CREATE TABLE ao_index_example (
+    id INT,
+    description TEXT
+) USING ao_row DISTRIBUTED BY (id);
+
+CREATE UNIQUE INDEX idx_ao_example_id ON ao_index_example(id);
+```
+
+You can define a unique constraint inline when you create an append-optimized table:
+
+```
+CREATE TABLE ao_unique_example (
+    id INT UNIQUE,
+    data TEXT
+) USING ao_row DISTRIBUTED BY (id);
+```
+
+You can also add a unique constraint to an existing append-optimized table with `ALTER TABLE`:
+
+```
+CREATE TABLE ao_unique_alt_example (
+    id INT,
+    data TEXT
+) USING ao_column DISTRIBUTED BY (id);
+
+ALTER TABLE ao_unique_alt_example ADD CONSTRAINT uniq_ao_alt_id UNIQUE (id);
+```
+
 <a id="topic32"></a>
 
 #### Primary Keys
@@ -102,6 +131,25 @@ A primary key constraint is a combination of a `UNIQUE` constraint and a `NOT NU
          price numeric)
 `      DISTRIBUTED BY (``product_no``)`;
 
+```
+
+Primary key constraints are also supported on append-optimized (AO and AOCO) tables. Define the primary key inline when you create a row-oriented append-optimized table:
+
+```
+CREATE TABLE ao_pk_example (
+    id INT PRIMARY KEY,
+    payload TEXT
+) USING ao_row DISTRIBUTED BY (id);
+```
+
+You can also define the primary key with an explicit `CONSTRAINT` clause on a column-oriented append-optimized table:
+
+```
+CREATE TABLE aoco_pk_example (
+    id INT,
+    payload TEXT,
+    CONSTRAINT pk_aoco_example PRIMARY KEY (id)
+) USING ao_column DISTRIBUTED BY (id);
 ```
 
 <a id="topic33"></a>
