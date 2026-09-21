@@ -493,6 +493,7 @@ These configuration parameters set defaults that are used for client connections
 -   [default_transaction_deferrable](guc-list.md#default_transaction_deferrable)
 -   [default_transaction_isolation](guc-list.md#default_transaction_isolation)
 -   [default_transaction_read_only](guc-list.md#default_transaction_read_only)
+-   [restrict_nonsystem_relation_kind](guc-list.md#restrict_nonsystem_relation_kind)
 -   [search_path](guc-list.md#search_path)
 -   [statement_timeout](guc-list.md#statement_timeout)
 -   [temp_tablespaces](guc-list.md#temp_tablespaces)
