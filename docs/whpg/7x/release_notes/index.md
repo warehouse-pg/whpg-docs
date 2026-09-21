@@ -8,6 +8,7 @@ The WarehousePG documentation describes the latest version of WarehousePG 7.
 
 | Version                             | Release date     |
 | ----------------------------------- | ---------------- |
+| [7.6.0-WHPG](#warehousepg-7-6-0-whpg) | 25 September 2026 |
 | [7.5.0-WHPG](#warehousepg-7-5-0-whpg) | 8 June 2026      |
 | [7.4.1-WHPG](#warehousepg-7-4-1-whpg) | 11 June 2026     |
 | [7.4.0-WHPG](#warehousepg-7-4-0-whpg) | 7 April 2026     |
@@ -16,6 +17,90 @@ The WarehousePG documentation describes the latest version of WarehousePG 7.
 | [7.3.0-WHPG](#warehousepg-7-3-0-whpg) | 14 November 2025 |
 | [7.2.2-WHPG](#warehousepg-7-2-2-whpg) | 17 November 2025 |
 | [7.2.1-WHPG](#warehousepg-7-2-1-whpg) | 15 May 2025      |
+
+## WarehousePG 7.6.0-WHPG
+
+Released: 25 September 2026
+
+WarehousePG 7.6.0-WHPG includes the following new features, enhancements, bug fixes, and other changes:
+
+::: info Note
+WarehousePG 7.6.0 changes several behaviors that can affect existing scripts and configurations, including dump output format, resource group `CPUSET` parsing, and `pgcrypto` and `psql` behavior. Review [Upgrading to 7.6.0: Behavior changes to review](../install_guide/minor_upgrade.md#replacing-binaries-and-restarting-whpg) before you upgrade.
+:::
+
+### New features
+
+-   Added support for [`CREATE TABLE ... AS ... DISTRIBUTED COORDINATOR ONLY`](../ref_guide/sql_commands/CREATE_TABLE_AS.md), giving `CREATE TABLE AS` a native coordinator-only path.
+-   Added the [`whpg_dispatch_topology_file`](../ref_guide/config_params/guc-list.md#whpg_dispatch_topology_file) configuration parameter, along with the read-only [`whpg_dispatch_topology_state`](../ref_guide/config_params/guc-list.md#whpg_dispatch_topology_state), letting a hot-standby dispatcher resolve dispatch and interconnect addresses from a topology file instead of [`gp_segment_configuration`](../ref_guide/system_catalogs/system_catalogs_definitions/gp_segment_configuration.md).
+-   Added PowerPC ppc64le support for WarehousePG 7. See [Platform Requirements](../install_guide/platform-requirements.md).
+-   Added resource groups to the [`pg_stat_operations`](../ref_guide/system_catalogs/system_catalogs_definitions/pg_stat_operations.md) system view.
+
+### Enhancements
+
+-   `gpcheckperf` now mirrors its output to `~/gpAdminLogs/gpcheckperf_<date>.log`.
+-   Lowered the dump syncmate snapshot log message from `LOG` to `DEBUG5` to reduce log volume.
+
+### Bug fixes
+
+-   Fixed a heap overrun in `gp_get_endpoints()` when parallel retrieve cursor endpoints exist in more than one database on the coordinator.
+-   Fixed autovacuum's alive-session table and the resource group I/O-limit table to hash fixed-size keys as binary data, preventing out-of-bounds reads and key aliasing.
+-   Fixed a `SIGSEGV` when rewriting multiple distinct-qualified aggregates (MDQA) over a partitioned table in the ORCA optimizer.
+-   Fixed an ORCA crash on ordered-set aggregates without direct arguments, such as `mode() WITHIN GROUP (...)`.
+-   Fixed duplicated rows from `percentile_cont()` and `percentile_disc()` when they are the only aggregates over a grouped subquery.
+-   Fixed a scalar-subquery `count()` result incorrectly folding to `0` when the aggregate row was eliminated by a filter or join, and fixed a use-after-free of a bare-variable `HAVING` qualifier during query normalization.
+-   Fixed a coordinator `SIGSEGV` in extended-statistics estimation after incremental group statistics.
+-   Fixed CTE consumer cardinality collapsing when join predicates are re-applied at every step of statistics calculation, which under-estimated rows and caused spilling to disk.
+-   Fixed functional-dependency selectivity estimation, which the optimizer was dropping entirely, and fixed the estimate collapsing to one row when dependency statistics outlive a column's statistics.
+-   Fixed ORCA planning wrong results for indexes whose key collation differs from the type default.
+-   Fixed a backend crash on correlated subqueries that join a coordinator-only catalog table with a distributed table.
+-   Fixed a planner crash on `LEFT JOIN LATERAL` over a `UNION ALL` that mixes a distributed-table arm with a `VALUES` arm and has an outer-query column in the target list. The query now fails with the ordinary `could not devise a query plan` error instead of crashing.
+-   Fixed direct dispatch silently dropping rows for queries with a strewn-locus child, such as `gp_dist_random()` over a view with no `FROM` clause.
+-   Fixed `ERROR: ORDER/GROUP BY expression not found in targetlist` for a correlated `EXISTS` sublink with both an aggregate and a `GROUP BY` clause.
+-   Fixed append-optimized column-oriented (AOCO) unique indexes to catch conflicting keys consistently, preventing duplicate primary keys after `gpfdist` loads.
+-   Fixed `ERROR: ... is out of scanning scope for target relfilenode` on append-optimized index fetches that run concurrently with `VACUUM`.
+-   Fixed wrong results from the heap scan visibility cache for tuples carrying a combo command ID.
+-   Fixed a `PGresult` leak on the query dispatcher for every distributed transaction protocol command.
+-   Fixed `execCurrentOf()` to initialize the current table OID on the query dispatcher path for non-partitioned tables, and fixed `version()` to honor lightweight tags.
+-   Fixed `gp_dump_query_oids()` to expand materialized views at any nesting depth, so `minirepro` collects the DDL of tables behind nested materialized views.
+-   Fixed `ALTER COLLATION ... REFRESH VERSION` to dispatch to segments instead of updating only the coordinator's catalog.
+-   Fixed `ddl_command_end` event triggers failing or silently skipping `CREATE EXTERNAL TABLE`.
+-   Added `CREATE PROTOCOL` and `ALTER TYPE ... SET DEFAULT ENCODING` to the commands collected for `ddl_command_end` event triggers.
+-   Fixed `pg_event_trigger_ddl_commands()` erroring with `cache lookup failed` for objects dropped by the same statement, which broke `SPLIT PARTITION` and `SPLIT DEFAULT PARTITION` when an event trigger is installed.
+-   Fixed the reversed coordinator and segment split of the resource group `CPUSET` configuration parameter.
+-   Fixed `gp_toolkit.gp_workfile_entries` inflating workfile metrics once per gang process.
+-   Fixed `gpload` raising `UnboundLocalError: has_seq_bool` when the target table has a `SERIAL` column.
+-   Fixed `gpload` to pass arguments through its shell wrapper without word splitting, so paths with spaces work, and to fall back to `$HOME/gpAdminLogs` when the configured log file is unusable.
+-   Fixed `analyzedb` raising `[Errno 9] Bad file descriptor` when the coordinator data directory is on NFS or EFS.
+-   Fixed `gpMgmt` remote execution to report SSH failures instead of returning success with empty output.
+-   Fixed PL/Perl array and tied-container handling for non-rectangular arrays, forged `ARRAY` objects, tied `SETOF` array references, and `NULL` `SV *` values.
+-   Fixed `pgcrypto` to reset the global debug handler after a PGP pipeline error, so later calls no longer emit stray `dbg:` notices.
+-   Fixed the `datalen` calculation in `tsvectorrecv()`, which over-counted position data and could set a varlena size larger than the allocation.
+
+### Security
+
+-   Fixed memory disclosure and a possible crash from casting `oid[]` or `int2[]` arrays to `oidvector` or `int2vector` without validating array dimensions and null entries, for [CVE-2026-2003](https://www.cve.org/CVERecord?id=CVE-2026-2003).
+-   Required superuser to attach a non-built-in selectivity estimator in `CREATE OPERATOR` and `ALTER OPERATOR`, and hardened the built-in estimators and the `intarray` extension's `_int_matchsel()` function against incorrect operand types, for [CVE-2026-2004](https://www.cve.org/CVERecord?id=CVE-2026-2004).
+-   Fixed a buffer overflow in `pgcrypto`'s `pgp_pub_decrypt_bytea()` function by bounding the session key length, for [CVE-2026-2005](https://www.cve.org/CVERecord?id=CVE-2026-2005).
+-   Fixed a one-byte overread in GB18030 multibyte character handling and replaced `pg_mblen()` with length-checked variants across the server, for [CVE-2025-4207](https://www.cve.org/CVERecord?id=CVE-2025-4207) and [CVE-2026-2006](https://www.cve.org/CVERecord?id=CVE-2026-2006).
+-   Fixed out-of-bound reads in `ascii()` on invalid multibyte input, along with related fixes to `EUC_CN` length handling, `mb2wchar()` on short input, PGP-decrypted text encoding validation, and `SUBSTRING()` on toasted multibyte values, for [CVE-2026-18024](https://www.cve.org/CVERecord?id=CVE-2026-18024).
+-   Fixed selectivity estimation performing its permission checks against inheritance children instead of the parent table, which let row-level security policies and security-barrier views be bypassed, for [CVE-2025-8713](https://www.cve.org/CVERecord?id=CVE-2025-8713).
+-   Wrapped plain-text output from `pg_dump`, `pg_dumpall`, and `pg_restore` in `psql` `\restrict` and `\unrestrict` markers, so a malicious server can't inject meta-commands executed at restore time, for [CVE-2025-8714](https://www.cve.org/CVERecord?id=CVE-2025-8714).
+-   Stopped `psql` from performing backquote expansion on the `\unrestrict` argument, for [CVE-2026-18408](https://www.cve.org/CVERecord?id=CVE-2026-18408).
+-   Stopped `psql` from executing in-line `COPY ... FROM STDIN` data as SQL after the `COPY` command fails, for [CVE-2026-6464](https://www.cve.org/CVERecord?id=CVE-2026-6464).
+-   Added a `USAGE` privilege check on types used by stored expressions, `ALTER TABLE ... OF`, and `CREATE TYPE ... AS RANGE`, for [CVE-2026-6470](https://www.cve.org/CVERecord?id=CVE-2026-6470).
+-   Hardened `tsvector` and `tsquery` construction against integer overflows in `array_to_tsvector()`, `tsvectorrecv()`, `tsvectorout()`, and `QTN2QT()`, for [CVE-2026-14662](https://www.cve.org/CVERecord?id=CVE-2026-14662).
+-   Fixed `pgcrypto` to fail cipher initialization errors during PGP encryption instead of emitting unencrypted data, and added the `ignore_decrypt_cipher_failure` option to read back affected data, for [CVE-2026-14663](https://www.cve.org/CVERecord?id=CVE-2026-14663).
+-   Fixed a buffer overrun in regular expression match and split functions on invalidly encoded input, for [CVE-2026-14664](https://www.cve.org/CVERecord?id=CVE-2026-14664).
+-   Fixed `scalarineqsel()` to verify a constant's data type before treating it as a `tid`, for [CVE-2026-14668](https://www.cve.org/CVERecord?id=CVE-2026-14668).
+-   Bounded the copy of overlength time zone abbreviations in `to_char()`, and hardened PL/Perl against tied Perl arrays and hashes, for [CVE-2026-14669](https://www.cve.org/CVERecord?id=CVE-2026-14669) and [CVE-2026-14670](https://www.cve.org/CVERecord?id=CVE-2026-14670).
+-   Removed a stale per-backend plan cache in `contrib/spi/refint`'s `check_foreign_key()` function that caused type confusion, and fixed a `NULL`-key segfault, for [CVE-2026-14671](https://www.cve.org/CVERecord?id=CVE-2026-14671).
+-   Used overflow-safe allocation in `pltcl` and `plperl`, for [CVE-2026-14677](https://www.cve.org/CVERecord?id=CVE-2026-14677).
+-   Fixed `pg_trgm`'s `gtrgm_picksplit()` function reading past the end of the signature buffer for all-true datums, for [CVE-2026-14678](https://www.cve.org/CVERecord?id=CVE-2026-14678).
+-   Guarded fixed-size argument arrays in the parser, executor, PL/pgSQL, and `pltcl` against overrun, for [CVE-2026-14679](https://www.cve.org/CVERecord?id=CVE-2026-14679).
+-   Rejected SQL-level calls to functions that take or return the `internal` type, and made aggregate combine functions return `NULL` honestly, for [CVE-2026-14680](https://www.cve.org/CVERecord?id=CVE-2026-14680).
+-   Fixed integer overflow and out-of-bounds writes in `fuzzystrmatch`'s Levenshtein distance functions by computing distances in 64-bit arithmetic, for [CVE-2026-15742](https://www.cve.org/CVERecord?id=CVE-2026-15742).
+-   Fixed a memory disclosure and possible remote code execution vulnerability from a mismatch between a portal's tuple descriptor and the query's actual output during `EXECUTE` or `FETCH`, for [CVE-2026-16239](https://www.cve.org/CVERecord?id=CVE-2026-16239).
+-   Fixed `pg_dump` assuming a fixed bound on the length of `pg_proc.protrftypes`, for [CVE-2026-19385](https://www.cve.org/CVERecord?id=CVE-2026-19385).
 
 ## WarehousePG 7.5.0-WHPG
 

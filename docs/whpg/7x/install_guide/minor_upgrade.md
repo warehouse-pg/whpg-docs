@@ -131,6 +131,18 @@ Perform a final cleanup of the running database instance.
 
 Perform the following steps as the `gpadmin` user. When upgrading, the package manager will automatically remove old files in `/usr/local/greenplum-db-<version>` and install new files to `/usr/edb/whpg7`.
 
+::: warning Upgrading to 7.6.0: Behavior changes to review
+WarehousePG 7.6.0 changes the following behavior. Review each item before you upgrade.
+
+-   Plain-text output from [`pg_dump`](../ref_guide/utility_guide/reference/pg_dump.md), [`pg_dumpall`](../ref_guide/utility_guide/reference/pg_dumpall.md), and [`pg_restore`](../ref_guide/utility_guide/reference/pg_restore.md) now begins with `\restrict <key>` and ends with `\unrestrict <key>`. Tooling that parses dump output needs adjusting for the new markers.
+-   [`CREATE OPERATOR`](../ref_guide/sql_commands/CREATE_OPERATOR.md) and [`ALTER OPERATOR`](../ref_guide/sql_commands/ALTER_OPERATOR.md) now require superuser privileges to attach a non-built-in selectivity estimator.
+-   SQL-level calls to functions that take or return the `internal` type, and casts to and from `internal`, are rejected.
+-   [`psql`](../ref_guide/utility_guide/reference/psql.md) now consumes in-line [`COPY ... FROM STDIN`](../ref_guide/sql_commands/COPY.md) data even when the `COPY` command fails. Scripts must terminate in-line data with `\.`.
+-   `pgcrypto` [PGP encryption](../security_guide/encryption.md#encpgp) now returns an error when cipher initialization fails, instead of writing unencrypted data. Use the new `ignore_decrypt_cipher_failure` configuration parameter to read back data written by an affected build.
+-   The resource group [`CPUSET`](../admin_guide/performance/wlmgmt/workload_mgmt_resgroups.md#cpuset) setting now parses in the documented order, `<coordinator_cores>;<segment_cores>`. Clusters that swapped the two halves of the value to compensate for the previous reversed behavior need to swap them back.
+-   [`gp_toolkit`](../ref_guide/gp_toolkit.md) is now version 1.9. Run `ALTER EXTENSION gp_toolkit UPDATE` to pick up the corrected [`gp_toolkit.gp_workfile_entries`](../ref_guide/gp_toolkit.md#topic33) view.
+:::
+
 ::: warning Upgrading to 7.5.0: Python 3.11 requirement
 WarehousePG 7.5.0 upgrades PL/Python to Python 3.11. The PL/Python interpreter now links against `/usr/bin/python3.11` and requires the following packages on every node:
 

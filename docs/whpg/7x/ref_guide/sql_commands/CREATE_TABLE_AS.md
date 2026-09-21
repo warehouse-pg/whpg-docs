@@ -22,7 +22,8 @@ CREATE [ [ GLOBAL | LOCAL ] { TEMPORARY | TEMP } | UNLOGGED ] TABLE [ IF NOT EXI
         [ WITH [ NO ] DATA ]
         [ DISTRIBUTED BY ( <column> [<opclass>] [, ... ] ) 
            | DISTRIBUTED RANDOMLY
-           | DISTRIBUTED REPLICATED ]
+           | DISTRIBUTED REPLICATED
+           | DISTRIBUTED COORDINATOR ONLY ]
 ```
 
 <a id="section3"></a>
@@ -83,6 +84,7 @@ A [SELECT](SELECT.md), [TABLE](SELECT.md#table-command), or [VALUES](VALUES.md) 
 DISTRIBUTED BY ( column \[opclass] \[, ... ] )
 DISTRIBUTED RANDOMLY
 DISTRIBUTED REPLICATED
+DISTRIBUTED COORDINATOR ONLY
 Used to declare the WarehousePG distribution policy for the table. Refer to [CREATE TABLE](CREATE_TABLE.md) for details.
 
 <a id="section5"></a>
@@ -93,7 +95,7 @@ This command is functionally similar to [SELECT INTO](SELECT_INTO.md), but it is
 
 `CREATE TABLE AS` can be used for fast data loading from external table data sources. See [CREATE EXTERNAL TABLE](CREATE_EXTERNAL_TABLE.md).
 
-`CREATE TABLE AS` does not support setting distribution to `COORDINATOR ONLY`.
+`CREATE TABLE AS` supports coordinator-only distribution via the clause `DISTRIBUTED COORDINATOR ONLY`. Refer to [CREATE TABLE](CREATE_TABLE.md#section3) for restrictions on coordinator-only distribution.
 
 <a id="section6"></a>
 
