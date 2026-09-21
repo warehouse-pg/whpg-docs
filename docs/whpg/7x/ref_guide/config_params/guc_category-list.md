@@ -593,6 +593,7 @@ The parameters in this topic control the configuration of the WarehousePG cluste
 -   [gp_enable_direct_dispatch](guc-list.md#gp_enable_direct_dispatch)
 -   [gp_segment_connect_timeout](guc-list.md#gp_segment_connect_timeout)
 -   [gp_set_proc_affinity](guc-list.md#gp_set_proc_affinity)
+-   [whpg_dispatch_topology_file](guc-list.md#whpg_dispatch_topology_file)
 
 <a id="topic52"></a>
 
@@ -623,6 +624,7 @@ The parameters in this topic control the configuration of the WarehousePG cluste
 -   [gp_session_id](guc-list.md#gp_session_id)
 -   [gp_server_version](guc-list.md#gp_server_version)
 -   [gp_server_version_num](guc-list.md#gp_server_version_num)
+-   [whpg_dispatch_topology_state](guc-list.md#whpg_dispatch_topology_state)
 
 <a id="topic55"></a>
 
