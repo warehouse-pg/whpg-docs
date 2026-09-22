@@ -24,8 +24,14 @@ Released: 25 September 2026
 
 WarehousePG 7.6.0-WHPG includes the following new features, enhancements, bug fixes, and other changes:
 
+::: danger Critical security fix: server-side file functions were executable by any role
+`pg_file_write()`, `pg_file_rename()`, `pg_file_unlink()`, and `pg_logdir_ls()` were executable by any database role, letting any authenticated user write, rename, or delete files in the coordinator's data and log directories, including `postgresql.auto.conf` and `pg_hba.conf`, and list server log file names. These functions now require superuser privileges or membership in `pg_write_server_files` (`pg_read_server_files` for `pg_logdir_ls()`).
+
+This issue affects every WarehousePG 7 release before `7.6.0-WHPG`. WarehousePG 6 isn't affected. Upgrade to `7.6.0-WHPG` as soon as possible. See [Applying the file function privilege fix](../install_guide/minor_upgrade.md#applying-the-file-function-privilege-fix) for the required follow-up step and a mitigation script if you can't upgrade right away.
+:::
+
 ::: info Note
-WarehousePG 7.6.0 changes several behaviors that can affect existing scripts and configurations, including dump output format, resource group `CPUSET` parsing, and `pgcrypto` and `psql` behavior. Review [Upgrading to 7.6.0: Behavior changes to review](../install_guide/minor_upgrade.md#replacing-binaries-and-restarting-whpg) before you upgrade.
+WarehousePG 7.6.0 also changes some behaviors that need action when you upgrade, including dump output format, resource group `CPUSET` parsing, and `pgcrypto` and `psql` behavior. Review [Replacing binaries and restarting WHPG](../install_guide/minor_upgrade.md#replacing-binaries-and-restarting-whpg) before you upgrade.
 :::
 
 ### New features
@@ -75,6 +81,10 @@ WarehousePG 7.6.0 changes several behaviors that can affect existing scripts and
 -   Fixed PL/Perl array and tied-container handling for non-rectangular arrays, forged `ARRAY` objects, tied `SETOF` array references, and `NULL` `SV *` values.
 -   Fixed `pgcrypto` to reset the global debug handler after a PGP pipeline error, so later calls no longer emit stray `dbg:` notices.
 -   Fixed the `datalen` calculation in `tsvectorrecv()`, which over-counted position data and could set a varlena size larger than the allocation.
+-   Fixed append-optimized column-oriented (AOCO) table compression changes made with `ALTER TABLE ... SET`/`RESET (compresstype, compresslevel, blocksize)` to propagate to every column without its own explicit `ENCODING`, and to actually re-encode existing data. The rewrite previously ran and paid its full I/O cost, but every column kept its old codec.
+-   Fixed hot-standby readers of append-optimized tables hitting truncated or refilled segment files after a `VACUUM` recycled segment files out from under an older snapshot.
+-   Fixed a hot standby losing every query with `could not access status of transaction N` after the primary truncated `pg_distributedlog`.
+-   Fixed a segfault on a hot-standby coordinator at connection time in multi-host deployments where a host carries only mirror rows.
 
 ### Security
 
