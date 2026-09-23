@@ -40,8 +40,8 @@ The SQL script will be written to the standard output. Use the `[-f | --file]` o
 `pg_dumpall` needs to connect several times to the WarehousePG coordinator server (once per database). If you use password authentication it is likely to ask for a password each time. It is convenient to have a `~/.pgpass` file in such cases.
 
 ::: warning
- Restoring a dump causes the destination to run arbitrary code of the source superuser's choice. Partial dumps and partial restores don't limit that risk. If you don't trust the source database's superusers, inspect the dumped SQL statements before restoring them. The client running the dump and restore doesn't need to trust the source or destination superusers.
- :::
+Restoring a dump causes the destination to run arbitrary code of the source superuser's choice. Partial dumps and partial restores don't limit that risk. If you don't trust the source database's superusers, inspect the dumped SQL statements before restoring them. The client running the dump and restore doesn't need to trust the source or destination superusers.
+:::
 
 <a id="section4">
 

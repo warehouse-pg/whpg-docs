@@ -666,7 +666,7 @@ The response indicates that the large object received object ID 152801 which one
 
 -   \\restrict key
 
-    Enters restricted mode. In restricted mode, `psql` refuses every backslash command except a matching `\unrestrict key`. `pg_dump`, `pg_dumpall`, and `pg_restore` wrap their plain-text output in `\restrict` and `\unrestrict` so that a hostile server can't smuggle backslash meta-commands into a dump for `psql` to run at restore time. An older `psql` that doesn't recognize `\restrict` treats it as an unknown command and provides no protection, so both the dump and the `psql` used to restore it need to be from a build that includes this fix.
+    Enters restricted mode. In restricted mode, `psql` refuses every backslash command except a matching `\unrestrict key`. `pg_dump`, `pg_dumpall`, and `pg_restore` wrap their plain-text output in `\restrict` and `\unrestrict` so that a hostile server can't smuggle backslash meta-commands into a dump for `psql` to run at restore time. An older `psql` that doesn't recognize `\restrict` prints `invalid command \restrict` and continues, so it provides no protection. If the restore runs with `ON_ERROR_STOP` set, as `psql -1 -v ON_ERROR_STOP=1` scripts commonly do, it stops at that first line instead. Both the dump and the `psql` used to restore it need to be from a build that includes this fix.
 
 -   \\s \[filename]
 
