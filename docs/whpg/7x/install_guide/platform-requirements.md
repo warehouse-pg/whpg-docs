@@ -19,14 +19,13 @@ WarehousePG 7 runs on the following operating system platforms:
 Starting with WarehousePG 7.6.0, WarehousePG also supports the ppc64le (64-bit little-endian PowerPC) architecture.
 :::
 
-
-
-::: info Note If you use endpoint security software on your WarehousePG hosts, it may affect your database performance and stability. See [About Endpoint Security Sofware](../security_guide/index.md#endpoint_security) for more information.
+::: info Note
+If you use endpoint security software on your WarehousePG hosts, it may affect your database performance and stability. See [About Endpoint Security Software](../security_guide/index.md#endpoint_security) for more information.
 :::
 
 ::: warning
- A kernel issue in Red Hat Enterprise Linux 8.5 and 8.6 can cause I/O freezes and synchronization problems with XFS filesystems. This issue is fixed in RHEL 8.7. See [RHEL8: xfs_buf deadlock between inode deletion and block allocation](https://access.redhat.com/solutions/6984334).
- :::
+A kernel issue in Red Hat Enterprise Linux 8.5 and 8.6 can cause I/O freezes and synchronization problems with XFS filesystems. This issue is fixed in RHEL 8.7. See [RHEL8: xfs_buf deadlock between inode deletion and block allocation](https://access.redhat.com/solutions/6984334).
+:::
 
 WarehousePG server supports TLS version 1.2 and TLS version 1.3 on RHEL/CentOS systems.
 

@@ -574,7 +574,7 @@ This command is identical to `\echo` except that the output will be written to t
 Resets (clears) the query buffer.
 
 \\restrict key
-Enters restricted mode. In restricted mode, `psql` refuses every backslash command except a matching `\unrestrict key`. `pg_dump`, `pg_dumpall`, and `pg_restore` wrap their plain-text output in `\restrict` and `\unrestrict` so that a hostile server can't smuggle backslash meta-commands into a dump for `psql` to run at restore time. An older `psql` that doesn't recognize `\restrict` treats it as an unknown command and provides no protection, so both the dump and the `psql` used to restore it need to be from a build that includes this fix.
+Enters restricted mode. In restricted mode, `psql` refuses every backslash command except a matching `\unrestrict key`. `pg_dump`, `pg_dumpall`, and `pg_restore` wrap their plain-text output in `\restrict` and `\unrestrict` so that a hostile server can't smuggle backslash meta-commands into a dump for `psql` to run at restore time. An older `psql` that doesn't recognize `\restrict` prints `invalid command \restrict` and continues, so it provides no protection. If the restore runs with `ON_ERROR_STOP` set, as `psql -1 -v ON_ERROR_STOP=1` scripts commonly do, it stops at that first line instead. Both the dump and the `psql` used to restore it need to be from a build that includes this fix.
 
 \\s \[filename]
 Print `psql`'s command line history to `filename`. If `filename` is omitted, the history is written to the standard output (using the pager if appropriate). This command is not available if `psql` was built without `Readline` support.
