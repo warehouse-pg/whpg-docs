@@ -492,10 +492,17 @@ If you created a key with passphrase, you may have to enter it here. However for
 
 ### Recovering Data Encrypted Before the CVE-2026-14663 Fix
 
-pgcrypto's PGP decryption functions accept an `ignore-cipher-failure` option for recovering data that a build affected by [CVE-2026-14663](https://www.cve.org/CVERecord?id=CVE-2026-14663) encrypted incorrectly. Pass it as part of the options string. For example:
+pgcrypto's PGP decryption functions accept an `ignore-cipher-failure` option for recovering data that a build affected by [CVE-2026-14663](https://www.cve.org/CVERecord?id=CVE-2026-14663) encrypted incorrectly. Pass it as `ignore-cipher-failure=1` in the `options` argument (the fourth argument). For example:
 
 ```
-SELECT pgp_pub_decrypt(ssn, keys.privkey, 'ignore-cipher-failure') AS decrypted_ssn FROM userssn;
+SELECT pgp_pub_decrypt(ssn, keys.privkey, '', 'ignore-cipher-failure=1') AS decrypted_ssn
+FROM userssn, keys;
+```
+
+For symmetric encryption:
+
+```
+SELECT pgp_sym_decrypt(data, 'password', 'ignore-cipher-failure=1');
 ```
 
 ::: warning
