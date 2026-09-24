@@ -106,7 +106,7 @@ WarehousePG 7.6.0 also changes some behaviors that need action when you upgrade,
 -   Removed a stale per-backend plan cache in `contrib/spi/refint`'s `check_foreign_key()` function that caused type confusion, and fixed a `NULL`-key segfault, for [CVE-2026-14671](https://www.cve.org/CVERecord?id=CVE-2026-14671).
 -   Used overflow-safe allocation in `pltcl` and `plperl`, for [CVE-2026-14677](https://www.cve.org/CVERecord?id=CVE-2026-14677).
 -   Fixed `pg_trgm`'s `gtrgm_picksplit()` function reading past the end of the signature buffer for all-true datums, for [CVE-2026-14678](https://www.cve.org/CVERecord?id=CVE-2026-14678).
--   Guarded fixed-size argument arrays in the parser, fmgr, PL/pgSQL, `plperl`, `plpython`, and `pltcl` against extreme argument counts, for [CVE-2026-14679](https://www.cve.org/CVERecord?id=CVE-2026-14679).
+-   Guarded fixed-size argument arrays in the parser, executor, fmgr, PL/pgSQL, and `pltcl` against extreme argument counts, for [CVE-2026-14679](https://www.cve.org/CVERecord?id=CVE-2026-14679).
 -   Rejected SQL-level calls to functions that take or return the `internal` type, and made aggregate combine functions return `NULL` honestly, for [CVE-2026-14680](https://www.cve.org/CVERecord?id=CVE-2026-14680).
 -   Fixed integer overflow and out-of-bounds writes in `fuzzystrmatch`'s Levenshtein distance functions by computing distances in 64-bit arithmetic, for [CVE-2026-15742](https://www.cve.org/CVERecord?id=CVE-2026-15742).
 -   Fixed a memory disclosure and possible remote code execution vulnerability from a mismatch between a portal's tuple descriptor and the query's actual output during `EXECUTE` or `FETCH`, for [CVE-2026-16239](https://www.cve.org/CVERecord?id=CVE-2026-16239).
