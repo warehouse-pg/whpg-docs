@@ -29,13 +29,13 @@ If a transaction of this sort is going to change the data in the table, then it 
 
 ## Parameters
 
-###name
+### name
 
 The name (optionally schema-qualified) of an existing table to lock. If `ONLY` is specified, only that table is locked. If `ONLY` is not specified, the table and all its descendant tables (if any) are locked. Optionally, `*` can be specified after the table name to explicitly indicate that descendant tables are included.
 
 If multiple tables are given, tables are locked one-by-one in the order specified in the `LOCK TABLE` command.
 
-###lockmode
+### lockmode
 
 The lock mode specifies which locks this lock conflicts with. If no lock mode is specified, then `ACCESS EXCLUSIVE`, the most restrictive mode, is used. Lock modes are as follows:
 
