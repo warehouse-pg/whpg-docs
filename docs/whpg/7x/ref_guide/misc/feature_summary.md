@@ -127,7 +127,7 @@ The following features of SQL 2008 are not supported in WarehousePG:
 
 ## WarehousePG and PostgreSQL Compatibility
 
-WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and typical workload of a WarehousePG cluster, some SQL commands have been added or modified, and there are a few PostgreSQL features that are not supported. WarehousePG has also added features not found in PostgreSQL, such as physical data distribution, parallel query optimization, external tables, resource queues, and enhanced table partitioning. For full SQL syntax and references, see the [SQL Commands](../sql_commands/index.md).
+WarehousePG 7 is based on PostgreSQL 12.12. To support the distributed nature and typical workload of a WarehousePG cluster, some SQL commands have been added or modified, and there are a few PostgreSQL features that are not supported. WarehousePG has also added features not found in PostgreSQL, such as physical data distribution, parallel query optimization, external tables, resource queues, and enhanced table partitioning. For full SQL syntax and references, see the [SQL Commands](../sql_commands/index.md).
 
 > **Note** WarehousePG does not support the PostgreSQL [large object facility](https://www.postgresql.org/docs/12/largeobjects.html) for streaming user data that is stored in large-object structures.
 
@@ -144,7 +144,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `ALTER DATABASE` | YES |  |
 | `ALTER DOMAIN` | YES |  |
 | `ALTER EVENT TRIGGER` | YES |  |
-| `ALTER EXTENSION` | YES | Changes the definition of a WarehousePG extension - based on PostgreSQL 9.6. |
+| `ALTER EXTENSION` | YES | Changes the definition of a WarehousePG extension - based on PostgreSQL 12.12. |
 | `ALTER FUNCTION` | YES |  |
 | `ALTER GROUP` | YES | An alias for [ALTER ROLE](../sql_commands/ALTER_ROLE.md) |
 | `ALTER INDEX` | YES |  |
@@ -182,19 +182,19 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `CREATE DATABASE` | YES |  |
 | `CREATE DOMAIN` | YES |  |
 | `CREATE EVENT TRIGGER` | YES |  |
-| `CREATE EXTENSION` | YES | Loads a new extension into WarehousePG - based on PostgreSQL 9.6. |
-| `CREATE EXTERNAL TABLE` | YES | WarehousePG parallel ETL feature - not in PostgreSQL 9.4. |
+| `CREATE EXTENSION` | YES | Loads a new extension into WarehousePG - based on PostgreSQL 12.12. |
+| `CREATE EXTERNAL TABLE` | YES | WarehousePG parallel ETL feature - not in PostgreSQL 12.12. |
 | `CREATE FUNCTION` | YES | **Limitations:**<br/><br/>Functions defined as `STABLE` or `VOLATILE` can be run in WarehousePG provided that they are run on the coordinator only. `STABLE` and `VOLATILE` functions cannot be used in statements that run at the segment level. |
 | `CREATE GROUP` | YES | An alias for [CREATE ROLE](../sql_commands/CREATE_ROLE.md) |
 | `CREATE INDEX` | YES | **WarehousePG Clauses:**<br/><br/>`USING bitmap` (bitmap indexes)<br/><br/>**Limitations:**<br/><br/>`UNIQUE` indexes are allowed only if they contain all of (or a superset of) the WarehousePG distribution key columns. On partitioned tables, a unique index is only supported within an individual partition - not across all partitions.<br/><br/>`CONCURRENTLY` keyword not supported in WarehousePG. |
 | `CREATE LANGUAGE` | YES |  |
-| `CREATE MATERIALIZED VIEW` | YES | Based on PostgreSQL 9.4. |
+| `CREATE MATERIALIZED VIEW` | YES | Based on PostgreSQL 12.12. |
 | `CREATE OPERATOR` | YES | **Limitations:**<br/><br/>The function used to implement the operator must be an `IMMUTABLE` function. |
 | `CREATE OPERATOR CLASS` | YES |  |
 | `CREATE OPERATOR FAMILY` | YES |  |
 | `CREATE PROTOCOL` | YES |  |
 | `CREATE PUBLICATION` | NO |  |
-| `CREATE RESOURCE QUEUE` | YES | WarehousePG resource management feature - not in PostgreSQL 9.4. |
+| `CREATE RESOURCE QUEUE` | YES | WarehousePG resource management feature - not in PostgreSQL 12.12. |
 | `CREATE ROLE` | YES | **WarehousePG Clauses:**<br/><br/>`RESOURCE QUEUE`*queue_name*` \| none` |
 | `CREATE RULE` | YES |  |
 | `CREATE SCHEMA` | YES |  |
@@ -218,8 +218,8 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `DROP DATABASE` | YES |  |
 | `DROP DOMAIN` | YES |  |
 | `DROP EVENT TRIGGER` | YES |  |
-| `DROP EXTENSION` | YES | Removes an extension from WarehousePG – based on PostgreSQL 9.6. |
-| `DROP EXTERNAL TABLE` | YES | WarehousePG parallel ETL feature - not in PostgreSQL 9.4. |
+| `DROP EXTENSION` | YES | Removes an extension from WarehousePG – based on PostgreSQL 12.12. |
+| `DROP EXTERNAL TABLE` | YES | WarehousePG parallel ETL feature - not in PostgreSQL 12.12. |
 | `DROP FUNCTION` | YES |  |
 | `DROP GROUP` | YES | An alias for [DROP ROLE](../sql_commands/DROP_ROLE.md) |
 | `DROP INDEX` | YES |  |
@@ -230,7 +230,7 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `DROP OWNED` | **NO** |  |
 | `DROP PROTOCOL` | YES |  |
 | `DROP PUBLICATION` | NO |  |
-| `DROP RESOURCE QUEUE` | YES | WarehousePG resource management feature - not in PostgreSQL 9.4. |
+| `DROP RESOURCE QUEUE` | YES | WarehousePG resource management feature - not in PostgreSQL 12.12. |
 | `DROP ROLE` | YES |  |
 | `DROP RULE` | YES |  |
 | `DROP SCHEMA` | YES |  |
@@ -257,11 +257,11 @@ WarehousePG is based on PostgreSQL 9.4. To support the distributed nature and ty
 | `PREPARE` | YES |  |
 | `PREPARE TRANSACTION` | **NO** |  |
 | `REASSIGN OWNED` | YES |  |
-| `REFRESH MATERIALIZED VIEW` | YES | Based on PostgreSQL 9.4. |
+| `REFRESH MATERIALIZED VIEW` | YES | Based on PostgreSQL 12.12. |
 | `REINDEX` | YES |  |
 | `RELEASE SAVEPOINT` | YES |  |
 | `RESET` | YES |  |
-| `RETRIEVE` | YES | WarehousePG parallel retrieve cursor - not in PostgreSQL 9.4. |
+| `RETRIEVE` | YES | WarehousePG parallel retrieve cursor - not in PostgreSQL 12.12. |
 | `REVOKE` | YES |  |
 | `ROLLBACK` | YES |  |
 | `ROLLBACK PREPARED` | **NO** |  |
