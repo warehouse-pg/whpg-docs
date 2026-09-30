@@ -96,7 +96,7 @@ If you get warnings indicating that the Console code page differs from Windows c
 
 ```
 psql -h prod1.example.local warehouse
-psql (9.4.20)
+psql (12.12)
 WARNING: Console code page (850) differs from Windows code page (1252)
  8-bit characters might not work correctly. See psql reference
  page "Notes for Windows users" for details.
@@ -108,7 +108,7 @@ chcp 1252
 Active code page: 1252
 
 psql -h prod1.example.local warehouse
-psql (9.4.20)
+psql (12.12)
 Type "help" for help.
 ```
 

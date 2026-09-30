@@ -27,4 +27,4 @@ Refer to [Installing Extensions](/docs/7x/install_guide/additional_modules/index
 
 ## Module Documentation
 
-Refer to the [isn Postgres documentation](https://www.postgresql.org/docs/9.4/isn.html) for detailed information about using the module.
+Refer to the [isn Postgres documentation](https://www.postgresql.org/docs/12/isn.html) for detailed information about using the module.
