@@ -152,8 +152,55 @@ export default defineConfig(
         link: "/extensions/",
         collapsed: false,
         items: [
-          { text: "Bundled", link: "/extensions/bundled/" },
-          { text: "Additional", link: "/extensions/additional/" }
+          {
+            text: "Bundled",
+            link: "/extensions/bundled/",
+            collapsed: true,
+            items: [
+              { text: "auto_explain", link: "/extensions/bundled/auto-explain" },
+              { text: "btree_gin", link: "/extensions/bundled/btree_gin" },
+              { text: "citext", link: "/extensions/bundled/citext" },
+              { text: "dblink", link: "/extensions/bundled/dblink" },
+              { text: "fuzzystrmatch", link: "/extensions/bundled/fuzzystrmatch" },
+              { text: "gp_array_agg", link: "/extensions/bundled/gp_array_agg" },
+              { text: "gp_check_functions", link: "/extensions/bundled/gp_check_functions" },
+              { text: "gp_exttable_fdw", link: "/extensions/bundled/gp_exttable_fdw" },
+              { text: "gp_legacy_string_agg", link: "/extensions/bundled/gp_legacy_string_agg" },
+              { text: "gp_parallel_retrieve_cursor", link: "/extensions/bundled/gp_parallel_retrieve_cursor" },
+              { text: "gp_percentile_agg", link: "/extensions/bundled/gp_percentile_agg" },
+              { text: "gp_pitr", link: "/extensions/bundled/gp_pitr" },
+              { text: "gp_sparse_vector", link: "/extensions/bundled/gp_sparse_vector" },
+              { text: "gp_subtransaction_overflow", link: "/extensions/bundled/gp_subtransaction_overflow" },
+              { text: "greenplum_fdw", link: "/extensions/bundled/greenplum_fdw" },
+              { text: "hstore", link: "/extensions/bundled/hstore" },
+              { text: "ip4r", link: "/extensions/bundled/ip4r" },
+              { text: "isn", link: "/extensions/bundled/isn" },
+              { text: "ltree", link: "/extensions/bundled/ltree" },
+              { text: "orafce", link: "/extensions/bundled/orafce_ref" },
+              { text: "pageinspect", link: "/extensions/bundled/pageinspect" },
+              { text: "pg_buffercache", link: "/extensions/bundled/pg_buffercache" },
+              { text: "pg_cron", link: "/extensions/bundled/pg_cron" },
+              { text: "pg_hint_plan", link: "/extensions/bundled/pg_hint_plan" },
+              { text: "pg_stat_statements", link: "/extensions/bundled/pg_stat_statements" },
+              { text: "pg_trgm", link: "/extensions/bundled/pg_trgm" },
+              { text: "pgcrypto", link: "/extensions/bundled/pgcrypto" },
+              { text: "postgres_fdw", link: "/extensions/bundled/postgres_fdw" },
+              { text: "sslinfo", link: "/extensions/bundled/sslinfo" },
+              { text: "tablefunc", link: "/extensions/bundled/tablefunc" },
+              { text: "timestamp9", link: "/extensions/bundled/timestamp9" },
+              { text: "tsm_system_rows", link: "/extensions/bundled/tsm_system_rows" },
+              { text: "tsm_system_time", link: "/extensions/bundled/tsm_system_time" },
+              { text: "uuid-ossp", link: "/extensions/bundled/uuid-ossp" }
+            ],
+          },
+          {
+            text: "Additional",
+            link: "/extensions/additional/",
+            collapsed: true,
+            items: [
+              { text: "whpg-vector", link: "/extensions/additional/pgvector/" }
+            ],
+          }
         ],
       }
     ]
