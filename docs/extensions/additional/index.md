@@ -3,6 +3,8 @@ title: Additional extensions
 description: Open source extensions for WarehousePG that require a separate package install on each host.
 ---
 
-These extensions require installing a package on each host in your cluster before you can enable them. See [Installing Extensions](/docs/7x/install_guide/additional_modules/index.md) for installation steps.
+These extensions require a separate package install on each host in your WarehousePG cluster before you can enable them, and availability varies by version.
 
-No additional extensions are available yet.
+| Extension | Description | 7.x |
+| --- | --- | :---: |
+| [whpg-vector](pgvector/index.md) | Provides vector similarity search capabilities for WarehousePG that enable searching, storing, and querying machine-learning-generated embeddings at scale. | ✓ |
