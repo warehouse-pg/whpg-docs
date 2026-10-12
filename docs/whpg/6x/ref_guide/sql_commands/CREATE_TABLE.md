@@ -412,7 +412,7 @@ The `PARTITION BY` clause allows you to divide the table into multiple sub-table
     | `blocksize` | No | Yes | Yes |
     | `checksum` | No | Yes | Yes |
     | `compresslevel` | No | Yes | Yes |
-    | `compresstype` | No | Yes (`ZLIB`, `ZSTD`, `NONE`) | Yes (also `RLE_TYPE`) |
+    | `compresstype` | No | Yes (`ZLIB`, `ZSTD`, `NONE`) | Yes (`ZLIB`, `ZSTD`, `RLE_TYPE`, `NONE`) |
     | `orientation` | No (row only) | Yes | Yes |
     | `fillfactor` | Yes | No | No |
     | `oids` | Yes | Yes | No |
@@ -435,7 +435,13 @@ The `PARTITION BY` clause allows you to divide the table into multiple sub-table
 
     For information about using table compression, see [Choosing the Table Storage Model](../../admin_guide/ddl/ddl-storage.md) in the *WarehousePG Administrator Guide*.
 
-    **compresslevel** — For Zstd compression of append-optimized tables, set to an integer value from 1 (fastest compression) to 19 (highest compression ratio). For zlib compression, the valid range is from 1 to 9. If not declared, the default is 1. For `RLE_TYPE`, the compression level can be an integer value from 1 (fastest compression) to 4 (highest compression ratio).
+    **compresslevel** — Sets the compression level for append-optimized tables. Lower values compress faster, and higher values give a better compression ratio. The valid range depends on the compression type. If not declared, the default is 1.
+
+    | Compression type | Valid `compresslevel` values |
+    |---|---|
+    | `ZSTD` | 1 to 19 |
+    | `ZLIB` | 1 to 9 |
+    | `RLE_TYPE` | 1 to 4 |
 
     The `compresslevel` option is valid only if `appendoptimized=TRUE`.
 
