@@ -48,17 +48,17 @@ Refer to [Using Full Text Search](../../admin_guide/query/textsearch/index.md) f
 
 ## Parameters
 
--   `name`
+### name
 
-    The name of the text search template to be created. The name can be schema-qualified.
+The name of the text search template to be created. The name can be schema-qualified.
 
--   `init\_function`
+### init\_function
 
-    The name of the init function for the template.
+The name of the init function for the template.
 
--   `lexize\_function`
+### lexize\_function
 
-    The name of the lexize function for the template.
+The name of the lexize function for the template.
 
 The function names can be schema-qualified if necessary. Argument types are not given, since the argument list for each type of function is predetermined. The lexize function is required, but the init function is optional.
 

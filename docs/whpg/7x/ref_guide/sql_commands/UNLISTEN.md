@@ -27,7 +27,8 @@ UNLISTEN { <channel> | * }
 
 ## Parameters
 
-channel
+### channel
+
 The name of a notification channel (any identifier).
 
 -   All current listen registrations for this session are cleared.

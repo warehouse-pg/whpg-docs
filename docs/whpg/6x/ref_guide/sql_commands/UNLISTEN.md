@@ -33,10 +33,9 @@ UNLISTEN { <channel> | * }
 
 ## Parameters
 
--   channel
+### channel
 
-    The name of a notification channel (any identifier).
-
+The name of a notification channel (any identifier).
 
 -
 

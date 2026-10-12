@@ -27,7 +27,8 @@ SHOW ALL
 
 ## Parameters
 
-name
+### name
+
 The name of a run-time system configuration parameter.
 
 Some parameters viewable by `SHOW` are read-only — you can view their values but not set them:
@@ -49,7 +50,8 @@ IS_SUPERUSER
 True if the current role has superuser privileges.
 ```
 
-ALL
+### ALL
+
 Shows the current value of all configuration parameters, with descriptions.
 
 <a id="section4n"></a>

@@ -27,10 +27,12 @@ Every non-holdable open cursor is implicitly closed when a transaction is termin
 
 ## Parameters
 
-cursor_name
+### cursor_name
+
 The name of an open cursor to close.
 
-ALL
+### ALL
+
 Close all open cursors.
 
 <a id="section5"></a>

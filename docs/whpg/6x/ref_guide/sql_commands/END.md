@@ -33,11 +33,9 @@ END [WORK | TRANSACTION]
 
 ## Parameters
 
--   WORK
+### WORK | TRANSACTION
 
--   TRANSACTION
-
-    Optional keywords. They have no effect.
+Optional keywords. They have no effect.
 
 <a id="section5">
 
