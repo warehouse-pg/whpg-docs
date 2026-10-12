@@ -33,9 +33,9 @@ This command removes a resource queue from WarehousePG. To drop a resource queue
 
 ## Parameters
 
--   queue_name
+### queue_name
 
-    The name of a resource queue to remove.
+The name of a resource queue to remove.
 
 <a id="section5">
 

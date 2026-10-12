@@ -29,13 +29,13 @@ If a transaction of this sort is going to change the data in the table, then it 
 
 ## Parameters
 
-- name
+### name
 
   The name (optionally schema-qualified) of an existing table to lock. If `ONLY` is specified, only that table is locked. If `ONLY` is not specified, the table and all its descendant tables (if any) are locked. Optionally, `*` can be specified after the table name to explicitly indicate that descendant tables are included.
 
   If multiple tables are given, tables are locked one-by-one in the order specified in the `LOCK TABLE` command.
 
-- lockmode
+### lockmode
 
   The lock mode specifies which locks this lock conflicts with. If no lock mode is specified, then `ACCESS EXCLUSIVE`, the most restrictive mode, is used. Lock modes are as follows:
 
@@ -51,21 +51,21 @@ If a transaction of this sort is going to change the data in the table, then it 
    ::: Note
 
    <a id="lock_note"></a>
-   
+
    By default WarehousePG acquires the more restrictive `EXCLUSIVE` lock (rather than `ROW EXCLUSIVE` in PostgreSQL) for `UPDATE`, `DELETE`, and `SELECT...FOR UPDATE` operations on heap tables. When the Global Deadlock Detector is enabled the lock mode for `UPDATE` and `DELETE` operations on heap tables is `ROW EXCLUSIVE`. See [Global Deadlock Detector](../../admin_guide/dml.md#topic_gdd). WarehousePG always holds a table-level lock with `SELECT...FOR UPDATE` statements.
 
    :::
 
-- NOWAIT
+### NOWAIT
 
   Specifies that `LOCK TABLE` should not wait for any conflicting locks to be released: if the specified lock(s) cannot be acquired immediately without waiting, the transaction is cancelled.
 
-- MASTER ONLY
+### MASTER ONLY
 
   Specifies that when a `LOCK TABLE` command is issued, WarehousePG will lock tables on the coordinator only, rather than on the coordinator and all of the segments. This is particularly useful for metadata-only operations.
 
   ::: Note
-  
+
   This option is only supported in `ACCESS SHARE MODE`.
 
   :::

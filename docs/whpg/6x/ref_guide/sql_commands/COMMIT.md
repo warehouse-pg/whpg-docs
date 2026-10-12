@@ -33,11 +33,9 @@ COMMIT [WORK | TRANSACTION]
 
 ## Parameters
 
--   WORK
+### WORK | TRANSACTION
 
--   TRANSACTION
-
-    Optional key words. They have no effect.
+Optional key words. They have no effect.
 
 <a id="section5">
 

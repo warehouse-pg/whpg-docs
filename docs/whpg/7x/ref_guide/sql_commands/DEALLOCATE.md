@@ -27,13 +27,16 @@ For more information on prepared statements, see [PREPARE](PREPARE.md).
 
 ## Parameters
 
-PREPARE
+### PREPARE
+
 Optional key word which is ignored.
 
-name
+### name
+
 The name of the prepared statement to deallocate.
 
-ALL
+### ALL
+
 Deallocate all prepared statements
 
 <a id="section5"></a>

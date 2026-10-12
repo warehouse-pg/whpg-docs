@@ -35,13 +35,13 @@ For more information on prepared statements, see [PREPARE](PREPARE.md).
 
 ## Parameters
 
--   PREPARE
+### PREPARE
 
-    Optional key word which is ignored.
+Optional key word which is ignored.
 
--   name
+### name
 
-    The name of the prepared statement to deallocate.
+The name of the prepared statement to deallocate.
 
 <a id="section5">
 

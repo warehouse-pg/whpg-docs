@@ -51,29 +51,29 @@ Refer to [Using Full Text Search](../../admin_guide/query/textsearch/index.md) f
 
 ## Parameters
 
--   `name`
+### name
 
-    The name of the text search parser to be created. The name can be schema-qualified.
+The name of the text search parser to be created. The name can be schema-qualified.
 
--   `start\_function`
+### start\_function
 
-    The name of the start function for the parser.
+The name of the start function for the parser.
 
--   `gettoken\_function`
+### gettoken\_function
 
-    The name of the get-next-token function for the parser.
+The name of the get-next-token function for the parser.
 
--   `end\_function`
+### end\_function
 
-    The name of the end function for the parser.
+The name of the end function for the parser.
 
--   `lextypes\_function`
+### lextypes\_function
 
-    The name of the lextypes function for the parser (a function that returns information about the set of token types it produces).
+The name of the lextypes function for the parser (a function that returns information about the set of token types it produces).
 
--   `headline\_function`
+### headline\_function
 
-    The name of the headline function for the parser (a function that summarizes a set of tokens).
+The name of the headline function for the parser (a function that summarizes a set of tokens).
 
 The function names can be schema-qualified if necessary. Argument types are not given, since the argument list for each type of function is predetermined. All except the headline function are required.
 

@@ -35,8 +35,8 @@ If the isolation level, read/write mode, or deferrable mode is specified, the ne
 
 ## Parameters
 
-WORK
-TRANSACTION
+### WORK | TRANSACTION
+
 Optional key words. They have no effect.
 
 Refer to [SET TRANSACTION](SET_TRANSACTION.md) for information on the meaning of the other parameters to this statement.
