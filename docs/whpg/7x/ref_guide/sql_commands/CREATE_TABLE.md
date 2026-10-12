@@ -294,7 +294,13 @@ Set to the size, in bytes, for each block in a table. The `blocksize` must be be
 
 #### compresslevel
 
-For Zstd compression of append-optimized tables, set to an integer value from 1 (fastest compression) to 19 (highest compression ratio). For zlib compression, the valid range is from 1 to 9. For `RLE_TYPE`, the compression level can be an integer value from 1 (fastest compression) to 4 (highest compression ratio).
+Sets the compression level for append-optimized tables. Lower values compress faster, and higher values give a better compression ratio. The valid range depends on the compression type.
+
+| Compression type | Valid `compresslevel` values |
+|---|---|
+| `ZSTD` | 1 to 19 |
+| `ZLIB` | 1 to 9 |
+| `RLE_TYPE` | 1 to 4 |
 
 #### compresstype
 
@@ -444,6 +450,14 @@ Indexes, `PRIMARY KEY`, `UNIQUE`, and `EXCLUDE` constraints on the original tabl
 
 Copies relation storage options from the original table. For append-optimized and append-optimized, column-oriented tables, copies the `blocksize`, `compresslevel`, and `compresstype.` For heap tables, copies the `fillfactor`. You can also specify relation [storage parameters](#storage_parameters).
 : When you include `RELOPT` options, you must not explicitly specify relation storage options for the new table using the `WITH` clause.
+
+::: warning
+If the original table is append-optimized, include `AM` together with `RELOPT`. Using `INCLUDING RELOPT` alone copies compression options such as `compresstype` but not the access method, and the command fails with an error like `unrecognized parameter "compresstype"`.
+
+```sql
+CREATE TABLE t1_copy (LIKE t1 INCLUDING RELOPT INCLUDING AM);
+```
+:::
 
 #### INCLUDING STATISTICS
 
@@ -729,7 +743,7 @@ Support for each storage parameter depends on whether the table is a heap, AO, o
 | `blocksize` | No | Yes | Yes |
 | `checksum` | No | Yes | Yes |
 | `compresslevel` | No | Yes | Yes |
-| `compresstype` | No | Yes (`ZLIB`, `ZSTD`, `NONE`) | Yes (also `RLE_TYPE`) |
+| `compresstype` | No | Yes (`ZLIB`, `ZSTD`, `NONE`) | Yes (`ZLIB`, `ZSTD`, `RLE_TYPE`, `NONE`) |
 | `orientation` | No (row only) | Yes | Yes |
 | `fillfactor` | Yes | No | No |
 | `toast_tuple_target` | Yes | No | No |
@@ -756,7 +770,13 @@ This option is valid only for append-optimized tables. The value `TRUE` is the d
 
 #### compresslevel
 
-For Zstd compression of append-optimized tables, set to an integer value from 1 (fastest compression) to 19 (highest compression ratio). For zlib compression, the valid range is from 1 to 9. If not declared, the default is 1. For `RLE_TYPE`, the compression level can be an integer value from 1 (fastest compression) to 4 (highest compression ratio).
+Sets the compression level for append-optimized tables. Lower values compress faster, and higher values give a better compression ratio. The valid range depends on the compression type. If not declared, the default is 1.
+
+| Compression type | Valid `compresslevel` values |
+|---|---|
+| `ZSTD` | 1 to 19 |
+| `ZLIB` | 1 to 9 |
+| `RLE_TYPE` | 1 to 4 |
 
 The `compresslevel` option is valid only if the table is append-optimized.
 
