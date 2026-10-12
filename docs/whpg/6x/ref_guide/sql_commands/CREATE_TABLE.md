@@ -403,6 +403,20 @@ The `PARTITION BY` clause allows you to divide the table into multiple sub-table
 
     The defaults for some of the table storage options can be specified with the server configuration parameter `gp_default_storage_options`. For information about setting default storage options, see [Notes](#section5).
 
+    Support for each storage option depends on whether the table is a heap, append-optimized row-oriented (AO), or append-optimized column-oriented (AO/CO) table:
+
+    | Storage option | Heap | AO | AO/CO |
+    |---|---|---|---|
+    | `analyze_hll_non_part_table` | Yes | Yes | Yes |
+    | `appendoptimized` | Yes | Yes | Yes |
+    | `blocksize` | No | Yes | Yes |
+    | `checksum` | No | Yes | Yes |
+    | `compresslevel` | No | Yes | Yes |
+    | `compresstype` | No | Yes (`ZLIB`, `ZSTD`, `NONE`) | Yes (also `RLE_TYPE`) |
+    | `orientation` | No (row only) | Yes | Yes |
+    | `fillfactor` | Yes | No | No |
+    | `oids` | Yes | Yes | No |
+
     The following storage options are available:
 
     **appendoptimized** — Set to `TRUE` to create the table as an append-optimized table. If `FALSE` or not declared, the table will be created as a regular heap-storage table.
