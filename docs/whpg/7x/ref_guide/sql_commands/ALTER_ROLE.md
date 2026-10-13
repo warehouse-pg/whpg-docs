@@ -94,7 +94,7 @@ Alter the current user instead of an explicitly identified role.
 
 Alter the current session user instead of an explicitly identified role.
 
-### SUPERUSER
+### Role attributes
 
 ```
 SUPERUSER

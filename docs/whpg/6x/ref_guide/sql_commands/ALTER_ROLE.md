@@ -129,7 +129,7 @@ You cannot assign a resource group that you create for an external component to 
 
 The name of the resource queue to which the user-level role is to be assigned. Only roles with `LOGIN` privilege can be assigned to a resource queue. To unassign a role from a resource queue and put it in the default resource queue, specify `NONE`. A role can only belong to one resource queue.
 
-### SUPERUSER | NOSUPERUSER
+### Role attributes
 
 ```
 SUPERUSER | NOSUPERUSER

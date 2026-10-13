@@ -174,7 +174,7 @@ These attributes inform the query optimizer about whether or not the function co
 
 `SECURITY INVOKER` (the default) indicates that the function is to be run with the privileges of the user that calls it. `SECURITY DEFINER` specifies that the function is to be run with the privileges of the user that created it. The key word `EXTERNAL` is allowed for SQL conformance, but it is optional since, unlike in SQL, this feature applies to all functions not just external ones.
 
-### EXECUTE ON ANY
+### EXECUTE ON
 
 ```
 EXECUTE ON ANY

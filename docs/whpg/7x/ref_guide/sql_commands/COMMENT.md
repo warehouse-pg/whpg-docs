@@ -80,7 +80,7 @@ You can view comments using the `psql` meta-commands `\dd`, `\d+`, and `\l+`. Ot
 
 ## Parameters
 
-### object_name
+### object_name | aggregate_name | ...
 
 ```
 object_name

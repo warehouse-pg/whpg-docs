@@ -300,7 +300,7 @@ Sets the compression level for append-optimized tables. Lower values compress fa
 |---|---|
 | `ZSTD` | 1 to 19 |
 | `ZLIB` | 1 to 9 |
-| `RLE_TYPE` | 1 to 4 |
+| `RLE_TYPE` | 1 to 6 |
 
 #### compresstype
 
@@ -408,7 +408,7 @@ Support for each option depends on whether the source is a heap, append-optimize
 | `INCLUDING GENERATED` | Yes | Yes | Yes |
 | `INCLUDING IDENTITY` | Yes | Yes | Yes |
 | `INCLUDING INDEXES` | Yes | Yes | Yes |
-| `INCLUDING RELOPT` | Copies `fillfactor` | Copies `blocksize`, `compresslevel`, and `compresstype` | Copies `blocksize`, `compresslevel`, and `compresstype` |
+| `INCLUDING RELOPT` | Yes (all storage options, for example `fillfactor`) | Yes (`blocksize`, `checksum`, `compresslevel`, `compresstype`) | Yes (`blocksize`, `checksum`, `compresslevel`, `compresstype`) |
 | `INCLUDING STATISTICS` | Yes | Yes | Yes |
 | `INCLUDING STORAGE` | Yes | Yes | Yes |
 | `INCLUDING ALL` | Yes | Yes | Yes |
@@ -448,15 +448,18 @@ Indexes, `PRIMARY KEY`, `UNIQUE`, and `EXCLUDE` constraints on the original tabl
 
 #### INCLUDING RELOPT
 
-Copies relation storage options from the original table. For append-optimized and append-optimized, column-oriented tables, copies the `blocksize`, `compresslevel`, and `compresstype.` For heap tables, copies the `fillfactor`. You can also specify relation [storage parameters](#storage_parameters).
-: When you include `RELOPT` options, you must not explicitly specify relation storage options for the new table using the `WITH` clause.
+Copies relation storage options from the original table. For append-optimized tables, copies `blocksize`, `checksum`, `compresslevel`, and `compresstype`. For heap tables, copies all storage options that are set, such as `fillfactor`. You can also specify relation [storage parameters](#storage_parameters).
+
+When you include `RELOPT` options, you must not explicitly specify relation storage options for the new table using the `WITH` clause.
 
 ::: warning
-If the original table is append-optimized, include `AM` together with `RELOPT`. Using `INCLUDING RELOPT` alone copies compression options such as `compresstype` but not the access method, and the command fails with an error like `unrecognized parameter "compresstype"`.
+`INCLUDING RELOPT` copies storage options as they are. They must be valid for the new table's access method, or the command fails with an error like `unrecognized parameter "compresstype"`. For example, the error occurs when you copy an append-optimized table and the new table defaults to heap. Include `AM` as well, or set the access method with `USING`.
 
 ```sql
 CREATE TABLE t1_copy (LIKE t1 INCLUDING RELOPT INCLUDING AM);
 ```
+
+The same applies to `INCLUDING ENCODING`. The new table must also be append-optimized, column-oriented.
 :::
 
 #### INCLUDING STATISTICS
@@ -776,7 +779,7 @@ Sets the compression level for append-optimized tables. Lower values compress fa
 |---|---|
 | `ZSTD` | 1 to 19 |
 | `ZLIB` | 1 to 9 |
-| `RLE_TYPE` | 1 to 4 |
+| `RLE_TYPE` | 1 to 6 |
 
 The `compresslevel` option is valid only if the table is append-optimized.
 
