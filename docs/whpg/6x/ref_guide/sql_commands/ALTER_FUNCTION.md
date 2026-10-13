@@ -103,7 +103,7 @@ Change whether the function is a security definer or not. The key word `EXTERNAL
 
 Change whether the function is considered leakproof or not. See [CREATE FUNCTION](CREATE_FUNCTION.md) for more information about this capability.
 
-### EXECUTE ON ANY
+### EXECUTE ON
 
 ```
 EXECUTE ON ANY

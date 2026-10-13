@@ -108,7 +108,7 @@ Change whether the function is deemed safe for parallelism. See [CREATE FUNCTION
 
 Change whether the function is considered leakproof or not. See [CREATE FUNCTION](CREATE_FUNCTION.md) for more information about this capability.
 
-### EXECUTE ON ANY
+### EXECUTE ON
 
 ```
 EXECUTE ON ANY

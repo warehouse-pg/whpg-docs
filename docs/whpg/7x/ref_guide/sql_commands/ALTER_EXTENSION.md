@@ -93,7 +93,7 @@ The new version of the extension. The new_version can be either an identifier or
 
 The new schema for the extension.
 
-### object_name
+### object_name | aggregate_name | ...
 
 ```
 object_name

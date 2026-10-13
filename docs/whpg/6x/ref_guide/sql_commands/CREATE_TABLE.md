@@ -476,7 +476,7 @@ Sets the compression level for append-optimized tables. Lower values compress fa
 |---|---|
 | `ZSTD` | 1 to 19 |
 | `ZLIB` | 1 to 9 |
-| `RLE_TYPE` | 1 to 4 |
+| `RLE_TYPE` | 1 to 6 |
 
 The `compresslevel` option is valid only if `appendoptimized=TRUE`.
 

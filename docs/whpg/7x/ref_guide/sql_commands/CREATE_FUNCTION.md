@@ -173,7 +173,7 @@ These attributes inform the query optimizer about the behavior of the function. 
 `SECURITY DEFINER` specifies that the function is to be run with the privileges of the user that created it.
 The key word `EXTERNAL` is allowed for SQL conformance, but it is optional since, unlike in SQL, this feature applies to all functions not just external ones.
 
-### EXECUTE ON ANY
+### EXECUTE ON
 
 ```
 EXECUTE ON ANY

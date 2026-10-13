@@ -70,7 +70,7 @@ You must set `CONCURRENCY` to zero (0) for resource groups that you create for e
 
 > **Note** You cannot set the `CONCURRENCY` value for the `admin_group` to zero (0).
 
-### CPU_RATE_LIMIT integer
+### CPU_RATE_LIMIT | CPUSET
 
 ```
 CPU_RATE_LIMIT integer
