@@ -373,7 +373,7 @@ Moves the table into another schema. Associated indexes, constraints, and sequen
 SET DISTRIBUTED
 Changes the distribution policy of a table. Changing a hash distribution policy, or changing to or from a replicated policy, will cause the table data to be physically redistributed on disk, which can be resource intensive. If you declare the same hash distribution policy or change from hash to random distribution, data will not be redistributed unless you declare `SET WITH (reorganize=true)`.
 
-:  While WarehousePG permits changing the distribution policy of a writable external table, the operation never results in physical redistribution of the external data.
+While WarehousePG permits changing the distribution policy of a writable external table, the operation never results in physical redistribution of the external data.
 
 ATTACH PARTITION partition_name { FOR VALUES partition_bound_spec | DEFAULT }
 This form of the *modern partitioning syntax* attaches an existing table (which might itself be partitioned) as a partition of the target table. The table can be attached as a partition for specific values using `FOR VALUES` or as a default partition by using `DEFAULT`. For each index in the target table, a corresponding one will be created in the attached table; or, if an equivalent index already exists, it will be attached to the target table's index, as if you had run `ALTER INDEX ATTACH PARTITION`. Note that if the existing table is a foreign table, WarehousePG does not permit attaching the table as a partition of the target table if there are `UNIQUE` indexes on the target table. (See also [CREATE FOREIGN TABLE](CREATE_FOREIGN_TABLE.md).)

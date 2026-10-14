@@ -80,7 +80,7 @@ Comments can be easily retrieved with the psql meta-commands `\dd`, `\d+`, and `
 
 ## Parameters
 
-### object_name | aggregate_name | ...
+### object_name | agg_name | ...
 
 ```
 object_name
