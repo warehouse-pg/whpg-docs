@@ -1,10 +1,10 @@
 ---
-title: Installing PXF for WarehousePG
-navTitle: Installing
-description: Learn how to install the WarehousePG Platform Extension Framework (PXF) package across your WarehousePG cluster.
+title: Installing and upgrading PXF for WarehousePG
+navTitle: Installing and upgrading
+description: Learn how to install and upgrade the WarehousePG Platform Extension Framework (PXF) package across your WarehousePG cluster.
 ---
 
-Build `whpg-pxf` from source, then distribute the build to every host in your WarehousePG (WHPG) cluster, including the coordinator, standby coordinator, and all segment hosts.
+Build `whpg-pxf` from source, then distribute the build to every host in your WarehousePG (WHPG) cluster, including the coordinator, standby coordinator, and all segment hosts. To move to a newer PXF version later, see [Upgrading PXF](#upgrading-pxf).
 
 ## Prerequisites
 
@@ -82,6 +82,61 @@ Build PXF on the coordinator, from the `release-6.x` branch, which matches WHPG 
     pxf cluster register
     ```
 
+## Upgrading PXF
+
+Upgrade PXF by building the new version from source and installing it over the existing one on every host. Because `$PXF_BASE` is separate from `$PXF_HOME`, your configuration and server definitions stay in place.
+
+1. On the coordinator, record your current PXF version:
+
+    ```bash
+    pxf version
+    ```
+
+1. Stop PXF on every host:
+
+    ```bash
+    pxf cluster stop
+    ```
+
+1. Back up `$PXF_BASE` on the coordinator, so you can restore your configuration if needed:
+
+    ```bash
+    cp -r $PXF_BASE $PXF_BASE.bak
+    ```
+
+1. Build the new version and install it on the cluster, following [Building from source](#building-from-source) and [Installing on the cluster](#installing-on-the-cluster). Use the same `$PXF_HOME` and `$PXF_BASE` locations as your current installation.
+
+1. Sync the PXF configuration to every host:
+
+    ```bash
+    pxf cluster sync
+    ```
+
+    This command doesn't distribute `$PXF_BASE/keytabs`. If you use Kerberos, confirm the keytab files are still in place on every host.
+
+1. Start PXF on every host, and confirm the new version is running:
+
+    ```bash
+    pxf cluster start
+    pxf cluster status
+    pxf version
+    ```
+
+1. In each database that uses PXF, update the extension:
+
+    ```sql
+    ALTER EXTENSION pxf UPDATE;
+    ```
+
+### Registering PXF after a WarehousePG upgrade
+
+After you upgrade WHPG, copy the PXF extension files into the new WHPG installation by registering PXF again. Run these commands from the coordinator:
+
+```bash
+pxf cluster register
+pxf cluster restart
+```
+
 ## Next steps
 
-See [Configuring and starting PXF](configuring.md) to set up and start the PXF service across your cluster.
+See [Configuring and starting PXF](configuring.md) to set up and start the PXF service across your cluster. See [PXF release notes](release_notes/index.md) for the changes in each PXF version.
