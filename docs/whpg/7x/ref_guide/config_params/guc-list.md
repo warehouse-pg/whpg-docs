@@ -1766,6 +1766,8 @@ When set to `true` (the default) WarehousePG's resource group scheduler bypasses
 
 Identifies the root path of the `gpdb` cgroup hierarchy.
 
+The value can contain only letters, numbers, and the `.`, `_`, and `-` characters, and must start with a letter or number. WarehousePG validates the entire value at startup and rejects a value that doesn't follow these rules. Releases before 7.6.1 only validated the first 8 characters.
+
 | Value Range | Default        | Set Classifications               |
 | ----------- | -------------- | --------------------------------- |
 | char        | "gpdb.service" | local, system, restart, superuser |
