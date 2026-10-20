@@ -2905,6 +2905,25 @@ The parameter can be set for a database system, an individual database, or a ses
 | ----------- | ------- | ---------------------------- |
 | Integer > 0 | 20      | coordinator, session, reload |
 
+<a id="optimizer_array_interval_threshold"></a>
+
+## optimizer_array_interval_threshold
+
+When ORCA is enabled (the default) and is processing a query that contains a predicate of the form `column IN (constant, ...)` or `column NOT IN (constant, ...)`, ORCA derives a constraint for the column by sorting and de-duplicating the constants. The `optimizer_array_interval_threshold` parameter limits this work based on the number of constants in the list. If the list contains more constants than the specified value, and none of the constants is `NULL`, ORCA doesn't derive a constraint from the predicate. The predicate is still applied as a filter, so query results aren't affected. The limit also applies to lists that ORCA derives itself, for example an `IN` list it infers for the other side of a join.
+
+Skipping the constraint makes planning cheaper for very long lists, but partition elimination, predicate inference, and contradiction detection from that predicate are lost. This parameter is independent of [`optimizer_array_expansion_threshold`](#optimizer_array_expansion_threshold). The default, 2147483647, sets no limit, so ORCA always derives the constraint.
+
+The parameter can be set for a database system, an individual database, or a session or query.
+
+| Value Range    | Default    | Set Classifications          |
+| -------------- | ---------- | ---------------------------- |
+| 0 - 2147483647 | 2147483647 | coordinator, session, reload |
+
+::: info Version availability
+
+`optimizer_array_interval_threshold` is available starting with WarehousePG 7.6.1.
+:::
+
 <a id="optimizer_control"></a>
 
 ## optimizer_control

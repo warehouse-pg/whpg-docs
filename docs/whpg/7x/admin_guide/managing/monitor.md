@@ -410,7 +410,7 @@ where `pid` identifies the process whose memory contexts you want dumped.
 
 Memory context logging functions that dump memory usage across all WarehousePG segments, or dump usage for a specific segment are named `gp_log_backend_memory_contexts()`.
 
-To call `gp_log_backend_memory_contexts()`, a role must hold `EXECUTE` on `pg_log_backend_memory_contexts(integer)`, the function it runs on the segments, as well as on both `gp_log_backend_memory_contexts()` signatures.
+To call `gp_log_backend_memory_contexts()`, a role must hold `EXECUTE` on `pg_log_backend_memory_contexts(integer)`, the function it runs on the segments, and on the `gp_log_backend_memory_contexts()` signature it calls.
 
 `gp_log_backend_memory_contexts()` has two signatures:
 
