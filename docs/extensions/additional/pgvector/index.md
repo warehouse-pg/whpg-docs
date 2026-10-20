@@ -3,6 +3,8 @@ title: whpg-vector
 description: Learn how to store, query, and index embeddings in WarehousePG using the whpg-vector extension.
 redirects:
   - /docs/7x/ref_guide/modules/extensions/pgvector
+  - /docs/7x/ref_guide/modules/edb_modules/pgvector
+  - /supported-open-source/warehousepg/warehousepg/ref_guide/modules/pgvector/
 navigation:
   - release_notes
   - installing
