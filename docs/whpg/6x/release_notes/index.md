@@ -32,7 +32,7 @@ WarehousePG 6.27.7 changes the privileges required to run some administration fu
 
 ### Security
 
--   Restricted `gp_expand_lock_catalog()` and `gp_expand_bump_version()` to superusers, so any role can no longer block catalog changes or disconnect sessions while `gpexpand` is in progress, for [CVE-2026-104948](https://www.cve.org/CVERecord?id=CVE-2026-104948).
+-   Restricted `gp_expand_lock_catalog()` and `gp_expand_bump_version()` to superusers, so any role can no longer call them, even with no `gpexpand` running, to block catalog changes or disconnect sessions that hold temporary tables, for [CVE-2026-104948](https://www.cve.org/CVERecord?id=CVE-2026-104948).
 -   Restricted `gp_add_master_standby()` to superusers, so a regular role can no longer insert a standby row that blocks `gpinitstandby`, for [CVE-2026-104949](https://www.cve.org/CVERecord?id=CVE-2026-104949).
 -   Raised the minimum TLS version for the `gpfdists://` external table client and the `s3://` protocol clients to TLS 1.2.
 

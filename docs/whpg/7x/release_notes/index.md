@@ -31,7 +31,7 @@ WarehousePG 7.6.1 changes the privileges required to run some administration fun
 
 ### Enhancements
 
--   ORCA now caches the interval constraint it derives from a constant `IN` or `NOT IN` list, which cuts planning time for long lists on partitioned tables. Added the `optimizer_array_constraint_cache` and `optimizer_array_interval_threshold` configuration parameters to control this behavior.
+-   ORCA now caches the interval constraint it derives from a constant `IN` or `NOT IN` list, which cuts planning time for long lists on partitioned tables. The new [`optimizer_array_interval_threshold`](../ref_guide/config_params/guc-list.md#optimizer_array_interval_threshold) configuration parameter limits the list length for which the constraint is derived at all.
 
 ### Bug fixes
 
@@ -48,7 +48,7 @@ WarehousePG 7.6.1 changes the privileges required to run some administration fun
 ### Security
 
 -   Required `EXECUTE` on `pg_log_backend_memory_contexts(integer)` to call `gp_log_backend_memory_contexts()`, so any role can no longer make other sessions' backends dump their memory contexts into the segment logs, for [CVE-2026-104947](https://www.cve.org/CVERecord?id=CVE-2026-104947).
--   Restricted `gp_expand_lock_catalog()` and `gp_expand_bump_version()` to superusers, so any role can no longer block catalog changes or disconnect sessions while `gpexpand` is in progress, for [CVE-2026-104948](https://www.cve.org/CVERecord?id=CVE-2026-104948).
+-   Restricted `gp_expand_lock_catalog()` and `gp_expand_bump_version()` to superusers, so any role can no longer call them, even with no `gpexpand` running, to block catalog changes or disconnect sessions that hold temporary tables, for [CVE-2026-104948](https://www.cve.org/CVERecord?id=CVE-2026-104948).
 -   Restricted `gp_add_coordinator_standby()` and `gp_add_master_standby()` to superusers, so a regular role can no longer insert a standby row that blocks `gpinitstandby`, for [CVE-2026-104949](https://www.cve.org/CVERecord?id=CVE-2026-104949).
 -   Restricted the `pg_backend_memory_contexts` and `gp_backend_memory_contexts` views and the `pg_get_backend_memory_contexts()` function to superusers and members of `pg_read_all_stats`, as PostgreSQL 14 and later do. See [Upgrading to 7.6.1: Behavior changes to review](../install_guide/minor_upgrade.md#replacing-binaries-and-restarting-whpg) for the required follow-up statements.
 -   Raised the minimum TLS version for the `gpfdists://` external table client and the `s3://` protocol clients to TLS 1.2.

@@ -133,6 +133,7 @@ These parameters control the usage of GPORCA by WarehousePG. For information abo
 -   [optimizer](guc-list.md#optimizer)
 -   [optimizer_analyze_root_partition](guc-list.md#optimizer_analyze_root_partition)
 -   [optimizer_array_expansion_threshold](guc-list.md#optimizer_array_expansion_threshold)
+-   [optimizer_array_interval_threshold](guc-list.md#optimizer_array_interval_threshold)
 -   [optimizer_control](guc-list.md#optimizer_control)
 -   [optimizer_cost_model](guc-list.md#optimizer_cost_model)
 -   [optimizer_cte_inlining_bound](guc-list.md#optimizer_cte_inlining_bound)
