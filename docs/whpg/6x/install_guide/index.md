@@ -17,8 +17,6 @@ navigation:
   - env_var
 redirects:
   - install_guide
-  - install_extensions
-  - install_modules
 
 ---
 
