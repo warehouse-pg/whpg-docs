@@ -1486,7 +1486,7 @@ Assigns a unique number to each row to which it is applied (either each row in a
 
 The following built-in advanced analytic functions are WarehousePG extensions of the PostgreSQL database. Analytic functions are *immutable*.
 
-> **Note** The WarehousePG MADlib Extension for Analytics provides additional advanced functions to perform statistical analysis and machine learning with WarehousePG data. See [MADlib Extension for Analytics](../admin_guide/analytics/madlib.md).
+> **Note** The WarehousePG MADlib Extension for Analytics provides additional advanced functions to perform statistical analysis and machine learning with WarehousePG data. See [MADlib Extension for Analytics](/extensions/additional/madlib/index.md).
 
 ### `pivot_sum (label[], label, expr)`
 
