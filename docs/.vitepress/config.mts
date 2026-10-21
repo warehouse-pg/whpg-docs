@@ -198,6 +198,7 @@ export default defineConfig(
             link: "/extensions/additional/",
             collapsed: true,
             items: [
+              { text: "whpg-madlib", link: "/extensions/additional/madlib/" },
               { text: "whpg-vector", link: "/extensions/additional/pgvector/" }
             ],
           }
