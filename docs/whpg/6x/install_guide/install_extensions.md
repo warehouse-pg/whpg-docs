@@ -7,7 +7,7 @@ The extension documentation in the *[WarehousePG Reference Guide](../ref_guide/i
 
 -   [WarehousePG PL/R Language Extension](../admin_guide/analytics/procedural_languages/pl_r.md)
 -   [WarehousePG PL/Java Language Extension](../admin_guide/analytics/procedural_languages/pl_java.md)
--   [WarehousePG MADlib Extension for Analytics](../admin_guide/analytics/madlib.md)
+-   [WarehousePG MADlib Extension for Analytics](/extensions/additional/madlib/index.md)
 -   [WarehousePG PostGIS Extension](../admin_guide/analytics/postGIS.md)
 
 > **Important** If you intend to use an extension package with WarehousePG 6 you must install and use a WarehousePG extension package that is built for WarehousePG 6. Any custom modules that were used with earlier versions must be rebuilt for use with WarehousePG 6.

@@ -147,7 +147,7 @@ The following built-in window functions are WarehousePG extensions to the Postgr
 
 The following built-in advanced aggregate functions are WarehousePG extensions of the PostgreSQL database. These functions are *immutable*.
 
-> **Note** The WarehousePG MADlib Extension for Analytics provides additional advanced functions to perform statistical analysis and machine learning with WarehousePG data. See [WarehousePG MADlib Extension for Analytics](../analytics/madlib.md) in the *WarehousePG Reference Guide*.
+> **Note** The WarehousePG MADlib Extension for Analytics provides additional advanced functions to perform statistical analysis and machine learning with WarehousePG data. See [WarehousePG MADlib Extension for Analytics](/extensions/additional/madlib/index.md) in the *WarehousePG Reference Guide*.
 
 | Function | Return Type | Full Syntax | Description |
 | --- | --- | --- | --- |
