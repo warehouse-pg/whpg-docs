@@ -5,6 +5,7 @@ description: Open source extensions for WarehousePG that require a separate pack
 
 These extensions require a separate package install on each host in your WarehousePG cluster before you can enable them, and availability varies by version.
 
-| Extension | Description | 7.x |
-| --- | --- | :---: |
-| [whpg-vector](pgvector/index.md) | Provides vector similarity search capabilities for WarehousePG that enable searching, storing, and querying machine-learning-generated embeddings at scale. | ✓ |
+| Extension | Description | 6.x | 7.x |
+| --- | --- | :---: | :---: |
+| [whpg-madlib](madlib/index.md) | Provides scalable in-database machine learning, deep learning, and statistical analytics with Apache MADlib. | ✓ | ✓ |
+| [whpg-vector](pgvector/index.md) | Provides vector similarity search capabilities for WarehousePG that enable searching, storing, and querying machine-learning-generated embeddings at scale. |  | ✓ |
