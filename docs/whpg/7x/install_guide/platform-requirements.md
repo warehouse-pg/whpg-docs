@@ -142,7 +142,7 @@ This table lists the versions of the WarehousePG Extensions that are compatible 
 |-----------|----------------|----------------------|
 | [PL/Java](../admin_guide/analytics/procedural_languages/pl_java.md) | 2.0.7 | Supports Java 8 and 11. |
 | [PL/R](../admin_guide/analytics/procedural_languages/pl_r.md) | 3.1.1 | R 3.3.3 |
-| [MADlib Machine Learning](../admin_guide/analytics/madlib.md) | 2.1.0 | Support matrix at [MADlib FAQ](https://cwiki.apache.org/confluence/display/MADLIB/FAQ#FAQ-Q1-2WhatdatabaseplatformsdoesMADlibsupportandwhatistheupgradematrix?). |
+| [MADlib Machine Learning](/extensions/additional/madlib/index.md) | 2.1.0 | Support matrix at [MADlib FAQ](https://cwiki.apache.org/confluence/display/MADLIB/FAQ#FAQ-Q1-2WhatdatabaseplatformsdoesMADlibsupportandwhatistheupgradematrix?). |
 | [PostGIS Spatial and Geographic Objects](../admin_guide/analytics/postGIS.md) | 3.3.2 | |
 
 For information about the Oracle Compatibility Functions, see [Oracle Compatibility Functions](/extensions/bundled/orafce_ref.md).
