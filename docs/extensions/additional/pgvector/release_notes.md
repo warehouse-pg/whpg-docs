@@ -8,7 +8,7 @@ The whpg-vector documentation describes the latest version, including minor rele
 
 ## 0.7.4-WHPG.2
 
-Release date: TBD
+Release date: October 26, 2026
 
 -   Fixed an issue where segments used the default values of `ivfflat.probes` and `hnsw.ef_search` instead of the configured values for cursors and queries from drivers that use the extended query protocol, such as psycopg, which silently reduced recall. Both parameters now propagate to new segment processes, so these queries use the configured values.
 -   Fixed a `-Wmaybe-uninitialized` compiler warning in `HnswSearchLayer()`.
