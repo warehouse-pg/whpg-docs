@@ -94,10 +94,10 @@ WarehousePG 7 client software requires these operating system packages:
 
 ### Java
 
-WarehousePGd 7 supports these Java versions for PL/Java and PXF:
+WarehousePG 7 supports these Java versions for PL/Java and PXF:
 
--   Open JDK 8 or Open JDK 11, available from [AdoptOpenJDK](https://adoptopenjdk.net)
--   Oracle JDK 8 or Oracle JDK 11
+-   Open JDK 8, Open JDK 11, or Open JDK 17, available from [AdoptOpenJDK](https://adoptopenjdk.net)
+-   Oracle JDK 8, Oracle JDK 11, or Oracle JDK 17
 
 <a id="topic_xbl_mkx_python"></a>
 
@@ -140,8 +140,8 @@ This table lists the versions of the WarehousePG Extensions that are compatible 
 
 | Component | Package Version | Additional Information |
 |-----------|----------------|----------------------|
-| [PL/Java](../admin_guide/analytics/procedural_languages/pl_java.md) | 2.0.7 | Supports Java 8 and 11. |
-| [PL/R](../admin_guide/analytics/procedural_languages/pl_r.md) | 3.1.1 | R 3.3.3 |
+| [PL/Java](../admin_guide/analytics/procedural_languages/pl_java.md) | 2.0.10 | Supports Java 8, 11, and 17. For the trusted `java` language on JDK 18 to 23, see [PL/Java](../admin_guide/analytics/procedural_languages/pl_java.md). |
+| [PL/R](../admin_guide/analytics/procedural_languages/pl_r.md) | 3.1.1 | R 4.5.1 |
 | [MADlib Machine Learning](../admin_guide/analytics/madlib.md) | 2.1.0 | Support matrix at [MADlib FAQ](https://cwiki.apache.org/confluence/display/MADLIB/FAQ#FAQ-Q1-2WhatdatabaseplatformsdoesMADlibsupportandwhatistheupgradematrix?). |
 | [PostGIS Spatial and Geographic Objects](../admin_guide/analytics/postGIS.md) | 3.3.2 | |
 
