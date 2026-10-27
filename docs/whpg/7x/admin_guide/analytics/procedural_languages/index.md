@@ -1,20 +1,27 @@
 ---
 title: Procedural Languages
+description: Write functions and procedures in PL/Java, PL/Perl, PL/pgSQL, PL/Python, and PL/R and run them inside WarehousePG.
 navigation:
+  - pl_java
   - pl_perl
-  - pq_sql
   - pl_python
-
+  - pl_r
+  - pl_sql
 ---
 
-WarehousePG supports a pluggable procedural language architecture by virtue of its PostgreSQL heritage. This allows user-defined functions to be written in languages other than SQL and C. It may be more convenient to develop analytics functions in a familiar procedural language compared to using only SQL constructs. For example, suppose you have existing Python code that you want to use on data in WarehousePG, you can wrap this code in a PL/Python function and call it from SQL.
+Use procedural languages to write functions and procedures in a language other than SQL or C and call them from SQL. Running logic inside the database keeps computation close to your data and lets you reuse existing code. For example, you can wrap existing Python code in a PL/Python function and call it from a query.
 
-The available WarehousePG procedural languages are typically packaged as extensions. You register a language in a database using the [CREATE EXTENSION](../../../ref_guide/sql_commands/CREATE_EXTENSION.md) command. You remove a language from a database with [DROP EXTENSION](../../../ref_guide/sql_commands/DROP_EXTENSION.md).
+## Bundled languages
 
-The WarehousePG distribution supports the following procedural languages; refer to the linked language documentation for installation and usage instructions:
+WarehousePG bundles these languages, so you don't need to install anything. Enable a language in each database where you want to use it with the [CREATE EXTENSION](../../../ref_guide/sql_commands/CREATE_EXTENSION.md) command, and remove it with [DROP EXTENSION](../../../ref_guide/sql_commands/DROP_EXTENSION.md). Only superusers can register untrusted languages. For the commands to enable each language, see [Installing procedural languages](../../../install_guide/additional_modules/procedural_languages/index.md).
 
--   [PL/Perl](pl_perl.md)
--   [PL/pgSQL](pl_sql.md)
--   [PL/Python](pl_python.md)
+-   [PL/Perl](pl_perl.md) - Write functions in Perl and use its string manipulation operators and functions. Extensions: `plperl` and `plperlu`.
+-   [PL/pgSQL](pl_sql.md) - Group SQL statements and procedural logic inside the database server. Extension: `plpgsql`.
+-   [PL/Python](pl_python.md) - Write functions in Python and use Python modules. Extension: `plpython3u`.
 
-PL/Java and PL/R are also supported but require a separate package install. 
+## Separately installed languages
+
+Install these languages separately on every host before you enable them in a database. The page for each language describes how to install, enable, and use it.
+
+-   [PL/Java](pl_java.md) - Write functions in Java and run them in a Java virtual machine inside the database process. Extension: `pljava`.
+-   [PL/R](pl_r.md) - Write functions in R and use R packages for statistics and data analysis. Extension: `plr`.

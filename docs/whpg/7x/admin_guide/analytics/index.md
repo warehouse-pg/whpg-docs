@@ -46,11 +46,18 @@ The [Apache MADlib extension](madlib.md) allows WarehousePG users to run differe
 
 WarehousePG supports a variety of procedural languages that you can use for programming database analytics. Refer to the linked documentation for installation and usage instructions.
 
+WarehousePG bundles these languages:
+
 -   [PL/Perl](procedural_languages/pl_perl.md)
 -   [PL/pgSQL](procedural_languages/pl_sql.md)
 -   [PL/Python](procedural_languages/pl_python.md)
 
-PL/Java and PL/R are also supported but require a separate package install. 
+Install these languages separately:
+
+-   [PL/Java](procedural_languages/pl_java.md)
+-   [PL/R](procedural_languages/pl_r.md)
+
+
 <a id="why_gp_analytics"></a>
 
 ## Advanced Analytics and WarehousePG
