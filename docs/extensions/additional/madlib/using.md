@@ -5,7 +5,6 @@ description: Call MADlib functions from SQL in WarehousePG, and run linear regre
 ---
 
 Train models and analyze your data inside WarehousePG by calling MADlib functions from SQL, like any other function. Before you start, [install and register whpg-madlib](installing.md) in your database.
-<!-- TODO: add WarehousePG-specific usage guidance, such as distribution keys, grouping columns, and performance considerations. The examples were run on WarehousePG 7.4 with MADlib 2.1.0. -->
 
 ## Listing available modules
 
@@ -90,8 +89,11 @@ Predict a numeric value from one or more other variables by training a linear re
 3.  View the model. The `regr_example_model` table has one row of data:
 
     ```sql
-    SELECT * FROM regr_example_model \gx
+    \x on
+    SELECT * FROM regr_example_model;
+    \x off
     __OUTPUT__
+    Expanded display is on.
     -[ RECORD 1 ]------------+------------------------
     coef                     | {0.11111111111112681,1.148148148148149,1.0185185185185155}
     r2                       | 0.9686126804771108
@@ -102,6 +104,8 @@ Predict a numeric value from one or more other variables by training a linear re
     num_rows_processed       | 4
     num_missing_rows_skipped | 0
     variance_covariance      | {{2.2376543209859783,-0.2572016460903422,-0.4372427983535821},{-0.2572016460903422,0.042866941015057024,0.034293552812045644},{-0.4372427983535821,0.03429355281204565,0.12002743484215979}}
+
+    Expanded display is off.
     ```
 
 4.  Use the model with the `madlib.linregr_predict()` function to view the residuals:

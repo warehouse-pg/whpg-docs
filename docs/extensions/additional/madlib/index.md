@@ -17,4 +17,4 @@ To get started with whpg-madlib, see:
 -   [Installing whpg-madlib](installing.md)
 -   [Using whpg-madlib](using.md)
 
-See [Machine learning and deep learning using MADlib](/docs/7x/admin_guide/analytics/madlib.md) in the analytics guide for an overview of the machine learning and deep learning capabilities. See the [Apache MADlib documentation](http://madlib.apache.org/documentation.html) for the full function reference.
+See [Machine learning and deep learning using MADlib](/docs/7x/admin_guide/analytics/madlib.md) in the WarehousePG 7 analytics guide, or the [WarehousePG 6 version](/docs/6x/admin_guide/analytics/madlib.md), for an overview of the machine learning and deep learning capabilities. See the [Apache MADlib documentation](http://madlib.apache.org/documentation.html) for the full function reference.

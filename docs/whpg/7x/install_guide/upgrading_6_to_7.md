@@ -43,7 +43,7 @@ To upgrade while moving data using `gpbackup/gprestore`:
 
 3.  Initalize a WarehousePG 7 cluster on the destination hardware, by issuing the [`gpinitsystem` command](../ref_guide/utility_guide/reference/gpinitsystem.md).
 
-4.  Install any external modules used in your WarehousePG 6 system in the WarehousePG 7 system before you restore the backup, for example MADlib or PostGIS. If versions of the external modules are not compatible, you may need to exclude tables that reference them when restoring the WarehousePG 6 backup to WarehousePG 7.
+4.  Install any external modules used in your WarehousePG 6 system in the WarehousePG 7 system before you restore the backup, for example [MADlib](/extensions/additional/madlib/installing.md) or PostGIS. If versions of the external modules are not compatible, you may need to exclude tables that reference them when restoring the WarehousePG 6 backup to WarehousePG 7.
 
 5.  Run the `gprestore` utility to restore your data to the WarehousePG 7 cluster from the external data storage location. 
 
