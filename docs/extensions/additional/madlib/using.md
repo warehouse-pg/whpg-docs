@@ -8,7 +8,7 @@ Train models and analyze your data inside WarehousePG by calling MADlib function
 
 ## Listing available modules
 
-To list the modules in the installed package, read the module names from the `Modules.yml` configuration file:
+To list the modules in the installed package, read the module names from the `Modules.yml` configuration file. The file also lists `pmml`, which whpg-madlib 2.1.0 doesn't include.
 
 ```shell
 grep -- '- name:' /usr/local/madlib/Current/config/Modules.yml
@@ -36,7 +36,6 @@ MADlib organizes its methods into the following modules. Pass any module name to
 | `linear_systems` | Solvers for dense and sparse systems of linear equations. |
 | `mxgboost` | Gradient boosted tree training and prediction with XGBoost. |
 | `pca` | Principal component analysis and projection, for reducing the number of variables in a data set. |
-| `pmml` | Exporting trained models in Predictive Model Markup Language (PMML) format. |
 | `prob` | Probability functions. |
 | `recursive_partitioning` | Decision tree and random forest methods. |
 | `regress` | Linear, logistic, and multinomial regression, marginal effects, and robust and clustered variance. |
