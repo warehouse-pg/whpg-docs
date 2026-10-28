@@ -8,17 +8,17 @@ The whpg-madlib documentation describes the latest version, including minor rele
 
 ## 2.1.0
 
-<!-- TODO: confirm the release date against the package upload date on Cloudsmith, and confirm this list with the whpg-madlib maintainers. The date is the commit date of the rel/v2.1.0-WHPG tag, and the items come from the commits between Apache MADlib 2.1.0 and that tag. -->
-
 Release date: September 20, 2026
 
-Based on Apache MADlib 2.1.0. For the upstream changes, see the [Apache MADlib release notes](https://github.com/apache/madlib/blob/master/RELEASE_NOTES).
+Based on the Apache MADlib `madlib2-master` branch after the 2.1.0 release. For earlier upstream changes, see the [Apache MADlib release notes](https://github.com/apache/madlib/blob/master/RELEASE_NOTES).
 
 ### Changes
 
+-   Changed the deep learning module to use legacy optimizers, to support TensorFlow 2.12.
 -   Changed `madpack` to use a fixed Python version, chosen when the package is built for WarehousePG 6 or 7, instead of depending on which Python executables the host provides.
 
 ### Bug fixes
 
--   Fixed segmentation faults on little-endian PowerPC (ppc64le) in `svec` operators, such as `madlib.svec_mult()`, and in the sparse linear systems aggregate.
--   Fixed `svec` operators decoding run-length-encoded data incorrectly on platforms where the `char` type is unsigned, such as PowerPC and AArch64. The stored data format is unchanged.
+-   Fixed the `pmml` module including the intercept as a predictor in exported models.
+-   Fixed `svec` operators, such as `madlib.svec_mult()`, decoding run-length-encoded data incorrectly on platforms where the `char` type is unsigned, such as PowerPC and AArch64. This caused segmentation faults on little-endian PowerPC (ppc64le). The stored data format is unchanged.
+-   Fixed segmentation faults on ppc64le in the sparse linear systems aggregate, which the same `char` bug and the AltiVec code in the bundled Eigen library caused. The Eigen code is incorrect on little-endian PowerPC.

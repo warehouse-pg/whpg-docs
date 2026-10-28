@@ -7,26 +7,21 @@ Install whpg-madlib on each host in your WarehousePG cluster, as it doesn't ship
 
 ## Prerequisites
 
-<!-- TODO: add supported WarehousePG versions, architectures, and operating systems. The repository builds a package for each WarehousePG major version (6 and 7) but doesn't state the supported minor versions or operating systems. -->
-
 Ensure your WarehousePG hosts meet the following requirements:
 
 -   The `m4` macro processor on the host where you run `madpack`. If it's missing, install it with your package manager, for example `sudo dnf install m4`.
--   Python 3, with the `python3-pip` and `python3-pyyaml` packages. The MADlib package requires these packages and installs them as dependencies.
-
-    <!-- TODO: confirm with engineering (Adam Lee) which Python MADlib uses, the system Python 3 or the Python 3.11 that WarehousePG 7.5 and later bundles, and update this item. -->
-
+-   Python 3, with the `python3-pip` package, and the `python3-pyyaml` package on WarehousePG 7. The MADlib package requires these packages and installs them as dependencies. On WarehousePG 6, `madpack` runs under Python 2.
+-   The PL/Python 3 language (`plpython3u`) in the database. `madpack` creates it if it's missing and stops if it can't.
+-   On WarehousePG 7 only, the `pyxb-x` Python package on every host, if you use the `pmml` module. Install it with `python3 -m pip install pyxb-x`.
 -   Optionally, GPUs and deep learning libraries. If you want GPU acceleration, set up the GPUs and install libraries such as Keras, TensorFlow, cuDNN, and CUDA on the hosts that have them. These components are managed separately from whpg-madlib, and the segments on those hosts benefit from the acceleration. See the [MADlib wiki instructions for deep learning](https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning).
 
 ## Installing the extension
 
 Download and install whpg-madlib from the [whpg-madlib repository](https://github.com/warehouse-pg/whpg-madlib).
 
-<!-- TODO: add installation steps from the repository, including the package download location, the package manager install command (the package is an RPM), and how to install it on all hosts. -->
-
 ## Registering whpg-madlib
 
-Run `madpack` on the coordinator host to add the MADlib functions to each database where you want to use them. Before you run it, ensure that WarehousePG is running, and that you've sourced `greenplum_path.sh` and set `$COORDINATOR_DATA_DIRECTORY`.
+Run `madpack` on the coordinator host as the `gpadmin` user to add the MADlib functions to each database where you want to use them. `madpack` requires a superuser because it reads and updates the `dynamic_library_path` configuration parameter, and it runs `gpconfig` and `gpstop -u` to do so. Before you run it, ensure that WarehousePG is running, and that you've sourced `greenplum_path.sh` and set `$COORDINATOR_DATA_DIRECTORY` (WarehousePG 7) or `$MASTER_DATA_DIRECTORY` (WarehousePG 6).
 
 Add the `/usr/local/madlib/bin` directory, where the package installs `madpack`, to your `PATH`:
 
@@ -48,10 +43,10 @@ The `madpack` commands in this page use the following options and placeholders:
 
 -   `-s <schema_name>`: The target schema, which defaults to `madlib`.
 -   `-p greenplum`: The target database platform, which is `greenplum` for WarehousePG.
--   `<user>`: The database user to log in as. `madpack` prompts for the password.
+-   `<user>`: The database superuser to log in as, such as `gpadmin`. If you omit it, `madpack` uses the `PGUSER` environment variable, then the operating system user name. `madpack` uses `PGPASSWORD` if it's set, and prompts for a password if the server requires one.
 -   `<host>`: The host name of the WarehousePG coordinator. If you omit it, `madpack` uses the `PGHOST` environment variable, then `localhost`.
 -   `<port>`: The port of the WarehousePG coordinator. If you omit it, `madpack` uses the `PGPORT` environment variable, then `5432`.
--   `<database>`: The database where you want to register whpg-madlib. Run `madpack` once for each database where you want to use MADlib. If you omit it, `madpack` uses the `PGDATABASE` environment variable.
+-   `<database>`: The database where you want to register whpg-madlib. Run `madpack` once for each database where you want to use MADlib. If you omit it, `madpack` uses the `PGDATABASE` environment variable, then the user name.
 
 For example, the following command creates the MADlib functions in the `madlib` schema of the `testdb` database. The coordinator host is `cdw` and listens on port `5432`, and the command logs in as the `gpadmin` user.
 
@@ -59,9 +54,9 @@ For example, the following command creates the MADlib functions in the `madlib` 
 madpack -s madlib -p greenplum -c gpadmin@cdw:5432/testdb install
 ```
 
-During installation, `madpack` adds the MADlib library directory to the `dynamic_library_path` configuration parameter and reloads the configuration with `gpstop -u`. The reload doesn't stop the cluster.
+If the MADlib library directory isn't already in the `dynamic_library_path` configuration parameter, `madpack` adds it with `gpconfig` and reloads the configuration with `gpstop -u`. The reload doesn't stop the cluster.
 
-Grant all privileges on the target schema (`madlib` in this example) to any users who need to use MADlib after you add the functions. Users without access get the error `ERROR: permission denied for schema MADlib`.
+Grant all privileges on the target schema (`madlib` in this example) to any users who need to use MADlib after you add the functions. Users without access get the error `ERROR: permission denied for schema madlib`.
 
 ```sql
 GRANT ALL ON SCHEMA madlib TO <role_name>;
@@ -125,5 +120,3 @@ madpack [-s <schema_name>] -p greenplum -c <user>@<host>:<port>/<database> unins
 The command drops the target schema and every database object that depends on it. Before it drops the schema, `madpack` lists any table columns that use MADlib types, because the data in those columns is lost, and asks you to confirm. Routines that you created in the database that use MADlib functionality stop working.
 
 Use the `reinstall` command to uninstall and install in one step.
-
-<!-- TODO: add steps for removing the package from each host with the package manager (the package is an RPM). -->
