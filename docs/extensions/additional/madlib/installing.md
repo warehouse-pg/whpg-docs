@@ -12,7 +12,6 @@ Ensure your WarehousePG hosts meet the following requirements:
 -   The `m4` macro processor on the host where you run `madpack`. If it's missing, install it with your package manager, for example `sudo dnf install m4`.
 -   Python 3, with the `python3-pip` package, and the `python3-pyyaml` package on WarehousePG 7. The MADlib package requires these packages and installs them as dependencies. On WarehousePG 6, `madpack` runs under Python 2.
 -   The PL/Python 3 language (`plpython3u`) in the database. `madpack` creates it if it's missing and stops if it can't.
--   On WarehousePG 7 only, the `pyxb-x` Python package on every host, if you use the `pmml` module. Install it with `python3 -m pip install pyxb-x`.
 -   Optionally, GPUs and deep learning libraries. If you want GPU acceleration, set up the GPUs and install libraries such as Keras, TensorFlow, cuDNN, and CUDA on the hosts that have them. These components are managed separately from whpg-madlib, and the segments on those hosts benefit from the acceleration. See the [MADlib wiki instructions for deep learning](https://cwiki.apache.org/confluence/display/MADLIB/Deep+Learning).
 
 ## Installing the extension

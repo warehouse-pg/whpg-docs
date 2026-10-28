@@ -19,6 +19,5 @@ Based on the Apache MADlib `madlib2-master` branch after the 2.1.0 release. For 
 
 ### Bug fixes
 
--   Fixed the `pmml` module including the intercept as a predictor in exported models.
 -   Fixed `svec` operators, such as `madlib.svec_mult()`, decoding run-length-encoded data incorrectly on platforms where the `char` type is unsigned, such as PowerPC and AArch64. This caused segmentation faults on little-endian PowerPC (ppc64le). The stored data format is unchanged.
 -   Fixed segmentation faults on ppc64le in the sparse linear systems aggregate, which the same `char` bug and the AltiVec code in the bundled Eigen library caused. The Eigen code is incorrect on little-endian PowerPC.
