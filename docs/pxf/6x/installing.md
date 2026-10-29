@@ -138,10 +138,10 @@ Upgrade PXF by building the new version and installing it over the existing one 
 1. Back up `$PXF_BASE` on every host, so you can restore your configuration if needed. Each host holds its own copy of files that `pxf cluster sync` doesn't distribute, such as the keytabs:
 
     ```bash
-    gpssh -f all_hosts -e "cp -r $PXF_BASE $PXF_BASE.bak"
+    gpssh -f all_hosts -e "cp -a $PXF_BASE $PXF_BASE.bak.$(date +%Y%m%d)"
     ```
 
-    To restore, replace `$PXF_BASE` with `$PXF_BASE.bak` on each host.
+    To restore, replace `$PXF_BASE` with the `$PXF_BASE.bak.<date>` backup on each host.
 
 1. Build the new version and install it on the cluster, following [Building from source](#building-from-source) and [Installing on the cluster](#installing-on-the-cluster). Use the same `$PXF_HOME` and `$PXF_BASE` locations as your current installation.
 1. Sync the PXF configuration to every host:
