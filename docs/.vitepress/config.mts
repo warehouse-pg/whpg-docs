@@ -111,7 +111,7 @@ export default defineConfig(
         items: [
           { text: "Release notes", link: "/pxf/6x/release_notes/" },
           { text: "Overview", link: "/pxf/6x/overview/" },
-          { text: "Installing", link: "/pxf/6x/installing" },
+          { text: "Installing and upgrading", link: "/pxf/6x/installing" },
           { text: "Configuring and starting", link: "/pxf/6x/configuring" },
           { text: "Administering", link: "/pxf/6x/administering" },
           {
@@ -198,6 +198,7 @@ export default defineConfig(
             link: "/extensions/additional/",
             collapsed: true,
             items: [
+              { text: "whpg-madlib", link: "/extensions/additional/madlib/" },
               { text: "whpg-vector", link: "/extensions/additional/pgvector/" }
             ],
           }
