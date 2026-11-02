@@ -77,7 +77,15 @@ export PATH=$PATH:$HOME/go/bin
 
 To upgrade to a new release, rebuild `gpbackup`, `gprestore`, and `gpbackup_helper` from the release tag you want, then redistribute them to every host the same way as a fresh install.
 
-1. In your existing clone, fetch the latest tags and check out the release you want to upgrade to. Replace `<tag>` with the release tag, for example `1.34.0-WHPG`:
+::: info Upgrading to 1.34.1
+Review the following before you upgrade to 1.34.1 from an earlier version:
+
+- Backups taken with 1.34.0 or earlier contain no data for [coordinator-only tables](/whpg/7x/admin_guide/ddl/ddl-table.md#choosing-the-table-distribution-policy). Take a new backup of those tables.
+- Scripts that pass an empty `--plugin-config`, for example `--plugin-config "$CFG"` with `CFG` unset, used to run without a plugin and now fail.
+- Backups taken with an empty `--plugin-config` on earlier versions are on the segment hosts' local disks, not on plugin storage. Restore them with `gprestore` without `--plugin-config`, or delete them to free the disk space.
+:::
+
+1. In your existing clone, fetch the latest tags and check out the release you want to upgrade to. Replace `<tag>` with the release tag, for example `1.34.1-WHPG`:
 
     ```bash
     git fetch --tags
