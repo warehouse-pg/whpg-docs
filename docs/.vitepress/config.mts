@@ -199,6 +199,7 @@ export default defineConfig(
             collapsed: true,
             items: [
               { text: "whpg-madlib", link: "/extensions/additional/madlib/" },
+              { text: "whpg-pgsphere", link: "/extensions/additional/pgsphere/" },
               { text: "whpg-vector", link: "/extensions/additional/pgvector/" }
             ],
           }

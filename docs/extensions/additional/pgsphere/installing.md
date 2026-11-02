@@ -1,0 +1,62 @@
+---
+title: Installing and upgrading whpg-pgsphere
+navTitle: Installing and upgrading
+description: Install, upgrade, and uninstall the whpg-pgsphere extension for WarehousePG.
+---
+
+Install whpg-pgsphere on each host in your WarehousePG cluster, as it doesn't ship as part of the WarehousePG server package.
+
+::: info Version availability
+
+whpg-pgsphere is available starting with WarehousePG 7.3.0.
+:::
+
+## Installing the extension
+
+Download and install whpg-pgsphere from the [whpg-pgsphere repository](https://github.com/warehouse-pg/whpg-pgsphere).
+
+## Registering whpg-pgsphere
+
+After you install whpg-pgsphere on every host, create the extension in each database where you want to use it:
+
+```sql
+CREATE EXTENSION pg_sphere;
+```
+
+## Verifying the installation
+
+Confirm that `pg_sphere` is registered in the database, and check the installed version:
+
+```sql
+\dx pg_sphere
+SELECT pg_sphere_version();
+```
+
+## Upgrading whpg-pgsphere
+
+Install the new whpg-pgsphere package on every host in your cluster, then restart WarehousePG with `gpstop -ar`, or reconnect every session. Upgrading the package replaces the `pg_sphere.so` library on disk, but sessions that already loaded the old library keep using it. For example, they keep raising `could not find function "healpix_nest"` until they reconnect.
+
+Patch releases, such as 1.5.2-WHPG.1, keep the same extension version, 1.5.2, so you don't need to run `ALTER EXTENSION pg_sphere UPDATE` after you upgrade the package. For a release that changes the extension version, update the extension in each database where you registered it, for example:
+
+```sql
+ALTER EXTENSION pg_sphere UPDATE TO '<new_version>';
+```
+
+::: info Upgrading from 1.5.2-WHPG
+1.5.2-WHPG is built without the HEALPix functions and the `smoc` type, and 1.5.2-WHPG.1 includes them. Both register as extension version 1.5.2, so there's no update script between them. If you ran `CREATE EXTENSION pg_sphere` in a database with 1.5.2-WHPG, upgrading the package doesn't add the new objects to that database, and `ALTER EXTENSION pg_sphere UPDATE` does nothing.
+
+To add the new objects to those databases, either:
+
+-   Drop and re-create the extension. `DROP EXTENSION` cascades to every `spoint` and `spoly` column, so plan to reload the data.
+-   Add the missing objects to the existing extension with `ALTER EXTENSION pg_sphere ADD`.
+:::
+
+## Uninstalling whpg-pgsphere
+
+```sql
+DROP EXTENSION pg_sphere;
+```
+
+::: warning
+`DROP EXTENSION` cascades to every column that uses a pgSphere data type, such as `spoint` or `spoly`, and drops the column data. Back up or export the data first.
+:::

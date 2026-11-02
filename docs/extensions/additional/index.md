@@ -8,4 +8,5 @@ These extensions require a separate package install on each host in your Warehou
 | Extension | Description | 6.x | 7.x |
 | --- | --- | :---: | :---: |
 | [whpg-madlib](madlib/index.md) | Provides scalable in-database machine learning, deep learning, and statistical analytics with Apache MADlib. | ✓ | ✓ |
+| [whpg-pgsphere](pgsphere/index.md) | Provides spherical data types and operators for astronomical data. |  | ✓ |
 | [whpg-vector](pgvector/index.md) | Provides vector similarity search capabilities for WarehousePG that enable searching, storing, and querying machine-learning-generated embeddings at scale. |  | ✓ |
