@@ -367,6 +367,21 @@ Optional. Omit the global WarehousePG system objects during backup.
 
 Displays the online help.
 
+## Environment variables
+
+### WHPGBACKUP_SNAPSHOT_ATTEMPTS
+
+Optional. Set in the environment of `gpbackup`. The maximum number of snapshots `gpbackup` takes while it backs up tables that change during the backup. The default is `3`.
+
+After locking the tables, `gpbackup` checks whether any of them changed since the snapshot, for example because of `TRUNCATE`, `DROP`, or `ALTER TABLE ... SET WITH (REORGANIZE=true)`. If so, it takes a new snapshot and tries again. A value of `1` turns retries off. An invalid value stops the backup before it starts.
+
+A table that still changes after the last attempt has its data and statistics left out of the backup, and `gpbackup` logs a warning. The backup report lists the table under `data not backed up:`. The backup still finishes with `backup status: Success`, so check the log for warnings or the report after each backup. The table's DDL is still backed up, so it restores empty.
+
+```
+export WHPGBACKUP_SNAPSHOT_ATTEMPTS=5
+gpbackup --dbname ww_sales
+```
+
 ## Examples
 
 To take a full backup:
