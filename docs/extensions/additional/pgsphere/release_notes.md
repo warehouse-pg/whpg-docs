@@ -15,7 +15,7 @@ Based on [pgSphere](https://github.com/postgrespro/pgsphere) 1.5.2.
 ### Changes
 
 -   Added the HEALPix pixel functions, such as `healpix_nest()`, `healpix_ring()`, `nest2ring()`, and `centre_of_healpix_nest()`, and the `smoc` (Multi-Order Coverage map) type. 1.5.2-WHPG was built without them, so catalogs created with a HEALPix-enabled build of pgSphere failed with the error `could not find function "healpix_nest"`.
--   The `smoc_disc()` and `smoc(order, scircle|spoly)` constructors aren't available. They require the `libhealpix_cxx` library, which isn't included, and raise the error `pgsphere was built without libhealpix_cxx`. All other HEALPix and `smoc` functionality works.
+-   The `smoc_disc()` and `smoc(order, scircle|spoly)` constructors, and the operators that compare an `smoc` with an `scircle` or `spoly` (`<@`, `@>`, `&&`, and their negations), aren't available. They require the `libhealpix_cxx` library, which isn't included, and raise the error `pgsphere was built without libhealpix_cxx`. All other HEALPix functions, and `smoc` operations between two `smoc` values or between an `smoc` and an `spoint`, work.
 
 ### Bug fixes
 

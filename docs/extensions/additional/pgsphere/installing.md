@@ -45,10 +45,13 @@ ALTER EXTENSION pg_sphere UPDATE TO '<new_version>';
 ::: info Upgrading from 1.5.2-WHPG
 1.5.2-WHPG is built without the HEALPix functions and the `smoc` type, and 1.5.2-WHPG.1 includes them. Both register as extension version 1.5.2, so there's no update script between them. If you ran `CREATE EXTENSION pg_sphere` in a database with 1.5.2-WHPG, upgrading the package doesn't add the new objects to that database, and `ALTER EXTENSION pg_sphere UPDATE` does nothing.
 
-To add the new objects to those databases, either:
+To check whether a database is affected, run the following query. A result of `0` means the database was created with 1.5.2-WHPG and has none of the HEALPix objects. Databases whose catalog already contains `healpix_nest` only need the package upgrade.
 
--   Drop and re-create the extension. `DROP EXTENSION` cascades to every `spoint` and `spoly` column, so plan to reload the data.
--   Add the missing objects to the existing extension with `ALTER EXTENSION pg_sphere ADD`.
+```sql
+SELECT count(*) FROM pg_proc WHERE proname = 'healpix_nest';
+```
+
+To add the HEALPix functions and the `smoc` type to an affected database, drop and re-create the extension. `DROP EXTENSION` cascades to every `spoint` and `spoly` column, so plan to reload the data.
 :::
 
 ## Uninstalling whpg-pgsphere
