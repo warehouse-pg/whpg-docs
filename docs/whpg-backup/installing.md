@@ -80,7 +80,8 @@ To upgrade to a new release, rebuild `gpbackup`, `gprestore`, and `gpbackup_help
 ::: info Upgrading to 1.34.1
 Review the following before you upgrade to 1.34.1 from an earlier version:
 
-- Backups taken with 1.34.0 or earlier contain no data for [coordinator-only tables](/whpg/7x/admin_guide/ddl/ddl-table.md#choosing-the-table-distribution-policy). Take a new backup of those tables.
+- On WarehousePG 7.4 and later, backups taken with 1.34.0 or earlier contain no data for [coordinator-only tables](/whpg/7x/admin_guide/ddl/ddl-table.md#choosing-the-table-distribution-policy), including incremental backups. After upgrading, take a new full backup of any database that has them.
+- If you use a custom storage plugin and have coordinator-only tables, make sure the plugin is installed on the coordinator and accepts `backup_data` and `restore_data` calls with content `-1`. Backing up or restoring a coordinator-only table now calls the plugin on the coordinator, once per table. The [S3 storage plugin](s3-plugin.md) is not affected.
 - Scripts that pass an empty `--plugin-config`, for example `--plugin-config "$CFG"` with `CFG` unset, used to run without a plugin and now fail.
 - Backups taken with an empty `--plugin-config` on earlier versions are on the segment hosts' local disks, not on plugin storage. Restore them with `gprestore` without `--plugin-config`, or delete them to free the disk space.
 :::
