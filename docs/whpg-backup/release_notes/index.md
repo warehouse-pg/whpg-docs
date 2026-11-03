@@ -16,7 +16,7 @@ The WarehousePG Backup and Restore documentation describes the latest version, i
 
 | Version | Release date |
 |---------|--------------|
-| [1.34.1](1.34.1_rel_notes.md) | 27 Oct 2026 |
+| [1.34.1](1.34.1_rel_notes.md) | 14 Oct 2026 |
 | [1.34.0](1.34.0_rel_notes.md) | 25 Aug 2026 |
 | [1.33.1](1.33.1_rel_notes.md) | 21 May 2026 |
 | [1.33.0](1.33.0_rel_notes.md) | 22 Apr 2026 |
