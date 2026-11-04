@@ -6,7 +6,7 @@ deepToC: true
 
 Use PL/Java to write database functions as Java methods and run them inside WarehousePG. You package the methods in Java archive (JAR) files, install the JAR files on every host, and call the methods from SQL. PL/Java runs the Java virtual machine in the same process as the database backend and includes a Java Database Connectivity (JDBC) driver, so functions can query the database without opening a separate connection.
 
-WarehousePG PL/Java is based on open source [PL/Java 1.5.0](https://github.com/tada/pljava/tree/REL1_5_STABLE) and supports the Java versions listed in the [platform requirements](../../../install_guide/platform-requirements.md). It provides the trusted `java` language and the untrusted `javaU` language.
+WarehousePG PL/Java is based on open source [PL/Java 1.5.0](https://github.com/tada/pljava/tree/REL1_5_STABLE) and supports the Java versions listed in the [platform requirements](../../../install_guide/platform-requirements.md). It provides the trusted `java` language and the untrusted `javau` language.
 
 To start using PL/Java:
 
@@ -14,18 +14,21 @@ To start using PL/Java:
 -   [Write PL/Java functions](#topic13) that call your Java methods.
 -   [Try the example](#topic40) to see a PL/Java function in action.
 
-For more information about PL/Java, see the [PL/Java wiki](https://github.com/tada/pljava/wiki).
+For more information about PL/Java, see the [PL/Java wiki](https://github.com/tada/pljava/wiki). The wiki describes upstream PL/Java, which installs JAR files with `sqlj.install_jar`. WarehousePG doesn't support that function and uses the `pljava_classpath` configuration parameter instead.
 
 <a id="topic4"></a>
 
 ## Installing and enabling PL/Java
 
-Follow the instructions in the [whpg-pljava repository](https://github.com/warehouse-pg/whpg-pljava#building-and-testing) to build and install PL/Java. Install PL/Java on every host, including the coordinator and all segment hosts.
+Follow the instructions in the [whpg-pljava repository](https://github.com/warehouse-pg/whpg-pljava#building-and-testing) to build and install PL/Java. The `make install` command installs PL/Java only on the host where you run it, so build and install PL/Java on every host, including the coordinator and all segment hosts.
 
 ::: info Note
-PL/Java requires a JDK on every host. Point the `JAVA_HOME` environment variable to the JDK in `$GPHOME/greenplum_path.sh` on every host, and restart WarehousePG so the server processes pick up the variable.
+PL/Java requires JDK 8, 11, or 17 on every host. On every host, add these lines at the beginning of `$GPHOME/greenplum_path.sh`, replacing the path with the location of your JDK. Then restart WarehousePG so the server processes pick up the variables.
 
-The trusted `java` language works with JDK 17 and earlier. On JDK 18 to 23, add `-Djava.security.manager=allow` to the `pljava_vmoptions` configuration parameter. On later JDKs, trusted functions fail with an error. The untrusted `javaU` language doesn't need the Java SecurityManager.
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+export LD_LIBRARY_PATH=$JAVA_HOME/jre/lib/amd64/server:$JAVA_HOME/lib/server:$LD_LIBRARY_PATH
+```
 :::
 
 <a id="topic6"></a>
@@ -74,8 +77,10 @@ Perform the following steps as the WarehousePG administrator `gpadmin`.
 5.  (Optional) WarehousePG provides an `examples.sql` file containing sample PL/Java functions you can use for testing. Run the commands in this file to create the test functions (which use the Java classes in `examples.jar`).
 
     ```bash
-    psql -f $GPHOME/share/postgresql/pljava/examples.sql
+    psql -d testdb -f $GPHOME/share/postgresql/pljava/examples.sql
     ```
+
+    The first time you run the file, the `DROP SCHEMA` command reports that the schema doesn't exist. Ignore this error.
 
 <a id="topic30"></a>
 
@@ -87,7 +92,7 @@ PL/Java also installs a language handler for the language `javau`. This version 
 
 To install both the trusted and untrusted languages, register the extension with the `CREATE EXTENSION pljava` command. To install only the trusted language, register the extension with the `CREATE EXTENSION pljavat` command.
 
-Only a database superuser can install PL/Java. PL/Java installs its utility functions with SECURITY DEFINER so that they run with the access permissions of the creator of the functions.
+Only a database superuser can install PL/Java.
 
 <a id="topic10"></a>
 
@@ -117,7 +122,7 @@ The following server configuration parameters are used by PL/Java in WarehousePG
 
 -   [`pljava_classpath`](../../../ref_guide/config_params/guc-list.md#pljava_classpath)
 
-    A colon (`:`) separated list of the JAR files containing the Java classes used in any PL/Java functions. The JAR files must be installed in the same locations on all WarehousePG hosts. With the trusted PL/Java language handler, JAR file paths must be relative to the `$GPHOME/lib/postgresql/java/` directory. With the untrusted language handler (`javaU` language tag), paths can be relative to `$GPHOME/lib/postgresql/java/` or absolute.
+    A colon (`:`) separated list of JAR files, or directories that contain JAR files, used in PL/Java functions. The files must be installed in the same locations on all WarehousePG hosts. Specify a JAR file in the `$GPHOME/lib/postgresql/java/` directory by its name, and any other JAR file or directory by its absolute path. Both the trusted `java` and untrusted `javau` languages accept these paths.
 
     The server configuration parameter [`pljava_classpath_insecure`](../../../ref_guide/config_params/guc-list.md#pljava_classpath_insecure) controls whether the server configuration parameter `pljava_classpath` can be set by a user without WarehousePG superuser privileges. When `pljava_classpath_insecure` is enabled, WarehousePG developers who are working on PL/Java functions do not have to be database superusers to change `pljava_classpath`.
 
@@ -128,7 +133,7 @@ The following server configuration parameters are used by PL/Java in WarehousePG
 
 -   [`pljava_statement_cache_size`](../../../ref_guide/config_params/guc-list.md#pljava_statement_cache_size)
 
-    Sets the size in KB of the Most Recently Used (MRU) cache for prepared statements.
+    This parameter currently has no effect. PL/Java always caches up to 11 prepared statements.
 
 -   [`pljava_release_lingering_savepoints`](../../../ref_guide/config_params/guc-list.md#pljava_release_lingering_savepoints)
 
@@ -150,30 +155,7 @@ psql -d testdb -c 'DROP EXTENSION pljava;'
 
 The default command fails if existing objects, such as functions, depend on the language. Specify the `CASCADE` option to also drop all dependent objects, including functions that you created with PL/Java.
 
-<a id="topic_tgt_nfg_mjb"></a>
-
-### Uninstalling the Java JAR files and software package
-
-Remove the Java JAR files and uninstall the WarehousePG PL/Java extension when no databases have PL/Java as a registered language.
-
-1.  Remove the `pljava_classpath` server configuration parameter from the `postgresql.conf` file on all WarehousePG hosts. For example:
-
-    ```bash
-    gpconfig -r pljava_classpath
-    ```
-
-2.  Remove the JAR files from the directories where they were installed on all WarehousePG hosts. For information about JAR file installation directories, see [Enabling PL/Java and installing JAR files](#topic6).
-
-3.  Uninstall the PL/Java extension. 
-
-4.  Remove any updates you made to `greenplum_path.sh` for PL/Java.
-
-5.  Reload `greenplum_path.sh` and restart the database
-
-    ```bash
-    source $GPHOME/greenplum_path.sh
-    gpstop -r 
-    ```
+To remove PL/Java from the cluster, first disable it in every database. Then remove the configuration parameter with `gpconfig -r pljava_classpath` and run `gpstop -u`. If you installed PL/Java from source, run `make uninstall` in the source directory on every host. This command also deletes the `$GPHOME/lib/postgresql/java/` directory, including any JAR files you copied there.
 
 <a id="topic13"></a>
 
@@ -185,7 +167,7 @@ Create a PL/Java function by declaring a SQL function that calls a static method
 
 ### Declaring functions in SQL
 
-Declare a Java function with the name of a class and a static method on that class. PL/Java resolves the class using the classpath defined for the schema where the function is declared. If that schema has no classpath, PL/Java uses the public schema's classpath. If neither schema has a classpath, PL/Java resolves the class using the system classloader.
+Declare a Java function with the name of a class and a static method on that class. PL/Java finds the class in the JAR files listed in the `pljava_classpath` configuration parameter, or among the standard Java classes.
 
 1.  Declare a function that accesses the static method `getProperty` on the `java.lang.System` class:
 
@@ -313,7 +295,7 @@ CREATE FUNCTION createComplexTest(int, int)
 The PL/Java method resolver now finds the following method in the `Fum` class:
 
 ```java
-public static boolean complexReturn(int base, int increment, 
+public static boolean createComplexTest(int base, int increment,
   ResultSet receiver)
 throws SQLException
 {
@@ -350,6 +332,7 @@ This Java method returns an iterator:
 
 ```java
 package foo.fee;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Bar
@@ -461,11 +444,9 @@ public class Users implements ResultSetHandle
   public ResultSet getResultSet()
   throws SQLException
   {
-    m_statement = 
-      DriverManager.getConnection("jdbc:default:connection").cr
-eateStatement();
-    return m_statement.executeQuery("SELECT * FROM pg_user 
-       WHERE " + m_filter);
+    m_statement =
+      DriverManager.getConnection("jdbc:default:connection").createStatement();
+    return m_statement.executeQuery("SELECT * FROM pg_user WHERE " + m_filter);
   }
 
   public void close()
@@ -537,18 +518,13 @@ Logger.getAnonymousLogger().info( "Time is " + new
 Date(System.currentTimeMillis()));
 ```
 
-The logger uses a handler that maps the current value of the WarehousePG configuration parameter `log_min_messages` to a valid `Logger` level and outputs all messages with the WarehousePG backend function `elog()`.
-
-::: info Note
-PL/Java reads the `log_min_messages` configuration parameter from the database when the first PL/Java function in a session runs. The value doesn't change on the Java side for the rest of that session, so start a new session to pick up a changed value.
-:::
-
+The logger outputs messages with the WarehousePG backend function `elog()`. By default, PL/Java doesn't output messages logged at the `FINE`, `FINER`, or `FINEST` level.
 
 PL/Java maps each `Logger` level to a WarehousePG backend level:
 
 | `java.util.logging.Level` | WarehousePG level |
 | ------------------------- | ----------------- |
-| `SEVERE ERROR` | `ERROR` |
+| `SEVERE` | `ERROR` |
 | `WARNING` | `WARNING` |
 | `CONFIG` | `LOG` |
 | `INFO` | `INFO` |
