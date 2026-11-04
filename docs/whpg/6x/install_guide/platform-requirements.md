@@ -92,10 +92,12 @@ WarehousePG 6 uses Python 2.7.18, which is included with the product installatio
 
 ### Java
 
-WarehousePG 6 supports these Java versions for PL/Java and PXF:
+WarehousePG 6 supports these Java versions for PL/Java:
 
--   Open JDK 8 or Open JDK 11, available from [AdoptOpenJDK](https://adoptopenjdk.net)
--   Oracle JDK 8 or Oracle JDK 11
+-   Open JDK 8, Open JDK 11, or Open JDK 17, available from [Eclipse Adoptium](https://adoptium.net)
+-   Oracle JDK 8, Oracle JDK 11, or Oracle JDK 17
+
+PXF supports Java 8 and Java 11 only.
 
 <a id="topic31"></a>
 
@@ -111,8 +113,8 @@ This table lists the versions of the WarehousePG Extensions that are compatible 
 
 | Component | Package Version | Additional Information |
 | --- | --- | --- |
-| [PL/Java](../admin_guide/analytics/procedural_languages/pl_java.md) | 2.0.10 | Supports Java 8 and 11. |
-| [PL/R](../admin_guide/analytics/procedural_languages/pl_r.md) | 3.0.3 | R 4.5.1 |
+| [PL/Java](../admin_guide/analytics/procedural_languages/pl_java.md) | 1.5.0 | Supports Java 8, 11, and 17. |
+| [PL/R](../admin_guide/analytics/procedural_languages/pl_r.md) | 8.3.0.16 | R 4.5.1 |
 | [MADlib Machine Learning](/extensions/additional/madlib/index.md) | 2.1.0 | Support matrix at [MADlib FAQ](https://cwiki.apache.org/confluence/display/MADLIB/FAQ#FAQ-Q1-2WhatdatabaseplatformsdoesMADlibsupportandwhatistheupgradematrix?). |
 | [PostGIS Spatial and Geographic Objects](../admin_guide/analytics/postGIS.md) | 2.5.4, 2.1.5 | |
 

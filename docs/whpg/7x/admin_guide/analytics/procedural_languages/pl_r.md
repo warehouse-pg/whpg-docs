@@ -4,9 +4,9 @@ deepToC: true
 
 ---
 
-Use PL/R to write WarehousePG functions, aggregates, and triggers in the [R programming language](https://www.r-project.org/) and to call R packages from SQL. To run R code in the database, install PL/R and R on every host, register the language in each database that needs it, and then create your PL/R functions.
+Use PL/R to write WarehousePG functions, aggregates, and triggers in the [R programming language](https://www.r-project.org/) and to call R packages from SQL. To run R code in the database, install PL/R, which includes R, on every host, register the language in each database that needs it, and then create your PL/R functions.
 
-PL/R is an untrusted language, so only superusers can register it in a database. For information about supported PL/R versions, see the [WarehousePG Release Notes](../../../release_notes/index.md).
+PL/R is an untrusted language, so only superusers can register it in a database. For information about supported PL/R versions, see the [platform requirements](../../../install_guide/platform-requirements.md#topic31).
 
 To start using PL/R:
 
@@ -18,13 +18,21 @@ To start using PL/R:
 
 ## Installing and enabling PL/R
 
-Follow the instructions in the [whpg-plr repository](https://github.com/warehouse-pg/whpg-plr#building-and-testing) to build and install PL/R. Install PL/R on every host, including the coordinator and all segment hosts.
+Follow the instructions in the [whpg-plr repository](https://github.com/warehouse-pg/whpg-plr#building-and-testing) to build and install PL/R. The build includes R, so you don't install R separately. The `make install` command installs PL/R only on the host where you run it, so build and install PL/R on every host, including the coordinator and all segment hosts.
+
+::: info Note
+The build compiles R with the prefix `/usr/local/greenplum-db`, which is also the default `R_HOME` for PL/R. If `$GPHOME` is elsewhere, set the prefix when you run `cmake`. Otherwise, PL/R can't find R unless you set `R_HOME` in the server environment.
+
+```bash
+cmake -DR_PREFIX=$GPHOME ../whpg
+```
+:::
 
 <a id="topic13"></a>
 
 ### Installing R packages
 
-Install each R package and the packages it depends on in the R installation on every host to extend what your PL/R functions can do. If you add segment hosts later, install the packages on the new hosts too. In the commands, `R_HOME` is the directory where R is installed.
+Install each R package and the packages it depends on in the R installation in `$GPHOME/lib64/R` on every host to extend what your PL/R functions can do. If you add segment hosts later, install the packages on the new hosts too.
 
 1.  On the coordinator host, download the `tar.gz` file for the package and for each of its dependencies from the [Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/web/packages/available_packages_by_name.html). The page for each package lists its dependencies.
 
@@ -37,7 +45,7 @@ Install each R package and the packages it depends on in the R installation on e
 3.  Install the packages on every host with `gpssh`, listing dependencies before the packages that require them. You might need root access.
 
     ```bash
-    gpssh -f hosts_all "$R_HOME/bin/R CMD INSTALL <dependency>_<version>.tar.gz <package>_<version>.tar.gz"
+    gpssh -f hosts_all "$GPHOME/lib64/R/bin/R CMD INSTALL <dependency>_<version>.tar.gz <package>_<version>.tar.gz"
     ```
 
 4.  Test that PL/R can load the package. This function checks whether an R package loads.
@@ -53,7 +61,7 @@ Install each R package and the packages it depends on in the R installation on e
     SELECT R_test_require('<package>');
     ```
 
-To list the packages installed on a host, start R on that host and run `installed.packages()`.
+To list the packages installed on a host, start `$GPHOME/lib64/R/bin/R` on that host and run `installed.packages()`.
 
 <a id="topic5"></a>
 
@@ -150,6 +158,7 @@ if (is.null(arg2))
   return(arg1)
 if (arg1 > arg2)
   return(arg1)
+return(arg2)
 ' LANGUAGE plr;
 ```
 
@@ -242,7 +251,7 @@ Return values from your R code that match the declared return type of the functi
 
 Use global R variables to keep state between calls or to share data between functions. All PL/R functions that run in one backend process share the same R interpreter, so a global R variable is available to every PL/R function call in that process and persists for the duration of the client connection. In WarehousePG, each segment runs its own backend process with its own R interpreter, so global variables aren't shared between segments.
 
-To create a globally available R function, use the `install_rcmd(text)` function. The R function name doesn't have to match the PostgreSQL function name. For example:
+To create a globally available R function, use the `install_rcmd(text)` function. The R function name doesn't have to match the WarehousePG function name. For example:
 
 ```sql
 SELECT install_rcmd('pg.test.install <-function(msg) {print(msg)}');
@@ -253,6 +262,12 @@ pg.test.install(arg1)
 
 SELECT pg_test_install('hello world');
 ```
+
+Only superusers can run `install_rcmd`, so this example fails for other roles. PL/R revokes `EXECUTE` permission on `install_rcmd`, `plr_environ`, `plr_set_rhome`, `plr_unset_rhome`, and `plr_set_display` from `PUBLIC`. A superuser must grant `EXECUTE` permission on these functions to any other role that needs them.
+
+::: info Note
+PL/R 8.4.8.7 and later also revoke `EXECUTE` permission on `plr_get_raw(bytea)` from `PUBLIC`, because the function passes its input to the R `unserialize()` function. Grant it only to trusted roles that need it. In earlier versions, such as 8.3.0.16, run `REVOKE EXECUTE ON FUNCTION plr_get_raw(bytea) FROM PUBLIC;` to get the same protection.
+:::
 
 You can also install R functions automatically when the interpreter starts. See [Loading R Modules at Startup](#topic_g12_gwt_3gb).
 
@@ -293,7 +308,7 @@ __OUTPUT__
 
 Load saved R code automatically during interpreter initialization by creating the `plr_modules` database table and inserting the R modules you want to auto-load into the table. If the table exists, PL/R loads the code it contains into the interpreter.
 
-In a WarehousePG cluster, table rows are usually distributed so that each row exists at only one segment instance. The R interpreter at each segment instance, however, needs to load all of the modules, so a regularly distributed table doesn't work. You must create the `plr_modules` table as a *replicated table* in the default schema so that all rows in the table are present at every segment instance. For example:
+In a WarehousePG cluster, table rows are usually distributed so that each row exists at only one segment instance. The R interpreter at each segment instance, however, needs to load all of the modules, so a regularly distributed table doesn't work. Create the `plr_modules` table as a replicated table so that all rows in the table are present at every segment instance. PL/R looks up the table by name without a schema qualifier, so create it in a schema on the `search_path`, such as `public`. For example:
 
 ```sql
 CREATE TABLE public.plr_modules (
@@ -302,7 +317,8 @@ CREATE TABLE public.plr_modules (
 ) DISTRIBUTED REPLICATED;
 ```
 
-For more information about using the PL/R auto-load feature, see the [PL/R documentation on module functions](https://www.joeconway.com/plr/doc/plr-module-funcs.html).
+For more information about using the PL/R auto-load feature, see [Loading R Modules at Startup](https://github.com/warehouse-pg/whpg-plr/blob/whpg/userguide.md#startup) in the PL/R User's Guide.
+
 <a id="topic9"></a>
 
 ## Examples
@@ -349,7 +365,7 @@ Return an R `data.frame` from a PL/R function as a simple SQL table, instead of 
 2.  Use this `TYPE` when defining your PL/R function.
 
     ```sql
-    ... RETURNS SET OF t1 AS ...
+    ... RETURNS SETOF t1 AS ...
     ```
 
 <a id="topic12"></a>
@@ -378,14 +394,14 @@ $$
   m0 <- lmer (y ~ 1 + (1 | cs), data=d_temp)
   cs_unique<- sort(unique(cs))
   n_cs_unique<- length(cs_unique)
-  temp_m0<- data.frame(matrix0,n_cs_unique, 7))
+  temp_m0<- data.frame(matrix(0, n_cs_unique, 7))
   for (i in 1:n_cs_unique){temp_m0[i,]<-
     c(exp(coef(m0)$cs[i,1] + c(0,-1.96,1.96,-1.65,1.65,
       -1.28,1.28)*se.ranef(m0)$cs[i]))}
   names(temp_m0)<- c("Coefest", "CI_95_Lower",
     "CI_95_Upper", "CI_90_Lower", "CI_90_Upper",
    "CI_80_Lower", "CI_80_Upper")
-  temp_m0_v2<- data.frames(cs_unique, temp_m0)
+  temp_m0_v2<- data.frame(cs_unique, temp_m0)
   return(temp_m0_v2)
 $$
 LANGUAGE 'plr';
