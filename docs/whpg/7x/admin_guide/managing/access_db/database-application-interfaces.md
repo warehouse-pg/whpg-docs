@@ -21,4 +21,6 @@ General instructions for accessing a WarehousePG with an API are:
 
 Download the appropriate driver and configure connectivity to your WarehousePG coordinator instance.
 
+For connection details, examples, and usage advice, see [Using JDBC and ODBC Drivers](using-jdbc-and-odbc-drivers.md). For the behaviors that differ from PostgreSQL, see [PostgreSQL Application Compatibility](jdbc-and-odbc-differences.md).
+
 **Parent topic:** [Accessing the Database](index.md)
