@@ -743,6 +743,7 @@ Support for each storage parameter depends on whether the table is a heap, AO, o
 |---|---|---|---|
 | `analyze_hll_non_part_table` | Yes | Yes | Yes |
 | `appendoptimized` | Yes | Yes | Yes |
+| `blockdirectory` | No | Yes | Yes |
 | `blocksize` | No | Yes | Yes |
 | `checksum` | No | Yes | Yes |
 | `compresslevel` | No | Yes | Yes |
@@ -762,6 +763,10 @@ Set this storage parameter to `true` to force collection of HLL statistics even 
 #### appendoptimized
 
 Set to `TRUE` to create the table as an append-optimized table. If `FALSE` or not declared, the table will be created as a regular heap-storage table.
+
+#### blockdirectory
+
+Set to `TRUE` to create a block directory for an append-optimized table without needing an index first. You can set the option when you create the table, with `WITH (blockdirectory=true)`, or later, with [`ALTER TABLE ... SET (blockdirectory=true)`](ALTER_TABLE.md), which builds the block directory in place without rewriting the table. The `blockdirectory` option is valid only if the table is append-optimized.
 
 #### blocksize
 
