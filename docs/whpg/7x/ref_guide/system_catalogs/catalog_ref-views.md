@@ -156,7 +156,7 @@ By default, only superusers and members of the `pg_read_all_stats` role can read
 
 ## gp_config
 
-The `gp_config` view is a cluster-wide view that displays the `pg_config`information from every primary segment.
+The `gp_config` view is a cluster-wide view that displays the `pg_config`information from every primary segment. The view has the same privileges as `pg_config` and is not readable by `PUBLIC`.
 
 | column          | type    | references | description                                               |
 | --------------- | ------- | ---------- | --------------------------------------------------------- |
@@ -234,7 +234,7 @@ Endpoints exist only for the duration of the transaction that defines the parall
 
 ## gp_file_settings
 
-The `gp_file_settings` view is a cluster-wide view that displays the `pg_file_settings`information from every primary segment.
+The `gp_file_settings` view is a cluster-wide view that displays the `pg_file_settings`information from every primary segment. The view has the same privileges as `pg_file_settings` and is not readable by `PUBLIC`.
 
 | name            | type    | references | description                                                                   |
 | --------------- | ------- | ---------- | ----------------------------------------------------------------------------- |
@@ -265,7 +265,7 @@ The `gp_pgdatabase` view displays the status of WarehousePG segment instances an
 
 ## gp_replication_origin_status
 
-The `gp_replication_origin_status` view is a cluster-wide view that displays the `pg_replication_origin_status` information from every primary segment.
+The `gp_replication_origin_status` view is a cluster-wide view that displays the `pg_replication_origin_status` information from every primary segment. The view has the same privileges as `pg_replication_origin_status` and is not readable by `PUBLIC`.
 
 | name            | type    | references                    | description                                                                                                                                           |
 | --------------- | ------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |

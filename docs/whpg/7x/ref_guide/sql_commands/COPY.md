@@ -261,6 +261,8 @@ COPY (SELECT * from my_sales ) TO stdout;
 
 `COPY FROM` can be used with plain, foreign, or partitioned tables or with views that have INSTEAD OF INSERT triggers.
 
+`COPY` handles rows whose text or binary form is larger than 1 GB. `COPY TO` works for all tables. `COPY FROM` works only for `ao_column` tables. Heap and `ao_row` tables are limited to 1 GB per row, and `COPY` reports `row is too big` when a row exceeds that limit.
+
 You must have `SELECT` privilege on the table whose values are read by `COPY TO`, and `INSERT` privilege on the table into which values are inserted by `COPY FROM`. It is sufficient to have column privileges on the columns listed in the command.
 
 If row-level security is enabled for the table, the relevant `SELECT` policies will apply to `COPY <table> TO` statements. Currently, `COPY FROM` is not supported for tables with row-level security. Use equivalent `INSERT` statements instead.
