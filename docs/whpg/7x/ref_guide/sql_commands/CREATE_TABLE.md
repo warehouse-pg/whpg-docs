@@ -768,6 +768,8 @@ Set to `TRUE` to create the table as an append-optimized table. If `FALSE` or no
 
 Set to `TRUE` to create a block directory for an append-optimized table without needing an index first. You can set the option when you create the table, with `WITH (blockdirectory=true)`, or later, with [`ALTER TABLE ... SET (blockdirectory=true)`](ALTER_TABLE.md), which builds the block directory in place without rewriting the table. The `blockdirectory` option is valid only if the table is append-optimized.
 
+Turning the option off with `SET (blockdirectory=false)` or `RESET (blockdirectory)` doesn't remove an existing block directory, because indexes depend on it.
+
 #### blocksize
 
 Set to the size, in bytes, for each block in a table. The `blocksize` must be between 8192 and 2097152 bytes, and be a multiple of 8192. The default is 32768. The `blocksize` option is valid only if the table is append-optimized.
