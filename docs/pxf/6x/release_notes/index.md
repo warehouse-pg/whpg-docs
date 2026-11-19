@@ -10,5 +10,6 @@ The PXF documentation describes the latest version of PXF for WarehousePG, inclu
 
 | Version | Release date |
 |---------|--------------|
+| [6.10.4](6.10.4_rel_notes.md) | 20 Nov 2026 |
 | [6.10.3](6.10.3_rel_notes.md) | 8 Oct 2026 |
 | [6.10.2](6.10.2_rel_notes.md) | 26 Feb 2026 |

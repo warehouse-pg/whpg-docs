@@ -123,6 +123,14 @@ Build PXF on the coordinator, from the `release-6.x` branch. This branch is the 
 
 Upgrade PXF by building the new version and installing it over the existing one on every host. Because `$PXF_BASE` is separate from `$PXF_HOME`, your configuration and server definitions stay in place.
 
+::: info Upgrading to 6.10.4
+Review the following before you upgrade to 6.10.4 from an earlier version:
+
+- The JSON connector now fails a record nested more than 1000 levels deep, in any field, as a bad record. Previously, a record that deep read normally unless a selected column held the deeply nested value. Check JSON data for records that nest this deeply before you upgrade.
+- The `*:avro` profiles now ignore the `java-class` and `java-key-class` properties in an Avro schema and read the value as a string. A file whose schema named a class that PXF doesn't ship used to fail with `ClassNotFoundException`.
+- Parquet reads now fail on a file whose footer holds a single value larger than 100 MB.
+:::
+
 1. On the coordinator, record your current PXF version:
 
     ```bash
