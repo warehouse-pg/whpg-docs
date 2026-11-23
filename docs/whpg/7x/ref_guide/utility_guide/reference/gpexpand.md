@@ -46,7 +46,7 @@ gpexpand --version
 -   `gpconfig`
 -   `gprestore`
 
-> **Important** When expanding a WarehousePG cluster, you must deactivate WarehousePG interconnect proxies before adding new hosts and segment instances to the system, and you must update the `gp_interconnect_proxy_addresses` parameter with the newly-added segment instances before you re-enable interconnect proxies. For information about WarehousePG interconnect proxies, see [Configuring Proxies for the WarehousePG Interconnect](../../../admin_guide/managing/proxy-ic.md).
+> **Note** When the `gp_interconnect_proxy_addresses` parameter is set, `gpexpand` adds an entry for every new segment instance to it before the segments are created, deriving each proxy port from the existing entries of the same role (primary or mirror). WarehousePG interconnect proxies do not need to be deactivated for the expansion. `gpexpand` stops with an error when a derived port is already used on the host, or when the existing entries do not follow the pattern `gpinitsystem` writes; set the parameter by hand in that case and rerun `gpexpand`. For information about WarehousePG interconnect proxies, see [Configuring Proxies for the WarehousePG Interconnect](../../../admin_guide/managing/proxy-ic.md).
 
 For information about preparing a system for expansion, see [Expanding a WarehousePG cluster](../../../admin_guide/managing/expand/index.md)in the *WarehousePG Administrator Guide*.
 
