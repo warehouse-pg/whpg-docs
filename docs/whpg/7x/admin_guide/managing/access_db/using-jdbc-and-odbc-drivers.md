@@ -20,7 +20,7 @@ Collect the following information before you configure a driver:
 | Database | The name of the database to connect to.                |
 | User     | A role that has the `LOGIN` privilege, and its password. |
 
-WarehousePG reports a PostgreSQL 12 version number to drivers, and drivers use it to decide which features to enable. For the full list of connection parameters, see [Establishing a Database Session](establishing-a-database-session.md).
+WarehousePG reports a PostgreSQL 12 version number to drivers. For the full list of connection parameters, see [Establishing a Database Session](establishing-a-database-session.md).
 
 ### Allowing the Connection
 
@@ -48,7 +48,7 @@ To encrypt the connection, enable SSL on the coordinator as described in [Encryp
 
 ### Connecting with pgJDBC
 
-Add the pgJDBC jar file to the class path and use the PostgreSQL JDBC URL format. This example connects to the coordinator over SSL and prints the server version:
+Add the pgJDBC jar file to the class path and use the PostgreSQL JDBC URL format. This example connects to the coordinator over SSL and prints the server version. It was tested with pgJDBC 42.7.14:
 
 ```java
 import java.sql.*;
@@ -74,7 +74,7 @@ public class WhpgConnect {
 
 ### Connecting with psqlODBC
 
-Install unixODBC and the psqlODBC driver, register the driver in the `odbcinst.ini` file, and define a data source name (DSN) in the `odbc.ini` file. The location of the psqlODBC library depends on your platform. Replace `/path/to/psqlodbcw.so` with the path on your system.
+Install unixODBC and the psqlODBC driver, register the driver in the `odbcinst.ini` file, and define a data source name (DSN) in the `odbc.ini` file. The location of the psqlODBC library depends on your platform. Replace `/path/to/psqlodbcw.so` with the path on your system. The examples in this section were tested with psqlODBC 12.02 and 10.03.
 
 `odbcinst.ini`:
 
@@ -109,13 +109,13 @@ Design applications for WarehousePG, which spreads each table across many segmen
 
 ### Ordering Results
 
-Each segment returns its rows independently, so a query without an `ORDER BY` clause returns rows in no fixed order, and the order can change between runs. Add `ORDER BY` to every query where the order matters, and put it on the outermost query. WarehousePG ignores `ORDER BY` in a view or subquery unless a `LIMIT` clause is also used. For example:
+Each segment returns its rows independently, so a query without an `ORDER BY` clause returns rows in no fixed order, and the order can change between runs. Add `ORDER BY` to every query where the order matters, and put it on the outermost query. WarehousePG doesn't guarantee that an `ORDER BY` in a view or subquery is preserved in the result. For example:
 
 ```sql
--- The ORDER BY in the subquery is ignored
+-- Order not guaranteed
 SELECT * FROM (SELECT * FROM orders ORDER BY created_at) o;
 
--- The ORDER BY on the outer query is applied
+-- Order guaranteed
 SELECT * FROM (SELECT * FROM orders) o ORDER BY created_at;
 ```
 
@@ -129,7 +129,7 @@ By default, drivers read an entire result set into client memory. To read a larg
 
 ### Managing Connections and Queueing
 
-Each statement counts against the resource group of the connecting role. When the role reaches the concurrency limit of its resource group, new statements wait until a slot is free. See [Using Resource Groups](../../performance/wlmgmt/workload_mgmt_resgroups.md). Set a limit on how long an application waits by canceling the statement (`Statement.cancel` in JDBC, `SQLCancel` in ODBC) or by setting the `statement_timeout` configuration parameter.
+If resource groups are enabled (the `gp_resource_manager` server configuration parameter is set to `group` or `group-v2`), each statement counts against the resource group of the connecting role. When the role reaches the concurrency limit of its resource group, new statements wait until a slot is free. See [Using Resource Groups](../../performance/wlmgmt/workload_mgmt_resgroups.md). Set a limit on how long an application waits by canceling the statement (`Statement.cancel` in JDBC, `SQLCancel` in ODBC) or by setting the `statement_timeout` configuration parameter.
 
 Size application connection pools below the `max_connections` limit of the coordinator. See [Troubleshooting Connection Problems](troubleshooting-connection-problems.md). You can also place the [PgBouncer connection pooler](pgbouncer.md) between the application and WarehousePG.
 
