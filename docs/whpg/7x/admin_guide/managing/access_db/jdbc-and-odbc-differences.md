@@ -23,7 +23,12 @@ The `currval()` function fails with `currval() not supported`, and `lastval()` i
 
 ### Multiple Unique Keys
 
-Creating a table fails with `UNIQUE or PRIMARY KEY definitions are incompatible with each other` when the table has several `UNIQUE` or `PRIMARY KEY` constraints that have no column in common. Every such constraint must also include all the columns of the distribution key. Give all the constraints a column in common, and include the distribution key columns. See [Creating and Managing Tables](../../ddl/ddl-table.md).
+Creating a table fails when its `UNIQUE` or `PRIMARY KEY` constraints don't fit the distribution key. WarehousePG reports one of two errors:
+
+- `UNIQUE or PRIMARY KEY definitions are incompatible with each other` appears when the table has no `DISTRIBUTED BY` clause and has several constraints that have no column in common.
+- `UNIQUE constraint and DISTRIBUTED BY definitions are incompatible` appears when the table has a `DISTRIBUTED BY` clause and a constraint doesn't include all the distribution key columns.
+
+To avoid both errors, include all the distribution key columns in every `UNIQUE` and `PRIMARY KEY` constraint. For a table without a `DISTRIBUTED BY` clause, also give the constraints a column in common. See [Creating and Managing Tables](../../ddl/ddl-table.md).
 
 ### Foreign Keys
 
@@ -59,6 +64,8 @@ ODBC positioned and bulk operations, which are `SQLSetPos` and `SQLBulkOperation
 
 - Updates fail because WarehousePG rejects the statement with an error that says the `ctid` column is used without the necessary companion column `gp_segment_id`.
 - Deletes can remove more rows than requested because, when the ORCA optimizer plans the statement, WarehousePG doesn't reject it and the statement deletes the row with that `ctid` on every segment.
+
+A plain `UPDATE` statement that an application writes itself behaves like the delete. For example, when the ORCA optimizer plans `UPDATE t SET v = 0 WHERE ctid = '(0,1)'`, WarehousePG updates the row with that `ctid` on every segment. Identify rows by primary key instead of `ctid`.
 
 :::tip Important
 Don't use `SQLSetPos` or `SQLBulkOperations` to delete rows in WarehousePG. In autocommit mode, which is the ODBC default, the extra rows are already deleted when the call reports an error.
