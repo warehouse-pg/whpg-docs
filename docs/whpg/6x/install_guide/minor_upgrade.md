@@ -131,32 +131,8 @@ Perform a final cleanup of the running database instance.
 
 Perform the following steps as the `gpadmin` user. When upgrading from a version earlier than 6.27.4, the package manager removes the old files in `/usr/local/greenplum-db-<version>` and installs the new files to `/usr/edb/whpg6`. When upgrading from 6.27.4 or later, the package manager replaces the files in `/usr/edb/whpg6`.
 
-::: warning Upgrading to 6.27.8: Behavior changes to review
-WarehousePG 6.27.8 changes the following behavior, which can require action on your part. Review each item before you upgrade. For all the changes in this release, see the [6.27.8 release notes](../release_notes/index.md#warehousepg-6-27-8-whpg).
-
--   `amcheck` now sets a safe `search_path` while it runs index expressions and opclass support functions as the table owner, for [CVE-2026-14673](https://www.cve.org/CVERecord?id=CVE-2026-14673). Btree opclass support functions written in SQL or PL/pgSQL that rely on the caller's `search_path` may now fail during `amcheck` verification. Update those functions so they don't depend on the caller's `search_path`, by schema-qualifying the objects they use.
--   `USAGE` privilege is now required on types used by stored expressions, by `CREATE TYPE ... AS RANGE`, and by `ALTER TABLE ... OF`, for [CVE-2026-6470](https://www.cve.org/CVERecord?id=CVE-2026-6470). Grant `USAGE` on those types to roles that need to use them.
--   Only superusers can now create a function with a `DESCRIBE` callback. Have a superuser create any such functions.
--   `orafce` `UTL_FILE` now rejects paths that still contain `..` after canonicalization. Update applications that use such paths.
-:::
-
-::: warning Upgrading to 6.27.7: Behavior changes to review
-WarehousePG 6.27.7 changes the following behavior. Review each item before you upgrade.
-
--   `gp_expand_lock_catalog()`, `gp_expand_bump_version()`, and `gp_add_master_standby()` now require superuser privileges and fail with a `must be superuser` or `can only be run by a superuser` error otherwise. `gpexpand` and `gpinitstandby` run as the superuser and are unaffected. No post-upgrade step is required because the check is inside the functions, so existing clusters are protected as soon as the new binaries are running.
--   External tables that use the `gpfdists://` and `s3://` protocols now require the remote endpoint to support TLS 1.2 or later. An S3-compatible store that only supports TLS 1.0 or 1.1 stops working.
-:::
-
-::: warning Upgrading to 6.27.6: Behavior changes to review
-WarehousePG 6.27.6 changes the following behavior. Review each item before you upgrade.
-
--   Plain-text output from [`pg_dump`](../ref_guide/utility_guide/reference/pg_dump.md), [`pg_dumpall`](../ref_guide/utility_guide/reference/pg_dumpall.md), and [`pg_restore`](../ref_guide/utility_guide/reference/pg_restore.md) now begins with `\restrict <key>` and ends with `\unrestrict <key>`. Tooling that parses dump output needs adjusting for the new markers. Both the dumper and [`psql`](../ref_guide/utility_guide/reference/psql.md) used to restore the dump need to be on this version or later for the protection to apply.
--   [`CREATE OPERATOR`](../ref_guide/sql_commands/CREATE_OPERATOR.md) with a non-built-in `RESTRICT` or `JOIN` estimator now requires superuser privileges.
--   SQL-level calls to functions that take or return the `internal` type, and casts to and from `internal`, are rejected.
--   [`psql`](../ref_guide/utility_guide/reference/psql.md) now consumes in-line `COPY ... FROM STDIN` data even when the `COPY` command fails. Scripts must terminate in-line data with `\.`.
--   `pgcrypto` [PGP encryption](../security-guide/Encryption.md#encpgp) now returns an error when the cipher operation fails, instead of writing effectively unencrypted data. Use the new [`ignore-cipher-failure`](../security-guide/Encryption.md#recovering-data-encrypted-before-the-cve-2026-14663-fix) decryption option to read back data written by an affected build.
--   `tsvectorrecv()` now rejects empty lexemes and enforces the total-length limit consistently.
--   The new [`restrict_nonsystem_relation_kind`](../ref_guide/config_params/guc-list.md#restrict_nonsystem_relation_kind) configuration parameter defaults to empty, so it causes no behavior change unless you set it.
+::: info Note
+Before you upgrade, review the Upgrade considerations section of the [release notes](../release_notes/index.md) for each version between `6.origin` and `6.target`. Some releases change behavior or need follow-up steps, such as running SQL statements in each database after the upgrade.
 :::
 
 1.  On the coordinator, back up old WHPG binaries:
